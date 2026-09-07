@@ -11,6 +11,9 @@ permissions:
 jobs:
   generate-sdk:
     runs-on: ubuntu-latest
+    # Observed max: 1.4 min. The cap only trips if generation or the
+    # spec fetch hangs, rather than running to GitHub's 6h default.
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
         with:

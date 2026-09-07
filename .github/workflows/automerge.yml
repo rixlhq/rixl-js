@@ -12,6 +12,9 @@ jobs:
   automerge:
     if: "contains(github.event.pull_request.labels.*.name, 'autorelease: pending')"
     runs-on: ubuntu-latest
+    # Single `gh pr merge` call; observed max 0.2 min. Anything near this
+    # cap is a stuck API call, not slow work.
+    timeout-minutes: 5
     steps:
       - name: Auto-merge
         env:
