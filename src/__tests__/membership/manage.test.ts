@@ -32,24 +32,40 @@ describe("Membership Manage Module", () => {
   });
 
   describe("updateActiveMembership", () => {
-    it("should update active membership successfully", async () => {
+    // The API identifies a membership by (user_id, org_id) everywhere else —
+    // every sibling endpoint takes `user.org_id` as a path param, and this
+    // call's own MembershipMutation response is keyed by that pair. The
+    // `membership_id` field exists in exactly one request schema and accepts
+    // none of the composite `user_id:org_id` values ListMemberships returns,
+    // so send the org id and let the backend take user_id from the JWT.
+    it("should identify the membership by org id", async () => {
       mockAuthV1MembershipServiceUpdateActiveMembership.mockResolvedValue({data: {}});
 
-      await updateActiveMembership("membership123");
+      await updateActiveMembership("org123");
 
       expect(mockAuthV1MembershipServiceUpdateActiveMembership).toHaveBeenCalledWith({
-        body: {membership_id: "membership123"},
+        body: {user: {org_id: "org123"}},
         throwOnError: true,
       });
+    });
+
+    it("should never send the composite membership id", async () => {
+      mockAuthV1MembershipServiceUpdateActiveMembership.mockResolvedValue({data: {}});
+
+      await updateActiveMembership("PZ76MMvRmS");
+
+      const body = mockAuthV1MembershipServiceUpdateActiveMembership.mock.calls[0][0].body;
+      expect(body.membership_id).toBeUndefined();
+      expect(body.user.org_id).not.toContain(":");
     });
 
     it("should invalidate token after update", async () => {
       mockAuthV1MembershipServiceUpdateActiveMembership.mockResolvedValue({data: {}});
 
-      await updateActiveMembership("membership456");
+      await updateActiveMembership("org456");
 
       expect(mockAuthV1MembershipServiceUpdateActiveMembership).toHaveBeenCalledWith({
-        body: {membership_id: "membership456"},
+        body: {user: {org_id: "org456"}},
         throwOnError: true,
       });
     });

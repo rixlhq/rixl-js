@@ -17,11 +17,21 @@ const ROLE_TO_PROTO: Record<AssignableRole, AuthV1MembershipRole> = {
   member: "MEMBERSHIP_ROLE_MEMBER",
 };
 
-export const updateActiveMembership = async (membershipId: string): Promise<void> => {
+/**
+ * Switches the caller's active organization.
+ *
+ * Identified by org id, not by `Membership.id`. The API models a membership as
+ * the pair (user_id, org_id): every sibling endpoint takes `user.org_id` as a
+ * path param, and this call's own `MembershipMutation` response is keyed by that
+ * pair. `Membership.id` is a `user_id:org_id` concatenation that no endpoint
+ * accepts — passing it here is rejected with "invalid membership ID". The
+ * backend takes user_id from the bearer token.
+ */
+export const updateActiveMembership = async (orgId: string): Promise<void> => {
   return apiCall(
     async () => {
       await authV1MembershipServiceUpdateActiveMembership({
-        body: {membership_id: membershipId},
+        body: {user: {org_id: orgId}},
         throwOnError: true,
       });
       accessToken.set(undefined);
