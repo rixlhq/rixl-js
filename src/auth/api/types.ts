@@ -1,17 +1,3 @@
-import type {HttpMethod} from "../types";
-
-/**
- * Configuration for API requests
- */
-export interface ApiRequestConfig {
-  method?: HttpMethod;
-  body?: Record<string, unknown> | string;
-  headers?: Record<string, string>;
-  skipAuth?: boolean;
-  retry?: number;
-  signal?: AbortSignal;
-}
-
 export interface ApiErrorContext {
   status: number;
   endpoint: string;
