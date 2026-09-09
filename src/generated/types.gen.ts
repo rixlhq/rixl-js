@@ -37,7 +37,7 @@ export type AnalyticsV1AnalyticsEvent = {
      * session_start
      */
     session_start: AnalyticsV1SessionStartEvent;
-});
+} | unknown);
 
 /**
  * BatchChartQueryRequest
@@ -2643,7 +2643,7 @@ export type AuthV1DomainStatus = {
      * verified
      */
     verified: AuthV1VerifiedDomain;
-});
+} | unknown);
 
 /**
  * EmailStatusResponse
@@ -6784,7 +6784,7 @@ export type PostsV1CreatePostRequest = {
      * video_id
      */
     video_id: string;
-});
+} | unknown);
 
 /**
  * CreatePostResponse
@@ -6972,7 +6972,7 @@ export type PostsV1Post = {
      * video
      */
     video: VideosV1Video;
-});
+} | unknown);
 
 /**
  * PostUpload
@@ -8969,10 +8969,6 @@ export type AnalyticsV1DashboardServiceExportDashboardData = {
      */
     body: {
         /**
-         * dashboard_id
-         */
-        dashboard_id: string;
-        /**
          * time_start
          */
         time_start: string;
@@ -9009,10 +9005,6 @@ export type AnalyticsV1DashboardServiceUpdateDashboardLayoutData = {
      * UpdateDashboardLayoutRequest
      */
     body: {
-        /**
-         * dashboard_id
-         */
-        dashboard_id: string;
         /**
          * expected_revision
          */
@@ -9583,10 +9575,6 @@ export type ApikeysV1ApiKeyServiceCreateApiKeyData = {
      */
     body: {
         /**
-         * org_id
-         */
-        org_id?: string;
-        /**
          * name
          */
         name?: string;
@@ -9652,14 +9640,6 @@ export type ApikeysV1ApiKeyServiceUpdateApiKeyData = {
      * UpdateApiKeyRequest
      */
     body: {
-        /**
-         * org_id
-         */
-        org_id?: string;
-        /**
-         * key_id
-         */
-        key_id: string;
         /**
          * name
          */
@@ -9930,10 +9910,6 @@ export type AuthV1DomainServiceCreateDomainVerificationData = {
      */
     body: {
         /**
-         * user
-         */
-        user?: AuthV1UserOrgRequest;
-        /**
          * domain
          */
         domain?: string;
@@ -9962,10 +9938,6 @@ export type AuthV1DomainServiceSetDomainAutoJoinData = {
      * SetAutoJoinRequest
      */
     body: {
-        /**
-         * user
-         */
-        user?: AuthV1UserOrgRequest;
         /**
          * enabled
          */
@@ -10198,10 +10170,6 @@ export type AuthV1MembershipServiceInviteMemberData = {
      */
     body: {
         /**
-         * user
-         */
-        user?: AuthV1ActorOrgRequest;
-        /**
          * username
          */
         username?: string;
@@ -10234,10 +10202,6 @@ export type AuthV1MembershipServiceResendInvitationData = {
      * ResendInvitationRequest
      */
     body: {
-        /**
-         * user
-         */
-        user?: AuthV1ActorOrgRequest;
         /**
          * user_id
          */
@@ -10274,12 +10238,7 @@ export type AuthV1MembershipServiceCancelInvitationData = {
          */
         user_id: string;
     };
-    query?: {
-        /**
-         * actor_id
-         */
-        'user.actor_id'?: string;
-    };
+    query?: never;
     url: '/auth/v1/memberships/{user.org_id}/invite/{user_id}';
 };
 
@@ -10301,10 +10260,6 @@ export type AuthV1MembershipServiceListOrganizationMembersData = {
         'user.org_id': string;
     };
     query?: {
-        /**
-         * user_id
-         */
-        'user.user_id'?: string;
         /**
          * limit
          */
@@ -10338,12 +10293,7 @@ export type AuthV1MembershipServiceRemoveMemberData = {
          */
         user_id: string;
     };
-    query?: {
-        /**
-         * actor_id
-         */
-        'user.actor_id'?: string;
-    };
+    query?: never;
     url: '/auth/v1/memberships/{user.org_id}/members/{user_id}';
 };
 
@@ -10368,12 +10318,7 @@ export type AuthV1MembershipServiceReactivateMemberData = {
          */
         user_id: string;
     };
-    query?: {
-        /**
-         * actor_id
-         */
-        'user.actor_id'?: string;
-    };
+    query?: never;
     url: '/auth/v1/memberships/{user.org_id}/members/{user_id}/reactivate';
 };
 
@@ -10391,14 +10336,6 @@ export type AuthV1MembershipServiceUpdateMemberRoleData = {
      * UpdateMemberRoleRequest
      */
     body: {
-        /**
-         * user
-         */
-        user?: AuthV1ActorOrgRequest;
-        /**
-         * user_id
-         */
-        user_id?: string;
         /**
          * role
          */
@@ -10439,12 +10376,7 @@ export type AuthV1MembershipServiceSuspendMemberData = {
          */
         user_id: string;
     };
-    query?: {
-        /**
-         * actor_id
-         */
-        'user.actor_id'?: string;
-    };
+    query?: never;
     url: '/auth/v1/memberships/{user.org_id}/members/{user_id}/suspend';
 };
 
@@ -10462,10 +10394,6 @@ export type AuthV1MembershipServiceUpdateOrgNameData = {
      * UpdateOrgNameRequest
      */
     body: {
-        /**
-         * user
-         */
-        user?: AuthV1ActorOrgRequest;
         /**
          * full_name
          */
@@ -10496,10 +10424,6 @@ export type AuthV1MembershipServiceUpdateMembershipStateData = {
      */
     body: {
         /**
-         * user
-         */
-        user?: AuthV1UserOrgRequest;
-        /**
          * state
          */
         state?: AuthV1MembershipApplicationState;
@@ -10528,10 +10452,6 @@ export type AuthV1MembershipServiceUpdateOrgUsernameData = {
      * UpdateOrgUsernameRequest
      */
     body: {
-        /**
-         * user
-         */
-        user?: AuthV1ActorOrgRequest;
         /**
          * username
          */
@@ -10870,12 +10790,7 @@ export type AuthV1PolicyServiceListUserPoliciesData = {
          */
         member_id: string;
     };
-    query?: {
-        /**
-         * user_id
-         */
-        'user.user_id'?: string;
-    };
+    query?: never;
     url: '/auth/v1/memberships/{user.org_id}/members/{member_id}/policies';
 };
 
@@ -10893,10 +10808,6 @@ export type AuthV1PolicyServiceCreatePolicyData = {
      * CreatePolicyRequest
      */
     body: {
-        /**
-         * user
-         */
-        user?: AuthV1UserOrgRequest;
         /**
          * name
          */
@@ -10941,12 +10852,7 @@ export type AuthV1PolicyServiceDetachPolicyData = {
          */
         attachment_id: string;
     };
-    query?: {
-        /**
-         * user_id
-         */
-        'user.user_id'?: string;
-    };
+    query?: never;
     url: '/auth/v1/memberships/{user.org_id}/policies/attachments/{attachment_id}';
 };
 
@@ -10968,10 +10874,6 @@ export type AuthV1PolicyServiceListPermissionRegistryData = {
         'user.org_id': string;
     };
     query?: {
-        /**
-         * user_id
-         */
-        'user.user_id'?: string;
         /**
          * types
          */
@@ -11009,12 +10911,7 @@ export type AuthV1PolicyServiceDeletePolicyData = {
          */
         policy_id: string;
     };
-    query?: {
-        /**
-         * user_id
-         */
-        'user.user_id'?: string;
-    };
+    query?: never;
     url: '/auth/v1/memberships/{user.org_id}/policies/{policy_id}';
 };
 
@@ -11039,12 +10936,7 @@ export type AuthV1PolicyServiceGetPolicyData = {
          */
         policy_id: string;
     };
-    query?: {
-        /**
-         * user_id
-         */
-        'user.user_id'?: string;
-    };
+    query?: never;
     url: '/auth/v1/memberships/{user.org_id}/policies/{policy_id}';
 };
 
@@ -11062,14 +10954,6 @@ export type AuthV1PolicyServiceUpdatePolicyData = {
      * UpdatePolicyRequest
      */
     body: {
-        /**
-         * user
-         */
-        user?: AuthV1UserOrgRequest;
-        /**
-         * policy_id
-         */
-        policy_id?: string;
         /**
          * name
          */
@@ -11118,12 +11002,7 @@ export type AuthV1PolicyServiceListPolicyAttachmentsData = {
          */
         policy_id: string;
     };
-    query?: {
-        /**
-         * user_id
-         */
-        'user.user_id'?: string;
-    };
+    query?: never;
     url: '/auth/v1/memberships/{user.org_id}/policies/{policy_id}/attachments';
 };
 
@@ -11141,14 +11020,6 @@ export type AuthV1PolicyServiceAttachPolicyData = {
      * AttachPolicyRequest
      */
     body: {
-        /**
-         * user
-         */
-        user?: AuthV1UserOrgRequest;
-        /**
-         * policy_id
-         */
-        policy_id?: string;
         /**
          * identity_type
          */
@@ -11574,10 +11445,6 @@ export type BillingV1InvoiceServiceUpdateInvoiceStatusData = {
      * UpdateInvoiceStatusRequest
      */
     body: {
-        /**
-         * invoice_id
-         */
-        invoice_id: string;
         /**
          * status
          */
@@ -12274,10 +12141,6 @@ export type FeedsV1FeedServiceCreateFeedData = {
      */
     body: {
         /**
-         * project_id
-         */
-        project_id?: string;
-        /**
          * name
          */
         name?: string;
@@ -12380,14 +12243,6 @@ export type FeedsV1FeedServiceUpdateFeedData = {
      * UpdateFeedRequest
      */
     body: {
-        /**
-         * project_id
-         */
-        project_id?: string;
-        /**
-         * feed_id
-         */
-        feed_id?: string;
         /**
          * name
          */
@@ -12557,10 +12412,6 @@ export type ImagesV1ImageServiceCreateImageUploadData = {
      */
     body: {
         /**
-         * project_id
-         */
-        project_id?: string;
-        /**
          * org_id
          */
         org_id?: string;
@@ -12618,14 +12469,6 @@ export type ImagesV1ImageServiceUpdateImageVisibilityData = {
      * UpdateImageVisibilityRequest
      */
     body: {
-        /**
-         * project_id
-         */
-        project_id?: string;
-        /**
-         * image_id
-         */
-        image_id?: string;
         /**
          * visibility
          */
@@ -12851,17 +12694,9 @@ export type PostsV1PostServiceCreatePostData = {
      */
     body: {
         /**
-         * project_id
-         */
-        project_id?: string;
-        /**
          * org_id
          */
         org_id?: string;
-        /**
-         * feed_id
-         */
-        feed_id?: string;
         /**
          * creator_id
          */
@@ -12884,7 +12719,7 @@ export type PostsV1PostServiceCreatePostData = {
          * video_id
          */
         video_id: string;
-    });
+    } | unknown);
     path: {
         /**
          * project_id
@@ -12956,17 +12791,9 @@ export type PostsV1PostServiceCreatePostUploadData = {
      */
     body: {
         /**
-         * project_id
-         */
-        project_id?: string;
-        /**
          * org_id
          */
         org_id?: string;
-        /**
-         * feed_id
-         */
-        feed_id?: string;
         /**
          * creator_id
          */
@@ -13168,10 +12995,6 @@ export type ProjectV1ProjectServiceCreateProjectData = {
      */
     body: {
         /**
-         * org_id
-         */
-        org_id?: string;
-        /**
          * name
          */
         name?: string;
@@ -13284,14 +13107,6 @@ export type ProjectV1ProjectServiceSetCustomDomainData = {
      */
     body: {
         /**
-         * project_id
-         */
-        project_id?: string;
-        /**
-         * org_id
-         */
-        org_id?: string;
-        /**
          * custom_domain
          */
         custom_domain?: string;
@@ -13324,14 +13139,6 @@ export type ProjectV1ProjectServiceMoveProjectData = {
      * MoveProjectRequest
      */
     body: {
-        /**
-         * project_id
-         */
-        project_id?: string;
-        /**
-         * org_id
-         */
-        org_id?: string;
         /**
          * target_organization_id
          */
@@ -13366,14 +13173,6 @@ export type ProjectV1ProjectServiceUpdateProjectNameData = {
      */
     body: {
         /**
-         * project_id
-         */
-        project_id?: string;
-        /**
-         * org_id
-         */
-        org_id?: string;
-        /**
          * name
          */
         name?: string;
@@ -13406,14 +13205,6 @@ export type ProjectV1ProjectServiceUpdateVideoQualityData = {
      * UpdateVideoQualityRequest
      */
     body: {
-        /**
-         * project_id
-         */
-        project_id?: string;
-        /**
-         * org_id
-         */
-        org_id?: string;
         /**
          * video_quality
          */
@@ -13684,15 +13475,7 @@ export type SupportV1SupportTicketServiceGetTicketResponses = {
 export type SupportV1SupportTicketServiceGetTicketResponse = SupportV1SupportTicketServiceGetTicketResponses[keyof SupportV1SupportTicketServiceGetTicketResponses];
 
 export type SupportV1SupportTicketServiceCloseTicketData = {
-    /**
-     * CloseTicketRequest
-     */
-    body: {
-        /**
-         * ticket_id
-         */
-        ticket_id?: string;
-    };
+    body?: never;
     path: {
         /**
          * ticket_id
@@ -13717,10 +13500,6 @@ export type SupportV1SupportTicketServiceAddTicketMessageData = {
      * AddTicketMessageRequest
      */
     body: {
-        /**
-         * ticket_id
-         */
-        ticket_id?: string;
         /**
          * body
          */
@@ -13830,17 +13609,9 @@ export type VideosV1AudioTrackServiceCreateAudioTrackUploadData = {
      */
     body: {
         /**
-         * project_id
-         */
-        project_id?: string;
-        /**
          * org_id
          */
         org_id?: string;
-        /**
-         * video_id
-         */
-        video_id?: string;
         /**
          * items
          */
@@ -13919,7 +13690,7 @@ export type VideosV1AudioTrackServiceListAudioTracksResponses = {
 
 export type VideosV1AudioTrackServiceListAudioTracksResponse = VideosV1AudioTrackServiceListAudioTracksResponses[keyof VideosV1AudioTrackServiceListAudioTracksResponses];
 
-export type VideosV1ChapterServiceUpdateVideoChaptersData = {
+export type VideosV1ChapterServiceUpdateVideoChapters2Data = {
     body?: never;
     path: {
         /**
@@ -13944,14 +13715,14 @@ export type VideosV1ChapterServiceUpdateVideoChaptersData = {
     url: '/media/v1/projects/{project_id}/videos/{video_id}/chapters';
 };
 
-export type VideosV1ChapterServiceUpdateVideoChaptersResponses = {
+export type VideosV1ChapterServiceUpdateVideoChapters2Responses = {
     /**
      * Success
      */
     200: VideosV1VideoChapters;
 };
 
-export type VideosV1ChapterServiceUpdateVideoChaptersResponse = VideosV1ChapterServiceUpdateVideoChaptersResponses[keyof VideosV1ChapterServiceUpdateVideoChaptersResponses];
+export type VideosV1ChapterServiceUpdateVideoChapters2Response = VideosV1ChapterServiceUpdateVideoChapters2Responses[keyof VideosV1ChapterServiceUpdateVideoChapters2Responses];
 
 export type VideosV1ChapterServiceGetVideoChaptersData = {
     body?: never;
@@ -13977,6 +13748,39 @@ export type VideosV1ChapterServiceGetVideoChaptersResponses = {
 };
 
 export type VideosV1ChapterServiceGetVideoChaptersResponse = VideosV1ChapterServiceGetVideoChaptersResponses[keyof VideosV1ChapterServiceGetVideoChaptersResponses];
+
+export type VideosV1ChapterServiceUpdateVideoChaptersData = {
+    /**
+     * UpdateVideoChaptersRequest
+     */
+    body: {
+        /**
+         * chapters
+         */
+        chapters?: Array<VideosV1Chapter>;
+    };
+    path: {
+        /**
+         * project_id
+         */
+        project_id: string;
+        /**
+         * video_id
+         */
+        video_id: string;
+    };
+    query?: never;
+    url: '/media/v1/projects/{project_id}/videos/{video_id}/chapters';
+};
+
+export type VideosV1ChapterServiceUpdateVideoChaptersResponses = {
+    /**
+     * Success
+     */
+    200: VideosV1VideoChapters;
+};
+
+export type VideosV1ChapterServiceUpdateVideoChaptersResponse = VideosV1ChapterServiceUpdateVideoChaptersResponses[keyof VideosV1ChapterServiceUpdateVideoChaptersResponses];
 
 export type VideosV1ChapterServiceDeleteVideoChapterData = {
     body?: never;
@@ -14115,17 +13919,9 @@ export type VideosV1SubtitleServiceCreateSubtitleUploadData = {
      */
     body: {
         /**
-         * project_id
-         */
-        project_id?: string;
-        /**
          * org_id
          */
         org_id?: string;
-        /**
-         * video_id
-         */
-        video_id?: string;
         /**
          * items
          */
@@ -14252,10 +14048,6 @@ export type VideosV1VideoServiceCreateVideoUploadData = {
      */
     body: {
         /**
-         * project_id
-         */
-        project_id?: string;
-        /**
          * org_id
          */
         org_id?: string;
@@ -14317,14 +14109,6 @@ export type VideosV1VideoServiceUpdateVideoVisibilityData = {
      * UpdateVideoVisibilityRequest
      */
     body: {
-        /**
-         * project_id
-         */
-        project_id?: string;
-        /**
-         * video_id
-         */
-        video_id?: string;
         /**
          * visibility
          */
