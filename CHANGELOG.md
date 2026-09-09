@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.23.1](https://github.com/rixlhq/rixl-js/compare/v0.23.0...v0.23.1) (2026-09-09)
+
+
+### Bug Fixes
+
+* membership mismatch ([c408c53](https://github.com/rixlhq/rixl-js/commit/c408c53da9d5257ea588151ace61d5f0fb15783e))
+
 ## [0.23.0](https://github.com/rixlhq/rixl-js/compare/v0.22.0...v0.23.0) (2026-09-02)
 
 
