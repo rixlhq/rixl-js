@@ -3,11 +3,6 @@
  */
 
 /**
- * HTTP methods supported by the API client
- */
-export type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
-
-/**
  * Entity types that can be updated (name/username)
  */
 export type EntityUpdateType = "name" | "username";
