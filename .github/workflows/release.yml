@@ -62,7 +62,12 @@ jobs:
           vite-config-path: ./vite.config.ts
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Run Release Please
+      # Split from opening the next release PR on purpose. release-please does
+      # both in one step, and a failure in the PR phase — a GitHub GraphQL
+      # timeout while walking commit history, which is transient and outside our
+      # control — marked the whole step failed and skipped publishing, leaving
+      # v0.23.1 tagged on GitHub but absent from npm.
+      - name: Tag the release
         id: release
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: googleapis/release-please-action@v5
@@ -70,6 +75,7 @@ jobs:
           token: ${{ secrets.BUILD_GITHUB_TOKEN }}
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
+          skip-github-pull-request: true
 
       # Bun can't publish with NPM OIDC (Trusted Publishing) yet, so we pack with
       # vp and publish with npm.
@@ -86,3 +92,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Last, so nothing between the tag and the publish can skip them. The PR
+      # only describes commits since the last release; if this fails, the next
+      # push to main opens it.
+      - name: Open the next release PR
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: googleapis/release-please-action@v5
+        with:
+          token: ${{ secrets.BUILD_GITHUB_TOKEN }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+          skip-github-release: true
