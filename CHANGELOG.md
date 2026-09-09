@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.23.2](https://github.com/rixlhq/rixl-js/compare/v0.23.1...v0.23.2) (2026-09-09)
+
+
+### Bug Fixes
+
+* ship the membership fix that 0.23.1 never published ([4822925](https://github.com/rixlhq/rixl-js/commit/4822925d1b7b5eb700abe0adb307474ba992e3e4))
+* ship the membership fix that 0.23.1 never published ([a7deed1](https://github.com/rixlhq/rixl-js/commit/a7deed139c95bb8098474706d2af6057ab25e4c2))
+
 ## [0.23.1](https://github.com/rixlhq/rixl-js/compare/v0.23.0...v0.23.1) (2026-09-09)
 
 

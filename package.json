@@ -1,6 +1,6 @@
 {
   "name": "@rixl/sdk",
-  "version": "0.23.1",
+  "version": "0.23.2",
   "description": "Official TypeScript/JavaScript SDK for the Rixl platform — typed API client, authentication, and reactive state.",
   "keywords": [
     "media",
