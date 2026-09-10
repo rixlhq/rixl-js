@@ -55,10 +55,10 @@
   "devDependencies": {
     "@hey-api/vite-plugin": "0.3.2",
     "@types/node": "^26.1.1",
-    "@vitest/coverage-v8": "4.1.11",
-    "@vitest/ui": "4.1.11",
+    "@vitest/coverage-v8": "5.0.0",
+    "@vitest/ui": "5.0.0",
     "jsdom": "^30.0.0",
-    "typescript": "6.0.3",
+    "typescript": "7.0.2",
     "vite": "npm:@voidzero-dev/vite-plus-core@latest",
     "vite-plus": "^0.3.0"
   },
