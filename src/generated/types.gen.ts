@@ -4,40 +4,37 @@ export type ClientOptions = {
     baseUrl: 'https://raw.githubusercontent.com' | (string & {});
 };
 
-/**
- * AnalyticsEvent
- */
-export type AnalyticsV1AnalyticsEvent = {
-    /**
-     * timestamp
-     */
-    timestamp?: GoogleProtobufTimestamp;
-} & ({
+export type AnalyticsV1AnalyticsEvent = ({
     /**
      * content_view
      */
-    content_view: AnalyticsV1ContentViewEvent;
+    content_view?: AnalyticsV1ContentViewEvent;
 } | {
     /**
      * engagement
      */
-    engagement: AnalyticsV1EngagementEvent;
+    engagement?: AnalyticsV1EngagementEvent;
 } | {
     /**
      * error
      */
-    error: AnalyticsV1ErrorEvent;
+    error?: AnalyticsV1ErrorEvent;
 } | {
     /**
      * interaction
      */
-    interaction: AnalyticsV1InteractionEvent;
+    interaction?: AnalyticsV1InteractionEvent;
 } | {
     /**
      * session_start
      */
-    session_start: AnalyticsV1SessionStartEvent;
-} | unknown);
+    session_start?: AnalyticsV1SessionStartEvent;
+}) & {
+    /**
+     * timestamp
+     */
+    timestamp?: GoogleProtobufTimestamp;
+};
 
 /**
  * BatchChartQueryRequest
@@ -160,20 +157,6 @@ export type AnalyticsV1ChartRow = {
 };
 
 /**
- * DimensionsEntry
- */
-export type AnalyticsV1ChartRowDimensionsEntry = {
-    /**
-     * key
-     */
-    key?: string;
-    /**
-     * value
-     */
-    value?: string;
-};
-
-/**
  * ContentViewEvent
  */
 export type AnalyticsV1ContentViewEvent = {
@@ -250,7 +233,7 @@ export type AnalyticsV1CountryCount = {
     /**
      * count
      */
-    count?: number | string;
+    count?: string;
 };
 
 /**
@@ -346,11 +329,11 @@ export type AnalyticsV1DashboardPoint = {
     /**
      * views
      */
-    views?: number | string;
+    views?: string;
     /**
      * unique_users
      */
-    unique_users?: number | string;
+    unique_users?: string;
 };
 
 /**
@@ -598,7 +581,7 @@ export type AnalyticsV1EventCount = {
     /**
      * count
      */
-    count?: number | string;
+    count?: string;
 };
 
 /**
@@ -665,15 +648,15 @@ export type AnalyticsV1FeedStats = {
     /**
      * total_views
      */
-    total_views?: number | string;
+    total_views?: string;
     /**
      * unique_viewers
      */
-    unique_viewers?: number | string;
+    unique_viewers?: string;
     /**
      * total_posts
      */
-    total_posts?: number | string;
+    total_posts?: string;
     /**
      * avg_time_per_visit_ms
      */
@@ -733,7 +716,7 @@ export type AnalyticsV1FilterOption = {
     /**
      * count
      */
-    count?: number | string;
+    count?: string;
 };
 
 /**
@@ -812,20 +795,6 @@ export type AnalyticsV1FunnelStep = {
     filters?: {
         [key: string]: string;
     };
-};
-
-/**
- * FiltersEntry
- */
-export type AnalyticsV1FunnelStepFiltersEntry = {
-    /**
-     * key
-     */
-    key?: string;
-    /**
-     * value
-     */
-    value?: string;
 };
 
 /**
@@ -967,11 +936,11 @@ export type AnalyticsV1GetPostStatsResponse = {
     /**
      * total_views
      */
-    total_views?: number | string;
+    total_views?: string;
     /**
      * unique_viewers
      */
-    unique_viewers?: number | string;
+    unique_viewers?: string;
 };
 
 /**
@@ -1186,11 +1155,11 @@ export type AnalyticsV1ImageStats = {
     /**
      * total_views
      */
-    total_views?: number | string;
+    total_views?: string;
     /**
      * unique_viewers
      */
-    unique_viewers?: number | string;
+    unique_viewers?: string;
     /**
      * avg_view_duration_ms
      *
@@ -1204,11 +1173,11 @@ export type AnalyticsV1ImageStats = {
     /**
      * feed_views
      */
-    feed_views?: number | string;
+    feed_views?: string;
     /**
      * standalone_views
      */
-    standalone_views?: number | string;
+    standalone_views?: string;
 };
 
 /**
@@ -1290,7 +1259,7 @@ export type AnalyticsV1ListDashboardsResponse = {
     /**
      * total
      */
-    total?: number | string;
+    total?: string;
     /**
      * page
      */
@@ -1337,11 +1306,11 @@ export type AnalyticsV1PostStats = {
     /**
      * total_views
      */
-    total_views?: number | string;
+    total_views?: string;
     /**
      * unique_viewers
      */
-    unique_viewers?: number | string;
+    unique_viewers?: string;
     /**
      * avg_watch_time_ms
      */
@@ -1349,15 +1318,15 @@ export type AnalyticsV1PostStats = {
     /**
      * total_watch_time_ms
      */
-    total_watch_time_ms?: number | string;
+    total_watch_time_ms?: string;
     /**
      * starts
      */
-    starts?: number | string;
+    starts?: string;
     /**
      * completions
      */
-    completions?: number | string;
+    completions?: string;
     /**
      * completion_rate
      */
@@ -1366,22 +1335,8 @@ export type AnalyticsV1PostStats = {
      * views_by_page
      */
     views_by_page?: {
-        [key: string]: number | string;
+        [key: string]: string;
     };
-};
-
-/**
- * ViewsByPageEntry
- */
-export type AnalyticsV1PostStatsViewsByPageEntry = {
-    /**
-     * key
-     */
-    key?: string;
-    /**
-     * value
-     */
-    value?: number | string;
 };
 
 /**
@@ -1395,11 +1350,11 @@ export type AnalyticsV1RealtimeStats = {
     /**
      * active_users
      */
-    active_users?: number | string;
+    active_users?: string;
     /**
      * events_per_minute
      */
-    events_per_minute?: number | string;
+    events_per_minute?: string;
     /**
      * top_events
      */
@@ -1487,7 +1442,7 @@ export type AnalyticsV1ScopeNode = {
     /**
      * views
      */
-    views?: number | string;
+    views?: string;
     /**
      * has_children
      */
@@ -1771,7 +1726,7 @@ export type AnalyticsV1VideoHeatmap = {
     /**
      * total_duration_ms
      */
-    total_duration_ms?: number | string;
+    total_duration_ms?: string;
     /**
      * data
      */
@@ -1789,11 +1744,11 @@ export type AnalyticsV1VideoStats = {
     /**
      * total_views
      */
-    total_views?: number | string;
+    total_views?: string;
     /**
      * unique_viewers
      */
-    unique_viewers?: number | string;
+    unique_viewers?: string;
     /**
      * avg_watch_time_ms
      */
@@ -1805,15 +1760,15 @@ export type AnalyticsV1VideoStats = {
     /**
      * starts
      */
-    starts?: number | string;
+    starts?: string;
     /**
      * watches
      */
-    watches?: number | string;
+    watches?: string;
     /**
      * completions
      */
-    completions?: number | string;
+    completions?: string;
     /**
      * completion_rate
      */
@@ -2165,7 +2120,7 @@ export type ApikeysV1ListApiKeysResponse = {
     /**
      * total
      */
-    total?: number | string;
+    total?: string;
 };
 
 /**
@@ -2625,25 +2580,22 @@ export type AuthV1DomainResponse = {
     status?: AuthV1DomainStatus;
 };
 
-/**
- * DomainStatus
- */
-export type AuthV1DomainStatus = {
-    /**
-     * auto_join
-     */
-    auto_join?: boolean;
-} & ({
+export type AuthV1DomainStatus = ({
     /**
      * pending
      */
-    pending: AuthV1PendingDomain;
+    pending?: AuthV1PendingDomain;
 } | {
     /**
      * verified
      */
-    verified: AuthV1VerifiedDomain;
-} | unknown);
+    verified?: AuthV1VerifiedDomain;
+}) & {
+    /**
+     * auto_join
+     */
+    auto_join?: boolean;
+};
 
 /**
  * EmailStatusResponse
@@ -2963,20 +2915,6 @@ export type AuthV1ListPoliciesForIdentitiesResponse = {
 };
 
 /**
- * ByIdentityEntry
- */
-export type AuthV1ListPoliciesForIdentitiesResponseByIdentityEntry = {
-    /**
-     * key
-     */
-    key?: string;
-    /**
-     * value
-     */
-    value?: AuthV1IdentityPolicies;
-};
-
-/**
  * ListPoliciesResponse
  */
 export type AuthV1ListPoliciesResponse = {
@@ -3053,7 +2991,7 @@ export type AuthV1LoginResponse = {
     /**
      * expires_in
      */
-    expires_in?: number | string;
+    expires_in?: string;
     /**
      * token_type
      */
@@ -3934,7 +3872,7 @@ export type AuthV1TokenResponse = {
     /**
      * expires_in
      */
-    expires_in?: number | string;
+    expires_in?: string;
     /**
      * token_type
      */
@@ -4370,23 +4308,23 @@ export type BillingV1BandwidthUsage = {
     /**
      * total_bandwidth_bytes
      */
-    total_bandwidth_bytes?: number | string;
+    total_bandwidth_bytes?: string;
     /**
      * video_bandwidth_bytes
      */
-    video_bandwidth_bytes?: number | string;
+    video_bandwidth_bytes?: string;
     /**
      * image_bandwidth_bytes
      */
-    image_bandwidth_bytes?: number | string;
+    image_bandwidth_bytes?: string;
     /**
      * total_requests
      */
-    total_requests?: number | string;
+    total_requests?: string;
     /**
      * unique_visitors
      */
-    unique_visitors?: number | string;
+    unique_visitors?: string;
     /**
      * snapshot_type
      */
@@ -4394,11 +4332,11 @@ export type BillingV1BandwidthUsage = {
     /**
      * video_requests
      */
-    video_requests?: number | string;
+    video_requests?: string;
     /**
      * image_requests
      */
-    image_requests?: number | string;
+    image_requests?: string;
     /**
      * data_source
      */
@@ -4467,7 +4405,7 @@ export type BillingV1CalculateGenericTaxRequest = {
     /**
      * amount
      */
-    amount?: number | string;
+    amount?: string;
     /**
      * currency
      */
@@ -4513,7 +4451,7 @@ export type BillingV1CalculateTaxRequest = {
     /**
      * interval_count
      */
-    interval_count?: number | string;
+    interval_count?: string;
     /**
      * billing_address
      */
@@ -4528,20 +4466,6 @@ export type BillingV1CalculateTaxRequest = {
     metadata?: {
         [key: string]: string;
     };
-};
-
-/**
- * MetadataEntry
- */
-export type BillingV1CalculateTaxRequestMetadataEntry = {
-    /**
-     * key
-     */
-    key?: string;
-    /**
-     * value
-     */
-    value?: string;
 };
 
 /**
@@ -5155,11 +5079,11 @@ export type BillingV1PaymentMethodDetails = {
     /**
      * exp_month
      */
-    exp_month?: number | string;
+    exp_month?: string;
     /**
      * exp_year
      */
-    exp_year?: number | string;
+    exp_year?: string;
     /**
      * is_default
      */
@@ -5261,19 +5185,19 @@ export type BillingV1PlanTaxCalculationResponse = {
     /**
      * base_amount
      */
-    base_amount?: number | string;
+    base_amount?: string;
     /**
      * amount_total
      */
-    amount_total?: number | string;
+    amount_total?: string;
     /**
      * tax_amount_exclusive
      */
-    tax_amount_exclusive?: number | string;
+    tax_amount_exclusive?: string;
     /**
      * tax_amount_inclusive
      */
-    tax_amount_inclusive?: number | string;
+    tax_amount_inclusive?: string;
     /**
      * currency
      */
@@ -5440,15 +5364,15 @@ export type BillingV1StorageUsage = {
     /**
      * total_storage_bytes
      */
-    total_storage_bytes?: number | string;
+    total_storage_bytes?: string;
     /**
      * video_storage_bytes
      */
-    video_storage_bytes?: number | string;
+    video_storage_bytes?: string;
     /**
      * image_storage_bytes
      */
-    image_storage_bytes?: number | string;
+    image_storage_bytes?: string;
     /**
      * total_video_minutes
      */
@@ -5611,15 +5535,15 @@ export type BillingV1TaxCalculationResponse = {
     /**
      * amount_total
      */
-    amount_total?: number | string;
+    amount_total?: string;
     /**
      * tax_amount_exclusive
      */
-    tax_amount_exclusive?: number | string;
+    tax_amount_exclusive?: string;
     /**
      * tax_amount_inclusive
      */
-    tax_amount_inclusive?: number | string;
+    tax_amount_inclusive?: string;
     /**
      * currency
      */
@@ -5633,7 +5557,7 @@ export type BillingV1TaxLineItem = {
     /**
      * amount
      */
-    amount?: number | string;
+    amount?: string;
     /**
      * reference
      */
@@ -5814,7 +5738,7 @@ export type ClientauthV1ListClientCredentialsResponse = {
     /**
      * total
      */
-    total?: number | string;
+    total?: string;
 };
 
 /**
@@ -5882,7 +5806,7 @@ export type ClientauthV1MintClientTokenResponse = {
     /**
      * expires_in
      */
-    expires_in?: number | string;
+    expires_in?: string;
     /**
      * expires_at
      */
@@ -5939,7 +5863,7 @@ export type CommonV1File = {
      * size is the uploaded source's byte size for usage accounting; it is not updated
      * when packaging replaces the artifact, so it does not describe the object at url.
      */
-    size?: number | string;
+    size?: string;
     /**
      * status
      */
@@ -6138,7 +6062,7 @@ export type FeedsV1ListFeedsResponse = {
     /**
      * total
      */
-    total?: number | string;
+    total?: string;
 };
 
 /**
@@ -6184,95 +6108,21 @@ export type FeedsV1UpdateFeedRequest = {
 };
 
 /**
- * A Duration represents a signed, fixed-length span of time represented
- * as a count of seconds and fractions of seconds at nanosecond
- * resolution. It is independent of any calendar and concepts like "day"
- * or "month". It is related to Timestamp in that the difference between
- * two Timestamp values is a Duration and it can be added or subtracted
- * from a Timestamp. Range is approximately +-10,000 years.
- *
- * # Examples
- *
- * Example 1: Compute Duration from two Timestamps in pseudo code.
- *
- * Timestamp start = ...;
- * Timestamp end = ...;
- * Duration duration = ...;
- *
- * duration.seconds = end.seconds - start.seconds;
- * duration.nanos = end.nanos - start.nanos;
- *
- * if (duration.seconds < 0 && duration.nanos > 0) {
- * duration.seconds += 1;
- * duration.nanos -= 1000000000;
- * } else if (duration.seconds > 0 && duration.nanos < 0) {
- * duration.seconds -= 1;
- * duration.nanos += 1000000000;
- * }
- *
- * Example 2: Compute Timestamp from Timestamp + Duration in pseudo code.
- *
- * Timestamp start = ...;
- * Duration duration = ...;
- * Timestamp end = ...;
- *
- * end.seconds = start.seconds + duration.seconds;
- * end.nanos = start.nanos + duration.nanos;
- *
- * if (end.nanos < 0) {
- * end.seconds -= 1;
- * end.nanos += 1000000000;
- * } else if (end.nanos >= 1000000000) {
- * end.seconds += 1;
- * end.nanos -= 1000000000;
- * }
- *
- * Example 3: Compute Duration from datetime.timedelta in Python.
- *
- * td = datetime.timedelta(days=3, minutes=10)
- * duration = Duration()
- * duration.FromTimedelta(td)
- *
- * # JSON Mapping
- *
- * In JSON format, the Duration type is encoded as a string rather than an
- * object, where the string ends in the suffix "s" (indicating seconds) and
- * is preceded by the number of seconds, with nanoseconds expressed as
- * fractional seconds. For example, 3 seconds with 0 nanoseconds should be
- * encoded in JSON format as "3s", while 3 seconds and 1 nanosecond should
- * be expressed in JSON format as "3.000000001s", and 3 seconds and 1
- * microsecond should be expressed in JSON format as "3.000001s".
+ * A signed duration in seconds, with up to nine fractional digits and an `s` suffix (for example, `3s` or `-0.001s`).
  */
 export type GoogleProtobufDuration = string;
 
 /**
- * A generic empty message that you can re-use to avoid defining duplicated
- * empty messages in your APIs. A typical example is to use it as the request
- * or the response type of an API method. For instance:
- *
- * service Foo {
- * rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty);
- * }
+ * An empty JSON object.
  */
 export type GoogleProtobufEmpty = {
     [key: string]: unknown;
 };
 
 /**
- * ListValue
- *
- * `ListValue` is a wrapper around a repeated field of values.
- *
- * The JSON representation for `ListValue` is JSON array.
+ * A JSON array whose elements may be any JSON value.
  */
-export type GoogleProtobufListValue = {
-    /**
-     * values
-     *
-     * Repeated field of dynamically typed values.
-     */
-    values?: Array<GoogleProtobufValue>;
-};
+export type GoogleProtobufListValue = Array<GoogleProtobufValue>;
 
 /**
  * NullValue
@@ -6285,133 +6135,19 @@ export type GoogleProtobufListValue = {
 export type GoogleProtobufNullValue = 'NULL_VALUE';
 
 /**
- * `Struct` represents a structured data value, consisting of fields
- * which map to dynamically typed values. In some languages, `Struct`
- * might be supported by a native representation. For example, in
- * scripting languages like JS a struct is represented as an
- * object. The details of that representation are described together
- * with the proto support for the language.
- *
- * The JSON representation for `Struct` is JSON object.
+ * A JSON object whose property values may be any JSON value.
  */
 export type GoogleProtobufStruct = {
     [key: string]: GoogleProtobufValue;
 };
 
 /**
- * FieldsEntry
- */
-export type GoogleProtobufStructFieldsEntry = {
-    /**
-     * key
-     */
-    key?: string;
-    /**
-     * value
-     */
-    value?: GoogleProtobufValue;
-};
-
-/**
- * A Timestamp represents a point in time independent of any time zone or local
- * calendar, encoded as a count of seconds and fractions of seconds at
- * nanosecond resolution. The count is relative to an epoch at UTC midnight on
- * January 1, 1970, in the proleptic Gregorian calendar which extends the
- * Gregorian calendar backwards to year one.
- *
- * All minutes are 60 seconds long. Leap seconds are "smeared" so that no leap
- * second table is needed for interpretation, using a [24-hour linear
- * smear](https://developers.google.com/time/smear).
- *
- * The range is from 0001-01-01T00:00:00Z to 9999-12-31T23:59:59.999999999Z. By
- * restricting to that range, we ensure that we can convert to and from [RFC
- * 3339](https://www.ietf.org/rfc/rfc3339.txt) date strings.
- *
- * # Examples
- *
- * Example 1: Compute Timestamp from POSIX `time()`.
- *
- * Timestamp timestamp;
- * timestamp.set_seconds(time(NULL));
- * timestamp.set_nanos(0);
- *
- * Example 2: Compute Timestamp from POSIX `gettimeofday()`.
- *
- * struct timeval tv;
- * gettimeofday(&tv, NULL);
- *
- * Timestamp timestamp;
- * timestamp.set_seconds(tv.tv_sec);
- * timestamp.set_nanos(tv.tv_usec * 1000);
- *
- * Example 3: Compute Timestamp from Win32 `GetSystemTimeAsFileTime()`.
- *
- * FILETIME ft;
- * GetSystemTimeAsFileTime(&ft);
- * UINT64 ticks = (((UINT64)ft.dwHighDateTime) << 32) | ft.dwLowDateTime;
- *
- * // A Windows tick is 100 nanoseconds. Windows epoch 1601-01-01T00:00:00Z
- * // is 11644473600 seconds before Unix epoch 1970-01-01T00:00:00Z.
- * Timestamp timestamp;
- * timestamp.set_seconds((INT64) ((ticks / 10000000) - 11644473600LL));
- * timestamp.set_nanos((INT32) ((ticks % 10000000) * 100));
- *
- * Example 4: Compute Timestamp from Java `System.currentTimeMillis()`.
- *
- * long millis = System.currentTimeMillis();
- *
- * Timestamp timestamp = Timestamp.newBuilder().setSeconds(millis / 1000)
- * .setNanos((int) ((millis % 1000) * 1000000)).build();
- *
- * Example 5: Compute Timestamp from Java `Instant.now()`.
- *
- * Instant now = Instant.now();
- *
- * Timestamp timestamp =
- * Timestamp.newBuilder().setSeconds(now.getEpochSecond())
- * .setNanos(now.getNano()).build();
- *
- * Example 6: Compute Timestamp from current time in Python.
- *
- * timestamp = Timestamp()
- * timestamp.GetCurrentTime()
- *
- * # JSON Mapping
- *
- * In JSON format, the Timestamp type is encoded as a string in the
- * [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format. That is, the
- * format is "{year}-{month}-{day}T{hour}:{min}:{sec}[.{frac_sec}]Z"
- * where {year} is always expressed using four digits while {month}, {day},
- * {hour}, {min}, and {sec} are zero-padded to two digits each. The fractional
- * seconds, which can go up to 9 digits (i.e. up to 1 nanosecond resolution),
- * are optional. The "Z" suffix indicates the timezone ("UTC"); the timezone
- * is required. A proto3 JSON serializer should always use UTC (as indicated by
- * "Z") when printing the Timestamp type and a proto3 JSON parser should be
- * able to accept both UTC and other timezones (as indicated by an offset).
- *
- * For example, "2017-01-15T01:30:15.01Z" encodes 15.01 seconds past
- * 01:30 UTC on January 15, 2017.
- *
- * In JavaScript, one can convert a Date object to this format using the
- * standard
- * [toISOString()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString)
- * method. In Python, a standard `datetime.datetime` object can be converted
- * to this format using
- * [`strftime`](https://docs.python.org/2/library/time.html#time.strftime) with
- * the time format spec '%Y-%m-%dT%H:%M:%S.%fZ'. Likewise, in Java, one can use
- * the Joda Time's [`ISODateTimeFormat.dateTime()`](
- * http://joda-time.sourceforge.net/apidocs/org/joda/time/format/ISODateTimeFormat.html#dateTime()
- * ) to obtain a formatter capable of generating timestamps in this format.
+ * A point in time in RFC 3339 format, with up to nanosecond precision. Output uses UTC (`Z`); input may use an offset from UTC.
  */
 export type GoogleProtobufTimestamp = string;
 
 /**
- * `Value` represents a dynamically typed value which can be either
- * null, a number, a string, a boolean, a recursive struct value, or a
- * list of values. A producer of value is expected to set one of these
- * variants. Absence of any variant indicates an error.
- *
- * The JSON representation for `Value` is JSON value.
+ * Any JSON value: `null`, number, string, boolean, array, or object.
  */
 export type GoogleProtobufValue = null | number | string | boolean | Array<unknown> | {
     [key: string]: unknown;
@@ -6554,7 +6290,7 @@ export type ImagesV1ListImagesResponse = {
     /**
      * total
      */
-    total?: number | string;
+    total?: string;
     /**
      * offset
      *
@@ -6598,7 +6334,7 @@ export type ImagesV1MarkImageProcessedRequest = {
     /**
      * size
      */
-    size?: number | string;
+    size?: string;
 };
 
 /**
@@ -6635,7 +6371,7 @@ export type ImagesV1UnprocessedImage = {
     /**
      * size
      */
-    size?: number | string;
+    size?: string;
     /**
      * status
      */
@@ -6693,7 +6429,7 @@ export type ImagesV1UpdateProcessedImageDataRequest = {
     /**
      * size
      */
-    size?: number | string;
+    size?: string;
     /**
      * format
      */
@@ -6739,17 +6475,24 @@ export type PlatformauthV1TokenResponse = {
     /**
      * expires_in
      */
-    expires_in?: number | string;
+    expires_in?: string;
     /**
      * expires_at
      */
     expires_at?: GoogleProtobufTimestamp;
 };
 
-/**
- * CreatePostRequest
- */
-export type PostsV1CreatePostRequest = {
+export type PostsV1CreatePostRequest = ({
+    /**
+     * image_id
+     */
+    image_id?: string;
+} | {
+    /**
+     * video_id
+     */
+    video_id?: string;
+}) & {
     /**
      * project_id
      */
@@ -6774,17 +6517,7 @@ export type PostsV1CreatePostRequest = {
      * description
      */
     description?: string;
-} & ({
-    /**
-     * image_id
-     */
-    image_id: string;
-} | {
-    /**
-     * video_id
-     */
-    video_id: string;
-} | unknown);
+};
 
 /**
  * CreatePostResponse
@@ -6919,7 +6652,7 @@ export type PostsV1ListPostsResponse = {
     /**
      * total
      */
-    total?: number | string;
+    total?: string;
     /**
      * offset
      *
@@ -6934,10 +6667,17 @@ export type PostsV1ListPostsResponse = {
     limit?: number;
 };
 
-/**
- * Post
- */
-export type PostsV1Post = {
+export type PostsV1Post = ({
+    /**
+     * image
+     */
+    image?: ImagesV1Image;
+} | {
+    /**
+     * video
+     */
+    video?: VideosV1Video;
+}) & {
     /**
      * id
      */
@@ -6962,17 +6702,7 @@ export type PostsV1Post = {
      * created_at
      */
     created_at?: GoogleProtobufTimestamp;
-} & ({
-    /**
-     * image
-     */
-    image: ImagesV1Image;
-} | {
-    /**
-     * video
-     */
-    video: VideosV1Video;
-} | unknown);
+};
 
 /**
  * PostUpload
@@ -7434,7 +7164,7 @@ export type SupportV1ListTicketsResponse = {
     /**
      * total
      */
-    total?: number | string;
+    total?: string;
     /**
      * offset
      *
@@ -7651,7 +7381,7 @@ export type UploadV1ReceiveStorageEventRequest = {
     /**
      * object_size
      */
-    object_size?: number | string | null;
+    object_size?: string | null;
 };
 
 /**
@@ -7837,7 +7567,7 @@ export type VideosV1DeleteVideoChapterRequest = {
     /**
      * start_time_sec
      */
-    start_time_sec?: number | string;
+    start_time_sec?: string;
 };
 
 /**
@@ -7881,7 +7611,7 @@ export type VideosV1File = {
     /**
      * size
      */
-    size?: number | string;
+    size?: string;
     /**
      * status
      */
@@ -8036,7 +7766,7 @@ export type VideosV1ListVideosResponse = {
     /**
      * total
      */
-    total?: number | string;
+    total?: string;
     /**
      * offset
      *
@@ -8080,7 +7810,7 @@ export type VideosV1MarkVideoProcessedRequest = {
     /**
      * size
      */
-    size?: number | string;
+    size?: string;
 };
 
 /**
@@ -8312,7 +8042,7 @@ export type VideosV1TrackUploadItem = {
     /**
      * size
      */
-    size?: number | string;
+    size?: string;
 };
 
 /**
@@ -8728,46 +8458,68 @@ export type AnalyticsV1DashboardServiceGetDashboardStatsData = {
     query: {
         /**
          * time_start
+         *
+         * The time_start query parameter.
          */
         time_start: string;
         /**
          * time_end
+         *
+         * The time_end query parameter.
          */
         time_end: string;
         /**
          * interval
+         *
+         * The interval query parameter.
          */
         interval?: string;
         /**
          * countries
+         *
+         * The filter.countries query parameter.
          */
         'filter.countries'?: Array<string>;
         /**
          * cities
+         *
+         * The filter.cities query parameter.
          */
         'filter.cities'?: Array<string>;
         /**
          * devices
+         *
+         * The filter.devices query parameter.
          */
         'filter.devices'?: Array<string>;
         /**
          * os
+         *
+         * The filter.os query parameter.
          */
         'filter.os'?: Array<string>;
         /**
          * languages
+         *
+         * The filter.languages query parameter.
          */
         'filter.languages'?: Array<string>;
         /**
          * regions
+         *
+         * The filter.regions query parameter.
          */
         'filter.regions'?: Array<string>;
         /**
          * browsers
+         *
+         * The filter.browsers query parameter.
          */
         'filter.browsers'?: Array<string>;
         /**
          * os_versions
+         *
+         * The filter.os_versions query parameter.
          */
         'filter.os_versions'?: Array<string>;
     };
@@ -8869,10 +8621,14 @@ export type AnalyticsV1DashboardServiceListDashboardsData = {
     query?: {
         /**
          * page_size
+         *
+         * The page_size query parameter.
          */
         page_size?: number;
         /**
          * page
+         *
+         * The page query parameter.
          */
         page?: number;
     };
@@ -8909,12 +8665,16 @@ export type AnalyticsV1DashboardServiceDeleteWidgetData = {
     path: {
         /**
          * id
+         *
+         * The id path parameter.
          */
         id: string;
     };
     query: {
         /**
          * expected_revision
+         *
+         * The expected_revision query parameter.
          */
         expected_revision: number;
     };
@@ -8947,6 +8707,8 @@ export type AnalyticsV1DashboardServiceUpdateWidgetData = {
     path: {
         /**
          * id
+         *
+         * The id path parameter.
          */
         id: string;
     };
@@ -8984,6 +8746,8 @@ export type AnalyticsV1DashboardServiceExportDashboardData = {
     path: {
         /**
          * dashboard_id
+         *
+         * The dashboard_id path parameter.
          */
         dashboard_id: string;
     };
@@ -9017,6 +8781,8 @@ export type AnalyticsV1DashboardServiceUpdateDashboardLayoutData = {
     path: {
         /**
          * dashboard_id
+         *
+         * The dashboard_id path parameter.
          */
         dashboard_id: string;
     };
@@ -9041,12 +8807,16 @@ export type AnalyticsV1DashboardServiceCreateWidgetData = {
     path: {
         /**
          * dashboard_id
+         *
+         * The dashboard_id path parameter.
          */
         dashboard_id: string;
     };
     query: {
         /**
          * expected_revision
+         *
+         * The expected_revision query parameter.
          */
         expected_revision: number;
     };
@@ -9067,12 +8837,16 @@ export type AnalyticsV1DashboardServiceDeleteDashboardData = {
     path: {
         /**
          * id
+         *
+         * The id path parameter.
          */
         id: string;
     };
     query: {
         /**
          * expected_revision
+         *
+         * The expected_revision query parameter.
          */
         expected_revision: number;
     };
@@ -9093,6 +8867,8 @@ export type AnalyticsV1DashboardServiceGetDashboardData = {
     path: {
         /**
          * id
+         *
+         * The id path parameter.
          */
         id: string;
     };
@@ -9130,6 +8906,8 @@ export type AnalyticsV1DashboardServiceUpdateDashboardData = {
     path: {
         /**
          * id
+         *
+         * The id path parameter.
          */
         id: string;
     };
@@ -9151,6 +8929,8 @@ export type AnalyticsV1DashboardServiceSetDefaultDashboardData = {
     path: {
         /**
          * id
+         *
+         * The id path parameter.
          */
         id: string;
     };
@@ -9188,16 +8968,22 @@ export type AnalyticsV1FeedsServiceGetFeedStatsData = {
     path: {
         /**
          * feed_id
+         *
+         * The feed_id path parameter.
          */
         feed_id: string;
     };
     query?: {
         /**
          * start
+         *
+         * The range.start query parameter.
          */
         'range.start'?: string;
         /**
          * end
+         *
+         * The range.end query parameter.
          */
         'range.end'?: string;
     };
@@ -9219,14 +9005,20 @@ export type AnalyticsV1FeedsServiceGetTopFeedsData = {
     query?: {
         /**
          * limit
+         *
+         * The limit query parameter.
          */
         limit?: number;
         /**
          * start
+         *
+         * The range.start query parameter.
          */
         'range.start'?: string;
         /**
          * end
+         *
+         * The range.end query parameter.
          */
         'range.end'?: string;
     };
@@ -9279,20 +9071,28 @@ export type AnalyticsV1HeatmapServiceGetVideoHeatmapData = {
     path: {
         /**
          * video_id
+         *
+         * The video_id path parameter.
          */
         video_id: string;
     };
     query?: {
         /**
          * buckets
+         *
+         * The buckets query parameter.
          */
         buckets?: number;
         /**
          * start
+         *
+         * The range.start query parameter.
          */
         'range.start'?: string;
         /**
          * end
+         *
+         * The range.end query parameter.
          */
         'range.end'?: string;
     };
@@ -9313,16 +9113,22 @@ export type AnalyticsV1HeatmapServiceGetHotSegmentsData = {
     path: {
         /**
          * video_id
+         *
+         * The video_id path parameter.
          */
         video_id: string;
     };
     query?: {
         /**
          * start
+         *
+         * The range.start query parameter.
          */
         'range.start'?: string;
         /**
          * end
+         *
+         * The range.end query parameter.
          */
         'range.end'?: string;
     };
@@ -9343,16 +9149,22 @@ export type AnalyticsV1ImagesServiceGetImageStatsData = {
     path: {
         /**
          * image_id
+         *
+         * The image_id path parameter.
          */
         image_id: string;
     };
     query?: {
         /**
          * start
+         *
+         * The range.start query parameter.
          */
         'range.start'?: string;
         /**
          * end
+         *
+         * The range.end query parameter.
          */
         'range.end'?: string;
     };
@@ -9374,14 +9186,20 @@ export type AnalyticsV1ImagesServiceGetTopImagesData = {
     query?: {
         /**
          * limit
+         *
+         * The limit query parameter.
          */
         limit?: number;
         /**
          * start
+         *
+         * The range.start query parameter.
          */
         'range.start'?: string;
         /**
          * end
+         *
+         * The range.end query parameter.
          */
         'range.end'?: string;
     };
@@ -9402,16 +9220,22 @@ export type AnalyticsV1PostsServiceGetPostStatsData = {
     path: {
         /**
          * post_id
+         *
+         * The post_id path parameter.
          */
         post_id: string;
     };
     query?: {
         /**
          * start
+         *
+         * The range.start query parameter.
          */
         'range.start'?: string;
         /**
          * end
+         *
+         * The range.end query parameter.
          */
         'range.end'?: string;
     };
@@ -9433,18 +9257,26 @@ export type AnalyticsV1PostsServiceGetTopPostsData = {
     query?: {
         /**
          * limit
+         *
+         * The limit query parameter.
          */
         limit?: number;
         /**
          * start
+         *
+         * The range.start query parameter.
          */
         'range.start'?: string;
         /**
          * end
+         *
+         * The range.end query parameter.
          */
         'range.end'?: string;
         /**
          * feed_id
+         *
+         * The feed_id query parameter.
          */
         feed_id?: string;
     };
@@ -9482,14 +9314,20 @@ export type AnalyticsV1VideosServiceGetTopVideosData = {
     query?: {
         /**
          * limit
+         *
+         * The limit query parameter.
          */
         limit?: number;
         /**
          * start
+         *
+         * The range.start query parameter.
          */
         'range.start'?: string;
         /**
          * end
+         *
+         * The range.end query parameter.
          */
         'range.end'?: string;
     };
@@ -9510,16 +9348,22 @@ export type AnalyticsV1VideosServiceGetVideoStatsData = {
     path: {
         /**
          * video_id
+         *
+         * The video_id path parameter.
          */
         video_id: string;
     };
     query?: {
         /**
          * start
+         *
+         * The range.start query parameter.
          */
         'range.start'?: string;
         /**
          * end
+         *
+         * The range.end query parameter.
          */
         'range.end'?: string;
     };
@@ -9540,6 +9384,8 @@ export type ApikeysV1ApiKeyServiceListApiKeysData = {
     path: {
         /**
          * org_id
+         *
+         * The org_id path parameter.
          */
         org_id: string;
     };
@@ -9594,6 +9440,8 @@ export type ApikeysV1ApiKeyServiceCreateApiKeyData = {
     path: {
         /**
          * org_id
+         *
+         * The org_id path parameter.
          */
         org_id: string;
     };
@@ -9615,10 +9463,14 @@ export type ApikeysV1ApiKeyServiceDeleteApiKeyData = {
     path: {
         /**
          * org_id
+         *
+         * The org_id path parameter.
          */
         org_id: string;
         /**
          * key_id
+         *
+         * The key_id path parameter.
          */
         key_id: string;
     };
@@ -9660,10 +9512,14 @@ export type ApikeysV1ApiKeyServiceUpdateApiKeyData = {
     path: {
         /**
          * org_id
+         *
+         * The org_id path parameter.
          */
         org_id: string;
         /**
          * key_id
+         *
+         * The key_id path parameter.
          */
         key_id: string;
     };
@@ -9685,10 +9541,14 @@ export type ApikeysV1ApiKeyServiceRotateApiKeyData = {
     path: {
         /**
          * org_id
+         *
+         * The org_id path parameter.
          */
         org_id: string;
         /**
          * key_id
+         *
+         * The key_id path parameter.
          */
         key_id: string;
     };
@@ -9727,6 +9587,8 @@ export type AuthV1BlogServiceSubscribeBlogData = {
     query?: {
         /**
          * user_id
+         *
+         * The user_id query parameter.
          */
         user_id?: string;
     };
@@ -9748,6 +9610,8 @@ export type AuthV1BlogServiceGetBlogSubscriptionData = {
     query?: {
         /**
          * user_id
+         *
+         * The user_id query parameter.
          */
         user_id?: string;
     };
@@ -9769,6 +9633,8 @@ export type AuthV1BlogServiceUnsubscribeBlogData = {
     query?: {
         /**
          * user_id
+         *
+         * The user_id query parameter.
          */
         user_id?: string;
     };
@@ -9805,12 +9671,16 @@ export type AuthV1DomainServiceRemoveDomainData = {
     path: {
         /**
          * org_id
+         *
+         * The org_id path parameter.
          */
         org_id: string;
     };
     query?: {
         /**
          * user_id
+         *
+         * The user_id query parameter.
          */
         user_id?: string;
     };
@@ -9831,12 +9701,16 @@ export type AuthV1DomainServiceGetDomainStatusData = {
     path: {
         /**
          * org_id
+         *
+         * The org_id path parameter.
          */
         org_id: string;
     };
     query?: {
         /**
          * user_id
+         *
+         * The user_id query parameter.
          */
         user_id?: string;
     };
@@ -9857,12 +9731,16 @@ export type AuthV1DomainServiceGetDomainAutoJoinData = {
     path: {
         /**
          * org_id
+         *
+         * The org_id path parameter.
          */
         org_id: string;
     };
     query?: {
         /**
          * user_id
+         *
+         * The user_id query parameter.
          */
         user_id?: string;
     };
@@ -9883,12 +9761,16 @@ export type AuthV1DomainServiceCheckDomainVerificationData = {
     path: {
         /**
          * org_id
+         *
+         * The org_id path parameter.
          */
         org_id: string;
     };
     query?: {
         /**
          * user_id
+         *
+         * The user_id query parameter.
          */
         user_id?: string;
     };
@@ -9917,6 +9799,8 @@ export type AuthV1DomainServiceCreateDomainVerificationData = {
     path: {
         /**
          * org_id
+         *
+         * The user.org_id path parameter.
          */
         'user.org_id': string;
     };
@@ -9946,6 +9830,8 @@ export type AuthV1DomainServiceSetDomainAutoJoinData = {
     path: {
         /**
          * org_id
+         *
+         * The user.org_id path parameter.
          */
         'user.org_id': string;
     };
@@ -9967,6 +9853,8 @@ export type AuthV1MembershipServiceAcceptInvitationData = {
     path: {
         /**
          * token
+         *
+         * The token path parameter.
          */
         token: string;
     };
@@ -9988,6 +9876,8 @@ export type AuthV1MembershipServiceDeclineInvitationData = {
     path: {
         /**
          * token
+         *
+         * The token path parameter.
          */
         token: string;
     };
@@ -10010,18 +9900,26 @@ export type AuthV1MembershipServiceListMembershipApplicationsData = {
     query?: {
         /**
          * user_id
+         *
+         * The user.user_id query parameter.
          */
         'user.user_id'?: string;
         /**
          * limit
+         *
+         * The limit query parameter.
          */
         limit?: number;
         /**
          * offset
+         *
+         * The offset query parameter.
          */
         offset?: number;
         /**
          * state
+         *
+         * The state query parameter.
          */
         state?: AuthV1MembershipApplicationState;
     };
@@ -10043,18 +9941,26 @@ export type AuthV1MembershipServiceListMembershipsData = {
     query?: {
         /**
          * user_id
+         *
+         * The user.user_id query parameter.
          */
         'user.user_id'?: string;
         /**
          * limit
+         *
+         * The limit query parameter.
          */
         limit?: number;
         /**
          * offset
+         *
+         * The offset query parameter.
          */
         offset?: number;
         /**
          * state
+         *
+         * The state query parameter.
          */
         state?: AuthV1MembershipState;
     };
@@ -10091,12 +9997,16 @@ export type AuthV1MembershipServiceCheckMembershipData = {
     path: {
         /**
          * org_id
+         *
+         * The org_id path parameter.
          */
         org_id: string;
     };
     query?: {
         /**
          * user_id
+         *
+         * The user_id query parameter.
          */
         user_id?: string;
     };
@@ -10117,12 +10027,16 @@ export type AuthV1MembershipServiceGetInternalMembershipInfoData = {
     path: {
         /**
          * org_id
+         *
+         * The org_id path parameter.
          */
         org_id: string;
     };
     query?: {
         /**
          * user_id
+         *
+         * The user_id query parameter.
          */
         user_id?: string;
     };
@@ -10143,12 +10057,16 @@ export type AuthV1MembershipServiceLeaveOrganizationData = {
     path: {
         /**
          * org_id
+         *
+         * The org_id path parameter.
          */
         org_id: string;
     };
     query?: {
         /**
          * user_id
+         *
+         * The user_id query parameter.
          */
         user_id?: string;
     };
@@ -10181,6 +10099,8 @@ export type AuthV1MembershipServiceInviteMemberData = {
     path: {
         /**
          * org_id
+         *
+         * The user.org_id path parameter.
          */
         'user.org_id': string;
     };
@@ -10210,6 +10130,8 @@ export type AuthV1MembershipServiceResendInvitationData = {
     path: {
         /**
          * org_id
+         *
+         * The user.org_id path parameter.
          */
         'user.org_id': string;
     };
@@ -10231,10 +10153,14 @@ export type AuthV1MembershipServiceCancelInvitationData = {
     path: {
         /**
          * org_id
+         *
+         * The user.org_id path parameter.
          */
         'user.org_id': string;
         /**
          * user_id
+         *
+         * The user_id path parameter.
          */
         user_id: string;
     };
@@ -10256,16 +10182,22 @@ export type AuthV1MembershipServiceListOrganizationMembersData = {
     path: {
         /**
          * org_id
+         *
+         * The user.org_id path parameter.
          */
         'user.org_id': string;
     };
     query?: {
         /**
          * limit
+         *
+         * The limit query parameter.
          */
         limit?: number;
         /**
          * offset
+         *
+         * The offset query parameter.
          */
         offset?: number;
     };
@@ -10286,10 +10218,14 @@ export type AuthV1MembershipServiceRemoveMemberData = {
     path: {
         /**
          * org_id
+         *
+         * The user.org_id path parameter.
          */
         'user.org_id': string;
         /**
          * user_id
+         *
+         * The user_id path parameter.
          */
         user_id: string;
     };
@@ -10311,10 +10247,14 @@ export type AuthV1MembershipServiceReactivateMemberData = {
     path: {
         /**
          * org_id
+         *
+         * The user.org_id path parameter.
          */
         'user.org_id': string;
         /**
          * user_id
+         *
+         * The user_id path parameter.
          */
         user_id: string;
     };
@@ -10344,10 +10284,14 @@ export type AuthV1MembershipServiceUpdateMemberRoleData = {
     path: {
         /**
          * org_id
+         *
+         * The user.org_id path parameter.
          */
         'user.org_id': string;
         /**
          * user_id
+         *
+         * The user_id path parameter.
          */
         user_id: string;
     };
@@ -10369,10 +10313,14 @@ export type AuthV1MembershipServiceSuspendMemberData = {
     path: {
         /**
          * org_id
+         *
+         * The user.org_id path parameter.
          */
         'user.org_id': string;
         /**
          * user_id
+         *
+         * The user_id path parameter.
          */
         user_id: string;
     };
@@ -10402,6 +10350,8 @@ export type AuthV1MembershipServiceUpdateOrgNameData = {
     path: {
         /**
          * org_id
+         *
+         * The user.org_id path parameter.
          */
         'user.org_id': string;
     };
@@ -10431,6 +10381,8 @@ export type AuthV1MembershipServiceUpdateMembershipStateData = {
     path: {
         /**
          * org_id
+         *
+         * The user.org_id path parameter.
          */
         'user.org_id': string;
     };
@@ -10460,6 +10412,8 @@ export type AuthV1MembershipServiceUpdateOrgUsernameData = {
     path: {
         /**
          * org_id
+         *
+         * The user.org_id path parameter.
          */
         'user.org_id': string;
     };
@@ -10482,6 +10436,8 @@ export type AuthV1OtpServiceRegenerateBackupCodesData = {
     query?: {
         /**
          * user_id
+         *
+         * The user_id query parameter.
          */
         user_id?: string;
     };
@@ -10503,6 +10459,8 @@ export type AuthV1OtpServiceDeleteOtpData = {
     query?: {
         /**
          * user_id
+         *
+         * The user_id query parameter.
          */
         user_id?: string;
     };
@@ -10524,6 +10482,8 @@ export type AuthV1OtpServiceSetupOtpData = {
     query?: {
         /**
          * user_id
+         *
+         * The user_id query parameter.
          */
         user_id?: string;
     };
@@ -10545,6 +10505,8 @@ export type AuthV1OtpServiceGetOtpStatusData = {
     query?: {
         /**
          * user_id
+         *
+         * The user_id query parameter.
          */
         user_id?: string;
     };
@@ -10630,6 +10592,8 @@ export type AuthV1PasskeyServiceListPasskeysData = {
     query?: {
         /**
          * user_id
+         *
+         * The user_id query parameter.
          */
         user_id?: string;
     };
@@ -10682,12 +10646,16 @@ export type AuthV1PasskeyServiceDeletePasskeyData = {
     path: {
         /**
          * id
+         *
+         * The id path parameter.
          */
         id: string;
     };
     query?: {
         /**
          * user_id
+         *
+         * The user_id query parameter.
          */
         user_id?: string;
     };
@@ -10720,6 +10688,8 @@ export type AuthV1PasskeyServiceRenamePasskeyData = {
     path: {
         /**
          * id
+         *
+         * The id path parameter.
          */
         id: string;
     };
@@ -10757,12 +10727,16 @@ export type AuthV1PolicyServiceListPoliciesData = {
     path: {
         /**
          * org_id
+         *
+         * The org_id path parameter.
          */
         org_id: string;
     };
     query?: {
         /**
          * user_id
+         *
+         * The user_id query parameter.
          */
         user_id?: string;
     };
@@ -10783,10 +10757,14 @@ export type AuthV1PolicyServiceListUserPoliciesData = {
     path: {
         /**
          * org_id
+         *
+         * The user.org_id path parameter.
          */
         'user.org_id': string;
         /**
          * member_id
+         *
+         * The member_id path parameter.
          */
         member_id: string;
     };
@@ -10824,6 +10802,8 @@ export type AuthV1PolicyServiceCreatePolicyData = {
     path: {
         /**
          * org_id
+         *
+         * The user.org_id path parameter.
          */
         'user.org_id': string;
     };
@@ -10845,10 +10825,14 @@ export type AuthV1PolicyServiceDetachPolicyData = {
     path: {
         /**
          * org_id
+         *
+         * The user.org_id path parameter.
          */
         'user.org_id': string;
         /**
          * attachment_id
+         *
+         * The attachment_id path parameter.
          */
         attachment_id: string;
     };
@@ -10870,20 +10854,28 @@ export type AuthV1PolicyServiceListPermissionRegistryData = {
     path: {
         /**
          * org_id
+         *
+         * The user.org_id path parameter.
          */
         'user.org_id': string;
     };
     query?: {
         /**
          * types
+         *
+         * The types query parameter.
          */
         types?: Array<string>;
         /**
          * limit
+         *
+         * The limit query parameter.
          */
         limit?: number;
         /**
          * offset
+         *
+         * The offset query parameter.
          */
         offset?: number;
     };
@@ -10904,10 +10896,14 @@ export type AuthV1PolicyServiceDeletePolicyData = {
     path: {
         /**
          * org_id
+         *
+         * The user.org_id path parameter.
          */
         'user.org_id': string;
         /**
          * policy_id
+         *
+         * The policy_id path parameter.
          */
         policy_id: string;
     };
@@ -10929,10 +10925,14 @@ export type AuthV1PolicyServiceGetPolicyData = {
     path: {
         /**
          * org_id
+         *
+         * The user.org_id path parameter.
          */
         'user.org_id': string;
         /**
          * policy_id
+         *
+         * The policy_id path parameter.
          */
         policy_id: string;
     };
@@ -10970,10 +10970,14 @@ export type AuthV1PolicyServiceUpdatePolicyData = {
     path: {
         /**
          * org_id
+         *
+         * The user.org_id path parameter.
          */
         'user.org_id': string;
         /**
          * policy_id
+         *
+         * The policy_id path parameter.
          */
         policy_id: string;
     };
@@ -10995,10 +10999,14 @@ export type AuthV1PolicyServiceListPolicyAttachmentsData = {
     path: {
         /**
          * org_id
+         *
+         * The user.org_id path parameter.
          */
         'user.org_id': string;
         /**
          * policy_id
+         *
+         * The policy_id path parameter.
          */
         policy_id: string;
     };
@@ -11032,10 +11040,14 @@ export type AuthV1PolicyServiceAttachPolicyData = {
     path: {
         /**
          * org_id
+         *
+         * The user.org_id path parameter.
          */
         'user.org_id': string;
         /**
          * policy_id
+         *
+         * The policy_id path parameter.
          */
         policy_id: string;
     };
@@ -11058,6 +11070,8 @@ export type AuthV1ProvidersServiceListProvidersData = {
     query?: {
         /**
          * user_id
+         *
+         * The user_id query parameter.
          */
         user_id?: string;
     };
@@ -11094,12 +11108,16 @@ export type AuthV1ProvidersServiceDisconnectProviderData = {
     path: {
         /**
          * provider
+         *
+         * The provider path parameter.
          */
         provider: AuthV1ExternalAccountProvider;
     };
     query?: {
         /**
          * user_id
+         *
+         * The user.user_id query parameter.
          */
         'user.user_id'?: string;
     };
@@ -11281,6 +11299,8 @@ export type AuthV1EmailServiceGetUserEmailStatusData = {
     query?: {
         /**
          * user_id
+         *
+         * The user_id query parameter.
          */
         user_id?: string;
     };
@@ -11302,6 +11322,8 @@ export type AuthV1UserServiceGetUserInfoData = {
     query?: {
         /**
          * user_id
+         *
+         * The user_id query parameter.
          */
         user_id?: string;
     };
@@ -11323,6 +11345,8 @@ export type AuthV1UserServiceGetUserData = {
     query?: {
         /**
          * user_id
+         *
+         * The user_id query parameter.
          */
         user_id?: string;
     };
@@ -11360,6 +11384,8 @@ export type AuthV1UserServiceCreateAvatarUploadData = {
     query?: {
         /**
          * user_id
+         *
+         * The user_id query parameter.
          */
         user_id?: string;
     };
@@ -11413,6 +11439,8 @@ export type BillingV1InvoiceServiceListInvoicesData = {
     query?: {
         /**
          * org_id
+         *
+         * The org_id query parameter.
          */
         org_id?: string;
         /**
@@ -11453,6 +11481,8 @@ export type BillingV1InvoiceServiceUpdateInvoiceStatusData = {
     path: {
         /**
          * invoice_id
+         *
+         * The invoice_id path parameter.
          */
         invoice_id: string;
     };
@@ -11475,6 +11505,8 @@ export type BillingV1PaymentServiceGetBillingAddressData = {
     query?: {
         /**
          * org_id
+         *
+         * The org_id query parameter.
          */
         org_id?: string;
     };
@@ -11528,10 +11560,14 @@ export type BillingV1PaymentServiceListPaymentMethodsData = {
     query?: {
         /**
          * org_id
+         *
+         * The org_id query parameter.
          */
         org_id?: string;
         /**
          * refresh
+         *
+         * The refresh query parameter.
          */
         refresh?: boolean;
     };
@@ -11569,6 +11605,8 @@ export type BillingV1PaymentServiceGetPaymentMethodFromPaymentIntentData = {
     query?: {
         /**
          * payment_intent_id
+         *
+         * The payment_intent_id query parameter.
          */
         payment_intent_id?: string;
     };
@@ -11590,6 +11628,8 @@ export type BillingV1PaymentServiceGetPaymentMethodFromSetupIntentData = {
     query?: {
         /**
          * setup_intent_id
+         *
+         * The setup_intent_id query parameter.
          */
         setup_intent_id?: string;
     };
@@ -11610,12 +11650,16 @@ export type BillingV1PaymentServiceDeletePaymentMethodData = {
     path: {
         /**
          * payment_method_id
+         *
+         * The payment_method_id path parameter.
          */
         payment_method_id: string;
     };
     query?: {
         /**
          * org_id
+         *
+         * The org_id query parameter.
          */
         org_id?: string;
     };
@@ -11701,14 +11745,20 @@ export type BillingV1PlanServiceListPlansData = {
     query?: {
         /**
          * currency
+         *
+         * The currency query parameter.
          */
         currency?: string;
         /**
          * interval
+         *
+         * The interval query parameter.
          */
         interval?: string;
         /**
          * free
+         *
+         * The free query parameter.
          */
         free?: string;
     };
@@ -11770,6 +11820,8 @@ export type BillingV1SubscriptionServiceGetSubscriptionData = {
     query?: {
         /**
          * org_id
+         *
+         * The org_id query parameter.
          */
         org_id?: string;
     };
@@ -11807,6 +11859,8 @@ export type BillingV1SubscriptionServiceCancelSubscriptionData = {
     query?: {
         /**
          * org_id
+         *
+         * The org_id query parameter.
          */
         org_id?: string;
     };
@@ -11828,6 +11882,8 @@ export type BillingV1SubscriptionServiceGetSubscriptionHistoryData = {
     query?: {
         /**
          * org_id
+         *
+         * The org_id query parameter.
          */
         org_id?: string;
         /**
@@ -11861,6 +11917,8 @@ export type BillingV1SubscriptionServiceReactivateSubscriptionData = {
     query?: {
         /**
          * org_id
+         *
+         * The org_id query parameter.
          */
         org_id?: string;
     };
@@ -11882,6 +11940,8 @@ export type BillingV1UsageServiceGetBandwidthUsageData = {
     query?: {
         /**
          * org_id
+         *
+         * The org_id query parameter.
          */
         org_id?: string;
     };
@@ -11903,10 +11963,14 @@ export type BillingV1UsageServiceGetBandwidthUsageHistoryData = {
     query?: {
         /**
          * org_id
+         *
+         * The org_id query parameter.
          */
         org_id?: string;
         /**
          * days
+         *
+         * The days query parameter.
          */
         days?: number;
     };
@@ -11928,6 +11992,8 @@ export type BillingV1UsageServiceRefreshBandwidthUsageData = {
     query?: {
         /**
          * org_id
+         *
+         * The org_id query parameter.
          */
         org_id?: string;
     };
@@ -11949,6 +12015,8 @@ export type BillingV1UsageServiceGetStorageUsageData = {
     query?: {
         /**
          * org_id
+         *
+         * The org_id query parameter.
          */
         org_id?: string;
     };
@@ -11970,10 +12038,14 @@ export type BillingV1UsageServiceGetStorageUsageHistoryData = {
     query?: {
         /**
          * org_id
+         *
+         * The org_id query parameter.
          */
         org_id?: string;
         /**
          * days
+         *
+         * The days query parameter.
          */
         days?: number;
     };
@@ -11995,6 +12067,8 @@ export type BillingV1UsageServiceRefreshStorageUsageData = {
     query?: {
         /**
          * org_id
+         *
+         * The org_id query parameter.
          */
         org_id?: string;
     };
@@ -12016,6 +12090,8 @@ export type ClientauthV1ClientCredentialServiceListClientCredentialsData = {
     query?: {
         /**
          * org_id
+         *
+         * The org_id query parameter.
          */
         org_id?: string;
         /**
@@ -12064,12 +12140,16 @@ export type ClientauthV1ClientCredentialServiceRevokeClientCredentialData = {
     path: {
         /**
          * credential_id
+         *
+         * The credential_id path parameter.
          */
         credential_id: string;
     };
     query?: {
         /**
          * org_id
+         *
+         * The org_id query parameter.
          */
         org_id?: string;
     };
@@ -12106,6 +12186,8 @@ export type FeedsV1FeedServiceListFeedsData = {
     path: {
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
     };
@@ -12172,6 +12254,8 @@ export type FeedsV1FeedServiceCreateFeedData = {
     path: {
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
     };
@@ -12193,10 +12277,14 @@ export type FeedsV1FeedServiceDeleteFeedData = {
     path: {
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
         /**
          * feed_id
+         *
+         * The feed_id path parameter.
          */
         feed_id: string;
     };
@@ -12218,10 +12306,14 @@ export type FeedsV1FeedServiceGetFeedData = {
     path: {
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
         /**
          * feed_id
+         *
+         * The feed_id path parameter.
          */
         feed_id: string;
     };
@@ -12275,10 +12367,14 @@ export type FeedsV1FeedServiceUpdateFeedData = {
     path: {
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
         /**
          * feed_id
+         *
+         * The feed_id path parameter.
          */
         feed_id: string;
     };
@@ -12348,6 +12444,8 @@ export type ImagesV1ImageServiceGetImageData = {
     path: {
         /**
          * image_id
+         *
+         * The image_id path parameter.
          */
         image_id: string;
     };
@@ -12369,6 +12467,8 @@ export type ImagesV1ImageServiceListImagesData = {
     path: {
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
     };
@@ -12387,10 +12487,14 @@ export type ImagesV1ImageServiceListImagesData = {
         'pagination.offset'?: number;
         /**
          * sort_field
+         *
+         * The sort_field query parameter.
          */
         sort_field?: string;
         /**
          * sort_direction
+         *
+         * The sort_direction query parameter.
          */
         sort_direction?: string;
     };
@@ -12423,6 +12527,8 @@ export type ImagesV1ImageServiceCreateImageUploadData = {
     path: {
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
     };
@@ -12444,10 +12550,14 @@ export type ImagesV1ImageServiceDeleteImageData = {
     path: {
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
         /**
          * image_id
+         *
+         * The image_id path parameter.
          */
         image_id: string;
     };
@@ -12477,10 +12587,14 @@ export type ImagesV1ImageServiceUpdateImageVisibilityData = {
     path: {
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
         /**
          * image_id
+         *
+         * The image_id path parameter.
          */
         image_id: string;
     };
@@ -12534,12 +12648,16 @@ export type PostsV1PostServiceListPosts3Data = {
     path: {
         /**
          * feed_id
+         *
+         * The feed_id path parameter.
          */
         feed_id: string;
     };
     query?: {
         /**
          * project_id
+         *
+         * The project_id query parameter.
          */
         project_id?: string;
         /**
@@ -12556,6 +12674,8 @@ export type PostsV1PostServiceListPosts3Data = {
         'pagination.offset'?: number;
         /**
          * creator_id
+         *
+         * The creator_id query parameter.
          */
         creator_id?: string;
     };
@@ -12576,16 +12696,22 @@ export type PostsV1PostServiceListPosts4Data = {
     path: {
         /**
          * feed_id
+         *
+         * The feed_id path parameter.
          */
         feed_id: string;
         /**
          * creator_id
+         *
+         * The creator_id path parameter.
          */
         creator_id: string;
     };
     query?: {
         /**
          * project_id
+         *
+         * The project_id query parameter.
          */
         project_id?: string;
         /**
@@ -12625,12 +12751,16 @@ export type PostsV1PostServiceGetPost3Data = {
         feed_id: string;
         /**
          * post_id
+         *
+         * The post_id path parameter.
          */
         post_id: string;
     };
     query?: {
         /**
          * project_id
+         *
+         * The project_id query parameter.
          */
         project_id?: string;
     };
@@ -12651,10 +12781,14 @@ export type PostsV1PostServiceListPostsData = {
     path: {
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
         /**
          * feed_id
+         *
+         * The feed_id path parameter.
          */
         feed_id: string;
     };
@@ -12673,6 +12807,8 @@ export type PostsV1PostServiceListPostsData = {
         'pagination.offset'?: number;
         /**
          * creator_id
+         *
+         * The creator_id query parameter.
          */
         creator_id?: string;
     };
@@ -12689,10 +12825,17 @@ export type PostsV1PostServiceListPostsResponses = {
 export type PostsV1PostServiceListPostsResponse = PostsV1PostServiceListPostsResponses[keyof PostsV1PostServiceListPostsResponses];
 
 export type PostsV1PostServiceCreatePostData = {
-    /**
-     * CreatePostRequest
-     */
-    body: {
+    body: ({
+        /**
+         * image_id
+         */
+        image_id?: string;
+    } | {
+        /**
+         * video_id
+         */
+        video_id?: string;
+    }) & {
         /**
          * org_id
          */
@@ -12709,24 +12852,18 @@ export type PostsV1PostServiceCreatePostData = {
          * description
          */
         description?: string;
-    } & ({
-        /**
-         * image_id
-         */
-        image_id: string;
-    } | {
-        /**
-         * video_id
-         */
-        video_id: string;
-    } | unknown);
+    };
     path: {
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
         /**
          * feed_id
+         *
+         * The feed_id path parameter.
          */
         feed_id: string;
     };
@@ -12748,14 +12885,20 @@ export type PostsV1PostServiceListPosts2Data = {
     path: {
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
         /**
          * feed_id
+         *
+         * The feed_id path parameter.
          */
         feed_id: string;
         /**
          * creator_id
+         *
+         * The creator_id path parameter.
          */
         creator_id: string;
     };
@@ -12818,10 +12961,14 @@ export type PostsV1PostServiceCreatePostUploadData = {
     path: {
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
         /**
          * feed_id
+         *
+         * The feed_id path parameter.
          */
         feed_id: string;
     };
@@ -12843,6 +12990,8 @@ export type PostsV1PostServiceDeletePost2Data = {
     path: {
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
         /**
@@ -12854,6 +13003,8 @@ export type PostsV1PostServiceDeletePost2Data = {
         feed_id: string;
         /**
          * post_id
+         *
+         * The post_id path parameter.
          */
         post_id: string;
     };
@@ -12875,6 +13026,8 @@ export type PostsV1PostServiceGetPost2Data = {
     path: {
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
         /**
@@ -12886,6 +13039,8 @@ export type PostsV1PostServiceGetPost2Data = {
         feed_id: string;
         /**
          * post_id
+         *
+         * The post_id path parameter.
          */
         post_id: string;
     };
@@ -12907,10 +13062,14 @@ export type PostsV1PostServiceDeletePostData = {
     path: {
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
         /**
          * post_id
+         *
+         * The post_id path parameter.
          */
         post_id: string;
     };
@@ -12940,10 +13099,14 @@ export type PostsV1PostServiceGetPostData = {
     path: {
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
         /**
          * post_id
+         *
+         * The post_id path parameter.
          */
         post_id: string;
     };
@@ -12973,6 +13136,8 @@ export type ProjectV1ProjectServiceListProjectsData = {
     path: {
         /**
          * org_id
+         *
+         * The org_id path parameter.
          */
         org_id: string;
     };
@@ -13010,6 +13175,8 @@ export type ProjectV1ProjectServiceCreateProjectData = {
     path: {
         /**
          * org_id
+         *
+         * The org_id path parameter.
          */
         org_id: string;
     };
@@ -13031,10 +13198,14 @@ export type ProjectV1ProjectServiceDeleteProjectData = {
     path: {
         /**
          * org_id
+         *
+         * The org_id path parameter.
          */
         org_id: string;
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
     };
@@ -13056,10 +13227,14 @@ export type ProjectV1ProjectServiceGetProjectData = {
     path: {
         /**
          * org_id
+         *
+         * The org_id path parameter.
          */
         org_id: string;
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
     };
@@ -13081,10 +13256,14 @@ export type ProjectV1ProjectServiceRemoveCustomDomainData = {
     path: {
         /**
          * org_id
+         *
+         * The org_id path parameter.
          */
         org_id: string;
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
     };
@@ -13114,10 +13293,14 @@ export type ProjectV1ProjectServiceSetCustomDomainData = {
     path: {
         /**
          * org_id
+         *
+         * The org_id path parameter.
          */
         org_id: string;
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
     };
@@ -13147,10 +13330,14 @@ export type ProjectV1ProjectServiceMoveProjectData = {
     path: {
         /**
          * org_id
+         *
+         * The org_id path parameter.
          */
         org_id: string;
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
     };
@@ -13180,10 +13367,14 @@ export type ProjectV1ProjectServiceUpdateProjectNameData = {
     path: {
         /**
          * org_id
+         *
+         * The org_id path parameter.
          */
         org_id: string;
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
     };
@@ -13213,10 +13404,14 @@ export type ProjectV1ProjectServiceUpdateVideoQualityData = {
     path: {
         /**
          * org_id
+         *
+         * The org_id path parameter.
          */
         org_id: string;
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
     };
@@ -13238,99 +13433,13 @@ export type SupportV1SupportChatServiceListChatMessagesData = {
     path?: never;
     query?: {
         /**
-         * A Timestamp represents a point in time independent of any time zone or local
-         * calendar, encoded as a count of seconds and fractions of seconds at
-         * nanosecond resolution. The count is relative to an epoch at UTC midnight on
-         * January 1, 1970, in the proleptic Gregorian calendar which extends the
-         * Gregorian calendar backwards to year one.
-         *
-         * All minutes are 60 seconds long. Leap seconds are "smeared" so that no leap
-         * second table is needed for interpretation, using a [24-hour linear
-         * smear](https://developers.google.com/time/smear).
-         *
-         * The range is from 0001-01-01T00:00:00Z to 9999-12-31T23:59:59.999999999Z. By
-         * restricting to that range, we ensure that we can convert to and from [RFC
-         * 3339](https://www.ietf.org/rfc/rfc3339.txt) date strings.
-         *
-         * # Examples
-         *
-         * Example 1: Compute Timestamp from POSIX `time()`.
-         *
-         * Timestamp timestamp;
-         * timestamp.set_seconds(time(NULL));
-         * timestamp.set_nanos(0);
-         *
-         * Example 2: Compute Timestamp from POSIX `gettimeofday()`.
-         *
-         * struct timeval tv;
-         * gettimeofday(&tv, NULL);
-         *
-         * Timestamp timestamp;
-         * timestamp.set_seconds(tv.tv_sec);
-         * timestamp.set_nanos(tv.tv_usec * 1000);
-         *
-         * Example 3: Compute Timestamp from Win32 `GetSystemTimeAsFileTime()`.
-         *
-         * FILETIME ft;
-         * GetSystemTimeAsFileTime(&ft);
-         * UINT64 ticks = (((UINT64)ft.dwHighDateTime) << 32) | ft.dwLowDateTime;
-         *
-         * // A Windows tick is 100 nanoseconds. Windows epoch 1601-01-01T00:00:00Z
-         * // is 11644473600 seconds before Unix epoch 1970-01-01T00:00:00Z.
-         * Timestamp timestamp;
-         * timestamp.set_seconds((INT64) ((ticks / 10000000) - 11644473600LL));
-         * timestamp.set_nanos((INT32) ((ticks % 10000000) * 100));
-         *
-         * Example 4: Compute Timestamp from Java `System.currentTimeMillis()`.
-         *
-         * long millis = System.currentTimeMillis();
-         *
-         * Timestamp timestamp = Timestamp.newBuilder().setSeconds(millis / 1000)
-         * .setNanos((int) ((millis % 1000) * 1000000)).build();
-         *
-         * Example 5: Compute Timestamp from Java `Instant.now()`.
-         *
-         * Instant now = Instant.now();
-         *
-         * Timestamp timestamp =
-         * Timestamp.newBuilder().setSeconds(now.getEpochSecond())
-         * .setNanos(now.getNano()).build();
-         *
-         * Example 6: Compute Timestamp from current time in Python.
-         *
-         * timestamp = Timestamp()
-         * timestamp.GetCurrentTime()
-         *
-         * # JSON Mapping
-         *
-         * In JSON format, the Timestamp type is encoded as a string in the
-         * [RFC 3339](https://www.ietf.org/rfc/rfc3339.txt) format. That is, the
-         * format is "{year}-{month}-{day}T{hour}:{min}:{sec}[.{frac_sec}]Z"
-         * where {year} is always expressed using four digits while {month}, {day},
-         * {hour}, {min}, and {sec} are zero-padded to two digits each. The fractional
-         * seconds, which can go up to 9 digits (i.e. up to 1 nanosecond resolution),
-         * are optional. The "Z" suffix indicates the timezone ("UTC"); the timezone
-         * is required. A proto3 JSON serializer should always use UTC (as indicated by
-         * "Z") when printing the Timestamp type and a proto3 JSON parser should be
-         * able to accept both UTC and other timezones (as indicated by an offset).
-         *
-         * For example, "2017-01-15T01:30:15.01Z" encodes 15.01 seconds past
-         * 01:30 UTC on January 15, 2017.
-         *
-         * In JavaScript, one can convert a Date object to this format using the
-         * standard
-         * [toISOString()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString)
-         * method. In Python, a standard `datetime.datetime` object can be converted
-         * to this format using
-         * [`strftime`](https://docs.python.org/2/library/time.html#time.strftime) with
-         * the time format spec '%Y-%m-%dT%H:%M:%S.%fZ'. Likewise, in Java, one can use
-         * the Joda Time's [`ISODateTimeFormat.dateTime()`](
-         * http://joda-time.sourceforge.net/apidocs/org/joda/time/format/ISODateTimeFormat.html#dateTime()
-         * ) to obtain a formatter capable of generating timestamps in this format.
+         * A point in time in RFC 3339 format, with up to nanosecond precision. Output uses UTC (`Z`); input may use an offset from UTC.
          */
         after?: string;
         /**
          * limit
+         *
+         * The limit query parameter.
          */
         limit?: number;
     };
@@ -13383,12 +13492,16 @@ export type SupportV1SupportTicketServiceListTopics2Data = {
     path: {
         /**
          * category_id
+         *
+         * The category_id path parameter.
          */
         category_id: string;
     };
     query?: {
         /**
          * query
+         *
+         * The query query parameter.
          */
         query?: string;
     };
@@ -13422,6 +13535,8 @@ export type SupportV1SupportTicketServiceListTicketsData = {
         'pagination.offset'?: number;
         /**
          * status
+         *
+         * The status query parameter.
          */
         status?: SupportV1TicketStatus;
     };
@@ -13458,6 +13573,8 @@ export type SupportV1SupportTicketServiceGetTicketData = {
     path: {
         /**
          * ticket_id
+         *
+         * The ticket_id path parameter.
          */
         ticket_id: string;
     };
@@ -13479,6 +13596,8 @@ export type SupportV1SupportTicketServiceCloseTicketData = {
     path: {
         /**
          * ticket_id
+         *
+         * The ticket_id path parameter.
          */
         ticket_id: string;
     };
@@ -13508,6 +13627,8 @@ export type SupportV1SupportTicketServiceAddTicketMessageData = {
     path: {
         /**
          * ticket_id
+         *
+         * The ticket_id path parameter.
          */
         ticket_id: string;
     };
@@ -13530,10 +13651,14 @@ export type SupportV1SupportTicketServiceListTopicsData = {
     query?: {
         /**
          * category_id
+         *
+         * The category_id query parameter.
          */
         category_id?: string;
         /**
          * query
+         *
+         * The query query parameter.
          */
         query?: string;
     };
@@ -13554,10 +13679,14 @@ export type VideosV1AudioTrackServiceDeleteAllAudioTracksData = {
     path: {
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
         /**
          * video_id
+         *
+         * The video_id path parameter.
          */
         video_id: string;
     };
@@ -13579,14 +13708,20 @@ export type VideosV1AudioTrackServiceDeleteAudioTracksByLanguageData = {
     path: {
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
         /**
          * video_id
+         *
+         * The video_id path parameter.
          */
         video_id: string;
         /**
          * language_code
+         *
+         * The language_code path parameter.
          */
         language_code: string;
     };
@@ -13620,10 +13755,14 @@ export type VideosV1AudioTrackServiceCreateAudioTrackUploadData = {
     path: {
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
         /**
          * video_id
+         *
+         * The video_id path parameter.
          */
         video_id: string;
     };
@@ -13645,14 +13784,20 @@ export type VideosV1AudioTrackServiceDeleteAudioTrackData = {
     path: {
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
         /**
          * video_id
+         *
+         * The video_id path parameter.
          */
         video_id: string;
         /**
          * track_id
+         *
+         * The track_id path parameter.
          */
         track_id: string;
     };
@@ -13674,6 +13819,8 @@ export type VideosV1AudioTrackServiceListAudioTracksData = {
     path: {
         /**
          * video_id
+         *
+         * The video_id path parameter.
          */
         video_id: string;
     };
@@ -13695,20 +13842,28 @@ export type VideosV1ChapterServiceUpdateVideoChapters2Data = {
     path: {
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
         /**
          * video_id
+         *
+         * The video_id path parameter.
          */
         video_id: string;
     };
     query?: {
         /**
          * title
+         *
+         * The chapters.title query parameter.
          */
         'chapters.title'?: string;
         /**
          * start_time_sec
+         *
+         * The chapters.start_time_sec query parameter.
          */
         'chapters.start_time_sec'?: number;
     };
@@ -13729,10 +13884,14 @@ export type VideosV1ChapterServiceGetVideoChaptersData = {
     path: {
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
         /**
          * video_id
+         *
+         * The video_id path parameter.
          */
         video_id: string;
     };
@@ -13762,10 +13921,14 @@ export type VideosV1ChapterServiceUpdateVideoChaptersData = {
     path: {
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
         /**
          * video_id
+         *
+         * The video_id path parameter.
          */
         video_id: string;
     };
@@ -13787,16 +13950,22 @@ export type VideosV1ChapterServiceDeleteVideoChapterData = {
     path: {
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
         /**
          * video_id
+         *
+         * The video_id path parameter.
          */
         video_id: string;
         /**
          * start_time_sec
+         *
+         * The start_time_sec path parameter.
          */
-        start_time_sec: number | string;
+        start_time_sec: string;
     };
     query?: never;
     url: '/media/v1/projects/{project_id}/videos/{video_id}/chapters/{start_time_sec}';
@@ -13864,10 +14033,14 @@ export type VideosV1SubtitleServiceDeleteAllSubtitlesData = {
     path: {
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
         /**
          * video_id
+         *
+         * The video_id path parameter.
          */
         video_id: string;
     };
@@ -13889,14 +14062,20 @@ export type VideosV1SubtitleServiceDeleteSubtitlesByLanguageData = {
     path: {
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
         /**
          * video_id
+         *
+         * The video_id path parameter.
          */
         video_id: string;
         /**
          * language_code
+         *
+         * The language_code path parameter.
          */
         language_code: string;
     };
@@ -13930,10 +14109,14 @@ export type VideosV1SubtitleServiceCreateSubtitleUploadData = {
     path: {
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
         /**
          * video_id
+         *
+         * The video_id path parameter.
          */
         video_id: string;
     };
@@ -13955,14 +14138,20 @@ export type VideosV1SubtitleServiceDeleteSubtitleData = {
     path: {
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
         /**
          * video_id
+         *
+         * The video_id path parameter.
          */
         video_id: string;
         /**
          * subtitle_id
+         *
+         * The subtitle_id path parameter.
          */
         subtitle_id: string;
     };
@@ -13984,6 +14173,8 @@ export type VideosV1SubtitleServiceListSubtitlesData = {
     path: {
         /**
          * video_id
+         *
+         * The video_id path parameter.
          */
         video_id: string;
     };
@@ -14005,6 +14196,8 @@ export type VideosV1VideoServiceListVideosData = {
     path: {
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
     };
@@ -14023,10 +14216,14 @@ export type VideosV1VideoServiceListVideosData = {
         'pagination.offset'?: number;
         /**
          * sort_field
+         *
+         * The sort_field query parameter.
          */
         sort_field?: string;
         /**
          * sort_direction
+         *
+         * The sort_direction query parameter.
          */
         sort_direction?: string;
     };
@@ -14063,6 +14260,8 @@ export type VideosV1VideoServiceCreateVideoUploadData = {
     path: {
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
     };
@@ -14084,10 +14283,14 @@ export type VideosV1VideoServiceDeleteVideoData = {
     path: {
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
         /**
          * video_id
+         *
+         * The video_id path parameter.
          */
         video_id: string;
     };
@@ -14117,10 +14320,14 @@ export type VideosV1VideoServiceUpdateVideoVisibilityData = {
     path: {
         /**
          * project_id
+         *
+         * The project_id path parameter.
          */
         project_id: string;
         /**
          * video_id
+         *
+         * The video_id path parameter.
          */
         video_id: string;
     };
@@ -14142,6 +14349,8 @@ export type VideosV1VideoServiceGetVideoData = {
     path: {
         /**
          * video_id
+         *
+         * The video_id path parameter.
          */
         video_id: string;
     };
