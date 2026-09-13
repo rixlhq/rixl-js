@@ -1,3 +1,5 @@
+// @vitest-environment node
+
 /**
  * Cookie and State test suite
  * Tests: cookie utilities, OAuth state management

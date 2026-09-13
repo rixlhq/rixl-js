@@ -39,9 +39,9 @@
     "check": "vp check",
     "lint": "vp lint",
     "fmt": "vp fmt",
-    "test": "vp test",
-    "test:ui": "vp test --ui",
-    "test:coverage": "vp test --coverage",
+    "test": "vitest run",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit",
     "examples:check": "tsc --noEmit -p examples/tsconfig.json",
     "prepare": "vp config",
@@ -55,13 +55,13 @@
   "devDependencies": {
     "@hey-api/vite-plugin": "0.3.2",
     "@types/node": "^26.1.1",
-    "@vitest/coverage-v8": "4.1.11",
-    "@vitest/ui": "4.1.11",
+    "@vitest/coverage-v8": "^5.0.0",
+    "@vitest/ui": "^5.0.0",
     "jsdom": "^30.0.0",
     "typescript": "6.0.3",
     "vite": "npm:@voidzero-dev/vite-plus-core@latest",
     "vite-plus": "^0.3.0",
-    "vitest": "4.1.11"
+    "vitest": "^5.0.0"
   },
   "engines": {
     "node": ">=24"
