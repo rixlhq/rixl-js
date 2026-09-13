@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.25.1](https://github.com/rixlhq/rixl-js/compare/v0.25.0...v0.25.1) (2026-09-13)
+
+
+### Bug Fixes
+
+* vitest run ([2bad3b5](https://github.com/rixlhq/rixl-js/commit/2bad3b5c81ef0358b62924d967d6b4ef5cb305c4))
+
 ## [0.25.0](https://github.com/rixlhq/rixl-js/compare/v0.24.0...v0.25.0) (2026-09-11)
 
 
