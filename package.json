@@ -52,16 +52,17 @@
     "nanostores": "^1.5.1",
     "valibot": "^1.4.2"
   },
+  "// vitest": "vitest, @vitest/coverage-v8 and @vitest/ui are pinned to 4.1.11 because vite-plus bundles vitest@4.1.11. TODO: move back to ^5.0.0 once vite-plus ships a 5.x bundle.",
   "devDependencies": {
     "@hey-api/vite-plugin": "0.3.2",
     "@types/node": "^26.1.1",
-    "@vitest/coverage-v8": "^5.0.0",
-    "@vitest/ui": "^5.0.0",
+    "@vitest/coverage-v8": "4.1.11",
+    "@vitest/ui": "4.1.11",
     "jsdom": "^30.0.0",
     "typescript": "6.0.3",
     "vite": "npm:@voidzero-dev/vite-plus-core@latest",
     "vite-plus": "^0.3.0",
-    "vitest": "^5.0.0"
+    "vitest": "4.1.11"
   },
   "engines": {
     "node": ">=24"
