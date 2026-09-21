@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.25.2](https://github.com/rixlhq/rixl-js/compare/v0.25.1...v0.25.2) (2026-09-21)
+
+
+### Bug Fixes
+
+* **sdk:** pin @vitest/* to 4.1.11 to match vp test's bundled vitest ([ec91b2d](https://github.com/rixlhq/rixl-js/commit/ec91b2d75957680c5d8759bdc5169082754cbb22))
+
 ## [0.25.1](https://github.com/rixlhq/rixl-js/compare/v0.25.0...v0.25.1) (2026-09-13)
 
 
