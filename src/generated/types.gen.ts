@@ -3945,6 +3945,10 @@ export type AuthV1UpdateMembershipStateRequest = {
      * state
      */
     state?: AuthV1MembershipApplicationState;
+    /**
+     * user_id
+     */
+    user_id?: string;
 };
 
 /**
@@ -10377,6 +10381,10 @@ export type AuthV1MembershipServiceUpdateMembershipStateData = {
          * state
          */
         state?: AuthV1MembershipApplicationState;
+        /**
+         * user_id
+         */
+        user_id?: string;
     };
     path: {
         /**
