@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.26.1](https://github.com/rixlhq/rixl-js/compare/v0.26.0...v0.26.1) (2026-09-24)
+
+
+### Bug Fixes
+
+* use right vp ([f747cac](https://github.com/rixlhq/rixl-js/commit/f747cac0acfdc43030041bda46d6cbaff8b80e14))
+
 ## [0.26.0](https://github.com/rixlhq/rixl-js/compare/v0.25.2...v0.26.0) (2026-09-22)
 
 
