@@ -8,7 +8,7 @@
  * and an unconfigured copy fails loudly instead of calling the placeholder.
  */
 
-import {describe, it, expect, beforeEach} from "vitest";
+import {describe, it, expect, beforeEach} from "vite-plus/test";
 import {createClient, createConfig} from "../generated/client";
 import {client as generatedClient} from "../generated/client.gen";
 import {addClientInitializer, configureAllClients, registerClient} from "../client-registry";

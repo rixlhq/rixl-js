@@ -3,7 +3,7 @@
  * Tests: buildOAuthUrl, warnProviderNotConfigured, createOAuthProvider
  */
 
-import {describe, it, expect, beforeEach, afterEach, vi} from "vitest";
+import {describe, it, expect, beforeEach, afterEach, vi} from "vite-plus/test";
 import {
   buildOAuthUrl,
   warnProviderNotConfigured,

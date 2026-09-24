@@ -4,7 +4,7 @@
  * @vitest-environment jsdom
  */
 
-import {describe, it, expect, beforeEach, vi} from "vitest";
+import {describe, it, expect, beforeEach, vi} from "vite-plus/test";
 import {getAllCookiesStartWith, setCookie, deleteCookie} from "@/cookie/util.ts";
 
 describe("Cookie Utilities", () => {

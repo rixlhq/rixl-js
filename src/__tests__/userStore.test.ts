@@ -3,7 +3,7 @@
  * Tests: user atom, localStorage persistence
  */
 
-import {describe, it, expect, beforeEach} from "vitest";
+import {describe, it, expect, beforeEach} from "vite-plus/test";
 import {user} from "../auth/userStore";
 import {createMockUser} from "./utils/test-helpers";
 

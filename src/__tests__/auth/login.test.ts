@@ -1,4 +1,4 @@
-import {describe, it, expect, beforeEach, afterEach, vi} from "vitest";
+import {describe, it, expect, beforeEach, afterEach, vi} from "vite-plus/test";
 import {loginWithEmail, verifyTOTPForLogin} from "@/auth";
 import {createMockJWT} from "../utils/test-helpers";
 import {setupAuthTest, cleanupAuthMocks} from "../utils/auth-test-helpers";

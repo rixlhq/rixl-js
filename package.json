@@ -55,17 +55,20 @@
   "devDependencies": {
     "@hey-api/vite-plugin": "0.3.2",
     "@types/node": "^26.1.1",
-    "@vitest/coverage-v8": "4.1.11",
-    "@vitest/ui": "4.1.11",
+    "@vitest/coverage-v8": "5.0.1",
+    "@vitest/ui": "5.0.1",
     "jsdom": "^30.0.0",
     "typescript": "6.0.3",
-    "vite": "npm:@voidzero-dev/vite-plus-core@latest",
-    "vite-plus": "^0.3.0",
-    "vitest": "4.1.11"
+    "vite": "npm:@voidzero-dev/vite-plus-core@1.0.0-rc.0",
+    "vite-plus": "1.0.0-rc.0",
+    "vitest": "5.0.1"
+  },
+  "overrides": {
+    "vite": "npm:@voidzero-dev/vite-plus-core@1.0.0-rc.0",
+    "vitest": "5.0.1"
   },
   "engines": {
     "node": ">=24"
   },
-  "packageManager": "bun@1.4.0",
-  "// vitest": "vitest, @vitest/coverage-v8 and @vitest/ui are pinned to 4.1.11 because vite-plus bundles vitest@4.1.11. TODO: move back to ^5.0.0 once vite-plus ships a 5.x bundle."
+  "packageManager": "bun@1.4.0"
 }

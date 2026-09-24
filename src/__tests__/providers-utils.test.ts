@@ -3,7 +3,7 @@
  * Tests: extractProviderFromState, detectProvider, getProviderToken
  */
 
-import {describe, it, expect} from "vitest";
+import {describe, it, expect} from "vite-plus/test";
 import {extractProviderFromState, detectProvider, getProviderToken} from "../auth/providers/utils";
 import {AuthProvider} from "@/providers";
 

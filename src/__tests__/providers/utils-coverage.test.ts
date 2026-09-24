@@ -3,7 +3,7 @@
  * Tests: Additional coverage for detectProvider and getProviderToken edge cases
  */
 
-import {describe, it, expect, beforeEach, afterEach} from "vitest";
+import {describe, it, expect, beforeEach, afterEach} from "vite-plus/test";
 import {extractProviderFromState} from "@/providers/utils.ts";
 import {AuthProvider} from "@/providers";
 import {urlParams} from "@/url.ts";

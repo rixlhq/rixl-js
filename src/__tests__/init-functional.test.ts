@@ -3,7 +3,7 @@
  * Tests: Actual execution of token refresh function (lines 57-62)
  */
 
-import {describe, it, expect, beforeEach, vi, afterEach} from "vitest";
+import {describe, it, expect, beforeEach, vi, afterEach} from "vite-plus/test";
 import {initClient} from "../auth/init";
 import {refreshToken, getToken} from "../auth/authStore";
 import * as authStoreModule from "../auth/authStore";

@@ -3,7 +3,7 @@
  * Tests: decodeToken, decodeAndSetUser, isTokenExpired
  */
 
-import {describe, it, expect, beforeEach} from "vitest";
+import {describe, it, expect, beforeEach} from "vite-plus/test";
 import {decodeToken, decodeAndSetUser, isTokenExpired} from "@/utils/jwt";
 import {user} from "@/userStore";
 import {createMockJWT, createMockUser} from "./test-helpers";

@@ -3,7 +3,7 @@
  * Provides reusable patterns for testing updateEntityField and performOTPOperation
  */
 
-import {vi, beforeEach, afterEach} from "vitest";
+import {vi, beforeEach, afterEach} from "vite-plus/test";
 import * as initialization from "@/initialization";
 import {ApiError} from "../../auth/api/types";
 import {HTTP_STATUS} from "@/constants.ts";

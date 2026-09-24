@@ -5,7 +5,7 @@
  * Each function can be called directly inside vi.mock() to avoid hoisting issues.
  */
 
-import {vi} from "vitest";
+import {vi} from "vite-plus/test";
 
 /**
  * Creates mock for the api module

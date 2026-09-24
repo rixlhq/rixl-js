@@ -3,7 +3,7 @@
  * Tests: setTokens, removeTokens, token state
  */
 
-import {describe, it, expect, beforeEach, vi, afterEach} from "vitest";
+import {describe, it, expect, beforeEach, vi, afterEach} from "vite-plus/test";
 import {createMockJWT} from "../utils/test-helpers";
 import {createApiMock, createProvidersMock, createCookieMock} from "../setup/authstore-mock-factory";
 

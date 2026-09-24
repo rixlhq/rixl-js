@@ -1,4 +1,4 @@
-import {afterEach, beforeAll, beforeEach, vi} from "vitest";
+import {afterEach, beforeAll, beforeEach, vi} from "vite-plus/test";
 
 const createStorageMock = () => {
   let store: Record<string, string> = {};

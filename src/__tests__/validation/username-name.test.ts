@@ -3,7 +3,7 @@
  * Tests: UpdateUsernameSchema, UpdateNameSchema
  */
 
-import {describe, it} from "vitest";
+import {describe, it} from "vite-plus/test";
 import {UpdateUsernameSchema, UpdateNameSchema} from "../../auth/validation/user";
 import {testValidInputs, testInvalidInputs} from "../utils/validation-test-helpers";
 

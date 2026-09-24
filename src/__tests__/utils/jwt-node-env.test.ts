@@ -3,7 +3,7 @@
  * Tests: Line 26 in jwt.ts - console.warn in non-test environment
  */
 
-import {describe, it, expect, afterEach, vi} from "vitest";
+import {describe, it, expect, afterEach, vi} from "vite-plus/test";
 import {decodeToken} from "@/utils/jwt.ts";
 
 describe("JWT - NODE_ENV Coverage", () => {

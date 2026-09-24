@@ -5,7 +5,7 @@
  * Tests: cookie utilities, OAuth state management
  */
 
-import {describe, it, expect, beforeEach} from "vitest";
+import {describe, it, expect, beforeEach} from "vite-plus/test";
 import {getAllCookiesStartWith, setCookie, deleteCookie} from "../auth/cookie/util";
 import {validateOAuthState, getOauthState} from "../auth/state";
 

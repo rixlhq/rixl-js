@@ -3,7 +3,7 @@
  * Tests: appleConfig, appleAuthUrl, updateAppleAuthUrl
  */
 
-import {describe, it, expect, beforeEach, afterEach, vi} from "vitest";
+import {describe, it, expect, beforeEach, afterEach, vi} from "vite-plus/test";
 import {appleConfig, appleAuthUrl, updateAppleAuthUrl} from "@/providers";
 
 // Mock state module

@@ -3,7 +3,7 @@
  * Tests: initPage and initSocials with provider detection
  */
 
-import {describe, it, expect, beforeEach, afterEach, vi} from "vitest";
+import {describe, it, expect, beforeEach, afterEach, vi} from "vite-plus/test";
 import {initClient} from "../auth/init";
 import {apiURL} from "../auth/api-url";
 import {refreshToken} from "../auth/authStore";

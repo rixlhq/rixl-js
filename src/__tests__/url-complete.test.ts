@@ -3,7 +3,7 @@
  * Tests: fromURL function and edge cases
  */
 
-import {describe, it, expect} from "vitest";
+import {describe, it, expect} from "vite-plus/test";
 import {urlParams} from "../auth/url";
 
 describe("URL Utils - Complete Coverage", () => {

@@ -4,7 +4,7 @@
  * kept isolated from the end-user session atoms in authStore.ts.
  */
 
-import {describe, it, expect, beforeEach, vi} from "vitest";
+import {describe, it, expect, beforeEach, vi} from "vite-plus/test";
 import {
   exchangeApiKey,
   getPlatformToken,

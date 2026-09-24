@@ -5,7 +5,7 @@
  * and that auth functions construct correct request URLs.
  */
 
-import {describe, it, expect, beforeEach, afterEach, vi} from "vitest";
+import {describe, it, expect, beforeEach, afterEach, vi} from "vite-plus/test";
 import {initClient} from "@/init";
 import {loginWithEmail} from "@/auth/login";
 import {registerWithEmail} from "@/auth/register";

@@ -1,4 +1,4 @@
-import {describe, it, expect} from "vitest";
+import {describe, it, expect} from "vite-plus/test";
 import {decodeRequestOptions} from "@/passkey";
 
 // base64url-encoded values as the gateway sends them inside the options JSON.

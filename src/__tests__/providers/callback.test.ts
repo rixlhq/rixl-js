@@ -4,7 +4,7 @@
  * @vitest-environment jsdom
  */
 
-import {describe, it, expect, beforeEach, afterEach} from "vitest";
+import {describe, it, expect, beforeEach, afterEach} from "vite-plus/test";
 import {completeOAuthCallback, detectProvider, googleAuthUrl, googleConfig, hasProviderResponse, updateGoogleAuthUrl} from "@/providers";
 import {STATE_STORAGE_KEY_PREFIX} from "@/constants";
 import {urlParams} from "@/url";

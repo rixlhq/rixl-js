@@ -3,7 +3,7 @@
  * Provides reusable validation test patterns
  */
 
-import {expect} from "vitest";
+import {expect} from "vite-plus/test";
 import {validateInput} from "../../auth/validation/base";
 
 /**

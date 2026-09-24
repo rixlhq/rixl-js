@@ -3,7 +3,7 @@
  * @vitest-environment jsdom
  */
 
-import {describe, it, expect, beforeEach, vi} from "vitest";
+import {describe, it, expect, beforeEach, vi} from "vite-plus/test";
 import {resetSharedRuntime} from "../setup/shared-runtime-reset";
 
 const refreshTokens = vi.hoisted(() => vi.fn());

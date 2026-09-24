@@ -3,7 +3,7 @@
  * Tests: Line 15 - Non-ValiError rethrow
  */
 
-import {describe, it, expect} from "vitest";
+import {describe, it, expect} from "vite-plus/test";
 import {validateInput, EmailSchema} from "../../auth/validation/base";
 import * as v from "valibot";
 

@@ -3,7 +3,7 @@
  * Tests: urlParams and fromURL utility
  */
 
-import {describe, it, expect} from "vitest";
+import {describe, it, expect} from "vite-plus/test";
 
 // Note: urlParams is initialized at module load, so we need to test the behavior
 // We can't easily test the actual urlParams export due to how it's initialized
