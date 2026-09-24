@@ -3,7 +3,7 @@
  * Tests: initPage, initSocials flows with mocked dependencies
  */
 
-import {describe, it, expect, beforeEach, vi, afterEach} from "vitest";
+import {describe, it, expect, beforeEach, vi, afterEach} from "vite-plus/test";
 import {initClient} from "../auth/init";
 import {apiURL} from "../auth/api-url";
 import {refreshToken} from "../auth/authStore";

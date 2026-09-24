@@ -3,7 +3,7 @@
  * Tests: OAuth state validation paths in detectProvider
  */
 
-import {describe, it, expect, beforeEach, afterEach, vi} from "vitest";
+import {describe, it, expect, beforeEach, afterEach, vi} from "vite-plus/test";
 import {detectProvider, extractProviderFromState} from "@/providers/utils";
 import {AuthProvider} from "@/providers";
 import * as urlModule from "@/url";

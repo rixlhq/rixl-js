@@ -3,7 +3,7 @@
  * Tests: Line 15 - parts.length < 1 condition
  */
 
-import {describe, it, expect} from "vitest";
+import {describe, it, expect} from "vite-plus/test";
 import {extractProviderFromState} from "@/providers/utils.ts";
 
 describe("Provider Utils - Line 15 Coverage", () => {

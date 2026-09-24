@@ -1,4 +1,4 @@
-import {vi} from "vitest";
+import {vi} from "vite-plus/test";
 import {ApiError} from "../../auth/api/types";
 
 export const mockPublicFetch = vi.fn();

@@ -1,4 +1,4 @@
-import {describe, it, expect} from "vitest";
+import {describe, it, expect} from "vite-plus/test";
 import {validateInput, EmailSchema, PasswordSchema, UsernameSchema, NameSchema, DomainSchema} from "../../auth/validation/base";
 
 describe("Base Validation Schemas", () => {

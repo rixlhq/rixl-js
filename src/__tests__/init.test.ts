@@ -3,7 +3,7 @@
  * Tests: initClient initialization flow, initConfig, initPage, initSocials
  */
 
-import {beforeEach, describe, expect, it, vi} from "vitest";
+import {beforeEach, describe, expect, it, vi} from "vite-plus/test";
 import type {AuthClientConfig} from "../auth/init";
 import {initClient} from "../auth/init";
 import {apiURL} from "../auth/api-url";

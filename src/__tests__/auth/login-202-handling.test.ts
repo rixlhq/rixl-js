@@ -3,7 +3,7 @@
  * Tests: Lines 36-41 in login.ts - ACCEPTED status handling
  */
 
-import {describe, it, expect, beforeEach, vi} from "vitest";
+import {describe, it, expect, beforeEach, vi} from "vite-plus/test";
 import {ApiError} from "../../auth/api/types";
 import {HTTP_STATUS} from "@/constants";
 

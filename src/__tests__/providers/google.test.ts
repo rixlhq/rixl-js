@@ -3,7 +3,7 @@
  * Tests: googleConfig, googleAuthUrl, updateGoogleAuthUrl
  */
 
-import {describe, it, expect, beforeEach, afterEach, vi} from "vitest";
+import {describe, it, expect, beforeEach, afterEach, vi} from "vite-plus/test";
 import {googleConfig, googleAuthUrl, updateGoogleAuthUrl} from "@/providers/google";
 
 // Mock state module

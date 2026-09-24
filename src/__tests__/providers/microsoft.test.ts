@@ -3,7 +3,7 @@
  * Tests: microsoftConfig, microsoftAuthUrl, updateMicrosoftAuthUrl
  */
 
-import {describe, it, expect, beforeEach, afterEach, vi} from "vitest";
+import {describe, it, expect, beforeEach, afterEach, vi} from "vite-plus/test";
 import {microsoftConfig, microsoftAuthUrl, updateMicrosoftAuthUrl} from "@/providers";
 
 // Mock state module

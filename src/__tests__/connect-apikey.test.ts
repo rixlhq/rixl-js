@@ -5,7 +5,7 @@
  * matching the same interceptor behavior as user-session (`auth`) mode.
  */
 
-import {describe, it, expect, beforeEach, vi} from "vitest";
+import {describe, it, expect, beforeEach, vi} from "vite-plus/test";
 import {client} from "../generated/client.gen";
 import {connect} from "../connect";
 import {platformauthV1PlatformAuthServiceExchangeApiKey} from "../generated/sdk.gen";

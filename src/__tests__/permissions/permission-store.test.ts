@@ -1,4 +1,4 @@
-import {describe, it, expect, beforeEach, vi, afterEach} from "vitest";
+import {describe, it, expect, beforeEach, vi, afterEach} from "vite-plus/test";
 import {permissions, permissionsResolved, hasPermission, clearPermissions} from "../../auth/permissionStore";
 import {resolvePermissions, ensurePermissions, invalidatePermissions} from "../../auth/permissions/resolve";
 import * as userModule from "../../auth/user";

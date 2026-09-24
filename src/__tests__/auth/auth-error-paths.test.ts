@@ -3,7 +3,7 @@
  * Tests: Uncovered lines in email.ts, login.ts, register.ts
  */
 
-import {describe, it, expect, beforeEach, vi} from "vitest";
+import {describe, it, expect, beforeEach, vi} from "vite-plus/test";
 import {HTTP_STATUS} from "@/constants.ts";
 
 describe("Auth Error Paths - Missing Coverage", () => {

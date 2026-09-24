@@ -3,7 +3,7 @@
  * Tests: EmailAuthRequestSchema
  */
 
-import {describe, it} from "vitest";
+import {describe, it} from "vite-plus/test";
 import {EmailAuthRequestSchema} from "../../auth/validation/auth";
 import {testValidInputs, testInvalidInputs} from "../utils/validation-test-helpers";
 

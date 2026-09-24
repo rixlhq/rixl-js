@@ -3,7 +3,7 @@
  * Provides reusable mock setup and common test patterns
  */
 
-import {vi} from "vitest";
+import {vi} from "vite-plus/test";
 import * as authStore from "../../auth/authStore";
 import * as initialization from "../../auth/initialization";
 

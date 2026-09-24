@@ -3,7 +3,7 @@
  * Tests: login function for OAuth providers
  */
 
-import {describe, it, expect, beforeEach, vi, afterEach} from "vitest";
+import {describe, it, expect, beforeEach, vi, afterEach} from "vite-plus/test";
 import {createApiMock, createProvidersMock, createCookieMock} from "../setup/authstore-mock-factory";
 
 // Setup mocks BEFORE importing the modules that depend on them

@@ -3,7 +3,7 @@
  * Tests: getToken with refresh logic
  */
 
-import {describe, it, expect, beforeEach, vi, afterEach} from "vitest";
+import {describe, it, expect, beforeEach, vi, afterEach} from "vite-plus/test";
 import {createMockJWT} from "../utils/test-helpers";
 import {createProvidersMock, createCookieMock} from "../setup/authstore-mock-factory";
 

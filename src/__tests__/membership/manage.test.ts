@@ -1,4 +1,4 @@
-import {describe, it, expect, beforeEach, afterEach, vi} from "vitest";
+import {describe, it, expect, beforeEach, afterEach, vi} from "vite-plus/test";
 import {MembershipRole} from "@/membership";
 import {setupAuthTest, cleanupAuthMocks} from "../utils/auth-test-helpers";
 

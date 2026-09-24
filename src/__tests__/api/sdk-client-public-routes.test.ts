@@ -5,7 +5,7 @@
  * Regression test for gateway 401s caused by the token interceptor.
  */
 
-import {describe, it, expect, beforeEach, vi} from "vitest";
+import {describe, it, expect, beforeEach, vi} from "vite-plus/test";
 import {client} from "../../generated/client.gen";
 import {configureSdkClient} from "../../auth/api/sdk-client";
 import {ApiError} from "../../auth/api/types";

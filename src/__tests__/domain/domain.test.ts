@@ -1,4 +1,4 @@
-import {describe, it, expect, beforeEach, vi} from "vitest";
+import {describe, it, expect, beforeEach, vi} from "vite-plus/test";
 import {DomainStatus} from "@/domain";
 import * as initialization from "../../auth/initialization";
 

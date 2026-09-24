@@ -1,4 +1,4 @@
-import {describe, it, expect} from "vitest";
+import {describe, it, expect} from "vite-plus/test";
 import {matches} from "../../auth/permissions/matcher";
 
 const held = (...values: string[]): ReadonlySet<string> => new Set(values);

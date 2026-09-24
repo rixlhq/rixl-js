@@ -50,3 +50,4 @@ openapi.yaml
 playwright-report
 playwright/.cache
 test-results
+.vitest/

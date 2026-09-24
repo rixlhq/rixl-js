@@ -4,7 +4,7 @@
  * set of stores, so identity — not just equality — is the thing under test.
  */
 
-import {describe, it, expect, vi} from "vitest";
+import {describe, it, expect, vi} from "vite-plus/test";
 import {shared} from "../shared-runtime";
 
 describe("shared", () => {

@@ -11,7 +11,7 @@
  * ```
  */
 
-import {vi} from "vitest";
+import {vi} from "vite-plus/test";
 
 /**
  * Creates a standardized API client mock

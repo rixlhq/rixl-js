@@ -3,7 +3,7 @@
  * Tests: Edge cases and localStorage error handling
  */
 
-import {describe, it, expect, beforeEach, afterEach, vi} from "vitest";
+import {describe, it, expect, beforeEach, afterEach, vi} from "vite-plus/test";
 import {user} from "../auth/userStore";
 import {createMockUser} from "./utils/test-helpers";
 

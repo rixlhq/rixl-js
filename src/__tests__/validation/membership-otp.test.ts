@@ -3,7 +3,7 @@
  * Tests: InviteMemberSchema, UpdateMemberRoleSchema, VerifyOTPCodeSchema, ConnectProviderSchema
  */
 
-import {describe, it} from "vitest";
+import {describe, it} from "vite-plus/test";
 import {VerifyOTPCodeSchema, ConnectProviderSchema} from "../../auth/validation/auth";
 import {InviteMemberSchema, UpdateMemberRoleSchema} from "../../auth/validation/membership";
 import {testValidInputs, testInvalidInputs} from "../utils/validation-test-helpers";

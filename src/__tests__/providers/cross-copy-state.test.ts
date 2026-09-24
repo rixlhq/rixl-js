@@ -8,7 +8,7 @@
  * @vitest-environment jsdom
  */
 
-import {describe, it, expect, beforeEach, vi} from "vitest";
+import {describe, it, expect, beforeEach, vi} from "vite-plus/test";
 import {resetSharedRuntime} from "../setup/shared-runtime-reset";
 
 // Re-evaluating the module stands in for a second copy of the package.

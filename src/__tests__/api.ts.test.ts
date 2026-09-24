@@ -1,4 +1,4 @@
-import {describe, it, expect, beforeEach, vi} from "vitest";
+import {describe, it, expect, beforeEach, vi} from "vite-plus/test";
 import {refreshTokens} from "../auth/api/refresh-tokens";
 import {apiURL} from "../auth/api-url";
 import {AuthProvider} from "@/providers";
