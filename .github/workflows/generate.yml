@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   generate-sdk:
@@ -24,7 +25,22 @@ jobs:
           run-install: "true"
       - run: vp run generate
       - run: vp check --fix
-      - uses: stefanzweifel/git-auto-commit-action@v7
+
+      # Opens a PR instead of pushing directly to main: the branch ruleset
+      # rejects direct pushes, and a PR gets the required `build-release`
+      # check before it can merge. BUILD_GITHUB_TOKEN instead of
+      # GITHUB_TOKEN — events from the default token never start workflow
+      # runs, so the PR would sit at "Expected: waiting for status".
+      - name: Create PR with regenerated SDK
+        uses: peter-evans/create-pull-request@v6
         with:
-          commit_message: "feat(sdk): regenerate based on latest OpenAPI spec"
-          file_pattern: "src/**"
+          token: ${{ secrets.BUILD_GITHUB_TOKEN }}
+          commit-message: "feat(sdk): regenerate based on latest OpenAPI spec"
+          branch: generate-sdk/${{ github.sha }}
+          title: "feat(sdk): regenerate based on latest OpenAPI spec"
+          body: |
+            Regenerated `src/` against the latest OpenAPI spec.
+
+            Auto-merge is armed via the `autorelease: pending` label
+            (see `automerge.yml`); the PR lands once required checks pass.
+          labels: "autorelease: pending"
