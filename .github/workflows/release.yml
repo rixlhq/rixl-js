@@ -41,7 +41,7 @@ jobs:
         run: |
           RIXL_GENERATE=true vp pack
           if ! git diff --quiet -- src/generated; then
-            echo "::error::src/generated is out of date. Run 'bun run generate' locally and commit the result."
+            echo "::error::src/generated is out of date. Run 'vp run generate' locally and commit the result."
             git diff --stat -- src/generated
             exit 1
           fi
