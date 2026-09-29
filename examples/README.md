@@ -42,15 +42,15 @@ Without this flag the destructive code paths throw a clear error and exit.
 ## Available examples
 
 ```bash
-bun examples/01-client-setup.ts
-bun examples/02-public-feeds.ts
-bun examples/03-image-management.ts
-bun examples/04-image-upload.ts
-bun examples/05-video-management.ts
-bun examples/06-video-upload.ts
-bun examples/07-video-chapters.ts
-bun examples/08-audio-tracks.ts
-bun examples/09-subtitles.ts
+node examples/01-client-setup.ts
+node examples/02-public-feeds.ts
+node examples/03-image-management.ts
+node examples/04-image-upload.ts
+node examples/05-video-management.ts
+node examples/06-video-upload.ts
+node examples/07-video-chapters.ts
+node examples/08-audio-tracks.ts
+node examples/09-subtitles.ts
 ```
 
 `02-public-feeds.ts` requires `RIXL_FEED_ID`, `RIXL_POST_ID`, and `RIXL_CREATOR_ID`. It does not need `RIXL_API_KEY` — public feed endpoints are unauthenticated.
@@ -64,5 +64,5 @@ bun examples/09-subtitles.ts
 ## Typecheck
 
 ```bash
-bun run examples:check
+vp run examples:check
 ```
