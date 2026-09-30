@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.28.1](https://github.com/rixlhq/rixl-js/compare/v0.28.0...v0.28.1) (2026-09-30)
+
+
+### Bug Fixes
+
+* downgrade ts ([ba01128](https://github.com/rixlhq/rixl-js/commit/ba01128c824db246da31bd2bf1abf6165697653f))
+* vitest version ([f6375bf](https://github.com/rixlhq/rixl-js/commit/f6375bf83edd6ea23c8b27598ed192ef60e4c4d2))
+
 ## [0.28.0](https://github.com/rixlhq/rixl-js/compare/v0.27.0...v0.28.0) (2026-09-28)
 
 
