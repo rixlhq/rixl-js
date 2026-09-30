@@ -3,7 +3,7 @@ import {
   authV1MembershipServiceResendInvitation,
   authV1MembershipServiceAcceptInvitation,
   authV1MembershipServiceDeclineInvitation,
-  authV1MembershipServiceUpdateMembershipState,
+  authV1MembershipServiceRespondToMembershipApplication,
 } from "../../generated/sdk.gen";
 import type {AuthV1MembershipRole, AuthV1MembershipApplicationState} from "../../generated/types.gen";
 import {apiCall} from "../api/utils";
@@ -63,8 +63,9 @@ export const respondToInvitation = async (orgId: string, state: MembershipState.
     async () => {
       const validated = validateInput(AcceptDeclineMembershipSchema, {state}) as {state: "accepted" | "declined"};
 
-      await authV1MembershipServiceUpdateMembershipState({
-        path: {"user.org_id": orgId},
+      // The invitee's own endpoint: UpdateMembershipState is an org admin deciding someone else's application.
+      await authV1MembershipServiceRespondToMembershipApplication({
+        path: {org_id: orgId},
         body: {state: STATE_TO_PROTO[validated.state]},
         throwOnError: true,
       });
