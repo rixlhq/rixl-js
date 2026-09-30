@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.29.1](https://github.com/rixlhq/rixl-js/compare/v0.29.0...v0.29.1) (2026-09-30)
+
+
+### Bug Fixes
+
+* **membership:** accept or decline an invite through the invitee endpoint ([d34f296](https://github.com/rixlhq/rixl-js/commit/d34f296297aa7936e50a8d2c529aa1f3781ae84f))
+* **membership:** accept or decline an invite through the invitee endpoint ([f73ce5b](https://github.com/rixlhq/rixl-js/commit/f73ce5b379abd24f952034b3db9bcba2ad915b9d))
+
 ## [0.29.0](https://github.com/rixlhq/rixl-js/compare/v0.28.1...v0.29.0) (2026-09-30)
 
 
