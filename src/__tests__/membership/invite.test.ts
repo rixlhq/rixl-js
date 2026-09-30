@@ -6,14 +6,14 @@ const mockInviteMember = vi.fn();
 const mockResendInvitation = vi.fn();
 const mockAcceptInvitation = vi.fn();
 const mockDeclineInvitation = vi.fn();
-const mockUpdateMembershipState = vi.fn();
+const mockRespondToApplication = vi.fn();
 
 vi.mock("../../generated/sdk.gen", () => ({
   authV1MembershipServiceInviteMember: (...args: unknown[]) => mockInviteMember(...args),
   authV1MembershipServiceResendInvitation: (...args: unknown[]) => mockResendInvitation(...args),
   authV1MembershipServiceAcceptInvitation: (...args: unknown[]) => mockAcceptInvitation(...args),
   authV1MembershipServiceDeclineInvitation: (...args: unknown[]) => mockDeclineInvitation(...args),
-  authV1MembershipServiceUpdateMembershipState: (...args: unknown[]) => mockUpdateMembershipState(...args),
+  authV1MembershipServiceRespondToMembershipApplication: (...args: unknown[]) => mockRespondToApplication(...args),
 }));
 
 vi.mock("../../auth/authStore", () => ({
@@ -30,7 +30,7 @@ describe("Membership Invite Module", () => {
     mockResendInvitation.mockReset();
     mockAcceptInvitation.mockReset();
     mockDeclineInvitation.mockReset();
-    mockUpdateMembershipState.mockReset();
+    mockRespondToApplication.mockReset();
   });
 
   describe("inviteMember", () => {
@@ -129,37 +129,37 @@ describe("Membership Invite Module", () => {
 
   describe("respondToInvitation", () => {
     it("should accept invitation successfully", async () => {
-      mockUpdateMembershipState.mockResolvedValue({data: {}});
+      mockRespondToApplication.mockResolvedValue({data: {}});
 
       await respondToInvitation("org123", MembershipState.ACCEPTED);
 
-      expect(mockUpdateMembershipState).toHaveBeenCalledWith({
-        path: {"user.org_id": "org123"},
+      expect(mockRespondToApplication).toHaveBeenCalledWith({
+        path: {org_id: "org123"},
         body: {state: "MEMBERSHIP_APPLICATION_STATE_APPROVED"},
         throwOnError: true,
       });
     });
 
     it("should decline invitation successfully", async () => {
-      mockUpdateMembershipState.mockResolvedValue({data: {}});
+      mockRespondToApplication.mockResolvedValue({data: {}});
 
       await respondToInvitation("org123", MembershipState.DECLINED);
 
-      expect(mockUpdateMembershipState).toHaveBeenCalledWith({
-        path: {"user.org_id": "org123"},
+      expect(mockRespondToApplication).toHaveBeenCalledWith({
+        path: {org_id: "org123"},
         body: {state: "MEMBERSHIP_APPLICATION_STATE_DECLINED"},
         throwOnError: true,
       });
     });
 
     it("should handle unauthorized error", async () => {
-      mockUpdateMembershipState.mockRejectedValue({error: "unauthorized", code: 401});
+      mockRespondToApplication.mockRejectedValue({error: "unauthorized", code: 401});
 
       await expect(respondToInvitation("org123", MembershipState.ACCEPTED)).rejects.toThrow();
     });
 
     it("should handle invite not found error", async () => {
-      mockUpdateMembershipState.mockRejectedValue({error: "not_found", code: 404});
+      mockRespondToApplication.mockRejectedValue({error: "not_found", code: 404});
 
       await expect(respondToInvitation("org123", MembershipState.ACCEPTED)).rejects.toThrow();
     });

@@ -3759,6 +3759,20 @@ export type AuthV1ResolveIdentityPermissionsResponse = {
 };
 
 /**
+ * RespondToMembershipApplicationRequest
+ */
+export type AuthV1RespondToMembershipApplicationRequest = {
+    /**
+     * org_id
+     */
+    org_id?: string;
+    /**
+     * state
+     */
+    state?: AuthV1MembershipApplicationState;
+};
+
+/**
  * SendBlogBroadcastRequest
  */
 export type AuthV1SendBlogBroadcastRequest = {
@@ -9974,6 +9988,37 @@ export type AuthV1MembershipServiceListMembershipApplicationsResponses = {
 };
 
 export type AuthV1MembershipServiceListMembershipApplicationsResponse = AuthV1MembershipServiceListMembershipApplicationsResponses[keyof AuthV1MembershipServiceListMembershipApplicationsResponses];
+
+export type AuthV1MembershipServiceRespondToMembershipApplicationData = {
+    /**
+     * RespondToMembershipApplicationRequest
+     */
+    body: {
+        /**
+         * state
+         */
+        state?: AuthV1MembershipApplicationState;
+    };
+    path: {
+        /**
+         * org_id
+         *
+         * The org_id path parameter.
+         */
+        org_id: string;
+    };
+    query?: never;
+    url: '/auth/v1/membership-applications/{org_id}/state';
+};
+
+export type AuthV1MembershipServiceRespondToMembershipApplicationResponses = {
+    /**
+     * Success
+     */
+    200: AuthV1MembershipMutation;
+};
+
+export type AuthV1MembershipServiceRespondToMembershipApplicationResponse = AuthV1MembershipServiceRespondToMembershipApplicationResponses[keyof AuthV1MembershipServiceRespondToMembershipApplicationResponses];
 
 export type AuthV1MembershipServiceListMembershipsData = {
     body?: never;
