@@ -32,7 +32,7 @@ jobs:
       # GITHUB_TOKEN — events from the default token never start workflow
       # runs, so the PR would sit at "Expected: waiting for status".
       - name: Create PR with regenerated SDK
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.BUILD_GITHUB_TOKEN }}
           commit-message: "feat(sdk): regenerate based on latest OpenAPI spec"
