@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.29.2](https://github.com/rixlhq/rixl-js/compare/v0.29.1...v0.29.2) (2026-10-02)
+
+
+### Bug Fixes
+
+* **membership:** send the target org as top-level org_id when switching ([82355be](https://github.com/rixlhq/rixl-js/commit/82355be658bc431daa8ebcbd3658732973709d5b))
+
 ## [0.29.1](https://github.com/rixlhq/rixl-js/compare/v0.29.0...v0.29.1) (2026-09-30)
 
 
