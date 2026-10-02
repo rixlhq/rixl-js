@@ -32,31 +32,29 @@ describe("Membership Manage Module", () => {
   });
 
   describe("updateActiveMembership", () => {
-    // The API identifies a membership by (user_id, org_id) everywhere else —
-    // every sibling endpoint takes `user.org_id` as a path param, and this
-    // call's own MembershipMutation response is keyed by that pair. The
-    // `membership_id` field exists in exactly one request schema and accepts
-    // none of the composite `user_id:org_id` values ListMemberships returns,
-    // so send the org id and let the backend take user_id from the JWT.
-    it("should identify the membership by org id", async () => {
+    // The backend reads the target org from the top-level `org_id` and treats
+    // `user.org_id` as the caller's current org, so a target sent there fails
+    // with "org_id is required". user_id is filled from the JWT.
+    it("should send the target org as the top-level org_id", async () => {
       mockAuthV1MembershipServiceUpdateActiveMembership.mockResolvedValue({data: {}});
 
       await updateActiveMembership("org123");
 
       expect(mockAuthV1MembershipServiceUpdateActiveMembership).toHaveBeenCalledWith({
-        body: {user: {org_id: "org123"}},
+        body: {org_id: "org123"},
         throwOnError: true,
       });
     });
 
-    it("should never send the composite membership id", async () => {
+    it("should not send the target in user.org_id or membership_id", async () => {
       mockAuthV1MembershipServiceUpdateActiveMembership.mockResolvedValue({data: {}});
 
       await updateActiveMembership("PZ76MMvRmS");
 
       const body = mockAuthV1MembershipServiceUpdateActiveMembership.mock.calls[0][0].body;
+      expect(body.user).toBeUndefined();
       expect(body.membership_id).toBeUndefined();
-      expect(body.user.org_id).not.toContain(":");
+      expect(body.org_id).toBe("PZ76MMvRmS");
     });
 
     it("should invalidate token after update", async () => {
@@ -65,7 +63,7 @@ describe("Membership Manage Module", () => {
       await updateActiveMembership("org456");
 
       expect(mockAuthV1MembershipServiceUpdateActiveMembership).toHaveBeenCalledWith({
-        body: {user: {org_id: "org456"}},
+        body: {org_id: "org456"},
         throwOnError: true,
       });
     });
