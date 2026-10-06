@@ -31,6 +31,7 @@ import {
 import {clearSocialConnectAttempt, hasSocialConnectAttempt} from "./social/socialState";
 import {connectSocialInternal} from "./social/socialConnections";
 import {setLoginRedirectUrl} from "./authConfig";
+import {isLimitedScopeTokenResponse} from "./utils/requires-action";
 
 /**
  * Configuration options for the authentication client
@@ -107,10 +108,6 @@ const initConfig = async (config: AuthClientConfig) => {
     telegramConfig.set(config.telegramProvider);
     updateTelegramAuthUrl();
   }
-};
-
-const isLimitedScopeTokenResponse = (result: TokenResponse | LimitedScopeTokenResponse): result is LimitedScopeTokenResponse => {
-  return "requires_action" in result;
 };
 
 const applyTokenExchangeResult = (result: TokenResponse | LimitedScopeTokenResponse): void => {

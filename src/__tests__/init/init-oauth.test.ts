@@ -96,6 +96,38 @@ describe("initClient - OAuth Callback Handling", () => {
     expect(mockRefreshTokens).toHaveBeenCalledWith("google", "oauth-token");
   });
 
+  it("treats an empty requires_action as a full-scope token", async () => {
+    const authStore = await import("../../auth/authStore");
+    mockDetectProvider.mockReturnValue("google");
+    mockGetProviderToken.mockReturnValue("oauth-token");
+    mockRefreshToken.get.mockReturnValue(null);
+    mockRefreshTokens.mockResolvedValue({
+      access_token: "access",
+      refresh_token: "refresh",
+      expires_in: "900",
+      token_type: "bearer",
+      requires_action: "",
+    });
+
+    await initClient({apiUrl: "https://api.example.com"});
+
+    expect(authStore.setTokens).toHaveBeenCalledWith("access", "refresh", "900");
+    expect(authStore.setLimitedAccessState).not.toHaveBeenCalled();
+  });
+
+  it("enters limited access when requires_action names an action", async () => {
+    const authStore = await import("../../auth/authStore");
+    mockDetectProvider.mockReturnValue("telegram");
+    mockGetProviderToken.mockReturnValue("oauth-token");
+    mockRefreshToken.get.mockReturnValue(null);
+    mockRefreshTokens.mockResolvedValue({access_token: "limited", token_type: "bearer", requires_action: "add_email"});
+
+    await initClient({apiUrl: "https://api.example.com"});
+
+    expect(authStore.setLimitedAccessState).toHaveBeenCalledWith("limited", "add_email");
+    expect(authStore.setTokens).not.toHaveBeenCalled();
+  });
+
   it("should exchange OAuth token even if refresh token exists", async () => {
     const config: AuthClientConfig = {apiUrl: "https://api.example.com"};
 

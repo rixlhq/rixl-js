@@ -73,6 +73,37 @@ describe("AuthStore - Token Refresh", () => {
       expect(token).toBe(newToken);
     });
 
+    it("stores the refreshed tokens when the gateway sends an empty requires_action", async () => {
+      // The gateway emits every field, so a full-scope answer still carries the key.
+      const newToken = createMockJWT({id: "new-user"});
+      accessToken.set(createMockJWT());
+      refreshToken.set("refresh-123");
+      expireAt.set(Date.now() - 1000);
+      mockRefreshTokens.mockResolvedValue({
+        access_token: newToken,
+        refresh_token: "rotated-refresh",
+        expires_in: "900",
+        token_type: "bearer",
+        requires_action: "",
+      });
+
+      const token = await getToken();
+
+      expect(token).toBe(newToken);
+      expect(refreshToken.get()).toBe("rotated-refresh");
+    });
+
+    it("keeps the current tokens when the refresh asks for an action", async () => {
+      accessToken.set(createMockJWT());
+      refreshToken.set("refresh-123");
+      expireAt.set(Date.now() - 1000);
+      mockRefreshTokens.mockResolvedValue({access_token: "limited", token_type: "bearer", requires_action: "add_email"});
+
+      await getToken();
+
+      expect(refreshToken.get()).toBe("refresh-123");
+    });
+
     it("should handle refresh failure and remove tokens", async () => {
       accessToken.set(createMockJWT());
       refreshToken.set("refresh-123");
