@@ -7,6 +7,7 @@ import {user} from "./userStore";
 import {clearPermissions} from "./permissionStore";
 import type {ProviderType} from "./social/socialConnections";
 import {decodeAndSetUser, isTokenExpired} from "./utils/jwt";
+import {isLimitedScopeTokenResponse} from "./utils/requires-action";
 import type {LoginErrorResponse} from "./auth/types";
 import type {RequiresAction} from "./types";
 import {shared} from "../shared-runtime";
@@ -74,8 +75,7 @@ export const login = async (provider: ProviderType): Promise<void> => {
 
 const refreshAccessToken = async (refresh: string): Promise<void> => {
   const result = await refreshTokens(AuthProvider.BEARER, refresh);
-  // Bearer refresh always returns full tokens (not limited scope)
-  if (!("requires_action" in result)) {
+  if (!isLimitedScopeTokenResponse(result)) {
     setTokens(result.access_token, result.refresh_token, result.expires_in);
   }
 };
