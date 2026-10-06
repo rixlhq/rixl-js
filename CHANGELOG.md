@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.29.3](https://github.com/rixlhq/rixl-js/compare/v0.29.2...v0.29.3) (2026-10-06)
+
+
+### Bug Fixes
+
+* failing test ([56a4195](https://github.com/rixlhq/rixl-js/commit/56a419576f9dc4bb2d1ce895dd406617344535e0))
+* refresh token returns 400 ([d377eec](https://github.com/rixlhq/rixl-js/commit/d377eec6bcab0dacdda4e54eda8cc96b89be1528))
+* refresh token returns 400 ([ed8e4b1](https://github.com/rixlhq/rixl-js/commit/ed8e4b11b16c4809cd193b2f5313887d1c8fcc1c))
+
 ## [0.29.2](https://github.com/rixlhq/rixl-js/compare/v0.29.1...v0.29.2) (2026-10-02)
 
 
