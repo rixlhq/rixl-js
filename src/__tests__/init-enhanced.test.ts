@@ -6,14 +6,28 @@
 import {describe, it, expect, beforeEach, vi, afterEach} from "vite-plus/test";
 import {initClient} from "../auth/init";
 import {apiURL} from "../auth/api-url";
-import {refreshToken} from "../auth/authStore";
+import {refreshToken, resetTokenPromise} from "../auth/authStore";
+import {refreshTokens} from "../auth/api/refresh-tokens";
+import {createMockJWT} from "./utils/test-helpers";
 import type {AuthClientConfig} from "../auth/init";
+
+vi.mock("../auth/api/refresh-tokens", () => ({
+  refreshTokens: vi.fn(),
+}));
 
 describe("Init - Enhanced Coverage", () => {
   beforeEach(() => {
     // Reset state
     apiURL.set("");
     refreshToken.set(undefined);
+    // A getToken() left in-flight by a previous test would hand its pending
+    // (real-network) refresh to the next caller via the shared singleton.
+    resetTokenPromise();
+    vi.mocked(refreshTokens).mockResolvedValue({
+      access_token: createMockJWT(),
+      refresh_token: "refreshed-refresh-token",
+      expires_in: 3600,
+    });
 
     // Clear URL params
     if (typeof window !== "undefined") {
