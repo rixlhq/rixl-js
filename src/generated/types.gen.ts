@@ -4417,6 +4417,24 @@ export type BillingV1BillingAddress = {
 };
 
 /**
+ * BillingConfig
+ */
+export type BillingV1BillingConfig = {
+    /**
+     * publishable_key
+     *
+     * Stripe publishable key of the account the caller's organization is billed in.
+     */
+    publishable_key?: string;
+    /**
+     * sandbox
+     *
+     * True when the organization is billed in the Stripe sandbox: no money moves.
+     */
+    sandbox?: boolean;
+};
+
+/**
  * BillingCycle
  */
 export type BillingV1BillingCycle = 'BILLING_CYCLE_UNSPECIFIED' | 'BILLING_CYCLE_MONTHLY' | 'BILLING_CYCLE_YEARLY';
@@ -4734,6 +4752,13 @@ export type BillingV1GetBillingAddressRequest = {
      * org_id
      */
     org_id?: string;
+};
+
+/**
+ * GetBillingConfigRequest
+ */
+export type BillingV1GetBillingConfigRequest = {
+    [key: string]: never;
 };
 
 /**
@@ -5263,6 +5288,13 @@ export type BillingV1ProcessStripeWebhookRequest = {
      * signature
      */
     signature?: string;
+    /**
+     * sandbox
+     *
+     * Set by the gateway's sandbox webhook route: verify against the sandbox
+     * signing secret and process in the sandbox Stripe account.
+     */
+    sandbox?: boolean;
 };
 
 /**
@@ -11645,6 +11677,22 @@ export type BillingV1PaymentServiceCreateCheckoutSessionResponses = {
 };
 
 export type BillingV1PaymentServiceCreateCheckoutSessionResponse = BillingV1PaymentServiceCreateCheckoutSessionResponses[keyof BillingV1PaymentServiceCreateCheckoutSessionResponses];
+
+export type BillingV1PaymentServiceGetBillingConfigData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/billing/v1/config';
+};
+
+export type BillingV1PaymentServiceGetBillingConfigResponses = {
+    /**
+     * Success
+     */
+    200: BillingV1BillingConfig;
+};
+
+export type BillingV1PaymentServiceGetBillingConfigResponse = BillingV1PaymentServiceGetBillingConfigResponses[keyof BillingV1PaymentServiceGetBillingConfigResponses];
 
 export type BillingV1PaymentServiceListPaymentMethodsData = {
     body?: never;
