@@ -1,8 +1,10 @@
 import {clearOauthState} from "../state";
+import {clearPkceVerifier} from "../pkce";
 import {urlParams} from "../url";
 import {updateAppleAuthUrl} from "./apple";
 import {updateGoogleAuthUrl} from "./google";
 import {updateMicrosoftAuthUrl} from "./microsoft";
+import {updateTelegramAuthUrl} from "./telegram";
 import {AuthProvider} from "./types";
 import {detectProvider} from "./utils";
 
@@ -40,6 +42,7 @@ const AUTH_URL_UPDATERS: Partial<Record<AuthProvider, () => void>> = {
   [AuthProvider.GOOGLE]: updateGoogleAuthUrl,
   [AuthProvider.APPLE]: updateAppleAuthUrl,
   [AuthProvider.MICROSOFT]: updateMicrosoftAuthUrl,
+  [AuthProvider.TELEGRAM_OIDC]: updateTelegramAuthUrl,
 };
 
 /** Returns undefined when the half holds no credential, meaning it is the app's own and must not be touched. */
@@ -82,6 +85,7 @@ export const completeOAuthCallback = (): void => {
   if (!provider) return;
 
   clearOauthState(provider);
+  clearPkceVerifier(provider);
   // initConfig() built the auth URL from the state just cleared; rebuild it so a
   // subsequent login carries a state the callback can still validate.
   AUTH_URL_UPDATERS[provider]?.();

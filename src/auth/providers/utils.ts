@@ -26,13 +26,19 @@ export function detectProvider(): AuthProvider | undefined {
   if (urlParams.has(AuthProvider.TELEGRAM_MINI_APP)) {
     return AuthProvider.TELEGRAM_MINI_APP;
   }
+  const state = urlParams.get("state");
+
+  // Telegram OpenID Connect returns an authorization code, and the redirect can
+  // also carry a tgAuthResult that the code flow does not use.
+  if (urlParams.has("code") && state && validateOAuthState(AuthProvider.TELEGRAM_OIDC, state)) {
+    return AuthProvider.TELEGRAM_OIDC;
+  }
   if (urlParams.has(AuthProvider.TELEGRAM_WEB)) {
     return AuthProvider.TELEGRAM_WEB;
   }
 
   // Check for OAuth providers via id_token + state
   const id_token = urlParams.get("id_token");
-  const state = urlParams.get("state");
 
   if (id_token && state) {
     const providerFromState = extractProviderFromState(state);
@@ -51,6 +57,10 @@ export function getProviderToken(provider: AuthProvider): string | undefined {
   // For Telegram, the token is in a parameter named after the provider
   if (provider === AuthProvider.TELEGRAM_MINI_APP || provider === AuthProvider.TELEGRAM_WEB) {
     return urlParams.get(provider) || undefined;
+  }
+
+  if (provider === AuthProvider.TELEGRAM_OIDC) {
+    return urlParams.get("code") || undefined;
   }
 
   // For OAuth providers (Google, Apple, Microsoft), the token is in the 'id_token' parameter

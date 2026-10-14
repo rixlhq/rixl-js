@@ -112,6 +112,19 @@ describe("API Module", () => {
       });
     });
 
+    it("should send the PKCE verifier and redirect URI with a Telegram code", async () => {
+      mockPostAuthV1Token.mockResolvedValue({
+        data: {access_token: "token", refresh_token: "refresh", expires_in: 3600},
+      });
+
+      await refreshTokens(AuthProvider.TELEGRAM_OIDC, "auth-code", {codeVerifier: "verifier", redirectUri: "https://app.example.com"});
+
+      expect(mockPostAuthV1Token).toHaveBeenCalledWith({
+        body: {token_type: "telegram", refresh_token: "auth-code", code_verifier: "verifier", redirect_uri: "https://app.example.com"},
+        throwOnError: true,
+      });
+    });
+
     it("should include countryCode and origin for provider sign-in", async () => {
       mockPostAuthV1Token.mockResolvedValue({
         data: {access_token: "token", refresh_token: "refresh", expires_in: 3600},
