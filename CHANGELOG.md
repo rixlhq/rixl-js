@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.33.0](https://github.com/rixlhq/rixl-js/compare/v0.32.0...v0.33.0) (2026-10-14)
+
+
+### Features
+
+* add pkce helpers ([273d300](https://github.com/rixlhq/rixl-js/commit/273d300272e961de0edbd55aaf9b072008aa2216))
+* sign in with telegram oidc code flow ([7ba27e8](https://github.com/rixlhq/rixl-js/commit/7ba27e8b5a92f66036af1c4eae20877b22fac330))
+
+
+### Bug Fixes
+
+* exchange provider credentials at the token endpoint ([8254faf](https://github.com/rixlhq/rixl-js/commit/8254faf903c81424d039ff02d9e81e193c754424))
+* send the limited token when adding an email ([142ba3d](https://github.com/rixlhq/rixl-js/commit/142ba3d31bd8e76081740adffa22973a0b027661))
+* telegram login with oidc code flow ([cd384a4](https://github.com/rixlhq/rixl-js/commit/cd384a438f33693ce78e2369ae5556a1b408ac86))
+
 ## [0.32.0](https://github.com/rixlhq/rixl-js/compare/v0.31.0...v0.32.0) (2026-10-10)
 
 
