@@ -86,11 +86,6 @@ describe("Provider Utils", () => {
       expect(result).toBeUndefined();
     });
 
-    it("should return undefined for TELEGRAM_WEB provider when no URL params", () => {
-      const result = getProviderCredential(AuthProvider.TELEGRAM_WEB);
-      expect(result).toBeUndefined();
-    });
-
     it("should handle unknown providers gracefully", () => {
       const result = getProviderCredential("unknown_provider" as AuthProvider);
       expect(result).toBeUndefined();

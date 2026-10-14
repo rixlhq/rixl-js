@@ -174,13 +174,13 @@ describe("Social Connections Module", () => {
       });
     });
 
-    it("should map Telegram auth tokens to the telegram provider", async () => {
+    it("should map Telegram mini app data to the telegram provider", async () => {
       mockPostAuthV1ProvidersConnect.mockResolvedValue({data: {}});
 
-      await connectSocialInternal("tgAuthResult", {token: "tg-token"});
+      await connectSocialInternal("tgWebAppData", {token: "init-data"});
 
       expect(mockPostAuthV1ProvidersConnect).toHaveBeenCalledWith({
-        body: {provider: "EXTERNAL_ACCOUNT_PROVIDER_TELEGRAM", token: "tg-token"},
+        body: {provider: "EXTERNAL_ACCOUNT_PROVIDER_TELEGRAM", token: "init-data"},
         headers: {Authorization: "Bearer mock-token"},
         throwOnError: true,
       });

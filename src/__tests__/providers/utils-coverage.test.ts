@@ -57,7 +57,7 @@ describe("Provider Utils - Coverage", () => {
       expect(AuthProvider.APPLE).toBeDefined();
       expect(AuthProvider.MICROSOFT).toBeDefined();
       expect(AuthProvider.TELEGRAM_MINI_APP).toBeDefined();
-      expect(AuthProvider.TELEGRAM_WEB).toBeDefined();
+      expect(AuthProvider.TELEGRAM_OIDC).toBeDefined();
       expect(AuthProvider.BEARER).toBeDefined();
     });
 

@@ -48,7 +48,7 @@ const verdictFor = (error: ApiError): string => {
   const body = typeof error.data === "object" && error.data !== null ? (error.data as {error?: string}) : undefined;
 
   if (body?.error === "invalid token type") {
-    return "CLIENT: the gateway does not accept this token_type. Expected one of Bearer, google, apple, microsoft, tgAuthResult, tgWebAppData.";
+    return "CLIENT: the gateway does not accept this token_type. Expected one of Bearer, google, apple, microsoft, telegram, tgWebAppData.";
   }
   if (error.status === HTTP_STATUS.UNAUTHORIZED) {
     return "BACKEND or CONFIG: the gateway could not verify the credential. Compare `aud` above with the client ID the gateway is configured with, and check `expired`.";
