@@ -44,7 +44,7 @@ describe("API Module", () => {
 
       mockPostAuthV1Token.mockResolvedValue({data: mockResponse});
 
-      const result = await refreshTokens(AuthProvider.BEARER, "old-refresh-token");
+      const result = await refreshTokens(AuthProvider.BEARER, {token: "old-refresh-token"});
 
       expect(mockPostAuthV1Token).toHaveBeenCalledWith({
         body: {token_type: "Bearer", refresh_token: "old-refresh-token"},
@@ -56,13 +56,13 @@ describe("API Module", () => {
     it("should handle 401 unauthorized error", async () => {
       mockPostAuthV1Token.mockRejectedValue({error: "unauthorized", code: 401});
 
-      await expect(refreshTokens(AuthProvider.BEARER, "invalid-token")).rejects.toThrow();
+      await expect(refreshTokens(AuthProvider.BEARER, {token: "invalid-token"})).rejects.toThrow();
     });
 
     it("should propagate errors (no side effects in this function)", async () => {
       mockPostAuthV1Token.mockRejectedValue({error: "bad_request", code: 400});
 
-      await expect(refreshTokens(AuthProvider.BEARER, "expired-token")).rejects.toThrow();
+      await expect(refreshTokens(AuthProvider.BEARER, {token: "expired-token"})).rejects.toThrow();
     });
 
     it.each([
@@ -76,7 +76,7 @@ describe("API Module", () => {
         data: {access_token: "token", refresh_token: "refresh", expires_in: 3600},
       });
 
-      await refreshTokens(provider, "provider-token");
+      await refreshTokens(provider, {token: "provider-token"});
 
       expect(mockPostAuthV1Token).toHaveBeenCalledWith({
         body: {token_type: tokenType, refresh_token: "provider-token"},
@@ -89,7 +89,7 @@ describe("API Module", () => {
         data: {access_token: "token", refresh_token: "refresh", expires_in: 3600},
       });
 
-      await refreshTokens(AuthProvider.TELEGRAM_WEB, "tg-token");
+      await refreshTokens(AuthProvider.TELEGRAM_WEB, {token: "tg-token"});
 
       expect(mockPostAuthV1ProvidersConnect).not.toHaveBeenCalled();
     });
@@ -99,7 +99,7 @@ describe("API Module", () => {
         data: {access_token: "token", refresh_token: "refresh", expires_in: 3600},
       });
 
-      await refreshTokens(AuthProvider.BEARER, "token", {countryCode: "NG", origin: "https://app.example.com"});
+      await refreshTokens(AuthProvider.BEARER, {token: "token"}, {countryCode: "NG", origin: "https://app.example.com"});
 
       expect(mockPostAuthV1Token).toHaveBeenCalledWith({
         body: {
@@ -117,7 +117,9 @@ describe("API Module", () => {
         data: {access_token: "token", refresh_token: "refresh", expires_in: 3600},
       });
 
-      await refreshTokens(AuthProvider.TELEGRAM_OIDC, "auth-code", {codeVerifier: "verifier", redirectUri: "https://app.example.com"});
+      await refreshTokens(AuthProvider.TELEGRAM_OIDC, {
+        authorizationCode: {code: "auth-code", codeVerifier: "verifier", redirectUri: "https://app.example.com"},
+      });
 
       expect(mockPostAuthV1Token).toHaveBeenCalledWith({
         body: {token_type: "telegram", refresh_token: "auth-code", code_verifier: "verifier", redirect_uri: "https://app.example.com"},
@@ -130,7 +132,7 @@ describe("API Module", () => {
         data: {access_token: "token", refresh_token: "refresh", expires_in: 3600},
       });
 
-      await refreshTokens(AuthProvider.GOOGLE, "google-token", {countryCode: "NG", origin: "https://app.example.com"});
+      await refreshTokens(AuthProvider.GOOGLE, {token: "google-token"}, {countryCode: "NG", origin: "https://app.example.com"});
 
       expect(mockPostAuthV1Token).toHaveBeenCalledWith({
         body: {
@@ -146,7 +148,7 @@ describe("API Module", () => {
     it("should handle network errors", async () => {
       mockPostAuthV1Token.mockRejectedValue(new Error("Network error"));
 
-      await expect(refreshTokens(AuthProvider.BEARER, "token")).rejects.toThrow("Network error");
+      await expect(refreshTokens(AuthProvider.BEARER, {token: "token"})).rejects.toThrow("Network error");
     });
 
     it("should return parsed JSON response", async () => {
@@ -158,7 +160,7 @@ describe("API Module", () => {
 
       mockPostAuthV1Token.mockResolvedValue({data: mockResponse});
 
-      const result = await refreshTokens(AuthProvider.BEARER, "token");
+      const result = await refreshTokens(AuthProvider.BEARER, {token: "token"});
 
       expect(result).toEqual(mockResponse);
     });

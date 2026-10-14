@@ -74,7 +74,7 @@ export const login = async (provider: ProviderType): Promise<void> => {
 };
 
 const refreshAccessToken = async (refresh: string): Promise<void> => {
-  const result = await refreshTokens(AuthProvider.BEARER, refresh);
+  const result = await refreshTokens(AuthProvider.BEARER, {token: refresh});
   if (!isLimitedScopeTokenResponse(result)) {
     setTokens(result.access_token, result.refresh_token, result.expires_in);
   }

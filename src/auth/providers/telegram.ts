@@ -1,8 +1,8 @@
 import {atom, type WritableAtom} from "nanostores";
 import {warnProviderNotConfigured} from "./oauth";
 import {AuthProvider} from "./types";
-import {getOauthState} from "../state";
-import {getPkceVerifier, pkceChallenge} from "../pkce";
+import {authorizationCodeUrl, readAuthorizationCode} from "./authorization-code";
+import type {ProviderCredential} from "./credential";
 import {shared} from "../../shared-runtime";
 
 // Provider configuration interface
@@ -34,18 +34,13 @@ const legacyAuthUrl = (config: TelegramProviderConfig): string =>
   `&origin=${encodeURIComponent(window.location.origin)}` +
   `&return_to=${encodeURIComponent(window.location.origin + location.pathname)}`;
 
-const oidcAuthUrl = async (config: TelegramProviderConfig): Promise<string> => {
-  const params = new URLSearchParams({
-    client_id: config.botId,
-    redirect_uri: telegramRedirectUri(config),
-    response_type: "code",
+const oidcAuthUrl = (config: TelegramProviderConfig): Promise<string> =>
+  authorizationCodeUrl(AuthProvider.TELEGRAM_OIDC, {
+    authUrl: TELEGRAM_AUTH_URL,
+    clientId: config.botId,
+    redirectUri: telegramRedirectUri(config),
     scope: "openid profile",
-    state: getOauthState(AuthProvider.TELEGRAM_OIDC),
-    code_challenge: await pkceChallenge(getPkceVerifier(AuthProvider.TELEGRAM_OIDC)),
-    code_challenge_method: "S256",
   });
-  return `${TELEGRAM_AUTH_URL}?${params.toString()}`;
-};
 
 /**
  * Updates the Telegram authentication URL using the configured settings
@@ -68,9 +63,8 @@ export function updateTelegramAuthUrl(): void {
   void oidcAuthUrl(config).then((url) => telegramAuthUrl.set(url));
 }
 
-/** The PKCE verifier and redirect URI the backend needs to redeem a Telegram authorization code. */
-export const telegramCodeExchange = (): {codeVerifier: string; redirectUri: string} | undefined => {
+/** The authorization code Telegram sent back, when this page is its OpenID Connect callback. */
+export const readTelegramCode = (): ProviderCredential | undefined => {
   const config = telegramConfig.get();
-  if (!config) return undefined;
-  return {codeVerifier: getPkceVerifier(AuthProvider.TELEGRAM_OIDC), redirectUri: telegramRedirectUri(config)};
+  return config ? readAuthorizationCode(AuthProvider.TELEGRAM_OIDC, telegramRedirectUri(config)) : undefined;
 };
