@@ -4,7 +4,10 @@
  */
 
 import {describe, it, expect, beforeEach, afterEach, vi} from "vite-plus/test";
-import {telegramConfig, telegramAuthUrl, updateTelegramAuthUrl, telegramCodeExchange} from "@/providers";
+import {telegramConfig, telegramAuthUrl, updateTelegramAuthUrl} from "@/providers";
+import {readTelegramCode} from "@/providers/telegram";
+import * as urlModule from "@/url";
+import * as stateModule from "@/state";
 import {getPkceVerifier, pkceChallenge} from "@/pkce";
 
 // Mock window.location
@@ -243,6 +246,10 @@ describe("Telegram Provider", () => {
       sessionStorage.clear();
     });
 
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
     it("requests an authorization code with a PKCE S256 challenge", async () => {
       telegramConfig.set({botId: "123456", oidc: true});
 
@@ -268,14 +275,29 @@ describe("Telegram Provider", () => {
       expect(url.searchParams.get("redirect_uri")).toBe("https://app.example.com/login");
     });
 
-    it("hands back the verifier and redirect URI for the code exchange", () => {
+    it("reads the code Telegram sent back with its verifier and redirect URI", () => {
       telegramConfig.set({botId: "123456", oidc: true});
+      const verifier = getPkceVerifier("telegram");
+      vi.spyOn(urlModule.urlParams, "has").mockImplementation((key: string) => key === "code");
+      vi.spyOn(urlModule.urlParams, "get").mockImplementation((key: string) => ({code: "auth-code", state: "telegram_abc"})[key] ?? null);
+      vi.spyOn(stateModule, "validateOAuthState").mockReturnValue(true);
 
-      expect(telegramCodeExchange()).toEqual({codeVerifier: getPkceVerifier("telegram"), redirectUri: "https://app.example.com"});
+      expect(readTelegramCode()).toEqual({
+        authorizationCode: {code: "auth-code", codeVerifier: verifier, redirectUri: "https://app.example.com"},
+      });
     });
 
-    it("has nothing to exchange when Telegram is not configured", () => {
-      expect(telegramCodeExchange()).toBeUndefined();
+    it("ignores a code it holds no verifier for", () => {
+      telegramConfig.set({botId: "123456", oidc: true});
+      vi.spyOn(urlModule.urlParams, "has").mockImplementation((key: string) => key === "code");
+      vi.spyOn(urlModule.urlParams, "get").mockImplementation((key: string) => ({code: "auth-code", state: "telegram_abc"})[key] ?? null);
+      vi.spyOn(stateModule, "validateOAuthState").mockReturnValue(true);
+
+      expect(readTelegramCode()).toBeUndefined();
+    });
+
+    it("has no code to read when Telegram is not configured", () => {
+      expect(readTelegramCode()).toBeUndefined();
     });
   });
 });

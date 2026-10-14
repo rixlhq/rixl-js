@@ -69,7 +69,7 @@ describe("AuthStore - Token Refresh", () => {
 
       const token = await getToken();
 
-      expect(mockRefreshTokens).toHaveBeenCalledWith(providers.AuthProvider.BEARER, "refresh-123");
+      expect(mockRefreshTokens).toHaveBeenCalledWith(providers.AuthProvider.BEARER, {token: "refresh-123"});
       expect(token).toBe(newToken);
     });
 

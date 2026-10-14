@@ -1,6 +1,6 @@
 /**
  * Provider Utils Coverage Tests
- * Tests: Additional coverage for detectProvider and getProviderToken edge cases
+ * Tests: Additional coverage for detectProvider and getProviderCredential edge cases
  */
 
 import {describe, it, expect, beforeEach, afterEach} from "vite-plus/test";

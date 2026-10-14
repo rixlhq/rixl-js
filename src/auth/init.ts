@@ -20,8 +20,9 @@ import {
   updateAppleAuthUrl,
   updateMicrosoftAuthUrl,
   updateTelegramAuthUrl,
-  telegramCodeExchange,
-  getProviderToken,
+  getProviderCredential,
+  credentialFields,
+  type ProviderCredential,
   detectProvider,
   completeOAuthCallback,
   logProviderExchangeFailure,
@@ -155,12 +156,6 @@ const handleInitPageApiError = (error: ApiError): void => {
   setAuthErrorAndClear("provider_exchange_failed", info.error || info.description, info.email);
 };
 
-const exchangeProviderToken = async (provider: AuthProvider, token: string): Promise<void> => {
-  const options = provider === AuthProvider.TELEGRAM_OIDC ? telegramCodeExchange() : undefined;
-  const result = await refreshTokens(provider, token, options);
-  applyTokenExchangeResult(result);
-};
-
 const initPage = async () => {
   const provider = detectProvider();
   if (!provider) {
@@ -170,20 +165,21 @@ const initPage = async () => {
     return undefined;
   }
 
-  // An authorization code redeems once, so a linking round-trip must not spend it on sign-in first.
-  if (provider === AuthProvider.TELEGRAM_OIDC && hasSocialConnectAttempt(provider)) return undefined;
+  // A pending link means the user is already signed in: the credential is for
+  // initSocials to link, and an authorization code can only be redeemed once.
+  if (hasSocialConnectAttempt(provider)) return undefined;
 
-  const token = getProviderToken(provider);
-  if (!token) return undefined;
+  const credential = getProviderCredential(provider);
+  if (!credential) return undefined;
 
-  await loginWithProviderToken(provider, token);
+  await loginWithProviderCredential(provider, credential);
 };
 
-const loginWithProviderToken = async (provider: AuthProvider, token: string): Promise<void> => {
+const loginWithProviderCredential = async (provider: AuthProvider, credential: ProviderCredential): Promise<void> => {
   try {
-    await exchangeProviderToken(provider, token);
+    applyTokenExchangeResult(await refreshTokens(provider, credential));
   } catch (error) {
-    logProviderExchangeFailure(provider, token, error);
+    logProviderExchangeFailure(provider, credentialFields(credential).token, error);
     // A transport failure is not an auth outcome and has no message to show, so
     // it still propagates; the gateway's own rejections become authError state.
     if (!(error instanceof ApiError)) throw error;
@@ -195,13 +191,12 @@ const initSocials = async () => {
   const provider = detectProvider();
   if (!provider) return undefined;
 
-  const token = getProviderToken(provider);
-  if (!token) return undefined;
+  const credential = getProviderCredential(provider);
+  if (!credential) return undefined;
 
-  // Check if this is a social connection attempt
   try {
     if (hasSocialConnectAttempt(provider)) {
-      await connectSocialInternal(provider, token);
+      await connectSocialInternal(provider, credential);
     }
   } finally {
     clearSocialConnectAttempt(provider);

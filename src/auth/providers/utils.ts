@@ -1,6 +1,9 @@
 import {urlParams} from "../url";
 import {validateOAuthState} from "../state";
 import {AuthProvider} from "./types";
+import {hasAuthorizationCode} from "./authorization-code";
+import type {ProviderCredential} from "./credential";
+import {readTelegramCode} from "./telegram";
 
 /**
  * Extracts the provider identifier from a state parameter
@@ -15,58 +18,61 @@ export function extractProviderFromState(state: string): string | undefined {
   return undefined;
 }
 
-const OAUTH_PROVIDERS = [AuthProvider.GOOGLE, AuthProvider.APPLE, AuthProvider.MICROSOFT] as const;
-
-/**
- * Detects the authentication provider from URL parameters
- * @returns The detected authentication provider or undefined if none detected
- */
-export function detectProvider(): AuthProvider | undefined {
-  // Check for Telegram providers first (they have specific parameters)
-  if (urlParams.has(AuthProvider.TELEGRAM_MINI_APP)) {
-    return AuthProvider.TELEGRAM_MINI_APP;
-  }
-  const state = urlParams.get("state");
-
-  // Telegram OpenID Connect returns an authorization code, and the redirect can
-  // also carry a tgAuthResult that the code flow does not use.
-  if (urlParams.has("code") && state && validateOAuthState(AuthProvider.TELEGRAM_OIDC, state)) {
-    return AuthProvider.TELEGRAM_OIDC;
-  }
-  if (urlParams.has(AuthProvider.TELEGRAM_WEB)) {
-    return AuthProvider.TELEGRAM_WEB;
-  }
-
-  // Check for OAuth providers via id_token + state
-  const id_token = urlParams.get("id_token");
-
-  if (id_token && state) {
-    const providerFromState = extractProviderFromState(state);
-    return OAUTH_PROVIDERS.find((p) => providerFromState === p && validateOAuthState(p, state));
-  }
-
-  return undefined;
+/** How one provider's response shows up on the page it redirects back to. */
+interface ProviderCallbackReader {
+  provider: AuthProvider;
+  /** Whether this page holds this provider's response. */
+  matches(): boolean;
+  read(): ProviderCredential | undefined;
 }
 
-/**
- * Gets the authentication token or code from the URL based on the provider
- * @param provider The authentication provider
- * @returns The token or code, or undefined if not found
- */
-export function getProviderToken(provider: AuthProvider): string | undefined {
-  // For Telegram, the token is in a parameter named after the provider
-  if (provider === AuthProvider.TELEGRAM_MINI_APP || provider === AuthProvider.TELEGRAM_WEB) {
-    return urlParams.get(provider) || undefined;
-  }
+/** Telegram's widget and mini app put their payload in a parameter named after the provider. */
+const tokenParam = (provider: AuthProvider): ProviderCallbackReader => ({
+  provider,
+  matches: () => urlParams.has(provider),
+  read: () => {
+    const token = urlParams.get(provider);
+    return token ? {token} : undefined;
+  },
+});
 
-  if (provider === AuthProvider.TELEGRAM_OIDC) {
-    return urlParams.get("code") || undefined;
-  }
+/** OpenID Connect providers that return an id_token with the state issued for them. */
+const idTokenWithState = (provider: AuthProvider): ProviderCallbackReader => ({
+  provider,
+  matches: () => {
+    const state = urlParams.get("state");
+    if (!urlParams.get("id_token") || !state) return false;
+    return extractProviderFromState(state) === provider && validateOAuthState(provider, state);
+  },
+  read: () => {
+    const token = urlParams.get("id_token");
+    return token ? {token} : undefined;
+  },
+});
 
-  // For OAuth providers (Google, Apple, Microsoft), the token is in the 'id_token' parameter
-  if (provider === AuthProvider.GOOGLE || provider === AuthProvider.APPLE || provider === AuthProvider.MICROSOFT) {
-    return urlParams.get("id_token") || undefined;
-  }
+const telegramCode: ProviderCallbackReader = {
+  provider: AuthProvider.TELEGRAM_OIDC,
+  matches: () => hasAuthorizationCode(AuthProvider.TELEGRAM_OIDC),
+  read: readTelegramCode,
+};
 
-  return undefined;
+// Checked in order, and the first match wins: a Telegram code redirect can also
+// carry a tgAuthResult the code flow does not use.
+const CALLBACK_READERS: ReadonlyArray<ProviderCallbackReader> = [
+  tokenParam(AuthProvider.TELEGRAM_MINI_APP),
+  telegramCode,
+  tokenParam(AuthProvider.TELEGRAM_WEB),
+  idTokenWithState(AuthProvider.GOOGLE),
+  idTokenWithState(AuthProvider.APPLE),
+  idTokenWithState(AuthProvider.MICROSOFT),
+];
+
+/** The provider whose response this page holds, if any. */
+export function detectProvider(): AuthProvider | undefined {
+  return CALLBACK_READERS.find((reader) => reader.matches())?.provider;
+}
+
+/** The credential a provider's response on this page carries. */
+export function getProviderCredential(provider: AuthProvider): ProviderCredential | undefined {
+  return CALLBACK_READERS.find((reader) => reader.provider === provider)?.read();
 }
