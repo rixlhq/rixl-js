@@ -3,9 +3,10 @@ import {
   authV1ProvidersServiceConnectProvider,
   authV1ProvidersServiceDisconnectProvider,
 } from "../../generated/sdk.gen";
-import type {AuthV1ExternalAccountProvider} from "../../generated/types.gen";
+import type {AuthV1ConnectProviderRequest, AuthV1ExternalAccountProvider} from "../../generated/types.gen";
 import {getToken, login} from "../authStore";
 import {AuthProvider} from "../providers/types";
+import {telegramCodeExchange} from "../providers/telegram";
 import {setSocialConnectAttempt} from "./socialState";
 import {apiCall} from "../api/utils";
 import {persistTokens} from "../api/tokens";
@@ -85,11 +86,16 @@ export const connectSocialInternal = async (provider: string, token: string): Pr
       const requestBody = validateInput(ConnectProviderSchema, {provider, token});
       const sessionToken = await getToken();
       const headers: Record<string, string> = sessionToken ? {Authorization: `Bearer ${sessionToken}`} : {};
+      const exchange = provider === AuthProvider.TELEGRAM_OIDC ? telegramCodeExchange() : undefined;
+      // code_verifier and redirect_uri are not in the generated type until the SDK is regenerated.
+      const body: AuthV1ConnectProviderRequest & {code_verifier?: string; redirect_uri?: string} = {
+        provider: toProtoProvider(normalizeProviderType(requestBody.provider)),
+        token: requestBody.token,
+        code_verifier: exchange?.codeVerifier,
+        redirect_uri: exchange?.redirectUri,
+      };
       const {data} = await authV1ProvidersServiceConnectProvider({
-        body: {
-          provider: toProtoProvider(normalizeProviderType(requestBody.provider)),
-          token: requestBody.token,
-        },
+        body,
         headers,
         throwOnError: true,
       });

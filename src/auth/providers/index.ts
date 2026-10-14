@@ -8,7 +8,7 @@ export {microsoftConfig, microsoftAuthUrl, updateMicrosoftAuthUrl, type Microsof
 
 export {appleConfig, appleAuthUrl, updateAppleAuthUrl, type AppleProviderConfig} from "./apple";
 
-export {telegramConfig, telegramAuthUrl, updateTelegramAuthUrl, type TelegramProviderConfig} from "./telegram";
+export {telegramConfig, telegramAuthUrl, updateTelegramAuthUrl, telegramCodeExchange, type TelegramProviderConfig} from "./telegram";
 
 // Export utility functions
 export {detectProvider, getProviderToken} from "./utils";

@@ -35,6 +35,31 @@ describe("Provider Utils - OAuth Validation Paths", () => {
   });
 
   describe("detectProvider - Telegram paths", () => {
+    it("should detect a Telegram authorization code whose state validates", () => {
+      vi.spyOn(urlModule.urlParams, "has").mockImplementation((key: string) => key === "code");
+      vi.spyOn(urlModule.urlParams, "get").mockImplementation((key: string) => (key === "state" ? "telegram_abc" : null));
+      const validate = vi.spyOn(stateModule, "validateOAuthState").mockReturnValue(true);
+
+      expect(detectProvider()).toBe(AuthProvider.TELEGRAM_OIDC);
+      expect(validate).toHaveBeenCalledWith(AuthProvider.TELEGRAM_OIDC, "telegram_abc");
+    });
+
+    it("should prefer a Telegram authorization code over a tgAuthResult in the same URL", () => {
+      vi.spyOn(urlModule.urlParams, "has").mockImplementation((key: string) => key === "code" || key === AuthProvider.TELEGRAM_WEB);
+      vi.spyOn(urlModule.urlParams, "get").mockImplementation((key: string) => (key === "state" ? "telegram_abc" : null));
+      vi.spyOn(stateModule, "validateOAuthState").mockReturnValue(true);
+
+      expect(detectProvider()).toBe(AuthProvider.TELEGRAM_OIDC);
+    });
+
+    it("should ignore an authorization code whose state does not validate", () => {
+      vi.spyOn(urlModule.urlParams, "has").mockImplementation((key: string) => key === "code");
+      vi.spyOn(urlModule.urlParams, "get").mockImplementation((key: string) => (key === "state" ? "telegram_forged" : null));
+      vi.spyOn(stateModule, "validateOAuthState").mockReturnValue(false);
+
+      expect(detectProvider()).toBeUndefined();
+    });
+
     it("should detect TELEGRAM_MINI_APP and return early", () => {
       const hasSpy = vi.spyOn(urlModule.urlParams, "has");
       hasSpy.mockImplementation((key: string) => key === AuthProvider.TELEGRAM_MINI_APP);

@@ -32,6 +32,8 @@ vi.mock("../../auth/providers", () => ({
   hasProviderResponse: vi.fn(() => false),
   logUnusableProviderResponse: vi.fn(),
   getProviderToken: vi.fn(),
+  telegramCodeExchange: vi.fn(),
+  AuthProvider: {TELEGRAM_OIDC: "telegram"},
 }));
 
 vi.mock("../../auth/social/socialState", () => ({
@@ -101,6 +103,19 @@ describe("initClient - Social Connection Flow", () => {
     expect(mockHasSocialConnectAttempt).toHaveBeenCalledWith("google");
     expect(mockConnectSocialInternal).toHaveBeenCalledWith("google", "oauth-token");
     expect(mockClearSocialConnectAttempt).toHaveBeenCalledWith("google");
+  });
+
+  it("links a Telegram code without first spending it on sign-in", async () => {
+    mockDetectProvider.mockReturnValue("telegram");
+    mockGetProviderToken.mockReturnValue("auth-code");
+    mockHasSocialConnectAttempt.mockReturnValue(true);
+    mockRefreshToken.get.mockReturnValue("existing-token");
+    mockConnectSocialInternal.mockResolvedValue(undefined);
+
+    await initClient({apiUrl: "https://api.example.com"});
+
+    expect(mockRefreshTokens).not.toHaveBeenCalled();
+    expect(mockConnectSocialInternal).toHaveBeenCalledWith("telegram", "auth-code");
   });
 
   it("should clear social attempt flag even if connection fails", async () => {

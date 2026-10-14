@@ -8,6 +8,7 @@ import {ChangeEmailRequestSchema, ResendEmailRequestSchema, verifyEmailChangeReq
 import {validateInput} from "../validation/base";
 import {apiCall} from "../api/utils";
 import {persistTokens} from "../api/tokens";
+import {limitedAccessToken} from "../authStore";
 import {HTTP_STATUS} from "../constants";
 import type {VerificationSentResponse, VerifyEmailResponse, VerifyStatusResponse} from "./types";
 import type {EmailVerificationType} from "../types";
@@ -42,8 +43,12 @@ export const addEmail = async (email: string): Promise<void | VerificationSentRe
   return apiCall(
     async () => {
       const validatedInput = validateInput(ResendEmailRequestSchema, {email});
+      // A user who still owes an email holds only the limited token, which
+      // getToken() withholds, so this call has to carry it explicitly.
+      const limitedToken = limitedAccessToken.get();
       const {data} = await authV1EmailServiceAddEmail({
         body: validatedInput,
+        ...(limitedToken && {headers: {Authorization: `Bearer ${limitedToken}`}}),
         throwOnError: true,
       });
 

@@ -10,6 +10,7 @@ export const COOKIE_EXPIRY_DAYS: number = 30;
 
 /** OAuth state storage key prefix */
 export const STATE_STORAGE_KEY_PREFIX: string = GLOBAL_PREFIX + "_state_";
+export const PKCE_STORAGE_KEY_PREFIX: string = GLOBAL_PREFIX + "_pkce_";
 
 /** Social connect storage key prefix */
 export const SOCIAL_CONNECT_KEY_PREFIX: string = GLOBAL_PREFIX + "_social_connect_";

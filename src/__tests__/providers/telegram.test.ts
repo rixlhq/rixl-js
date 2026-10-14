@@ -4,7 +4,8 @@
  */
 
 import {describe, it, expect, beforeEach, afterEach, vi} from "vite-plus/test";
-import {telegramConfig, telegramAuthUrl, updateTelegramAuthUrl} from "@/providers";
+import {telegramConfig, telegramAuthUrl, updateTelegramAuthUrl, telegramCodeExchange} from "@/providers";
+import {getPkceVerifier, pkceChallenge} from "@/pkce";
 
 // Mock window.location
 const originalLocation = global.window?.location;
@@ -225,6 +226,56 @@ describe("Telegram Provider", () => {
 
       expect(firstUrl).toContain("%2Fcallback");
       expect(secondUrl).toContain("%2Fnew-path");
+    });
+  });
+
+  describe("OpenID Connect code flow", () => {
+    const waitForAuthUrl = () =>
+      new Promise<string>((resolve) => {
+        const unbind = telegramAuthUrl.subscribe((url) => {
+          if (!url) return;
+          queueMicrotask(() => unbind());
+          resolve(url);
+        });
+      });
+
+    beforeEach(() => {
+      sessionStorage.clear();
+    });
+
+    it("requests an authorization code with a PKCE S256 challenge", async () => {
+      telegramConfig.set({botId: "123456", oidc: true});
+
+      updateTelegramAuthUrl();
+      const url = new URL(await waitForAuthUrl());
+
+      expect(url.origin + url.pathname).toBe("https://oauth.telegram.org/auth");
+      expect(url.searchParams.get("client_id")).toBe("123456");
+      expect(url.searchParams.get("response_type")).toBe("code");
+      expect(url.searchParams.get("scope")).toBe("openid profile");
+      expect(url.searchParams.get("redirect_uri")).toBe("https://app.example.com");
+      expect(url.searchParams.get("state")).toMatch(/^telegram_/);
+      expect(url.searchParams.get("code_challenge_method")).toBe("S256");
+      expect(url.searchParams.get("code_challenge")).toBe(await pkceChallenge(getPkceVerifier("telegram")));
+    });
+
+    it("uses the configured redirect URI", async () => {
+      telegramConfig.set({botId: "123456", oidc: true, redirectUri: "https://app.example.com/login"});
+
+      updateTelegramAuthUrl();
+      const url = new URL(await waitForAuthUrl());
+
+      expect(url.searchParams.get("redirect_uri")).toBe("https://app.example.com/login");
+    });
+
+    it("hands back the verifier and redirect URI for the code exchange", () => {
+      telegramConfig.set({botId: "123456", oidc: true});
+
+      expect(telegramCodeExchange()).toEqual({codeVerifier: getPkceVerifier("telegram"), redirectUri: "https://app.example.com"});
+    });
+
+    it("has nothing to exchange when Telegram is not configured", () => {
+      expect(telegramCodeExchange()).toBeUndefined();
     });
   });
 });

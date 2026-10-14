@@ -41,7 +41,8 @@ vi.mock("../../auth/providers", () => ({
   updateAppleAuthUrl: vi.fn(),
   updateMicrosoftAuthUrl: vi.fn(),
   updateTelegramAuthUrl: vi.fn(),
-  AuthProvider: {BEARER: "bearer"},
+  telegramCodeExchange: vi.fn(),
+  AuthProvider: {BEARER: "bearer", TELEGRAM_OIDC: "telegram"},
 }));
 
 vi.mock("../../auth/api/client-core", () => ({
@@ -93,7 +94,23 @@ describe("initClient - OAuth Callback Handling", () => {
 
     expect(mockDetectProvider).toHaveBeenCalled();
     expect(mockGetProviderToken).toHaveBeenCalledWith("google");
-    expect(mockRefreshTokens).toHaveBeenCalledWith("google", "oauth-token");
+    expect(mockRefreshTokens).toHaveBeenCalledWith("google", "oauth-token", undefined);
+  });
+
+  it("redeems a Telegram code with its PKCE verifier", async () => {
+    const providers = await import("../../auth/providers");
+    vi.mocked(providers.telegramCodeExchange).mockReturnValue({codeVerifier: "verifier", redirectUri: "https://app.example.com"});
+    mockDetectProvider.mockReturnValue("telegram");
+    mockGetProviderToken.mockReturnValue("auth-code");
+    mockRefreshToken.get.mockReturnValue(null);
+    mockRefreshTokens.mockResolvedValue({access_token: "a", refresh_token: "r", expires_in: 3600});
+
+    await initClient({apiUrl: "https://api.example.com"});
+
+    expect(mockRefreshTokens).toHaveBeenCalledWith("telegram", "auth-code", {
+      codeVerifier: "verifier",
+      redirectUri: "https://app.example.com",
+    });
   });
 
   it("treats an empty requires_action as a full-scope token", async () => {
@@ -140,7 +157,7 @@ describe("initClient - OAuth Callback Handling", () => {
 
     await initClient(config);
 
-    expect(mockRefreshTokens).toHaveBeenCalledWith("google", "oauth-token");
+    expect(mockRefreshTokens).toHaveBeenCalledWith("google", "oauth-token", undefined);
     expect(mockAuthError.set).toHaveBeenCalledWith(expect.objectContaining({error_code: "email_not_verified"}));
   });
 

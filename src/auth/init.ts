@@ -20,6 +20,7 @@ import {
   updateAppleAuthUrl,
   updateMicrosoftAuthUrl,
   updateTelegramAuthUrl,
+  telegramCodeExchange,
   getProviderToken,
   detectProvider,
   completeOAuthCallback,
@@ -155,7 +156,8 @@ const handleInitPageApiError = (error: ApiError): void => {
 };
 
 const exchangeProviderToken = async (provider: AuthProvider, token: string): Promise<void> => {
-  const result = await refreshTokens(provider, token);
+  const options = provider === AuthProvider.TELEGRAM_OIDC ? telegramCodeExchange() : undefined;
+  const result = await refreshTokens(provider, token, options);
   applyTokenExchangeResult(result);
 };
 
@@ -168,9 +170,16 @@ const initPage = async () => {
     return undefined;
   }
 
+  // An authorization code redeems once, so a linking round-trip must not spend it on sign-in first.
+  if (provider === AuthProvider.TELEGRAM_OIDC && hasSocialConnectAttempt(provider)) return undefined;
+
   const token = getProviderToken(provider);
   if (!token) return undefined;
 
+  await loginWithProviderToken(provider, token);
+};
+
+const loginWithProviderToken = async (provider: AuthProvider, token: string): Promise<void> => {
   try {
     await exchangeProviderToken(provider, token);
   } catch (error) {
