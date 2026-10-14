@@ -2,6 +2,7 @@ import {describe, it, expect, beforeEach, afterEach, vi} from "vite-plus/test";
 import {initiateEmailChange, verifyEmailWithCode, getEmailVerificationStatus, addEmail} from "@/auth/email";
 import {setupAuthTest, cleanupAuthMocks} from "../utils/auth-test-helpers";
 import {createMockJWT} from "../utils/test-helpers";
+import {clearLimitedAccessState, setLimitedAccessState} from "@/authStore";
 
 const mockPutAuthV1UsersCurrentEmailsChange = vi.fn();
 const mockPostAuthV1UsersCurrentEmails = vi.fn();
@@ -182,6 +183,25 @@ describe("Email Functions", () => {
       expect(result).toEqual({
         verification_id: "verify-123",
         message: "Verification email sent",
+      });
+    });
+
+    it("should authorize with the limited access token while an email is still owed", async () => {
+      setLimitedAccessState("limited-token", "add_email");
+      mockPostAuthV1UsersCurrentEmails.mockResolvedValue({
+        data: {verification_id: "verify-123", message: "Verification email sent"},
+      });
+
+      try {
+        await addEmail("newemail@example.com");
+      } finally {
+        clearLimitedAccessState();
+      }
+
+      expect(mockPostAuthV1UsersCurrentEmails).toHaveBeenCalledWith({
+        body: {email: "newemail@example.com"},
+        headers: {Authorization: "Bearer limited-token"},
+        throwOnError: true,
       });
     });
 
