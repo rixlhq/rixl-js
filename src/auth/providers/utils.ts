@@ -26,7 +26,7 @@ interface ProviderCallbackReader {
   read(): ProviderCredential | undefined;
 }
 
-/** Telegram's widget and mini app put their payload in a parameter named after the provider. */
+/** Telegram's mini app puts its init data in a parameter named after the provider. */
 const tokenParam = (provider: AuthProvider): ProviderCallbackReader => ({
   provider,
   matches: () => urlParams.has(provider),
@@ -56,12 +56,10 @@ const telegramCode: ProviderCallbackReader = {
   read: readTelegramCode,
 };
 
-// Checked in order, and the first match wins: a Telegram code redirect can also
-// carry a tgAuthResult the code flow does not use.
+// Checked in order, and the first match wins.
 const CALLBACK_READERS: ReadonlyArray<ProviderCallbackReader> = [
   tokenParam(AuthProvider.TELEGRAM_MINI_APP),
   telegramCode,
-  tokenParam(AuthProvider.TELEGRAM_WEB),
   idTokenWithState(AuthProvider.GOOGLE),
   idTokenWithState(AuthProvider.APPLE),
   idTokenWithState(AuthProvider.MICROSOFT),

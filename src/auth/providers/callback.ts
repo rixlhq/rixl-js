@@ -9,13 +9,7 @@ import {AuthProvider} from "./types";
 import {detectProvider} from "./utils";
 
 /** Params that carry the credential itself — their presence marks a callback response. */
-const CREDENTIAL_PARAMS: ReadonlyArray<string> = [
-  "id_token",
-  "code",
-  "access_token",
-  AuthProvider.TELEGRAM_WEB,
-  AuthProvider.TELEGRAM_MINI_APP,
-];
+const CREDENTIAL_PARAMS: ReadonlyArray<string> = ["id_token", "code", "access_token", AuthProvider.TELEGRAM_MINI_APP];
 
 /** Everything the providers append to the redirect URL, credential and bookkeeping alike. */
 const OAUTH_RESPONSE_PARAMS: ReadonlyArray<string> = [

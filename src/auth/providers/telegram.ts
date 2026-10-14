@@ -7,12 +7,8 @@ import {shared} from "../../shared-runtime";
 
 // Provider configuration interface
 export interface TelegramProviderConfig {
+  /** The bot ID, which is Telegram's OpenID Connect client ID. */
   botId: string;
-  /**
-   * Sign in with Telegram's OpenID Connect authorization code flow instead of
-   * the legacy widget redirect. The bot ID is the OIDC client ID.
-   */
-  oidc?: boolean;
   /** Must be registered in BotFather. Defaults to the page origin. */
   redirectUri?: string;
 }
@@ -28,13 +24,7 @@ export const telegramAuthUrl: WritableAtom<string | null> = shared("provider.tel
 
 const telegramRedirectUri = (config: TelegramProviderConfig): string => config.redirectUri ?? window.location.origin;
 
-const legacyAuthUrl = (config: TelegramProviderConfig): string =>
-  `${TELEGRAM_AUTH_URL}?` +
-  `bot_id=${encodeURIComponent(config.botId)}` +
-  `&origin=${encodeURIComponent(window.location.origin)}` +
-  `&return_to=${encodeURIComponent(window.location.origin + location.pathname)}`;
-
-const oidcAuthUrl = (config: TelegramProviderConfig): Promise<string> =>
+const authUrl = (config: TelegramProviderConfig): Promise<string> =>
   authorizationCodeUrl(AuthProvider.TELEGRAM_OIDC, {
     authUrl: TELEGRAM_AUTH_URL,
     clientId: config.botId,
@@ -53,14 +43,9 @@ export function updateTelegramAuthUrl(): void {
     return;
   }
 
-  if (!config.oidc) {
-    telegramAuthUrl.set(legacyAuthUrl(config));
-    return;
-  }
-
   // The S256 challenge is async; until it resolves login() reports the provider as not ready.
   telegramAuthUrl.set(null);
-  void oidcAuthUrl(config).then((url) => telegramAuthUrl.set(url));
+  void authUrl(config).then((url) => telegramAuthUrl.set(url));
 }
 
 /** The authorization code Telegram sent back, when this page is its OpenID Connect callback. */

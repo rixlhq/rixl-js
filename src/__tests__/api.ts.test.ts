@@ -69,7 +69,7 @@ describe("API Module", () => {
       [AuthProvider.GOOGLE, "google"],
       [AuthProvider.APPLE, "apple"],
       [AuthProvider.MICROSOFT, "microsoft"],
-      [AuthProvider.TELEGRAM_WEB, "tgAuthResult"],
+      [AuthProvider.TELEGRAM_OIDC, "telegram"],
       [AuthProvider.TELEGRAM_MINI_APP, "tgWebAppData"],
     ])("should sign in with %s via /auth/v1/token", async (provider, tokenType) => {
       mockPostAuthV1Token.mockResolvedValue({
@@ -89,7 +89,7 @@ describe("API Module", () => {
         data: {access_token: "token", refresh_token: "refresh", expires_in: 3600},
       });
 
-      await refreshTokens(AuthProvider.TELEGRAM_WEB, {token: "tg-token"});
+      await refreshTokens(AuthProvider.TELEGRAM_MINI_APP, {token: "init-data"});
 
       expect(mockPostAuthV1ProvidersConnect).not.toHaveBeenCalled();
     });

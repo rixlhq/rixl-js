@@ -43,7 +43,7 @@ const PROVIDER_FROM_PROTO: Partial<Record<AuthV1ExternalAccountProvider, Provide
 
 // Both Telegram login flavors connect the same external account.
 export const normalizeProviderType = (provider: string): ProviderType =>
-  provider === AuthProvider.TELEGRAM_WEB || provider === AuthProvider.TELEGRAM_MINI_APP ? "telegram" : (provider as ProviderType);
+  provider === AuthProvider.TELEGRAM_MINI_APP ? "telegram" : (provider as ProviderType);
 
 export const toProtoProvider = (provider: ProviderType): AuthV1ExternalAccountProvider => {
   const proto = PROVIDER_TO_PROTO[provider];
