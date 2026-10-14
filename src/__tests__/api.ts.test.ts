@@ -65,34 +65,33 @@ describe("API Module", () => {
       await expect(refreshTokens(AuthProvider.BEARER, "expired-token")).rejects.toThrow();
     });
 
-    it("should connect Google via /auth/v1/providers/connect", async () => {
-      const mockResponse = {
-        access_token: "token",
-        refresh_token: "refresh",
-        expires_in: 7200,
-      };
+    it.each([
+      [AuthProvider.GOOGLE, "google"],
+      [AuthProvider.APPLE, "apple"],
+      [AuthProvider.MICROSOFT, "microsoft"],
+      [AuthProvider.TELEGRAM_WEB, "tgAuthResult"],
+      [AuthProvider.TELEGRAM_MINI_APP, "tgWebAppData"],
+    ])("should sign in with %s via /auth/v1/token", async (provider, tokenType) => {
+      mockPostAuthV1Token.mockResolvedValue({
+        data: {access_token: "token", refresh_token: "refresh", expires_in: 3600},
+      });
 
-      mockPostAuthV1ProvidersConnect.mockResolvedValue({data: mockResponse});
+      await refreshTokens(provider, "provider-token");
 
-      await refreshTokens(AuthProvider.GOOGLE, "google-token");
-
-      expect(mockPostAuthV1ProvidersConnect).toHaveBeenCalledWith({
-        body: {provider: "EXTERNAL_ACCOUNT_PROVIDER_GOOGLE", token: "google-token"},
+      expect(mockPostAuthV1Token).toHaveBeenCalledWith({
+        body: {token_type: tokenType, refresh_token: "provider-token"},
         throwOnError: true,
       });
     });
 
-    it("should connect Telegram via /auth/v1/providers/connect", async () => {
-      mockPostAuthV1ProvidersConnect.mockResolvedValue({
+    it("should not call /auth/v1/providers/connect to sign in", async () => {
+      mockPostAuthV1Token.mockResolvedValue({
         data: {access_token: "token", refresh_token: "refresh", expires_in: 3600},
       });
 
       await refreshTokens(AuthProvider.TELEGRAM_WEB, "tg-token");
 
-      expect(mockPostAuthV1ProvidersConnect).toHaveBeenCalledWith({
-        body: {provider: "EXTERNAL_ACCOUNT_PROVIDER_TELEGRAM", token: "tg-token"},
-        throwOnError: true,
-      });
+      expect(mockPostAuthV1ProvidersConnect).not.toHaveBeenCalled();
     });
 
     it("should include countryCode and origin for Bearer refresh", async () => {
@@ -113,17 +112,17 @@ describe("API Module", () => {
       });
     });
 
-    it("should include countryCode and origin for provider connect", async () => {
-      mockPostAuthV1ProvidersConnect.mockResolvedValue({
+    it("should include countryCode and origin for provider sign-in", async () => {
+      mockPostAuthV1Token.mockResolvedValue({
         data: {access_token: "token", refresh_token: "refresh", expires_in: 3600},
       });
 
       await refreshTokens(AuthProvider.GOOGLE, "google-token", {countryCode: "NG", origin: "https://app.example.com"});
 
-      expect(mockPostAuthV1ProvidersConnect).toHaveBeenCalledWith({
+      expect(mockPostAuthV1Token).toHaveBeenCalledWith({
         body: {
-          provider: "EXTERNAL_ACCOUNT_PROVIDER_GOOGLE",
-          token: "google-token",
+          token_type: "google",
+          refresh_token: "google-token",
           country_code: "NG",
           origin: "https://app.example.com",
         },
