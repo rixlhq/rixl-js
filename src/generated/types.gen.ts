@@ -2429,6 +2429,14 @@ export type AuthV1ConnectProviderRequest = {
      * origin
      */
     origin?: string;
+    /**
+     * code_verifier
+     */
+    code_verifier?: string;
+    /**
+     * redirect_uri
+     */
+    redirect_uri?: string;
 };
 
 /**
@@ -3550,6 +3558,14 @@ export type AuthV1RefreshTokenRequest = {
      * origin
      */
     origin?: string;
+    /**
+     * code_verifier
+     */
+    code_verifier?: string;
+    /**
+     * redirect_uri
+     */
+    redirect_uri?: string;
 };
 
 /**
