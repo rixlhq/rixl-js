@@ -44,14 +44,6 @@ describe("Provider Utils - OAuth Validation Paths", () => {
       expect(validate).toHaveBeenCalledWith(AuthProvider.TELEGRAM_OIDC, "telegram_abc");
     });
 
-    it("should prefer a Telegram authorization code over a tgAuthResult in the same URL", () => {
-      vi.spyOn(urlModule.urlParams, "has").mockImplementation((key: string) => key === "code" || key === AuthProvider.TELEGRAM_WEB);
-      vi.spyOn(urlModule.urlParams, "get").mockImplementation((key: string) => (key === "state" ? "telegram_abc" : null));
-      vi.spyOn(stateModule, "validateOAuthState").mockReturnValue(true);
-
-      expect(detectProvider()).toBe(AuthProvider.TELEGRAM_OIDC);
-    });
-
     it("should ignore an authorization code whose state does not validate", () => {
       vi.spyOn(urlModule.urlParams, "has").mockImplementation((key: string) => key === "code");
       vi.spyOn(urlModule.urlParams, "get").mockImplementation((key: string) => (key === "state" ? "telegram_forged" : null));
@@ -68,26 +60,6 @@ describe("Provider Utils - OAuth Validation Paths", () => {
 
       expect(result).toBe(AuthProvider.TELEGRAM_MINI_APP);
       expect(hasSpy).toHaveBeenCalledWith(AuthProvider.TELEGRAM_MINI_APP);
-    });
-
-    it("should detect TELEGRAM_WEB when MINI_APP is not present", () => {
-      const hasSpy = vi.spyOn(urlModule.urlParams, "has");
-      hasSpy.mockImplementation((key: string) => key === AuthProvider.TELEGRAM_WEB);
-
-      const result = detectProvider();
-
-      expect(result).toBe(AuthProvider.TELEGRAM_WEB);
-    });
-
-    it("should check TELEGRAM_MINI_APP first, then TELEGRAM_WEB (line 25-26)", () => {
-      const hasSpy = vi.spyOn(urlModule.urlParams, "has");
-      // Return false for MINI_APP, true for WEB
-      hasSpy.mockImplementation((key: string) => key === AuthProvider.TELEGRAM_WEB);
-
-      const result = detectProvider();
-
-      // Should hit line 25 (else if for TELEGRAM_WEB)
-      expect(result).toBe(AuthProvider.TELEGRAM_WEB);
     });
   });
 

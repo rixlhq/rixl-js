@@ -31,8 +31,8 @@ vi.mock("../../auth/providers", () => ({
   logProviderExchangeFailure: vi.fn(),
   hasProviderResponse: vi.fn(() => false),
   logUnusableProviderResponse: vi.fn(),
-  getProviderToken: vi.fn(),
-  telegramCodeExchange: vi.fn(),
+  getProviderCredential: vi.fn(),
+  credentialFields: vi.fn((credential: {token: string}) => ({token: credential.token})),
   AuthProvider: {TELEGRAM_OIDC: "telegram"},
 }));
 
@@ -55,7 +55,7 @@ vi.mock("../../auth/api/sdk-client", () => ({
 
 describe("initClient - Social Connection Flow", () => {
   let mockDetectProvider: any;
-  let mockGetProviderToken: any;
+  let mockGetProviderCredential: any;
   let mockHasSocialConnectAttempt: any;
   let mockClearSocialConnectAttempt: any;
   let mockConnectSocialInternal: any;
@@ -68,7 +68,7 @@ describe("initClient - Social Connection Flow", () => {
 
     const providers = await import("../../auth/providers");
     mockDetectProvider = providers.detectProvider;
-    mockGetProviderToken = providers.getProviderToken;
+    mockGetProviderCredential = providers.getProviderCredential;
 
     const socialState = await import("../../auth/social/socialState");
     mockHasSocialConnectAttempt = socialState.hasSocialConnectAttempt;
@@ -93,7 +93,7 @@ describe("initClient - Social Connection Flow", () => {
     const config: AuthClientConfig = {apiUrl: "https://api.example.com"};
 
     mockDetectProvider.mockReturnValue("google");
-    mockGetProviderToken.mockReturnValue("oauth-token");
+    mockGetProviderCredential.mockReturnValue({token: "oauth-token"});
     mockHasSocialConnectAttempt.mockReturnValue(true);
     mockRefreshToken.get.mockReturnValue("existing-token");
     mockConnectSocialInternal.mockResolvedValue(undefined);
@@ -101,13 +101,14 @@ describe("initClient - Social Connection Flow", () => {
     await initClient(config);
 
     expect(mockHasSocialConnectAttempt).toHaveBeenCalledWith("google");
-    expect(mockConnectSocialInternal).toHaveBeenCalledWith("google", "oauth-token");
+    expect(mockConnectSocialInternal).toHaveBeenCalledWith("google", {token: "oauth-token"});
     expect(mockClearSocialConnectAttempt).toHaveBeenCalledWith("google");
   });
 
-  it("links a Telegram code without first spending it on sign-in", async () => {
+  it("links the credential of a pending link attempt instead of signing in with it", async () => {
+    const credential = {authorizationCode: {code: "auth-code", codeVerifier: "verifier", redirectUri: "https://app.example.com"}};
     mockDetectProvider.mockReturnValue("telegram");
-    mockGetProviderToken.mockReturnValue("auth-code");
+    mockGetProviderCredential.mockReturnValue(credential);
     mockHasSocialConnectAttempt.mockReturnValue(true);
     mockRefreshToken.get.mockReturnValue("existing-token");
     mockConnectSocialInternal.mockResolvedValue(undefined);
@@ -115,14 +116,14 @@ describe("initClient - Social Connection Flow", () => {
     await initClient({apiUrl: "https://api.example.com"});
 
     expect(mockRefreshTokens).not.toHaveBeenCalled();
-    expect(mockConnectSocialInternal).toHaveBeenCalledWith("telegram", "auth-code");
+    expect(mockConnectSocialInternal).toHaveBeenCalledWith("telegram", credential);
   });
 
   it("should clear social attempt flag even if connection fails", async () => {
     const config: AuthClientConfig = {apiUrl: "https://api.example.com"};
 
     mockDetectProvider.mockReturnValue("apple");
-    mockGetProviderToken.mockReturnValue("apple-token");
+    mockGetProviderCredential.mockReturnValue({token: "apple-token"});
     mockHasSocialConnectAttempt.mockReturnValue(true);
     mockRefreshToken.get.mockReturnValue("token");
     mockConnectSocialInternal.mockRejectedValue(new Error("Connection failed"));

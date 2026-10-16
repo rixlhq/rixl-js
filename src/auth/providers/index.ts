@@ -8,9 +8,10 @@ export {microsoftConfig, microsoftAuthUrl, updateMicrosoftAuthUrl, type Microsof
 
 export {appleConfig, appleAuthUrl, updateAppleAuthUrl, type AppleProviderConfig} from "./apple";
 
-export {telegramConfig, telegramAuthUrl, updateTelegramAuthUrl, telegramCodeExchange, type TelegramProviderConfig} from "./telegram";
+export {telegramConfig, telegramAuthUrl, updateTelegramAuthUrl, type TelegramProviderConfig} from "./telegram";
 
 // Export utility functions
-export {detectProvider, getProviderToken} from "./utils";
+export {detectProvider, getProviderCredential} from "./utils";
+export {credentialFields, type ProviderCredential, type AuthorizationCode, type CodeExchangeFields} from "./credential";
 export {completeOAuthCallback, hasProviderResponse} from "./callback";
 export {logProviderExchangeFailure, logUnusableProviderResponse} from "./diagnostics";

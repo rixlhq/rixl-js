@@ -6,7 +6,7 @@ import {
 import type {AuthV1ConnectProviderRequest, AuthV1ExternalAccountProvider} from "../../generated/types.gen";
 import {getToken, login} from "../authStore";
 import {AuthProvider} from "../providers/types";
-import {telegramCodeExchange} from "../providers/telegram";
+import {credentialFields, type CodeExchangeFields, type ProviderCredential} from "../providers/credential";
 import {setSocialConnectAttempt} from "./socialState";
 import {apiCall} from "../api/utils";
 import {persistTokens} from "../api/tokens";
@@ -43,7 +43,7 @@ const PROVIDER_FROM_PROTO: Partial<Record<AuthV1ExternalAccountProvider, Provide
 
 // Both Telegram login flavors connect the same external account.
 export const normalizeProviderType = (provider: string): ProviderType =>
-  provider === AuthProvider.TELEGRAM_WEB || provider === AuthProvider.TELEGRAM_MINI_APP ? "telegram" : (provider as ProviderType);
+  provider === AuthProvider.TELEGRAM_MINI_APP ? "telegram" : (provider as ProviderType);
 
 export const toProtoProvider = (provider: ProviderType): AuthV1ExternalAccountProvider => {
   const proto = PROVIDER_TO_PROTO[provider];
@@ -80,19 +80,18 @@ export const listSocials = async (): Promise<ConnectedProvider[]> => {
   );
 };
 
-export const connectSocialInternal = async (provider: string, token: string): Promise<void> => {
+export const connectSocialInternal = async (provider: string, credential: ProviderCredential): Promise<void> => {
   return apiCall(
     async () => {
+      const {token, ...codeExchange} = credentialFields(credential);
       const requestBody = validateInput(ConnectProviderSchema, {provider, token});
       const sessionToken = await getToken();
       const headers: Record<string, string> = sessionToken ? {Authorization: `Bearer ${sessionToken}`} : {};
-      const exchange = provider === AuthProvider.TELEGRAM_OIDC ? telegramCodeExchange() : undefined;
       // code_verifier and redirect_uri are not in the generated type until the SDK is regenerated.
-      const body: AuthV1ConnectProviderRequest & {code_verifier?: string; redirect_uri?: string} = {
+      const body: AuthV1ConnectProviderRequest & CodeExchangeFields = {
         provider: toProtoProvider(normalizeProviderType(requestBody.provider)),
         token: requestBody.token,
-        code_verifier: exchange?.codeVerifier,
-        redirect_uri: exchange?.redirectUri,
+        ...codeExchange,
       };
       const {data} = await authV1ProvidersServiceConnectProvider({
         body,
