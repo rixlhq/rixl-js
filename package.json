@@ -58,13 +58,13 @@
     "@vitest/coverage-v8": "5.0.4",
     "@vitest/ui": "5.0.4",
     "jsdom": "^30.0.0",
-    "typescript": "7.0.2",
-    "vite": "npm:@voidzero-dev/vite-plus-core@1.0.0",
+    "typescript": "6.0.3",
+    "vite": "npm:@voidzero-dev/vite-plus-core@1.1.0",
     "vite-plus": "1.1.0",
     "vitest": "5.0.4"
   },
   "overrides": {
-    "vite": "npm:@voidzero-dev/vite-plus-core@1.0.0",
+    "vite": "npm:@voidzero-dev/vite-plus-core@1.1.0",
     "vitest": "5.0.1"
   },
   "engines": {
