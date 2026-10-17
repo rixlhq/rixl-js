@@ -3042,6 +3042,10 @@ export type AuthV1LogoutRequest = {
      * token
      */
     token?: string;
+    /**
+     * refresh_token
+     */
+    refresh_token?: string;
 };
 
 /**
