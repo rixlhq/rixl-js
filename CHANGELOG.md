@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.34.1](https://github.com/rixlhq/rixl-js/compare/v0.34.0...v0.34.1) (2026-10-17)
+
+
+### Bug Fixes
+
+* **test:** pin vitest and coverage provider to the vite-plus bundled 5.0.3 ([84eb3c8](https://github.com/rixlhq/rixl-js/commit/84eb3c83822e1b7a4a283ea465ef6d5c000703d8))
+
 ## [0.34.0](https://github.com/rixlhq/rixl-js/compare/v0.33.0...v0.34.0) (2026-10-15)
 
 
