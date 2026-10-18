@@ -7538,6 +7538,23 @@ export type VideosV1Chapter = {
 };
 
 /**
+ * ClearVideoRepackageRequest
+ *
+ * Field 1 matches VideoIdRequest. Without requested_at the flag is cleared
+ * unconditionally; with it, only if no newer repackage request arrived.
+ */
+export type VideosV1ClearVideoRepackageRequest = {
+    /**
+     * video_id
+     */
+    video_id?: string;
+    /**
+     * requested_at
+     */
+    requested_at?: GoogleProtobufTimestamp;
+};
+
+/**
  * ConversionGetVideoRequest
  */
 export type VideosV1ConversionGetVideoRequest = {
@@ -8034,6 +8051,26 @@ export type VideosV1RenditionList = {
      * renditions
      */
     renditions?: Array<VideosV1Rendition>;
+};
+
+/**
+ * RepackageRequestList
+ *
+ * Field 1 matches VideoIdList so older processors keep decoding ids.
+ */
+export type VideosV1RepackageRequestList = {
+    /**
+     * ids
+     */
+    ids?: Array<string>;
+    /**
+     * requested_at
+     *
+     * repackage_requested_at observed per video id; pass it back to ClearVideoRepackage.
+     */
+    requested_at?: {
+        [key: string]: GoogleProtobufTimestamp;
+    };
 };
 
 /**
