@@ -11,6 +11,8 @@ import {isLimitedScopeTokenResponse} from "./utils/requires-action";
 import type {LoginErrorResponse} from "./auth/types";
 import type {RequiresAction} from "./types";
 import {shared} from "../shared-runtime";
+import {ApiError} from "./api/types";
+import {HTTP_STATUS} from "./constants";
 
 // Store for authentication state. Shared across copies of this package: a
 // duplicate copy would otherwise hydrate its own tokens from the cookie and
@@ -89,12 +91,21 @@ const ensureValidAccessToken = async (refresh: string): Promise<void> => {
   try {
     await refreshAccessToken(refresh);
   } catch (refreshError) {
-    // If refresh fails, we should consider the user logged out
     console.error("Token refresh failed in getToken:", refreshError);
-    removeTokens();
+    if (isRejectedRefresh(refreshError)) removeTokens();
     throw refreshError;
   }
 };
+
+/**
+ * Whether the gateway refused the refresh token itself, which ends the session.
+ * It answers 400 for an expired, invalid or already-used token and 401 for an
+ * inactive account. A network failure, 429 or 5xx means the token could not be
+ * checked, so the session is kept for the next getToken() to retry.
+ */
+const isRejectedRefresh = (error: unknown): boolean =>
+  error instanceof ApiError &&
+  (error.status === HTTP_STATUS.BAD_REQUEST || error.status === HTTP_STATUS.UNAUTHORIZED || error.status === HTTP_STATUS.FORBIDDEN);
 
 export const getToken = async (): Promise<string | undefined> => {
   // If there's already a getToken operation in progress, return that promise

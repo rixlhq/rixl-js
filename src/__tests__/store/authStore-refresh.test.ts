@@ -20,6 +20,7 @@ import * as providers from "@/providers";
 import * as initialization from "@/initialization";
 import {accessToken, refreshToken, expireAt, setTokens, removeTokens, getToken, resetTokenPromise} from "@/authStore.ts";
 import {user} from "@/userStore.ts";
+import {ApiError} from "../../auth/api/types";
 
 describe("AuthStore - Token Refresh", () => {
   const mockRefreshTokens = api.refreshTokens as any;
@@ -104,15 +105,54 @@ describe("AuthStore - Token Refresh", () => {
       expect(refreshToken.get()).toBe("refresh-123");
     });
 
-    it("should handle refresh failure and remove tokens", async () => {
+    it.each([400, 401, 403])("ends the session when the gateway rejects the refresh token with %i", async (status) => {
       accessToken.set(createMockJWT());
       refreshToken.set("refresh-123");
       expireAt.set(Date.now() - 1000);
 
-      mockRefreshTokens.mockRejectedValue(new Error("Refresh failed"));
+      mockRefreshTokens.mockRejectedValue(new ApiError("Refresh failed", status, "/auth/v1/token"));
 
       await expect(getToken()).rejects.toThrow("Refresh failed");
       expect(accessToken.get()).toBe("");
+      expect(refreshToken.get()).toBe("");
+    });
+
+    it.each([429, 502, 503])("keeps the session when the refresh fails with %i", async (status) => {
+      accessToken.set(createMockJWT());
+      refreshToken.set("refresh-123");
+      expireAt.set(Date.now() - 1000);
+
+      mockRefreshTokens.mockRejectedValue(new ApiError("Unavailable", status, "/auth/v1/token"));
+
+      await expect(getToken()).rejects.toThrow("Unavailable");
+      expect(refreshToken.get()).toBe("refresh-123");
+    });
+
+    it("keeps the session when the refresh never reaches the gateway", async () => {
+      accessToken.set(createMockJWT());
+      refreshToken.set("refresh-123");
+      expireAt.set(Date.now() - 1000);
+
+      mockRefreshTokens.mockRejectedValue(new TypeError("Failed to fetch"));
+
+      await expect(getToken()).rejects.toThrow("Failed to fetch");
+      expect(refreshToken.get()).toBe("refresh-123");
+    });
+
+    it("retries a kept session on the next getToken()", async () => {
+      accessToken.set(createMockJWT());
+      refreshToken.set("refresh-123");
+      expireAt.set(Date.now() - 1000);
+
+      mockRefreshTokens.mockRejectedValueOnce(new ApiError("Unavailable", 503, "/auth/v1/token")).mockResolvedValueOnce({
+        access_token: createMockJWT(),
+        refresh_token: "new-refresh",
+        expires_in: 3600,
+      });
+
+      await expect(getToken()).rejects.toThrow("Unavailable");
+      await expect(getToken()).resolves.toBeTruthy();
+      expect(refreshToken.get()).toBe("new-refresh");
     });
 
     it("should decode and set user when returning token", async () => {
