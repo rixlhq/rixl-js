@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.36.0](https://github.com/rixlhq/rixl-js/compare/v0.35.0...v0.36.0) (2026-10-18)
+
+
+### Features
+
+* **sdk:** regenerate based on latest OpenAPI spec ([#131](https://github.com/rixlhq/rixl-js/issues/131)) ([7cc6c40](https://github.com/rixlhq/rixl-js/commit/7cc6c40cb6cae59dcbe3dac4d286192237ce5d25))
+
 ## [0.35.0](https://github.com/rixlhq/rixl-js/compare/v0.34.1...v0.35.0) (2026-10-17)
 
 
