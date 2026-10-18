@@ -16,13 +16,13 @@ describe("logout", () => {
     isLogged.set(true);
   });
 
-  it("sends the refresh token for server-side revocation", async () => {
+  it("sends the access and refresh tokens for server-side revocation", async () => {
     mockPostAuthV1Logout.mockResolvedValue({data: {}});
 
     await logout();
 
     expect(mockPostAuthV1Logout).toHaveBeenCalledWith({
-      body: {token: "refresh-456"},
+      body: {token: "access-123", refresh_token: "refresh-456"},
       throwOnError: true,
     });
   });
