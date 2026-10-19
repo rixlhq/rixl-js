@@ -65,6 +65,17 @@ const publicRoutes: ReadonlyArray<{method: string; path: string; prefix?: boolea
   {method: "POST", path: "/platform/auth/v1/refresh"},
 ];
 
+/**
+ * The request's path below the configured API URL, which may carry its own path
+ * (`https://example.com/api`). Matched against the full path instead, a public
+ * route behind such a prefix would ask for a token, and the refresh request
+ * would wait on the very getToken() call that sent it.
+ */
+function routePath(pathname: string): string {
+  const base = new URL(apiURL.get() || "/", "http://base").pathname.replace(/\/+$/, "");
+  return base && pathname.startsWith(`${base}/`) ? pathname.slice(base.length) : pathname;
+}
+
 function isPublicRoute(method: string, pathname: string): boolean {
   const match = method.toUpperCase();
   return publicRoutes.some(({method: m, path, prefix}) => match === m && (prefix ? pathname.startsWith(path) : pathname === path));
@@ -86,7 +97,7 @@ export function configureSdkClient(): void {
         return request;
       }
       const {pathname} = new URL(request.url);
-      if (isPublicRoute(request.method, pathname)) {
+      if (isPublicRoute(request.method, routePath(pathname))) {
         return request;
       }
       const token = await state.tokenResolver();
