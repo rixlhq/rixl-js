@@ -105,10 +105,26 @@ const adoptStoredSession = (): boolean => {
 };
 
 const REFRESH_LOCK = `${GLOBAL_PREFIX}_refresh`;
+// Requests have no timeout, so a tab whose refresh hangs would hold the lock and
+// stall every other tab behind it.
+const REFRESH_LOCK_WAIT_MS = 10_000;
 
 /** Runs the refresh under a lock held across tabs, where the browser has one. */
-const acrossTabs = (task: () => Promise<void>): Promise<void> =>
-  typeof navigator !== "undefined" && navigator.locks ? navigator.locks.request(REFRESH_LOCK, task) : task();
+const acrossTabs = async (task: () => Promise<void>): Promise<void> => {
+  if (typeof navigator === "undefined" || !navigator.locks) return task();
+
+  let granted = false;
+  try {
+    await navigator.locks.request(REFRESH_LOCK, {signal: AbortSignal.timeout(REFRESH_LOCK_WAIT_MS)}, () => {
+      granted = true;
+      return task();
+    });
+  } catch (error) {
+    // Waited too long for the lock: refresh without it, as browsers without locks do.
+    if (!granted && error instanceof DOMException && error.name === "TimeoutError") return task();
+    throw error;
+  }
+};
 
 const ensureValidAccessToken = async (): Promise<void> => {
   if (hasValidAccessToken()) return;

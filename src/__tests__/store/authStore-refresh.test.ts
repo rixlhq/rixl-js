@@ -308,7 +308,7 @@ describe("AuthStore - Token Refresh", () => {
     it("refreshes under a lock shared across tabs and re-reads the cookies once it holds it", async () => {
       expireStale();
       const rotatedAccess = createMockJWT();
-      const request = vi.fn(async (_name: string, task: () => Promise<void>) => {
+      const request = vi.fn(async (_name: string, _options: unknown, task: () => Promise<void>) => {
         // The tab holding the lock first rotated the token while this one waited.
         mockReadStoreCookies.mockReturnValue({
           accessToken: rotatedAccess,
@@ -320,8 +320,32 @@ describe("AuthStore - Token Refresh", () => {
       vi.stubGlobal("navigator", {locks: {request}});
 
       await expect(getToken()).resolves.toBe(rotatedAccess);
-      expect(request).toHaveBeenCalledWith("__rixl_auth_refresh", expect.any(Function));
+      expect(request).toHaveBeenCalledWith("__rixl_auth_refresh", {signal: expect.any(AbortSignal)}, expect.any(Function));
       expect(mockRefreshTokens).not.toHaveBeenCalled();
+    });
+
+    it("refreshes without the lock when another tab holds it too long", async () => {
+      expireStale();
+      const request = vi.fn(async () => {
+        throw new DOMException("lock wait timed out", "TimeoutError");
+      });
+      vi.stubGlobal("navigator", {locks: {request}});
+      mockRefreshTokens.mockResolvedValue({access_token: createMockJWT(), refresh_token: "new-refresh", expires_in: 3600});
+
+      await getToken();
+
+      expect(request).toHaveBeenCalledWith("__rixl_auth_refresh", {signal: expect.any(AbortSignal)}, expect.any(Function));
+      expect(mockRefreshTokens).toHaveBeenCalledTimes(1);
+      expect(refreshToken.get()).toBe("new-refresh");
+    });
+
+    it("does not refresh twice when the refresh under the lock fails", async () => {
+      expireStale();
+      vi.stubGlobal("navigator", {locks: {request: (_name: string, _options: unknown, task: () => Promise<void>) => task()}});
+      mockRefreshTokens.mockRejectedValue(new DOMException("request timed out", "TimeoutError"));
+
+      await expect(getToken()).rejects.toThrow("request timed out");
+      expect(mockRefreshTokens).toHaveBeenCalledTimes(1);
     });
   });
 });
