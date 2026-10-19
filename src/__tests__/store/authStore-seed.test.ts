@@ -12,7 +12,7 @@ import {resetSharedRuntime} from "../setup/shared-runtime-reset";
 const loadIsLogged = async (cookieVals: Record<string, string>) => {
   resetSharedRuntime();
   vi.resetModules();
-  vi.doMock("../../auth/cookie", () => ({initVals: cookieVals, setStoreCookie: vi.fn()}));
+  vi.doMock("../../auth/cookie", () => ({initVals: cookieVals, readStoreCookies: () => cookieVals, setStoreCookie: vi.fn()}));
   const {isLogged} = await import("../../auth/authStore");
   return isLogged.get();
 };

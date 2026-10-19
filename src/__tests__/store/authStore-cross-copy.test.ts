@@ -9,7 +9,7 @@ import {resetSharedRuntime} from "../setup/shared-runtime-reset";
 const refreshTokens = vi.hoisted(() => vi.fn());
 
 vi.mock("../../auth/api/refresh-tokens", () => ({refreshTokens}));
-vi.mock("../../auth/cookie", () => ({initVals: {}, setStoreCookie: vi.fn()}));
+vi.mock("../../auth/cookie", () => ({initVals: {}, readStoreCookies: () => ({}), setStoreCookie: vi.fn()}));
 
 // Re-evaluating the module stands in for a second copy of the package.
 const loadSecondCopy = async () => {

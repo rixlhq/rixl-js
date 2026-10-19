@@ -16,6 +16,7 @@ vi.mock("../../auth/cookie", () => createCookieMock());
 
 // Import mocked modules and authStore AFTER mocks are set up
 import * as api from "../../auth/api/refresh-tokens";
+import * as cookie from "../../auth/cookie";
 import * as providers from "@/providers";
 import * as initialization from "@/initialization";
 import {accessToken, refreshToken, expireAt, setTokens, removeTokens, getToken, resetTokenPromise} from "@/authStore.ts";
@@ -24,9 +25,11 @@ import {ApiError} from "../../auth/api/types";
 
 describe("AuthStore - Token Refresh", () => {
   const mockRefreshTokens = api.refreshTokens as any;
+  const mockReadStoreCookies = cookie.readStoreCookies as any;
 
   beforeEach(() => {
     vi.clearAllMocks();
+    mockReadStoreCookies.mockReturnValue({});
     removeTokens();
     user.set(undefined);
     initialization.initDeferred.promise = Promise.resolve();
@@ -240,6 +243,85 @@ describe("AuthStore - Token Refresh", () => {
 
       await getToken();
       expect(mockRefreshTokens).toHaveBeenCalled();
+    });
+  });
+
+  describe("sessions shared across tabs", () => {
+    const expireStale = () => {
+      accessToken.set(createMockJWT());
+      refreshToken.set("stale-refresh");
+      expireAt.set(Date.now() - 1000);
+    };
+
+    afterEach(() => {
+      vi.unstubAllGlobals();
+    });
+
+    it("adopts the tokens another tab rotated instead of spending the stale refresh token", async () => {
+      expireStale();
+      const rotatedAccess = createMockJWT({username: "other-tab"});
+      mockReadStoreCookies.mockReturnValue({
+        accessToken: rotatedAccess,
+        refreshToken: "rotated-refresh",
+        expireAt: String(Date.now() + 3_600_000),
+      });
+
+      await expect(getToken()).resolves.toBe(rotatedAccess);
+      expect(mockRefreshTokens).not.toHaveBeenCalled();
+      expect(refreshToken.get()).toBe("rotated-refresh");
+    });
+
+    it("refreshes the adopted session when its access token has expired too", async () => {
+      expireStale();
+      mockReadStoreCookies.mockReturnValue({accessToken: createMockJWT(), refreshToken: "rotated-refresh", expireAt: "1"});
+      mockRefreshTokens.mockResolvedValue({access_token: createMockJWT(), refresh_token: "new-refresh", expires_in: 3600});
+
+      await getToken();
+
+      expect(mockRefreshTokens).toHaveBeenCalledWith(providers.AuthProvider.BEARER, {token: "rotated-refresh"});
+    });
+
+    it("keeps the session another tab rotated while this tab's refresh was in flight", async () => {
+      expireStale();
+      const rotated = {accessToken: createMockJWT(), refreshToken: "rotated-refresh", expireAt: String(Date.now() + 3_600_000)};
+      mockReadStoreCookies.mockReturnValue({});
+      mockRefreshTokens.mockImplementation(async () => {
+        mockReadStoreCookies.mockReturnValue(rotated);
+        throw new ApiError("refresh token already used", 400, "/auth/v1/token");
+      });
+
+      await expect(getToken()).resolves.toBe(rotated.accessToken);
+      expect(refreshToken.get()).toBe("rotated-refresh");
+    });
+
+    it("keeps the in-memory session when the cookies cannot be read", async () => {
+      accessToken.set(createMockJWT());
+      refreshToken.set("refresh-123");
+      expireAt.set(Date.now() + 3_600_000);
+      mockReadStoreCookies.mockReturnValue({});
+
+      await getToken();
+
+      expect(refreshToken.get()).toBe("refresh-123");
+    });
+
+    it("refreshes under a lock shared across tabs and re-reads the cookies once it holds it", async () => {
+      expireStale();
+      const rotatedAccess = createMockJWT();
+      const request = vi.fn(async (_name: string, task: () => Promise<void>) => {
+        // The tab holding the lock first rotated the token while this one waited.
+        mockReadStoreCookies.mockReturnValue({
+          accessToken: rotatedAccess,
+          refreshToken: "rotated-refresh",
+          expireAt: String(Date.now() + 3_600_000),
+        });
+        return task();
+      });
+      vi.stubGlobal("navigator", {locks: {request}});
+
+      await expect(getToken()).resolves.toBe(rotatedAccess);
+      expect(request).toHaveBeenCalledWith("__rixl_auth_refresh", expect.any(Function));
+      expect(mockRefreshTokens).not.toHaveBeenCalled();
     });
   });
 });

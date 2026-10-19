@@ -2,7 +2,7 @@ import {atom, type WritableAtom} from "nanostores";
 import {refreshTokens} from "./api/refresh-tokens";
 import {appleAuthUrl, AuthProvider, googleAuthUrl, telegramAuthUrl, microsoftAuthUrl} from "./providers";
 import {initDeferred} from "./initialization";
-import {initVals, setStoreCookie} from "./cookie";
+import {initVals, readStoreCookies, setStoreCookie} from "./cookie";
 import {user} from "./userStore";
 import {clearPermissions} from "./permissionStore";
 import type {ProviderType} from "./social/socialConnections";
@@ -12,7 +12,7 @@ import type {LoginErrorResponse} from "./auth/types";
 import type {RequiresAction} from "./types";
 import {shared} from "../shared-runtime";
 import {ApiError} from "./api/types";
-import {HTTP_STATUS} from "./constants";
+import {GLOBAL_PREFIX, HTTP_STATUS} from "./constants";
 
 // Store for authentication state. Shared across copies of this package: a
 // duplicate copy would otherwise hydrate its own tokens from the cookie and
@@ -82,19 +82,54 @@ const refreshAccessToken = async (refresh: string): Promise<void> => {
   }
 };
 
-const ensureValidAccessToken = async (refresh: string): Promise<void> => {
-  const currentAccessToken = accessToken.get();
-  if (currentAccessToken && !isTokenExpired(expireAt.get())) {
-    return;
-  }
+const hasValidAccessToken = (): boolean => !!accessToken.get() && !isTokenExpired(expireAt.get());
 
-  try {
-    await refreshAccessToken(refresh);
-  } catch (refreshError) {
-    console.error("Token refresh failed in getToken:", refreshError);
-    if (isRejectedRefresh(refreshError)) removeTokens();
-    throw refreshError;
-  }
+/**
+ * Takes up the session another tab stored after rotating the refresh token.
+ * Each tab holds the tokens it read at load, and the gateway accepts a refresh
+ * token only once, so presenting the stale copy would be rejected and the
+ * resulting logout would clear the cookies every tab shares.
+ * @returns Whether a newer session was adopted
+ */
+const adoptStoredSession = (): boolean => {
+  const stored = readStoreCookies();
+  const storedRefresh = stored["refreshToken"];
+  if (!storedRefresh || storedRefresh === refreshToken.get()) return false;
+
+  accessToken.set(stored["accessToken"] ?? "");
+  refreshToken.set(storedRefresh);
+  expireAt.set(Number(stored["expireAt"]));
+  isLogged.set(true);
+  return true;
+};
+
+const REFRESH_LOCK = `${GLOBAL_PREFIX}_refresh`;
+
+/** Runs the refresh under a lock held across tabs, where the browser has one. */
+const acrossTabs = (task: () => Promise<void>): Promise<void> =>
+  typeof navigator !== "undefined" && navigator.locks ? navigator.locks.request(REFRESH_LOCK, task) : task();
+
+const ensureValidAccessToken = async (): Promise<void> => {
+  if (hasValidAccessToken()) return;
+
+  await acrossTabs(async () => {
+    // The tab that held the lock before this one may have just refreshed.
+    adoptStoredSession();
+    if (hasValidAccessToken()) return;
+
+    const refresh = refreshToken.get();
+    if (!refresh) return;
+
+    try {
+      await refreshAccessToken(refresh);
+    } catch (refreshError) {
+      console.error("Token refresh failed in getToken:", refreshError);
+      // Without a lock, another tab can rotate the token while this request is in flight.
+      if (adoptStoredSession()) return;
+      if (isRejectedRefresh(refreshError)) removeTokens();
+      throw refreshError;
+    }
+  });
 };
 
 /**
@@ -122,10 +157,10 @@ export const getToken = async (): Promise<string | undefined> => {
       // Users in limited-access flows should not receive full-scope tokens for protected calls
       if (requiresAction.get()) return undefined;
 
-      const currentRefreshToken = refreshToken.get();
-      if (!currentRefreshToken) return undefined;
+      adoptStoredSession();
+      if (!refreshToken.get()) return undefined;
 
-      await ensureValidAccessToken(currentRefreshToken);
+      await ensureValidAccessToken();
 
       const token = accessToken.get();
       if (token) {
