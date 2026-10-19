@@ -21,6 +21,11 @@ export function getPkceVerifier(provider: string): string {
   return verifier;
 }
 
+/** The stored verifier, without minting one: a callback can only redeem the code it was issued for. */
+export function readPkceVerifier(provider: string): string | null {
+  return sessionStorage.getItem(storagePath(provider));
+}
+
 export function clearPkceVerifier(provider: string): void {
   sessionStorage.removeItem(storagePath(provider));
 }

@@ -1,4 +1,4 @@
-import {getToken, authError, setTokens, setLimitedAccessState, clearLimitedAccessState} from "./authStore";
+import {getToken, authError, refreshToken, setTokens, setLimitedAccessState, clearLimitedAccessState} from "./authStore";
 import {ApiError} from "./api/types";
 import {HTTP_STATUS} from "./constants";
 import type {TokenResponse, LimitedScopeTokenResponse, RequiresAction} from "./types";
@@ -20,8 +20,9 @@ import {
   updateAppleAuthUrl,
   updateMicrosoftAuthUrl,
   updateTelegramAuthUrl,
-  telegramCodeExchange,
-  getProviderToken,
+  getProviderCredential,
+  credentialFields,
+  type ProviderCredential,
   detectProvider,
   completeOAuthCallback,
   logProviderExchangeFailure,
@@ -107,7 +108,9 @@ const initConfig = async (config: AuthClientConfig) => {
 
   if (config.telegramProvider) {
     telegramConfig.set(config.telegramProvider);
-    updateTelegramAuthUrl();
+    // Its URL carries an async PKCE challenge; without waiting, login("telegram")
+    // right after initClient() would find no URL yet.
+    await updateTelegramAuthUrl();
   }
 };
 
@@ -155,12 +158,6 @@ const handleInitPageApiError = (error: ApiError): void => {
   setAuthErrorAndClear("provider_exchange_failed", info.error || info.description, info.email);
 };
 
-const exchangeProviderToken = async (provider: AuthProvider, token: string): Promise<void> => {
-  const options = provider === AuthProvider.TELEGRAM_OIDC ? telegramCodeExchange() : undefined;
-  const result = await refreshTokens(provider, token, options);
-  applyTokenExchangeResult(result);
-};
-
 const initPage = async () => {
   const provider = detectProvider();
   if (!provider) {
@@ -170,20 +167,35 @@ const initPage = async () => {
     return undefined;
   }
 
-  // An authorization code redeems once, so a linking round-trip must not spend it on sign-in first.
-  if (provider === AuthProvider.TELEGRAM_OIDC && hasSocialConnectAttempt(provider)) return undefined;
+  // A pending link leaves the credential for initSocials to link, since an
+  // authorization code can only be redeemed once.
+  if (isLinkAttempt(provider)) return undefined;
 
-  const token = getProviderToken(provider);
-  if (!token) return undefined;
+  const credential = getProviderCredential(provider);
+  if (!credential) return undefined;
 
-  await loginWithProviderToken(provider, token);
+  await loginWithProviderCredential(provider, credential);
 };
 
-const loginWithProviderToken = async (provider: AuthProvider, token: string): Promise<void> => {
+/**
+ * Whether this callback answers a link rather than a sign-in. Only a signed-in
+ * user can link, so a flag left by an abandoned link is dropped instead of
+ * swallowing the sign-in that follows it.
+ */
+const isLinkAttempt = (provider: AuthProvider): boolean => {
+  if (!hasSocialConnectAttempt(provider)) return false;
+  if (refreshToken.get()) return true;
+
+  clearSocialConnectAttempt(provider);
+  return false;
+};
+
+const loginWithProviderCredential = async (provider: AuthProvider, credential: ProviderCredential): Promise<void> => {
   try {
-    await exchangeProviderToken(provider, token);
+    // The backend picks the Telegram bot that signs Mini App init data by origin.
+    applyTokenExchangeResult(await refreshTokens(provider, credential, {origin: window.location.origin}));
   } catch (error) {
-    logProviderExchangeFailure(provider, token, error);
+    logProviderExchangeFailure(provider, credentialFields(credential).token, error);
     // A transport failure is not an auth outcome and has no message to show, so
     // it still propagates; the gateway's own rejections become authError state.
     if (!(error instanceof ApiError)) throw error;
@@ -195,13 +207,12 @@ const initSocials = async () => {
   const provider = detectProvider();
   if (!provider) return undefined;
 
-  const token = getProviderToken(provider);
-  if (!token) return undefined;
+  const credential = getProviderCredential(provider);
+  if (!credential) return undefined;
 
-  // Check if this is a social connection attempt
   try {
     if (hasSocialConnectAttempt(provider)) {
-      await connectSocialInternal(provider, token);
+      await connectSocialInternal(provider, credential);
     }
   } finally {
     clearSocialConnectAttempt(provider);

@@ -10,6 +10,7 @@ import {refreshToken} from "../auth/authStore";
 import * as providersModule from "../auth/providers";
 import * as socialStateModule from "../auth/social/socialState";
 import * as socialConnectionsModule from "../auth/social/socialConnections";
+import * as refreshTokensModule from "../auth/api/refresh-tokens";
 import type {AuthClientConfig} from "../auth/init";
 
 describe("Init - Provider Detection and Social Flow", () => {
@@ -53,10 +54,10 @@ describe("Init - Provider Detection and Social Flow", () => {
       expect(result === undefined || typeof result === "string").toBe(true);
     });
 
-    it("should call getProviderToken when provider is detected", async () => {
+    it("should call getProviderCredential when provider is detected", async () => {
       vi.restoreAllMocks();
       vi.spyOn(providersModule, "detectProvider").mockReturnValue(providersModule.AuthProvider.GOOGLE);
-      const getProviderTokenSpy = vi.spyOn(providersModule, "getProviderToken");
+      const getProviderCredentialSpy = vi.spyOn(providersModule, "getProviderCredential");
 
       const config: AuthClientConfig = {
         apiUrl: "https://test-api.example.com",
@@ -71,12 +72,12 @@ describe("Init - Provider Detection and Social Flow", () => {
         // May fail but we verify the call
       }
 
-      expect(getProviderTokenSpy).toHaveBeenCalled();
+      expect(getProviderCredentialSpy).toHaveBeenCalled();
     });
 
     it("should return undefined when provider token is not found", async () => {
       vi.spyOn(providersModule, "detectProvider").mockReturnValue(providersModule.AuthProvider.GOOGLE);
-      vi.spyOn(providersModule, "getProviderToken").mockReturnValue(undefined);
+      vi.spyOn(providersModule, "getProviderCredential").mockReturnValue(undefined);
 
       const config: AuthClientConfig = {
         apiUrl: "https://test-api.example.com",
@@ -90,7 +91,7 @@ describe("Init - Provider Detection and Social Flow", () => {
 
     it("should call refreshTokens when provider and token exist but no refresh token", async () => {
       vi.spyOn(providersModule, "detectProvider").mockReturnValue(providersModule.AuthProvider.GOOGLE);
-      vi.spyOn(providersModule, "getProviderToken").mockReturnValue("provider-token-123");
+      vi.spyOn(providersModule, "getProviderCredential").mockReturnValue({token: "provider-token-123"});
       refreshToken.set(undefined); // No existing refresh token
 
       const config: AuthClientConfig = {
@@ -109,7 +110,7 @@ describe("Init - Provider Detection and Social Flow", () => {
 
     it("should skip refresh when refresh token already exists", async () => {
       vi.spyOn(providersModule, "detectProvider").mockReturnValue(providersModule.AuthProvider.GOOGLE);
-      vi.spyOn(providersModule, "getProviderToken").mockReturnValue("provider-token-123");
+      vi.spyOn(providersModule, "getProviderCredential").mockReturnValue({token: "provider-token-123"});
 
       // Set existing refresh token
       const existingToken = "existing-refresh-token";
@@ -170,7 +171,7 @@ describe("Init - Provider Detection and Social Flow", () => {
 
     it("should get provider token for social connection", async () => {
       vi.spyOn(providersModule, "detectProvider").mockReturnValue(providersModule.AuthProvider.GOOGLE);
-      const getProviderTokenSpy = vi.spyOn(providersModule, "getProviderToken");
+      const getProviderCredentialSpy = vi.spyOn(providersModule, "getProviderCredential");
 
       const config: AuthClientConfig = {
         apiUrl: "https://test-api.example.com",
@@ -182,12 +183,12 @@ describe("Init - Provider Detection and Social Flow", () => {
         // May fail
       }
 
-      expect(getProviderTokenSpy).toHaveBeenCalled();
+      expect(getProviderCredentialSpy).toHaveBeenCalled();
     });
 
     it("should return undefined when no token for social connection", async () => {
       vi.spyOn(providersModule, "detectProvider").mockReturnValue(providersModule.AuthProvider.GOOGLE);
-      vi.spyOn(providersModule, "getProviderToken").mockReturnValue(undefined);
+      vi.spyOn(providersModule, "getProviderCredential").mockReturnValue(undefined);
 
       const config: AuthClientConfig = {
         apiUrl: "https://test-api.example.com",
@@ -204,12 +205,13 @@ describe("Init - Provider Detection and Social Flow", () => {
       vi.spyOn(providersModule, "detectProvider")
         .mockReturnValueOnce(providersModule.AuthProvider.GOOGLE) // First call in initPage
         .mockReturnValueOnce(providersModule.AuthProvider.GOOGLE); // Second call in initSocials
-      vi.spyOn(providersModule, "getProviderToken")
-        .mockReturnValueOnce(undefined) // First call in initPage (no token)
-        .mockReturnValueOnce("social-token-123"); // Second call in initSocials
+      // With a link pending, initPage leaves the credential to initSocials.
+      vi.spyOn(providersModule, "getProviderCredential").mockReturnValue({token: "social-token-123"});
       vi.spyOn(socialStateModule, "hasSocialConnectAttempt").mockReturnValue(true);
       const connectSpy = vi.spyOn(socialConnectionsModule, "connectSocialInternal").mockResolvedValue(undefined);
       vi.spyOn(socialStateModule, "clearSocialConnectAttempt").mockImplementation(() => {});
+      // Only a signed-in user can link.
+      refreshToken.set("existing-refresh");
 
       const config: AuthClientConfig = {
         apiUrl: "https://test-api.example.com",
@@ -222,14 +224,34 @@ describe("Init - Provider Detection and Social Flow", () => {
       }
 
       // Verify connectSocialInternal was called
-      expect(connectSpy).toHaveBeenCalledWith(providersModule.AuthProvider.GOOGLE, "social-token-123");
+      expect(connectSpy).toHaveBeenCalledWith(providersModule.AuthProvider.GOOGLE, {token: "social-token-123"});
+    });
+
+    it("signs in instead of linking when a link flag outlived the session that set it", async () => {
+      vi.spyOn(providersModule, "detectProvider").mockReturnValue(providersModule.AuthProvider.GOOGLE);
+      vi.spyOn(providersModule, "getProviderCredential").mockReturnValue({token: "google-token"});
+      sessionStorage.setItem("__rixl_auth_social_connect_google", "true");
+      const exchangeSpy = vi
+        .spyOn(refreshTokensModule, "refreshTokens")
+        .mockResolvedValue({access_token: "access", refresh_token: "refresh", expires_in: 3600});
+      const connectSpy = vi.spyOn(socialConnectionsModule, "connectSocialInternal").mockResolvedValue(undefined);
+
+      try {
+        await initClient({apiUrl: "https://test-api.example.com"});
+      } catch {
+        // getToken() may fail on the mock access token
+      }
+
+      expect(exchangeSpy).toHaveBeenCalledWith(providersModule.AuthProvider.GOOGLE, {token: "google-token"}, expect.anything());
+      expect(connectSpy).not.toHaveBeenCalled();
+      expect(sessionStorage.getItem("__rixl_auth_social_connect_google")).toBeNull();
     });
 
     it("should not call connectSocialInternal when no social connect attempt", async () => {
       vi.spyOn(providersModule, "detectProvider")
         .mockReturnValueOnce(providersModule.AuthProvider.GOOGLE)
         .mockReturnValueOnce(providersModule.AuthProvider.GOOGLE);
-      vi.spyOn(providersModule, "getProviderToken")
+      vi.spyOn(providersModule, "getProviderCredential")
         .mockReturnValueOnce(undefined) // initPage
         .mockReturnValueOnce("token-123"); // initSocials
       vi.spyOn(socialStateModule, "hasSocialConnectAttempt").mockReturnValue(false);
@@ -254,7 +276,7 @@ describe("Init - Provider Detection and Social Flow", () => {
       vi.spyOn(providersModule, "detectProvider")
         .mockReturnValueOnce(providersModule.AuthProvider.GOOGLE)
         .mockReturnValueOnce(providersModule.AuthProvider.GOOGLE);
-      vi.spyOn(providersModule, "getProviderToken")
+      vi.spyOn(providersModule, "getProviderCredential")
         .mockReturnValueOnce(undefined) // initPage
         .mockReturnValueOnce("token-123"); // initSocials
       vi.spyOn(socialStateModule, "hasSocialConnectAttempt").mockReturnValue(false);
@@ -277,7 +299,7 @@ describe("Init - Provider Detection and Social Flow", () => {
   describe("Token Refresh Integration", () => {
     it("should call refreshTokens with correct provider and token", async () => {
       vi.spyOn(providersModule, "detectProvider").mockReturnValue(providersModule.AuthProvider.APPLE);
-      vi.spyOn(providersModule, "getProviderToken").mockReturnValue("apple-token");
+      vi.spyOn(providersModule, "getProviderCredential").mockReturnValue({token: "apple-token"});
       refreshToken.set(undefined); // Trigger refresh
 
       const config: AuthClientConfig = {

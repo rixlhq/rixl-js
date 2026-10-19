@@ -16,16 +16,21 @@ vi.mock("../../auth/cookie", () => createCookieMock());
 
 // Import mocked modules and authStore AFTER mocks are set up
 import * as api from "../../auth/api/refresh-tokens";
+import * as cookie from "../../auth/cookie";
 import * as providers from "@/providers";
 import * as initialization from "@/initialization";
 import {accessToken, refreshToken, expireAt, setTokens, removeTokens, getToken, resetTokenPromise} from "@/authStore.ts";
 import {user} from "@/userStore.ts";
+import {permissions, permissionsResolved} from "../../auth/permissionStore";
+import {ApiError} from "../../auth/api/types";
 
 describe("AuthStore - Token Refresh", () => {
   const mockRefreshTokens = api.refreshTokens as any;
+  const mockReadStoreCookies = cookie.readStoreCookies as any;
 
   beforeEach(() => {
     vi.clearAllMocks();
+    mockReadStoreCookies.mockReturnValue({});
     removeTokens();
     user.set(undefined);
     initialization.initDeferred.promise = Promise.resolve();
@@ -69,7 +74,7 @@ describe("AuthStore - Token Refresh", () => {
 
       const token = await getToken();
 
-      expect(mockRefreshTokens).toHaveBeenCalledWith(providers.AuthProvider.BEARER, "refresh-123");
+      expect(mockRefreshTokens).toHaveBeenCalledWith(providers.AuthProvider.BEARER, {token: "refresh-123"});
       expect(token).toBe(newToken);
     });
 
@@ -104,15 +109,54 @@ describe("AuthStore - Token Refresh", () => {
       expect(refreshToken.get()).toBe("refresh-123");
     });
 
-    it("should handle refresh failure and remove tokens", async () => {
+    it.each([400, 401, 403])("ends the session when the gateway rejects the refresh token with %i", async (status) => {
       accessToken.set(createMockJWT());
       refreshToken.set("refresh-123");
       expireAt.set(Date.now() - 1000);
 
-      mockRefreshTokens.mockRejectedValue(new Error("Refresh failed"));
+      mockRefreshTokens.mockRejectedValue(new ApiError("Refresh failed", status, "/auth/v1/token"));
 
       await expect(getToken()).rejects.toThrow("Refresh failed");
       expect(accessToken.get()).toBe("");
+      expect(refreshToken.get()).toBe("");
+    });
+
+    it.each([429, 502, 503])("keeps the session when the refresh fails with %i", async (status) => {
+      accessToken.set(createMockJWT());
+      refreshToken.set("refresh-123");
+      expireAt.set(Date.now() - 1000);
+
+      mockRefreshTokens.mockRejectedValue(new ApiError("Unavailable", status, "/auth/v1/token"));
+
+      await expect(getToken()).rejects.toThrow("Unavailable");
+      expect(refreshToken.get()).toBe("refresh-123");
+    });
+
+    it("keeps the session when the refresh never reaches the gateway", async () => {
+      accessToken.set(createMockJWT());
+      refreshToken.set("refresh-123");
+      expireAt.set(Date.now() - 1000);
+
+      mockRefreshTokens.mockRejectedValue(new TypeError("Failed to fetch"));
+
+      await expect(getToken()).rejects.toThrow("Failed to fetch");
+      expect(refreshToken.get()).toBe("refresh-123");
+    });
+
+    it("retries a kept session on the next getToken()", async () => {
+      accessToken.set(createMockJWT());
+      refreshToken.set("refresh-123");
+      expireAt.set(Date.now() - 1000);
+
+      mockRefreshTokens.mockRejectedValueOnce(new ApiError("Unavailable", 503, "/auth/v1/token")).mockResolvedValueOnce({
+        access_token: createMockJWT(),
+        refresh_token: "new-refresh",
+        expires_in: 3600,
+      });
+
+      await expect(getToken()).rejects.toThrow("Unavailable");
+      await expect(getToken()).resolves.toBeTruthy();
+      expect(refreshToken.get()).toBe("new-refresh");
     });
 
     it("should decode and set user when returning token", async () => {
@@ -200,6 +244,147 @@ describe("AuthStore - Token Refresh", () => {
 
       await getToken();
       expect(mockRefreshTokens).toHaveBeenCalled();
+    });
+  });
+
+  describe("sessions shared across tabs", () => {
+    const expireStale = () => {
+      accessToken.set(createMockJWT());
+      refreshToken.set("stale-refresh");
+      expireAt.set(Date.now() - 1000);
+    };
+
+    afterEach(() => {
+      vi.unstubAllGlobals();
+    });
+
+    it("adopts the tokens another tab rotated instead of spending the stale refresh token", async () => {
+      expireStale();
+      const rotatedAccess = createMockJWT({username: "other-tab"});
+      mockReadStoreCookies.mockReturnValue({
+        accessToken: rotatedAccess,
+        refreshToken: "rotated-refresh",
+        expireAt: String(Date.now() + 3_600_000),
+      });
+
+      await expect(getToken()).resolves.toBe(rotatedAccess);
+      expect(mockRefreshTokens).not.toHaveBeenCalled();
+      expect(refreshToken.get()).toBe("rotated-refresh");
+    });
+
+    it("refreshes the adopted session when its access token has expired too", async () => {
+      expireStale();
+      mockReadStoreCookies.mockReturnValue({accessToken: createMockJWT(), refreshToken: "rotated-refresh", expireAt: "1"});
+      mockRefreshTokens.mockResolvedValue({access_token: createMockJWT(), refresh_token: "new-refresh", expires_in: 3600});
+
+      await getToken();
+
+      expect(mockRefreshTokens).toHaveBeenCalledWith(providers.AuthProvider.BEARER, {token: "rotated-refresh"});
+    });
+
+    it("keeps the session another tab rotated while this tab's refresh was in flight", async () => {
+      expireStale();
+      const rotated = {accessToken: createMockJWT(), refreshToken: "rotated-refresh", expireAt: String(Date.now() + 3_600_000)};
+      mockReadStoreCookies.mockReturnValue({});
+      mockRefreshTokens.mockImplementation(async () => {
+        mockReadStoreCookies.mockReturnValue(rotated);
+        throw new ApiError("refresh token already used", 400, "/auth/v1/token");
+      });
+
+      await expect(getToken()).resolves.toBe(rotated.accessToken);
+      expect(refreshToken.get()).toBe("rotated-refresh");
+    });
+
+    it("keeps the in-memory session when the cookies cannot be read", async () => {
+      accessToken.set(createMockJWT());
+      refreshToken.set("refresh-123");
+      expireAt.set(Date.now() + 3_600_000);
+      mockReadStoreCookies.mockReturnValue({});
+
+      await getToken();
+
+      expect(refreshToken.get()).toBe("refresh-123");
+    });
+
+    it("refreshes under a lock shared across tabs and re-reads the cookies once it holds it", async () => {
+      expireStale();
+      const rotatedAccess = createMockJWT();
+      const request = vi.fn(async (_name: string, _options: unknown, task: () => Promise<void>) => {
+        // The tab holding the lock first rotated the token while this one waited.
+        mockReadStoreCookies.mockReturnValue({
+          accessToken: rotatedAccess,
+          refreshToken: "rotated-refresh",
+          expireAt: String(Date.now() + 3_600_000),
+        });
+        return task();
+      });
+      vi.stubGlobal("navigator", {locks: {request}});
+
+      await expect(getToken()).resolves.toBe(rotatedAccess);
+      expect(request).toHaveBeenCalledWith("__rixl_auth_refresh", {signal: expect.any(AbortSignal)}, expect.any(Function));
+      expect(mockRefreshTokens).not.toHaveBeenCalled();
+    });
+
+    it("refreshes without the lock when another tab holds it too long", async () => {
+      expireStale();
+      const request = vi.fn(async () => {
+        throw new DOMException("lock wait timed out", "TimeoutError");
+      });
+      vi.stubGlobal("navigator", {locks: {request}});
+      mockRefreshTokens.mockResolvedValue({access_token: createMockJWT(), refresh_token: "new-refresh", expires_in: 3600});
+
+      await getToken();
+
+      expect(request).toHaveBeenCalledWith("__rixl_auth_refresh", {signal: expect.any(AbortSignal)}, expect.any(Function));
+      expect(mockRefreshTokens).toHaveBeenCalledTimes(1);
+      expect(refreshToken.get()).toBe("new-refresh");
+    });
+
+    it("does not refresh twice when the refresh under the lock fails", async () => {
+      expireStale();
+      vi.stubGlobal("navigator", {locks: {request: (_name: string, _options: unknown, task: () => Promise<void>) => task()}});
+      mockRefreshTokens.mockRejectedValue(new DOMException("request timed out", "TimeoutError"));
+
+      await expect(getToken()).rejects.toThrow("request timed out");
+      expect(mockRefreshTokens).toHaveBeenCalledTimes(1);
+    });
+
+    it.each([
+      ["another user", {id: "user-2", org_id: "org-1"}],
+      ["another organization", {id: "user-1", org_id: "org-2"}],
+    ])("drops resolved permissions when the adopted session belongs to %s", async (_label, claims) => {
+      accessToken.set(createMockJWT({id: "user-1", org_id: "org-1"}));
+      refreshToken.set("stale-refresh");
+      expireAt.set(Date.now() - 1000);
+      permissions.set(new Set(["videos:read"]));
+      permissionsResolved.set(true);
+      mockReadStoreCookies.mockReturnValue({
+        accessToken: createMockJWT(claims),
+        refreshToken: "rotated-refresh",
+        expireAt: String(Date.now() + 3_600_000),
+      });
+
+      await getToken();
+
+      expect(permissions.get().size).toBe(0);
+      expect(permissionsResolved.get()).toBe(false);
+    });
+
+    it("keeps resolved permissions when the adopted session is the same user and organization", async () => {
+      accessToken.set(createMockJWT({id: "user-1", org_id: "org-1"}));
+      refreshToken.set("stale-refresh");
+      expireAt.set(Date.now() - 1000);
+      permissions.set(new Set(["videos:read"]));
+      permissionsResolved.set(true);
+      mockReadStoreCookies.mockReturnValue({
+        accessToken: createMockJWT({id: "user-1", org_id: "org-1"}),
+        refreshToken: "rotated-refresh",
+        expireAt: String(Date.now() + 3_600_000),
+      });
+
+      await getToken();
+
+      expect(permissionsResolved.get()).toBe(true);
     });
   });
 });

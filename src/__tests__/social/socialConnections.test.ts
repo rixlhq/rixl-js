@@ -153,10 +153,10 @@ describe("Social Connections Module", () => {
     it("should connect social provider successfully", async () => {
       mockPostAuthV1ProvidersConnect.mockResolvedValue({data: {}});
 
-      await connectSocialInternal("google", "google-oauth-token");
+      await connectSocialInternal("google", {token: "google-oauth-token"});
 
       expect(mockPostAuthV1ProvidersConnect).toHaveBeenCalledWith({
-        body: {provider: "EXTERNAL_ACCOUNT_PROVIDER_GOOGLE", token: "google-oauth-token"},
+        body: {provider: "EXTERNAL_ACCOUNT_PROVIDER_GOOGLE", token: "google-oauth-token", origin: window.location.origin},
         headers: {Authorization: "Bearer mock-token"},
         throwOnError: true,
       });
@@ -165,42 +165,62 @@ describe("Social Connections Module", () => {
     it("should connect different providers", async () => {
       mockPostAuthV1ProvidersConnect.mockResolvedValue({data: {}});
 
-      await connectSocialInternal("apple", "apple-id-token");
+      await connectSocialInternal("apple", {token: "apple-id-token"});
 
       expect(mockPostAuthV1ProvidersConnect).toHaveBeenCalledWith({
-        body: {provider: "EXTERNAL_ACCOUNT_PROVIDER_APPLE", token: "apple-id-token"},
+        body: {provider: "EXTERNAL_ACCOUNT_PROVIDER_APPLE", token: "apple-id-token", origin: window.location.origin},
         headers: {Authorization: "Bearer mock-token"},
         throwOnError: true,
       });
     });
 
-    it("should map Telegram auth tokens to the telegram provider", async () => {
+    it("should map Telegram mini app data to the telegram provider", async () => {
       mockPostAuthV1ProvidersConnect.mockResolvedValue({data: {}});
 
-      await connectSocialInternal("tgAuthResult", "tg-token");
+      await connectSocialInternal("tgWebAppData", {token: "init-data"});
 
       expect(mockPostAuthV1ProvidersConnect).toHaveBeenCalledWith({
-        body: {provider: "EXTERNAL_ACCOUNT_PROVIDER_TELEGRAM", token: "tg-token"},
+        body: {provider: "EXTERNAL_ACCOUNT_PROVIDER_TELEGRAM", token: "init-data", origin: window.location.origin},
+        headers: {Authorization: "Bearer mock-token"},
+        throwOnError: true,
+      });
+    });
+
+    it("should send an authorization code with its verifier and redirect URI", async () => {
+      mockPostAuthV1ProvidersConnect.mockResolvedValue({data: {}});
+
+      await connectSocialInternal("telegram", {
+        authorizationCode: {code: "auth-code", codeVerifier: "verifier", redirectUri: "https://app.example.com/login"},
+      });
+
+      expect(mockPostAuthV1ProvidersConnect).toHaveBeenCalledWith({
+        body: {
+          provider: "EXTERNAL_ACCOUNT_PROVIDER_TELEGRAM",
+          token: "auth-code",
+          origin: window.location.origin,
+          code_verifier: "verifier",
+          redirect_uri: "https://app.example.com/login",
+        },
         headers: {Authorization: "Bearer mock-token"},
         throwOnError: true,
       });
     });
 
     it("should reject unknown providers", async () => {
-      await expect(connectSocialInternal("myspace", "token-123")).rejects.toThrow("Unknown provider: myspace");
+      await expect(connectSocialInternal("myspace", {token: "token-123"})).rejects.toThrow("Unknown provider: myspace");
       expect(mockPostAuthV1ProvidersConnect).not.toHaveBeenCalled();
     });
 
     it("should handle unauthorized error", async () => {
       mockPostAuthV1ProvidersConnect.mockRejectedValue({error: "unauthorized", code: 401});
 
-      await expect(connectSocialInternal("google", "token")).rejects.toThrow();
+      await expect(connectSocialInternal("google", {token: "token"})).rejects.toThrow();
     });
 
     it("should validate input before sending", async () => {
       mockPostAuthV1ProvidersConnect.mockResolvedValue({data: {}});
 
-      await connectSocialInternal("microsoft", "ms-token-123");
+      await connectSocialInternal("microsoft", {token: "ms-token-123"});
 
       expect(mockPostAuthV1ProvidersConnect).toHaveBeenCalledWith({
         body: expect.objectContaining({

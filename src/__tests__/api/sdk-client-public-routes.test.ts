@@ -10,6 +10,7 @@ import {client} from "../../generated/client.gen";
 import {configureSdkClient} from "../../auth/api/sdk-client";
 import {ApiError} from "../../auth/api/types";
 import {getToken} from "../../auth/authStore";
+import {apiURL} from "../../auth/api-url";
 
 vi.mock("../../auth/api-url", () => ({
   apiURL: {
@@ -24,6 +25,7 @@ vi.mock("../../auth/authStore", () => ({
 }));
 
 const mockGetToken = vi.mocked(getToken);
+const mockApiUrl = vi.mocked(apiURL.get);
 
 const runRequestInterceptors = async (method: string, url: string): Promise<Request> => {
   let request = new Request(url, {method});
@@ -43,6 +45,7 @@ describe("SDK client request interceptor", () => {
   beforeEach(() => {
     client.setConfig({baseUrl: "https://api.example.com"});
     vi.clearAllMocks();
+    mockApiUrl.mockReturnValue("https://api.example.com");
     mockGetToken.mockResolvedValue("valid-token");
   });
 
@@ -127,6 +130,32 @@ describe("SDK client request interceptor", () => {
     await expect(runRequestInterceptors("GET", "https://api.example.com/users/me")).rejects.toMatchObject({
       status: 401,
       endpoint: "/users/me",
+    });
+  });
+
+  describe("with an API URL that carries a path", () => {
+    beforeEach(() => {
+      mockApiUrl.mockReturnValue("https://example.com/api/");
+    });
+
+    it("treats a public route behind the prefix as public", async () => {
+      const request = await runRequestInterceptors("POST", "https://example.com/api/auth/v1/token");
+
+      expect(request.headers.has("Authorization")).toBe(false);
+      expect(mockGetToken).not.toHaveBeenCalled();
+    });
+
+    it("still attaches Authorization to a protected route behind the prefix", async () => {
+      const request = await runRequestInterceptors("GET", "https://example.com/api/auth/v1/user");
+
+      expect(request.headers.get("Authorization")).toBe("Bearer valid-token");
+    });
+
+    it("does not strip a prefix the path merely starts with", async () => {
+      const request = await runRequestInterceptors("POST", "https://example.com/apiauth/v1/token");
+
+      expect(mockGetToken).toHaveBeenCalled();
+      expect(request.headers.get("Authorization")).toBe("Bearer valid-token");
     });
   });
 });

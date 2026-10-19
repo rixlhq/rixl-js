@@ -1,14 +1,14 @@
 /**
  * Provider Utils Tests
- * Tests: extractProviderFromState, detectProvider, getProviderToken
+ * Tests: extractProviderFromState, detectProvider, getProviderCredential
  */
 
 import {describe, it, expect} from "vite-plus/test";
-import {extractProviderFromState, detectProvider, getProviderToken} from "../auth/providers/utils";
+import {extractProviderFromState, detectProvider, getProviderCredential} from "../auth/providers/utils";
 import {AuthProvider} from "@/providers";
 
 // Note: We test extractProviderFromState in isolation as it's a pure function
-// For detectProvider and getProviderToken, we document they are tested via integration
+// For detectProvider and getProviderCredential, we document they are tested via integration
 // since they depend on urlParams which is hard to mock properly
 
 describe("Provider Utils", () => {
@@ -57,42 +57,37 @@ describe("Provider Utils", () => {
     });
   });
 
-  describe("getProviderToken", () => {
+  describe("getProviderCredential", () => {
     it("should be a function", () => {
-      expect(typeof getProviderToken).toBe("function");
+      expect(typeof getProviderCredential).toBe("function");
     });
 
     it("should return undefined for BEARER provider", () => {
-      expect(getProviderToken(AuthProvider.BEARER)).toBe(undefined);
+      expect(getProviderCredential(AuthProvider.BEARER)).toBe(undefined);
     });
 
     it("should return undefined for GOOGLE provider when no URL params", () => {
-      const result = getProviderToken(AuthProvider.GOOGLE);
+      const result = getProviderCredential(AuthProvider.GOOGLE);
       expect(result).toBeUndefined();
     });
 
     it("should return undefined for APPLE provider when no URL params", () => {
-      const result = getProviderToken(AuthProvider.APPLE);
+      const result = getProviderCredential(AuthProvider.APPLE);
       expect(result).toBeUndefined();
     });
 
     it("should return undefined for MICROSOFT provider when no URL params", () => {
-      const result = getProviderToken(AuthProvider.MICROSOFT);
+      const result = getProviderCredential(AuthProvider.MICROSOFT);
       expect(result).toBeUndefined();
     });
 
     it("should return undefined for TELEGRAM_MINI_APP provider when no URL params", () => {
-      const result = getProviderToken(AuthProvider.TELEGRAM_MINI_APP);
-      expect(result).toBeUndefined();
-    });
-
-    it("should return undefined for TELEGRAM_WEB provider when no URL params", () => {
-      const result = getProviderToken(AuthProvider.TELEGRAM_WEB);
+      const result = getProviderCredential(AuthProvider.TELEGRAM_MINI_APP);
       expect(result).toBeUndefined();
     });
 
     it("should handle unknown providers gracefully", () => {
-      const result = getProviderToken("unknown_provider" as AuthProvider);
+      const result = getProviderCredential("unknown_provider" as AuthProvider);
       expect(result).toBeUndefined();
     });
   });

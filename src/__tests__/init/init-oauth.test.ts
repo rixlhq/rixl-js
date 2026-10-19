@@ -31,7 +31,8 @@ vi.mock("../../auth/providers", () => ({
   logProviderExchangeFailure: vi.fn(),
   hasProviderResponse: vi.fn(() => false),
   logUnusableProviderResponse: vi.fn(),
-  getProviderToken: vi.fn(),
+  getProviderCredential: vi.fn(),
+  credentialFields: vi.fn((credential: {token: string}) => ({token: credential.token})),
   googleConfig: {set: vi.fn()},
   appleConfig: {set: vi.fn()},
   microsoftConfig: {set: vi.fn()},
@@ -41,7 +42,6 @@ vi.mock("../../auth/providers", () => ({
   updateAppleAuthUrl: vi.fn(),
   updateMicrosoftAuthUrl: vi.fn(),
   updateTelegramAuthUrl: vi.fn(),
-  telegramCodeExchange: vi.fn(),
   AuthProvider: {BEARER: "bearer", TELEGRAM_OIDC: "telegram"},
 }));
 
@@ -55,7 +55,7 @@ vi.mock("../../auth/api/sdk-client", () => ({
 
 describe("initClient - OAuth Callback Handling", () => {
   let mockDetectProvider: any;
-  let mockGetProviderToken: any;
+  let mockGetProviderCredential: any;
   let mockRefreshTokens: any;
   let mockRefreshToken: any;
   let mockCompleteOAuthCallback: any;
@@ -67,7 +67,7 @@ describe("initClient - OAuth Callback Handling", () => {
 
     const providers = await import("../../auth/providers");
     mockDetectProvider = providers.detectProvider;
-    mockGetProviderToken = providers.getProviderToken;
+    mockGetProviderCredential = providers.getProviderCredential;
     mockCompleteOAuthCallback = providers.completeOAuthCallback;
 
     const api = await import("../../auth/api/refresh-tokens");
@@ -82,7 +82,7 @@ describe("initClient - OAuth Callback Handling", () => {
     const config: AuthClientConfig = {apiUrl: "https://api.example.com"};
 
     mockDetectProvider.mockReturnValue("google");
-    mockGetProviderToken.mockReturnValue("oauth-token");
+    mockGetProviderCredential.mockReturnValue({token: "oauth-token"});
     mockRefreshToken.get.mockReturnValue(null);
     mockRefreshTokens.mockResolvedValue({
       access_token: "mock-access-token",
@@ -93,30 +93,26 @@ describe("initClient - OAuth Callback Handling", () => {
     await initClient(config);
 
     expect(mockDetectProvider).toHaveBeenCalled();
-    expect(mockGetProviderToken).toHaveBeenCalledWith("google");
-    expect(mockRefreshTokens).toHaveBeenCalledWith("google", "oauth-token", undefined);
+    expect(mockGetProviderCredential).toHaveBeenCalledWith("google");
+    expect(mockRefreshTokens).toHaveBeenCalledWith("google", {token: "oauth-token"}, {origin: window.location.origin});
   });
 
-  it("redeems a Telegram code with its PKCE verifier", async () => {
-    const providers = await import("../../auth/providers");
-    vi.mocked(providers.telegramCodeExchange).mockReturnValue({codeVerifier: "verifier", redirectUri: "https://app.example.com"});
+  it("passes an authorization code credential through to the token exchange", async () => {
+    const credential = {authorizationCode: {code: "auth-code", codeVerifier: "verifier", redirectUri: "https://app.example.com"}};
     mockDetectProvider.mockReturnValue("telegram");
-    mockGetProviderToken.mockReturnValue("auth-code");
+    mockGetProviderCredential.mockReturnValue(credential);
     mockRefreshToken.get.mockReturnValue(null);
     mockRefreshTokens.mockResolvedValue({access_token: "a", refresh_token: "r", expires_in: 3600});
 
     await initClient({apiUrl: "https://api.example.com"});
 
-    expect(mockRefreshTokens).toHaveBeenCalledWith("telegram", "auth-code", {
-      codeVerifier: "verifier",
-      redirectUri: "https://app.example.com",
-    });
+    expect(mockRefreshTokens).toHaveBeenCalledWith("telegram", credential, {origin: window.location.origin});
   });
 
   it("treats an empty requires_action as a full-scope token", async () => {
     const authStore = await import("../../auth/authStore");
     mockDetectProvider.mockReturnValue("google");
-    mockGetProviderToken.mockReturnValue("oauth-token");
+    mockGetProviderCredential.mockReturnValue({token: "oauth-token"});
     mockRefreshToken.get.mockReturnValue(null);
     mockRefreshTokens.mockResolvedValue({
       access_token: "access",
@@ -135,7 +131,7 @@ describe("initClient - OAuth Callback Handling", () => {
   it("enters limited access when requires_action names an action", async () => {
     const authStore = await import("../../auth/authStore");
     mockDetectProvider.mockReturnValue("telegram");
-    mockGetProviderToken.mockReturnValue("oauth-token");
+    mockGetProviderCredential.mockReturnValue({token: "oauth-token"});
     mockRefreshToken.get.mockReturnValue(null);
     mockRefreshTokens.mockResolvedValue({access_token: "limited", token_type: "bearer", requires_action: "add_email"});
 
@@ -149,7 +145,7 @@ describe("initClient - OAuth Callback Handling", () => {
     const config: AuthClientConfig = {apiUrl: "https://api.example.com"};
 
     mockDetectProvider.mockReturnValue("google");
-    mockGetProviderToken.mockReturnValue("oauth-token");
+    mockGetProviderCredential.mockReturnValue({token: "oauth-token"});
     mockRefreshToken.get.mockReturnValue("existing-refresh-token");
     mockRefreshTokens.mockRejectedValue(
       new ApiError("error", {status: 400, endpoint: "/auth/v1/token/refresh", data: {error: "invalid_grant"}})
@@ -157,7 +153,7 @@ describe("initClient - OAuth Callback Handling", () => {
 
     await initClient(config);
 
-    expect(mockRefreshTokens).toHaveBeenCalledWith("google", "oauth-token", undefined);
+    expect(mockRefreshTokens).toHaveBeenCalledWith("google", {token: "oauth-token"}, {origin: window.location.origin});
     expect(mockAuthError.set).toHaveBeenCalledWith(expect.objectContaining({error_code: "email_not_verified"}));
   });
 
@@ -165,7 +161,7 @@ describe("initClient - OAuth Callback Handling", () => {
     const config: AuthClientConfig = {apiUrl: "https://api.example.com"};
 
     mockDetectProvider.mockReturnValue("google");
-    mockGetProviderToken.mockReturnValue("oauth-token");
+    mockGetProviderCredential.mockReturnValue({token: "oauth-token"});
     mockRefreshToken.get.mockReturnValue(null);
     mockRefreshTokens.mockRejectedValue(
       new ApiError("unauthorized", {status: 401, endpoint: "/auth/v1/token", data: {error: "unauthorized"}})
@@ -184,7 +180,7 @@ describe("initClient - OAuth Callback Handling", () => {
     const config: AuthClientConfig = {apiUrl: "https://api.example.com"};
 
     mockDetectProvider.mockReturnValue("google");
-    mockGetProviderToken.mockReturnValue("oauth-token");
+    mockGetProviderCredential.mockReturnValue({token: "oauth-token"});
     mockRefreshToken.get.mockReturnValue(null);
     mockRefreshTokens.mockRejectedValue(new TypeError("Failed to fetch"));
 
@@ -195,7 +191,7 @@ describe("initClient - OAuth Callback Handling", () => {
     const config: AuthClientConfig = {apiUrl: "https://api.example.com"};
 
     mockDetectProvider.mockReturnValue("google");
-    mockGetProviderToken.mockReturnValue("oauth-token");
+    mockGetProviderCredential.mockReturnValue({token: "oauth-token"});
     mockRefreshToken.get.mockReturnValue(null);
     mockRefreshTokens.mockResolvedValue({access_token: "a", refresh_token: "r", expires_in: 3600});
 
@@ -208,7 +204,7 @@ describe("initClient - OAuth Callback Handling", () => {
     const config: AuthClientConfig = {apiUrl: "https://api.example.com"};
 
     mockDetectProvider.mockReturnValue("google");
-    mockGetProviderToken.mockReturnValue("oauth-token");
+    mockGetProviderCredential.mockReturnValue({token: "oauth-token"});
     mockRefreshToken.get.mockReturnValue(null);
     mockRefreshTokens.mockRejectedValue(new TypeError("Failed to fetch"));
 

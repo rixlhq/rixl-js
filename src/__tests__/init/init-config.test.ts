@@ -35,7 +35,8 @@ vi.mock("../../auth/providers", () => ({
   updateAppleAuthUrl: vi.fn(),
   updateMicrosoftAuthUrl: vi.fn(),
   updateTelegramAuthUrl: vi.fn(),
-  getProviderToken: vi.fn(),
+  getProviderCredential: vi.fn(),
+  credentialFields: vi.fn((credential: {token: string}) => ({token: credential.token})),
   detectProvider: vi.fn(),
   completeOAuthCallback: vi.fn(),
   logProviderExchangeFailure: vi.fn(),
@@ -105,5 +106,19 @@ describe("initClient - Basic Configuration", () => {
     expect(providers.appleConfig.set).toHaveBeenCalled();
     expect(providers.microsoftConfig.set).toHaveBeenCalled();
     expect(providers.telegramConfig.set).toHaveBeenCalled();
+  });
+
+  it("waits for the Telegram sign-in URL before resolving", async () => {
+    const providers = await import("../../auth/providers");
+    let urlReady = false;
+    (providers.updateTelegramAuthUrl as any).mockImplementation(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      urlReady = true;
+    });
+    mockDetectProvider.mockReturnValue(undefined);
+
+    await initClient({apiUrl: "https://api.example.com", telegramProvider: {botId: "bot"}});
+
+    expect(urlReady).toBe(true);
   });
 });

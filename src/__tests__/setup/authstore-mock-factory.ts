@@ -43,10 +43,12 @@ export function createProvidersMock(): {
  */
 export function createCookieMock(): {
   initVals: Record<string, never>;
+  readStoreCookies: ReturnType<typeof vi.fn>;
   setStoreCookie: ReturnType<typeof vi.fn>;
 } {
   return {
     initVals: {},
+    readStoreCookies: vi.fn(() => ({})),
     setStoreCookie: vi.fn(),
   };
 }
