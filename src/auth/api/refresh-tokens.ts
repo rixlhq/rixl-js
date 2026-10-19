@@ -1,5 +1,5 @@
 import {authV1TokenServiceRefreshToken, type AuthV1RefreshTokenRequest} from "../../generated";
-import {AuthProvider, credentialFields, type CodeExchangeFields, type ProviderCredential} from "@/providers";
+import {AuthProvider, credentialFields, type ProviderCredential} from "@/providers";
 import type {TokenResponse, LimitedScopeTokenResponse} from "../types";
 
 export type {TokenResponse, LimitedScopeTokenResponse};
@@ -24,8 +24,7 @@ export const refreshTokens = async (
   options?: RefreshTokenOptions
 ): Promise<TokenResponse | LimitedScopeTokenResponse> => {
   const {token, ...codeExchange} = credentialFields(credential);
-  // code_verifier and redirect_uri are not in the generated type until the SDK is regenerated.
-  const body: AuthV1RefreshTokenRequest & CodeExchangeFields = {
+  const body: AuthV1RefreshTokenRequest = {
     token_type: provider,
     refresh_token: token,
     country_code: options?.countryCode,

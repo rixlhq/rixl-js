@@ -12,6 +12,6 @@ export {telegramConfig, telegramAuthUrl, updateTelegramAuthUrl, type TelegramPro
 
 // Export utility functions
 export {detectProvider, getProviderCredential} from "./utils";
-export {credentialFields, type ProviderCredential, type AuthorizationCode, type CodeExchangeFields} from "./credential";
+export {credentialFields, type ProviderCredential, type AuthorizationCode} from "./credential";
 export {completeOAuthCallback, hasProviderResponse} from "./callback";
 export {logProviderExchangeFailure, logUnusableProviderResponse} from "./diagnostics";

@@ -6,7 +6,7 @@ import {
 import type {AuthV1ConnectProviderRequest, AuthV1ExternalAccountProvider} from "../../generated/types.gen";
 import {getToken, login} from "../authStore";
 import {AuthProvider} from "../providers/types";
-import {credentialFields, type CodeExchangeFields, type ProviderCredential} from "../providers/credential";
+import {credentialFields, type ProviderCredential} from "../providers/credential";
 import {setSocialConnectAttempt} from "./socialState";
 import {apiCall} from "../api/utils";
 import {persistTokens} from "../api/tokens";
@@ -87,8 +87,7 @@ export const connectSocialInternal = async (provider: string, credential: Provid
       const requestBody = validateInput(ConnectProviderSchema, {provider, token});
       const sessionToken = await getToken();
       const headers: Record<string, string> = sessionToken ? {Authorization: `Bearer ${sessionToken}`} : {};
-      // code_verifier and redirect_uri are not in the generated type until the SDK is regenerated.
-      const body: AuthV1ConnectProviderRequest & CodeExchangeFields = {
+      const body: AuthV1ConnectProviderRequest = {
         provider: toProtoProvider(normalizeProviderType(requestBody.provider)),
         token: requestBody.token,
         // The backend picks the Telegram bot that signs Mini App init data by origin.

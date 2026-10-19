@@ -5,9 +5,8 @@ import {accessToken, refreshToken, removeTokens} from "../authStore";
 export const logout = async (): Promise<void> => {
   try {
     // The backend blacklists `token` as an access token and deletes `refresh_token`
-    // from the session store. refresh_token is not in the generated type until the
-    // SDK is regenerated.
-    const body: AuthV1LogoutRequest & {refresh_token?: string} = {
+    // from the session store.
+    const body: AuthV1LogoutRequest = {
       token: accessToken.get(),
       refresh_token: refreshToken.get(),
     };
