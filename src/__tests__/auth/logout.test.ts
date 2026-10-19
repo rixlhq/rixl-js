@@ -78,4 +78,20 @@ describe("logout", () => {
     expect(refreshToken.get()).toBe("");
     otherTab.close();
   });
+
+  it("still logs out and tells the other tabs when session storage is blocked", async () => {
+    mockPostAuthV1Logout.mockResolvedValue({data: {}});
+    const otherTab = new BroadcastChannel("__rixl_auth_session");
+    const received = new Promise((resolve) => otherTab.addEventListener("message", (event) => resolve(event.data), {once: true}));
+    const blocked = vi.spyOn(window, "sessionStorage", "get").mockImplementation(() => {
+      throw new DOMException("The operation is insecure.", "SecurityError");
+    });
+
+    await expect(logout()).resolves.toBeUndefined();
+
+    expect(isLogged.get()).toBe(false);
+    await expect(received).resolves.toBe("logout");
+    blocked.mockRestore();
+    otherTab.close();
+  });
 });
