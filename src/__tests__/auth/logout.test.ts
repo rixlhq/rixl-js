@@ -57,4 +57,25 @@ describe("logout", () => {
     expect(sessionStorage.getItem("__rixl_auth_social_connect_google")).toBeNull();
     expect(sessionStorage.getItem("unrelated")).toBe("kept");
   });
+
+  it("tells the other tabs to log out", async () => {
+    mockPostAuthV1Logout.mockResolvedValue({data: {}});
+    const otherTab = new BroadcastChannel("__rixl_auth_session");
+    const received = new Promise((resolve) => otherTab.addEventListener("message", (event) => resolve(event.data), {once: true}));
+
+    await logout();
+
+    await expect(received).resolves.toBe("logout");
+    otherTab.close();
+  });
+
+  it("logs this tab out when another tab logs out", async () => {
+    const otherTab = new BroadcastChannel("__rixl_auth_session");
+
+    otherTab.postMessage("logout");
+    await vi.waitFor(() => expect(isLogged.get()).toBe(false));
+
+    expect(refreshToken.get()).toBe("");
+    otherTab.close();
+  });
 });

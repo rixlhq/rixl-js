@@ -1,6 +1,7 @@
 import {authV1TokenServiceLogout} from "../../generated/sdk.gen";
 import type {AuthV1LogoutRequest} from "../../generated/types.gen";
 import {accessToken, refreshToken, removeTokens} from "../authStore";
+import {announceLogout} from "../session-channel";
 import {clearSocialConnectAttempts} from "../social/socialState";
 
 export const logout = async (): Promise<void> => {
@@ -17,5 +18,6 @@ export const logout = async (): Promise<void> => {
   } finally {
     removeTokens();
     clearSocialConnectAttempts();
+    announceLogout();
   }
 };

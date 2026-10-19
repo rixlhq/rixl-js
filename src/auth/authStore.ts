@@ -13,6 +13,7 @@ import type {RequiresAction} from "./types";
 import {shared} from "../shared-runtime";
 import {ApiError} from "./api/types";
 import {GLOBAL_PREFIX, HTTP_STATUS} from "./constants";
+import {onLogoutElsewhere} from "./session-channel";
 
 // Store for authentication state. Shared across copies of this package: a
 // duplicate copy would otherwise hydrate its own tokens from the cookie and
@@ -261,3 +262,6 @@ refreshToken.subscribe((value) => setStoreCookie("refreshToken", value));
 expireAt.subscribe((value) => setStoreCookie("expireAt", value));
 requiresAction.subscribe((value) => setStoreCookie("requiresAction", value));
 limitedAccessToken.subscribe((value) => setStoreCookie("limitedAccessToken", value));
+
+// The other tabs share this session's cookies, so a logout in one ends it in all.
+onLogoutElsewhere(removeTokens);
