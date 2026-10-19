@@ -21,6 +21,7 @@ import * as providers from "@/providers";
 import * as initialization from "@/initialization";
 import {accessToken, refreshToken, expireAt, setTokens, removeTokens, getToken, resetTokenPromise} from "@/authStore.ts";
 import {user} from "@/userStore.ts";
+import {permissions, permissionsResolved} from "../../auth/permissionStore";
 import {ApiError} from "../../auth/api/types";
 
 describe("AuthStore - Token Refresh", () => {
@@ -346,6 +347,44 @@ describe("AuthStore - Token Refresh", () => {
 
       await expect(getToken()).rejects.toThrow("request timed out");
       expect(mockRefreshTokens).toHaveBeenCalledTimes(1);
+    });
+
+    it.each([
+      ["another user", {id: "user-2", org_id: "org-1"}],
+      ["another organization", {id: "user-1", org_id: "org-2"}],
+    ])("drops resolved permissions when the adopted session belongs to %s", async (_label, claims) => {
+      accessToken.set(createMockJWT({id: "user-1", org_id: "org-1"}));
+      refreshToken.set("stale-refresh");
+      expireAt.set(Date.now() - 1000);
+      permissions.set(new Set(["videos:read"]));
+      permissionsResolved.set(true);
+      mockReadStoreCookies.mockReturnValue({
+        accessToken: createMockJWT(claims),
+        refreshToken: "rotated-refresh",
+        expireAt: String(Date.now() + 3_600_000),
+      });
+
+      await getToken();
+
+      expect(permissions.get().size).toBe(0);
+      expect(permissionsResolved.get()).toBe(false);
+    });
+
+    it("keeps resolved permissions when the adopted session is the same user and organization", async () => {
+      accessToken.set(createMockJWT({id: "user-1", org_id: "org-1"}));
+      refreshToken.set("stale-refresh");
+      expireAt.set(Date.now() - 1000);
+      permissions.set(new Set(["videos:read"]));
+      permissionsResolved.set(true);
+      mockReadStoreCookies.mockReturnValue({
+        accessToken: createMockJWT({id: "user-1", org_id: "org-1"}),
+        refreshToken: "rotated-refresh",
+        expireAt: String(Date.now() + 3_600_000),
+      });
+
+      await getToken();
+
+      expect(permissionsResolved.get()).toBe(true);
     });
   });
 });

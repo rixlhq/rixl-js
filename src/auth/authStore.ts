@@ -6,7 +6,7 @@ import {initVals, readStoreCookies, setStoreCookie} from "./cookie";
 import {user} from "./userStore";
 import {clearPermissions} from "./permissionStore";
 import type {ProviderType} from "./social/socialConnections";
-import {decodeAndSetUser, isTokenExpired} from "./utils/jwt";
+import {decodeAndSetUser, decodeToken, isTokenExpired} from "./utils/jwt";
 import {isLimitedScopeTokenResponse} from "./utils/requires-action";
 import type {LoginErrorResponse} from "./auth/types";
 import type {RequiresAction} from "./types";
@@ -97,11 +97,22 @@ const adoptStoredSession = (): boolean => {
   const storedRefresh = stored["refreshToken"];
   if (!storedRefresh || storedRefresh === refreshToken.get()) return false;
 
-  accessToken.set(stored["accessToken"] ?? "");
+  // Permissions are resolved per user and organization, and the other tab may
+  // have signed in as someone else or switched organization.
+  const storedAccess = stored["accessToken"] ?? "";
+  if (scopeOf(storedAccess) !== scopeOf(accessToken.get())) clearPermissions();
+
+  accessToken.set(storedAccess);
   refreshToken.set(storedRefresh);
   expireAt.set(Number(stored["expireAt"]));
   isLogged.set(true);
   return true;
+};
+
+/** The user and organization a token's permissions apply to. */
+const scopeOf = (token: string | undefined): string => {
+  const claims = token ? decodeToken(token) : undefined;
+  return claims ? `${claims.id}:${claims.org_id}` : "";
 };
 
 const REFRESH_LOCK = `${GLOBAL_PREFIX}_refresh`;
