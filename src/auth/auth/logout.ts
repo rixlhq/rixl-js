@@ -1,6 +1,7 @@
 import {authV1TokenServiceLogout} from "../../generated/sdk.gen";
 import type {AuthV1LogoutRequest} from "../../generated/types.gen";
 import {accessToken, refreshToken, removeTokens} from "../authStore";
+import {clearSocialConnectAttempts} from "../social/socialState";
 
 export const logout = async (): Promise<void> => {
   try {
@@ -15,5 +16,6 @@ export const logout = async (): Promise<void> => {
     // Revocation failed — still clear local state
   } finally {
     removeTokens();
+    clearSocialConnectAttempts();
   }
 };

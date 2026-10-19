@@ -10,6 +10,7 @@ import {refreshToken} from "../auth/authStore";
 import * as providersModule from "../auth/providers";
 import * as socialStateModule from "../auth/social/socialState";
 import * as socialConnectionsModule from "../auth/social/socialConnections";
+import * as refreshTokensModule from "../auth/api/refresh-tokens";
 import type {AuthClientConfig} from "../auth/init";
 
 describe("Init - Provider Detection and Social Flow", () => {
@@ -209,6 +210,8 @@ describe("Init - Provider Detection and Social Flow", () => {
       vi.spyOn(socialStateModule, "hasSocialConnectAttempt").mockReturnValue(true);
       const connectSpy = vi.spyOn(socialConnectionsModule, "connectSocialInternal").mockResolvedValue(undefined);
       vi.spyOn(socialStateModule, "clearSocialConnectAttempt").mockImplementation(() => {});
+      // Only a signed-in user can link.
+      refreshToken.set("existing-refresh");
 
       const config: AuthClientConfig = {
         apiUrl: "https://test-api.example.com",
@@ -222,6 +225,26 @@ describe("Init - Provider Detection and Social Flow", () => {
 
       // Verify connectSocialInternal was called
       expect(connectSpy).toHaveBeenCalledWith(providersModule.AuthProvider.GOOGLE, {token: "social-token-123"});
+    });
+
+    it("signs in instead of linking when a link flag outlived the session that set it", async () => {
+      vi.spyOn(providersModule, "detectProvider").mockReturnValue(providersModule.AuthProvider.GOOGLE);
+      vi.spyOn(providersModule, "getProviderCredential").mockReturnValue({token: "google-token"});
+      sessionStorage.setItem("__rixl_auth_social_connect_google", "true");
+      const exchangeSpy = vi
+        .spyOn(refreshTokensModule, "refreshTokens")
+        .mockResolvedValue({access_token: "access", refresh_token: "refresh", expires_in: 3600});
+      const connectSpy = vi.spyOn(socialConnectionsModule, "connectSocialInternal").mockResolvedValue(undefined);
+
+      try {
+        await initClient({apiUrl: "https://test-api.example.com"});
+      } catch {
+        // getToken() may fail on the mock access token
+      }
+
+      expect(exchangeSpy).toHaveBeenCalledWith(providersModule.AuthProvider.GOOGLE, {token: "google-token"}, expect.anything());
+      expect(connectSpy).not.toHaveBeenCalled();
+      expect(sessionStorage.getItem("__rixl_auth_social_connect_google")).toBeNull();
     });
 
     it("should not call connectSocialInternal when no social connect attempt", async () => {

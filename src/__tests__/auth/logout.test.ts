@@ -46,4 +46,15 @@ describe("logout", () => {
     expect(refreshToken.get()).toBe("");
     expect(isLogged.get()).toBe(false);
   });
+
+  it("drops pending provider link flags", async () => {
+    mockPostAuthV1Logout.mockResolvedValue({data: {}});
+    sessionStorage.setItem("__rixl_auth_social_connect_google", "true");
+    sessionStorage.setItem("unrelated", "kept");
+
+    await logout();
+
+    expect(sessionStorage.getItem("__rixl_auth_social_connect_google")).toBeNull();
+    expect(sessionStorage.getItem("unrelated")).toBe("kept");
+  });
 });

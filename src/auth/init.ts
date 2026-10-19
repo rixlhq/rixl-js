@@ -1,4 +1,4 @@
-import {getToken, authError, setTokens, setLimitedAccessState, clearLimitedAccessState} from "./authStore";
+import {getToken, authError, refreshToken, setTokens, setLimitedAccessState, clearLimitedAccessState} from "./authStore";
 import {ApiError} from "./api/types";
 import {HTTP_STATUS} from "./constants";
 import type {TokenResponse, LimitedScopeTokenResponse, RequiresAction} from "./types";
@@ -165,14 +165,27 @@ const initPage = async () => {
     return undefined;
   }
 
-  // A pending link means the user is already signed in: the credential is for
-  // initSocials to link, and an authorization code can only be redeemed once.
-  if (hasSocialConnectAttempt(provider)) return undefined;
+  // A pending link leaves the credential for initSocials to link, since an
+  // authorization code can only be redeemed once.
+  if (isLinkAttempt(provider)) return undefined;
 
   const credential = getProviderCredential(provider);
   if (!credential) return undefined;
 
   await loginWithProviderCredential(provider, credential);
+};
+
+/**
+ * Whether this callback answers a link rather than a sign-in. Only a signed-in
+ * user can link, so a flag left by an abandoned link is dropped instead of
+ * swallowing the sign-in that follows it.
+ */
+const isLinkAttempt = (provider: AuthProvider): boolean => {
+  if (!hasSocialConnectAttempt(provider)) return false;
+  if (refreshToken.get()) return true;
+
+  clearSocialConnectAttempt(provider);
+  return false;
 };
 
 const loginWithProviderCredential = async (provider: AuthProvider, credential: ProviderCredential): Promise<void> => {
