@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.37.0](https://github.com/rixlhq/rixl-js/compare/v0.36.0...v0.37.0) (2026-10-19)
+
+
+### Features
+
+* drop the deprecated telegram login widget ([dfe3d11](https://github.com/rixlhq/rixl-js/commit/dfe3d1100f299074f4eccca5cbbd4222df65e801))
+
+
+### Bug Fixes
+
+* **api:** match public routes below an API URL that carries a path ([4826969](https://github.com/rixlhq/rixl-js/commit/482696964d76ff7f6df926839fc6a5f8e02760b8))
+* **auth:** keep the session when a token refresh fails transiently ([df6f997](https://github.com/rixlhq/rixl-js/commit/df6f99797c4d0240ec40a75c849f3b42e5f64559))
+* **auth:** log out every tab when one tab logs out ([f23f72e](https://github.com/rixlhq/rixl-js/commit/f23f72eb452a9b97b47208d1f1d06a981334408d))
+* **auth:** open the logout channel only in browsers ([bad2666](https://github.com/rixlhq/rixl-js/commit/bad26661f6743974c96dc60d3bf99555da0e5875))
+* **auth:** re-resolve permissions when another tab changes user or organization ([798408c](https://github.com/rixlhq/rixl-js/commit/798408c5904bf7982f7a8ecfd60e060626a18271))
+* **auth:** send the page origin with provider sign-in and linking ([46bbdd5](https://github.com/rixlhq/rixl-js/commit/46bbdd5ff6cafdf19d714c9b1eb0e2e405ed625d))
+* **auth:** stop a stale link flag from swallowing the next sign-in ([dd4600c](https://github.com/rixlhq/rixl-js/commit/dd4600cd57645154d00f29bd9abd768cdc5ae944))
+* **auth:** stop tabs from spending each other's rotated refresh token ([b0ab4bb](https://github.com/rixlhq/rixl-js/commit/b0ab4bb2a3fc1c626a054dd63ed2133621e4a471))
+* **auth:** stop waiting for a refresh lock another tab holds too long ([ee38ba6](https://github.com/rixlhq/rixl-js/commit/ee38ba6af715fd3d38e5f7c8458d20f70d9594da))
+* **logout:** finish logging out when session storage is blocked ([4741c9c](https://github.com/rixlhq/rixl-js/commit/4741c9cd41fcf614303e064a005760db840e9c11))
+* **logout:** revoke the access and refresh tokens on logout ([e336b02](https://github.com/rixlhq/rixl-js/commit/e336b02dbffa4b44f49e92d3b72cbf68896d8998))
+* **telegram:** have the sign-in URL ready when initClient resolves ([783615f](https://github.com/rixlhq/rixl-js/commit/783615fbc9fe8314d7f4df37c7725cd5509a51d6))
+
 ## [0.36.0](https://github.com/rixlhq/rixl-js/compare/v0.35.0...v0.36.0) (2026-10-18)
 
 
