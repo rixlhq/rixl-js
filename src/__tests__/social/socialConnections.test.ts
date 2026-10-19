@@ -156,7 +156,7 @@ describe("Social Connections Module", () => {
       await connectSocialInternal("google", {token: "google-oauth-token"});
 
       expect(mockPostAuthV1ProvidersConnect).toHaveBeenCalledWith({
-        body: {provider: "EXTERNAL_ACCOUNT_PROVIDER_GOOGLE", token: "google-oauth-token"},
+        body: {provider: "EXTERNAL_ACCOUNT_PROVIDER_GOOGLE", token: "google-oauth-token", origin: window.location.origin},
         headers: {Authorization: "Bearer mock-token"},
         throwOnError: true,
       });
@@ -168,7 +168,7 @@ describe("Social Connections Module", () => {
       await connectSocialInternal("apple", {token: "apple-id-token"});
 
       expect(mockPostAuthV1ProvidersConnect).toHaveBeenCalledWith({
-        body: {provider: "EXTERNAL_ACCOUNT_PROVIDER_APPLE", token: "apple-id-token"},
+        body: {provider: "EXTERNAL_ACCOUNT_PROVIDER_APPLE", token: "apple-id-token", origin: window.location.origin},
         headers: {Authorization: "Bearer mock-token"},
         throwOnError: true,
       });
@@ -180,7 +180,7 @@ describe("Social Connections Module", () => {
       await connectSocialInternal("tgWebAppData", {token: "init-data"});
 
       expect(mockPostAuthV1ProvidersConnect).toHaveBeenCalledWith({
-        body: {provider: "EXTERNAL_ACCOUNT_PROVIDER_TELEGRAM", token: "init-data"},
+        body: {provider: "EXTERNAL_ACCOUNT_PROVIDER_TELEGRAM", token: "init-data", origin: window.location.origin},
         headers: {Authorization: "Bearer mock-token"},
         throwOnError: true,
       });
@@ -197,6 +197,7 @@ describe("Social Connections Module", () => {
         body: {
           provider: "EXTERNAL_ACCOUNT_PROVIDER_TELEGRAM",
           token: "auth-code",
+          origin: window.location.origin,
           code_verifier: "verifier",
           redirect_uri: "https://app.example.com/login",
         },

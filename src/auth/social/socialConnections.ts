@@ -91,6 +91,8 @@ export const connectSocialInternal = async (provider: string, credential: Provid
       const body: AuthV1ConnectProviderRequest & CodeExchangeFields = {
         provider: toProtoProvider(normalizeProviderType(requestBody.provider)),
         token: requestBody.token,
+        // The backend picks the Telegram bot that signs Mini App init data by origin.
+        origin: window.location.origin,
         ...codeExchange,
       };
       const {data} = await authV1ProvidersServiceConnectProvider({

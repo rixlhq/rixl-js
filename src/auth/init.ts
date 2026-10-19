@@ -177,7 +177,8 @@ const initPage = async () => {
 
 const loginWithProviderCredential = async (provider: AuthProvider, credential: ProviderCredential): Promise<void> => {
   try {
-    applyTokenExchangeResult(await refreshTokens(provider, credential));
+    // The backend picks the Telegram bot that signs Mini App init data by origin.
+    applyTokenExchangeResult(await refreshTokens(provider, credential, {origin: window.location.origin}));
   } catch (error) {
     logProviderExchangeFailure(provider, credentialFields(credential).token, error);
     // A transport failure is not an auth outcome and has no message to show, so

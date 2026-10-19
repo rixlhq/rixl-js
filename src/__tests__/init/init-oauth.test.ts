@@ -94,7 +94,7 @@ describe("initClient - OAuth Callback Handling", () => {
 
     expect(mockDetectProvider).toHaveBeenCalled();
     expect(mockGetProviderCredential).toHaveBeenCalledWith("google");
-    expect(mockRefreshTokens).toHaveBeenCalledWith("google", {token: "oauth-token"});
+    expect(mockRefreshTokens).toHaveBeenCalledWith("google", {token: "oauth-token"}, {origin: window.location.origin});
   });
 
   it("passes an authorization code credential through to the token exchange", async () => {
@@ -106,7 +106,7 @@ describe("initClient - OAuth Callback Handling", () => {
 
     await initClient({apiUrl: "https://api.example.com"});
 
-    expect(mockRefreshTokens).toHaveBeenCalledWith("telegram", credential);
+    expect(mockRefreshTokens).toHaveBeenCalledWith("telegram", credential, {origin: window.location.origin});
   });
 
   it("treats an empty requires_action as a full-scope token", async () => {
@@ -153,7 +153,7 @@ describe("initClient - OAuth Callback Handling", () => {
 
     await initClient(config);
 
-    expect(mockRefreshTokens).toHaveBeenCalledWith("google", {token: "oauth-token"});
+    expect(mockRefreshTokens).toHaveBeenCalledWith("google", {token: "oauth-token"}, {origin: window.location.origin});
     expect(mockAuthError.set).toHaveBeenCalledWith(expect.objectContaining({error_code: "email_not_verified"}));
   });
 
