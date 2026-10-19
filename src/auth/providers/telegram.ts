@@ -33,9 +33,10 @@ const authUrl = (config: TelegramProviderConfig): Promise<string> =>
   });
 
 /**
- * Updates the Telegram authentication URL using the configured settings
+ * Updates the Telegram authentication URL using the configured settings.
+ * Resolves once the URL is set, so initClient() can finish with login() ready.
  */
-export function updateTelegramAuthUrl(): void {
+export async function updateTelegramAuthUrl(): Promise<void> {
   const config = telegramConfig.get();
   if (!config) {
     warnProviderNotConfigured("Telegram");
@@ -43,9 +44,16 @@ export function updateTelegramAuthUrl(): void {
     return;
   }
 
-  // The S256 challenge is async; until it resolves login() reports the provider as not ready.
   telegramAuthUrl.set(null);
-  void authUrl(config).then((url) => telegramAuthUrl.set(url));
+  try {
+    const url = await authUrl(config);
+    // A newer configuration set while the challenge was computed owns the URL.
+    if (telegramConfig.get() === config) telegramAuthUrl.set(url);
+  } catch (error) {
+    // The S256 challenge needs crypto.subtle, which browsers only expose on secure
+    // (https or localhost) pages, and session storage to keep the verifier.
+    console.error("Telegram sign-in is unavailable: the PKCE challenge needs a secure (https) page with session storage.", error);
+  }
 }
 
 /** The authorization code Telegram sent back, when this page is its OpenID Connect callback. */

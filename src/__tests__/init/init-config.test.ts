@@ -107,4 +107,18 @@ describe("initClient - Basic Configuration", () => {
     expect(providers.microsoftConfig.set).toHaveBeenCalled();
     expect(providers.telegramConfig.set).toHaveBeenCalled();
   });
+
+  it("waits for the Telegram sign-in URL before resolving", async () => {
+    const providers = await import("../../auth/providers");
+    let urlReady = false;
+    (providers.updateTelegramAuthUrl as any).mockImplementation(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      urlReady = true;
+    });
+    mockDetectProvider.mockReturnValue(undefined);
+
+    await initClient({apiUrl: "https://api.example.com", telegramProvider: {botId: "bot"}});
+
+    expect(urlReady).toBe(true);
+  });
 });

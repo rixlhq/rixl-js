@@ -108,7 +108,9 @@ const initConfig = async (config: AuthClientConfig) => {
 
   if (config.telegramProvider) {
     telegramConfig.set(config.telegramProvider);
-    updateTelegramAuthUrl();
+    // Its URL carries an async PKCE challenge; without waiting, login("telegram")
+    // right after initClient() would find no URL yet.
+    await updateTelegramAuthUrl();
   }
 };
 

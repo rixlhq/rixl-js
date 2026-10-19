@@ -162,5 +162,33 @@ describe("Telegram Provider", () => {
     it("has no code to read when Telegram is not configured", () => {
       expect(readTelegramCode()).toBeUndefined();
     });
+
+    it("has the URL set by the time the update resolves", async () => {
+      telegramConfig.set({botId: "123456"});
+
+      await updateTelegramAuthUrl();
+
+      expect(telegramAuthUrl.get()).toMatch(/^https:\/\/oauth\.telegram\.org\/auth\?/);
+    });
+
+    it("explains instead of rejecting when the page cannot compute the challenge", async () => {
+      telegramConfig.set({botId: "123456"});
+      vi.spyOn(crypto.subtle, "digest").mockRejectedValue(new DOMException("Not secure", "NotSupportedError"));
+      const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+      await expect(updateTelegramAuthUrl()).resolves.toBeUndefined();
+
+      expect(telegramAuthUrl.get()).toBeNull();
+      expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining("secure (https) page"), expect.any(DOMException));
+    });
+
+    it("keeps the URL of the newest configuration", async () => {
+      telegramConfig.set({botId: "old"});
+      const stale = updateTelegramAuthUrl();
+      telegramConfig.set({botId: "new"});
+      await Promise.all([stale, updateTelegramAuthUrl()]);
+
+      expect(new URL(telegramAuthUrl.get()!).searchParams.get("client_id")).toBe("new");
+    });
   });
 });
