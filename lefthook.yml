@@ -1,0 +1,16 @@
+pre-commit:
+  parallel: true
+  commands:
+    check:
+      glob: "*.{js,ts}"
+      run: vp check --fix {staged_files}
+      stage_fixed: true
+    format:
+      glob: "*.{json,md,yaml,yml}"
+      run: vp fmt --write {staged_files}
+      stage_fixed: true
+
+pre-push:
+  commands:
+    gate:
+      run: vp test --run && vp pack

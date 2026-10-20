@@ -1,6 +1,0 @@
-#!/usr/bin/env sh
-# Regenerate the SDK from the OpenAPI spec and build (full working tree), stage
-# any regenerated output, then run staged-file checks. Codegen runs here rather
-# than inside `vp staged`, whose per-file git-stash sandbox breaks whole-project
-# generation.
-RIXL_GENERATE=true vp pack && git add -A src/generated && vp staged
