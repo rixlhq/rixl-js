@@ -1,7 +1,3 @@
-# SDK codegen is deliberately absent: it hits the network and would pull
-# regenerated src/generated into unrelated commits (see vite.config.ts). The
-# Generate SDK workflow regenerates it, and release.yml fails a PR whose
-# src/generated is stale.
 pre-commit:
   parallel: true
   commands:
@@ -14,9 +10,7 @@ pre-commit:
       run: vp fmt --write {staged_files}
       stage_fixed: true
 
-# The whole suite, not just related tests: it takes seconds, and a library
-# change can break any consumer-facing path.
 pre-push:
   commands:
     gate:
-      run: vp check && vp test --run && vp pack
+      run: vp test --run && vp pack

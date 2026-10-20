@@ -44,7 +44,7 @@
     "test:coverage": "vp test --coverage",
     "typecheck": "tsc --noEmit",
     "examples:check": "tsc --noEmit -p examples/tsconfig.json",
-    "prepare": "[ -n \"$CI\" ] || (git config --unset-all --local core.hooksPath 2>/dev/null; lefthook install)",
+    "prepare": "[ -n \"$CI\" ] || lefthook install --reset-hooks-path",
     "ci:release": "vp check && vp pack && npm publish"
   },
   "dependencies": {
