@@ -44,7 +44,7 @@
     "test:coverage": "vp test --coverage",
     "typecheck": "tsc --noEmit",
     "examples:check": "tsc --noEmit -p examples/tsconfig.json",
-    "prepare": "vp config",
+    "prepare": "[ -n \"$CI\" ] || (git config --unset-all --local core.hooksPath 2>/dev/null; lefthook install)",
     "ci:release": "vp check && vp pack && npm publish"
   },
   "dependencies": {
@@ -58,6 +58,7 @@
     "@vitest/coverage-v8": "5.0.3",
     "@vitest/ui": "5.0.3",
     "jsdom": "^30.0.0",
+    "lefthook": "^2.2.2",
     "typescript": "6.0.3",
     "vite": "npm:@voidzero-dev/vite-plus-core@1.1.0",
     "vite-plus": "1.1.0",

@@ -102,9 +102,5 @@ export default defineConfig({
       },
     },
   },
-  staged: {
-    "*.{js,ts}": "vp check --fix",
-    "*.{json,md,yaml,yml}": "vp fmt --write",
-  },
   plugins: codegenPlugins,
 });
