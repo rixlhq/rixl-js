@@ -3,7 +3,7 @@
  *
  * USAGE IN TEST FILES:
  * ```typescript
- * import {vi} from "vitest";
+ * import {vi} from "vite-plus/test";
  * import {createApiClientMock} from "../setup/mock-api-client";
  *
  * // Call the factory directly inside vi.mock() - this works!
