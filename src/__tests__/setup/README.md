@@ -42,7 +42,7 @@ Vitest hoists `vi.mock()` calls to run BEFORE all imports. This means:
 ### Template Example
 
 ```typescript
-// At top of test file, after imports from 'vitest'
+// At top of test file, after imports from 'vite-plus/test'
 vi.mock("../../api/client", () => {
   const ApiError = class ApiError extends Error {
     // ... 33 lines of mock code ...
