@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.37.1](https://github.com/rixlhq/rixl-js/compare/v0.37.0...v0.37.1) (2026-10-21)
+
+
+### Bug Fixes
+
+* **deps:** align vite alias with vite-plus 1.3.0, drop redundant overrides and vitest pin ([a270e76](https://github.com/rixlhq/rixl-js/commit/a270e76f2e618f9a859644c0b6aa16f38dc416c2))
+
 ## [0.37.0](https://github.com/rixlhq/rixl-js/compare/v0.36.0...v0.37.0) (2026-10-19)
 
 
