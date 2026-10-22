@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.40.0](https://github.com/rixlhq/rixl-js/compare/v0.39.0...v0.40.0) (2026-10-22)
+
+
+### Features
+
+* **bundle:** optimize tree-shaking with sideEffects declaration and pure annotations (#z90hj350fb) ([bfa6086](https://github.com/rixlhq/rixl-js/commit/bfa608666930ed798ee2cb789406b6aa4c63d1b1))
+
 ## [0.39.0](https://github.com/rixlhq/rixl-js/compare/v0.38.0...v0.39.0) (2026-10-22)
 
 
