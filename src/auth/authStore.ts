@@ -15,6 +15,14 @@ import {ApiError} from "./api/types";
 import {GLOBAL_PREFIX, HTTP_STATUS} from "./constants";
 import {onLogoutElsewhere} from "./session-channel";
 
+// Helper to ensure multi-tab session synchronization is attached once per realm
+const ensureSessionSync = (): void => {
+  shared("sessionSyncInitialized", () => {
+    onLogoutElsewhere(() => removeTokens());
+    return true;
+  });
+};
+
 // Store for authentication state. Shared across copies of this package: a
 // duplicate copy would otherwise hydrate its own tokens from the cookie and
 // then silently diverge on the first refresh or logout.
@@ -22,21 +30,44 @@ import {onLogoutElsewhere} from "./session-channel";
 // Seeded from the cookie only. An OAuth callback in the URL is not evidence of a
 // session — the exchange can still fail — so consumers must await initClient()
 // before reading this on a callback load rather than trusting an optimistic true.
-export const isLogged: WritableAtom<boolean> = shared("isLogged", () => atom(initVals["isLogged"] === "true"));
-export const accessToken: WritableAtom<string | undefined> = shared("accessToken", () => atom(initVals["accessToken"]));
-export const refreshToken: WritableAtom<string | undefined> = shared("refreshToken", () => atom(initVals["refreshToken"]));
-export const expireAt: WritableAtom<number> = shared("expireAt", () => atom(Number(initVals["expireAt"])));
+export const isLogged: WritableAtom<boolean> = shared("isLogged", () => {
+  ensureSessionSync();
+  const store = atom(initVals["isLogged"] === "true");
+  store.subscribe((value) => setStoreCookie("isLogged", value));
+  return store;
+});
+export const accessToken: WritableAtom<string | undefined> = shared("accessToken", () => {
+  ensureSessionSync();
+  const store = atom(initVals["accessToken"]);
+  store.subscribe((value) => setStoreCookie("accessToken", value));
+  return store;
+});
+export const refreshToken: WritableAtom<string | undefined> = shared("refreshToken", () => {
+  ensureSessionSync();
+  const store = atom(initVals["refreshToken"]);
+  store.subscribe((value) => setStoreCookie("refreshToken", value));
+  return store;
+});
+export const expireAt: WritableAtom<number> = shared("expireAt", () => {
+  const store = atom(Number(initVals["expireAt"]));
+  store.subscribe((value) => setStoreCookie("expireAt", value));
+  return store;
+});
 
 // Store for OAuth/Telegram login errors (403, 409)
 export const authError: WritableAtom<LoginErrorResponse | null> = shared("authError", () => atom<LoginErrorResponse | null>(null));
 
 // Store for limited access state (Telegram user without email)
-export const requiresAction: WritableAtom<RequiresAction> = shared("requiresAction", () =>
-  atom<RequiresAction>((initVals["requiresAction"] as RequiresAction) || null)
-);
-export const limitedAccessToken: WritableAtom<string | null> = shared("limitedAccessToken", () =>
-  atom<string | null>(initVals["limitedAccessToken"] || null)
-);
+export const requiresAction: WritableAtom<RequiresAction> = shared("requiresAction", () => {
+  const store = atom<RequiresAction>((initVals["requiresAction"] as RequiresAction) || null);
+  store.subscribe((value) => setStoreCookie("requiresAction", value));
+  return store;
+});
+export const limitedAccessToken: WritableAtom<string | null> = shared("limitedAccessToken", () => {
+  const store = atom<string | null>(initVals["limitedAccessToken"] || null);
+  store.subscribe((value) => setStoreCookie("limitedAccessToken", value));
+  return store;
+});
 
 // The in-flight getToken() call, so concurrent callers share one refresh.
 // Shared across copies of this package: refresh tokens rotate, so two copies
@@ -52,18 +83,25 @@ export const resetTokenPromise = (): void => {
   inFlight.promise = null;
 };
 
-// Map providers to their auth URL atoms
-const PROVIDER_URL_MAP: Partial<Record<ProviderType, WritableAtom<string | null>>> = {
-  google: googleAuthUrl,
-  apple: appleAuthUrl,
-  microsoft: microsoftAuthUrl,
-  telegram: telegramAuthUrl,
+const getProviderUrlAtom = (provider: ProviderType): WritableAtom<string | null> | undefined => {
+  switch (provider) {
+    case "google":
+      return googleAuthUrl;
+    case "apple":
+      return appleAuthUrl;
+    case "microsoft":
+      return microsoftAuthUrl;
+    case "telegram":
+      return telegramAuthUrl;
+    default:
+      return undefined;
+  }
 };
 
 export const login = async (provider: ProviderType): Promise<void> => {
   await initDeferred.promise;
 
-  const authUrlAtom = PROVIDER_URL_MAP[provider];
+  const authUrlAtom = getProviderUrlAtom(provider);
   if (!authUrlAtom) {
     throw new Error(`Unsupported provider: ${provider}`);
   }
@@ -281,14 +319,3 @@ export const clearLimitedAccessState = (): void => {
     isLogged.set(false);
   }
 };
-
-// Persist state changes to cookies
-isLogged.subscribe((value) => setStoreCookie("isLogged", value));
-accessToken.subscribe((value) => setStoreCookie("accessToken", value));
-refreshToken.subscribe((value) => setStoreCookie("refreshToken", value));
-expireAt.subscribe((value) => setStoreCookie("expireAt", value));
-requiresAction.subscribe((value) => setStoreCookie("requiresAction", value));
-limitedAccessToken.subscribe((value) => setStoreCookie("limitedAccessToken", value));
-
-// The other tabs share this session's cookies, so a logout in one ends it in all.
-onLogoutElsewhere(removeTokens);

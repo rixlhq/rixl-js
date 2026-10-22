@@ -6,7 +6,7 @@ import type {WritableAtom} from "nanostores";
 export interface GoogleProviderConfig extends OAuthProviderConfig {}
 
 // Create the Google provider using the factory
-const googleProvider = createOAuthProvider({
+const googleProvider = /* @__PURE__ */ createOAuthProvider({
   provider: AuthProvider.GOOGLE,
   metadata: {
     name: "Google",

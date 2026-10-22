@@ -4,26 +4,26 @@ import {UsernameSchema} from "./base";
 /**
  * Membership state schemas
  */
-export const AcceptDeclineMembershipSchema = v.object({
-  state: v.union([v.literal("accepted"), v.literal("declined")]),
+export const AcceptDeclineMembershipSchema = /* @__PURE__ */ v.object({
+  state: /* @__PURE__ */ v.union([/* @__PURE__ */ v.literal("accepted"), /* @__PURE__ */ v.literal("declined")]),
 });
 
-export const PublicInviteResponseSchema = v.object({
-  state: v.union([v.literal("accept"), v.literal("decline")]),
+export const PublicInviteResponseSchema = /* @__PURE__ */ v.object({
+  state: /* @__PURE__ */ v.union([/* @__PURE__ */ v.literal("accept"), /* @__PURE__ */ v.literal("decline")]),
 });
 
 /**
  * Membership management schemas
  */
-export const InviteMemberSchema = v.object({
+export const InviteMemberSchema = /* @__PURE__ */ v.object({
   username: UsernameSchema,
-  role: v.union([v.literal("admin"), v.literal("member")]),
+  role: /* @__PURE__ */ v.union([/* @__PURE__ */ v.literal("admin"), /* @__PURE__ */ v.literal("member")]),
 });
 
-export const UpdateMemberRoleSchema = v.object({
-  role: v.union([v.literal("admin"), v.literal("member")]),
+export const UpdateMemberRoleSchema = /* @__PURE__ */ v.object({
+  role: /* @__PURE__ */ v.union([/* @__PURE__ */ v.literal("admin"), /* @__PURE__ */ v.literal("member")]),
 });
 
-export const ResendInviteSchema = v.object({
-  user_id: v.pipe(v.string("User ID must be text"), v.minLength(1, "User ID is required")),
+export const ResendInviteSchema = /* @__PURE__ */ v.object({
+  user_id: /* @__PURE__ */ v.pipe(/* @__PURE__ */ v.string("User ID must be text"), /* @__PURE__ */ v.minLength(1, "User ID is required")),
 });
