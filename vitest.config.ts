@@ -5,6 +5,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src/auth", import.meta.url)),
+      "~": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
   test: {
