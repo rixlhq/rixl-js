@@ -1,4 +1,4 @@
-import {createClient, getImages} from "@rixl/sdk";
+import {createClient, imagesV1ImageServiceListImages} from "@rixl/sdk";
 
 import {optionalEnv, requiredEnv} from "./shared";
 
@@ -7,9 +7,12 @@ const client = createClient({
   baseUrl: optionalEnv("RIXL_BASE_URL") ?? "https://api.rixl.com/",
 });
 
-const {data, error, response} = await getImages({
+const projectId = requiredEnv("RIXL_PROJECT_ID", "Set it to a Rixl project ID.");
+
+const {data, error, response} = await imagesV1ImageServiceListImages({
   client,
-  query: {limit: 1, offset: 0},
+  path: {project_id: projectId},
+  query: {"pagination.limit": 1, "pagination.offset": 0},
 });
 
 if (error) {
@@ -19,5 +22,5 @@ if (error) {
 
 console.log("Connected to the Rixl API.");
 console.log(`HTTP status: ${response?.status ?? "unknown"}`);
-console.log(`Images returned: ${data?.data?.length ?? 0}`);
-console.log(`Total images available: ${data?.pagination?.total ?? "unknown"}`);
+console.log(`Images returned: ${data?.images?.length ?? 0}`);
+console.log(`Total images available: ${data?.total ?? "unknown"}`);

@@ -1,4 +1,4 @@
-import {createClient, deleteImagesByImageId, getImages, getImagesByImageId} from "@rixl/sdk";
+import {createClient, imagesV1ImageServiceDeleteImage, imagesV1ImageServiceGetImage, imagesV1ImageServiceListImages} from "@rixl/sdk";
 
 import {assertDestructiveEnabled, optionalEnv, requiredEnv} from "./shared";
 
@@ -7,10 +7,13 @@ const client = createClient({
   baseUrl: optionalEnv("RIXL_BASE_URL") ?? "https://api.rixl.com/",
 });
 
-// 1. List images, sorted newest-first.
-const list = await getImages({
+const projectId = requiredEnv("RIXL_PROJECT_ID", "Set it to a Rixl project ID.");
+
+// 1. List images.
+const list = await imagesV1ImageServiceListImages({
   client,
-  query: {limit: 10, offset: 0, sort: "created_at", order: "desc"},
+  path: {project_id: projectId},
+  query: {"pagination.limit": 10, "pagination.offset": 0},
 });
 
 if (list.error) {
@@ -18,8 +21,8 @@ if (list.error) {
   process.exit(1);
 }
 
-const images = list.data?.data ?? [];
-console.log(`Listed ${images.length} of ${list.data?.pagination?.total ?? "?"} images.`);
+const images = list.data?.images ?? [];
+console.log(`Listed ${images.length} of ${list.data?.total ?? "?"} images.`);
 for (const image of images) {
   console.log(`  - ${image.id} (${image.width ?? "?"}x${image.height ?? "?"})`);
 }
@@ -27,9 +30,9 @@ for (const image of images) {
 // 2. Fetch a single image by ID.
 const imageId = requiredEnv("RIXL_IMAGE_ID", "Set it to an existing image ID.");
 
-const detail = await getImagesByImageId({
+const detail = await imagesV1ImageServiceGetImage({
   client,
-  path: {imageId},
+  path: {image_id: imageId},
 });
 
 if (detail.error) {
@@ -37,9 +40,7 @@ if (detail.error) {
   process.exit(1);
 }
 
-console.log(
-  `Image ${detail.data?.id}: ${detail.data?.width ?? "?"}x${detail.data?.height ?? "?"}, attached_to_video=${detail.data?.attached_to_video ?? false}`
-);
+console.log(`Image ${detail.data?.image?.id}: ${detail.data?.image?.width ?? "?"}x${detail.data?.image?.height ?? "?"}`);
 
 // 3. Delete an image — only when explicitly opted in.
 const deleteImageId = optionalEnv("RIXL_DELETE_IMAGE_ID");
@@ -49,9 +50,9 @@ if (!deleteImageId) {
 } else {
   assertDestructiveEnabled(`Deleting image ${deleteImageId}`);
 
-  const deleted = await deleteImagesByImageId({
+  const deleted = await imagesV1ImageServiceDeleteImage({
     client,
-    path: {imageId: deleteImageId},
+    path: {project_id: projectId, image_id: deleteImageId},
   });
 
   if (deleted.error) {

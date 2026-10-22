@@ -20,20 +20,24 @@ Requires Node.js 18+. ESM only.
 ## Quick Start
 
 ```ts
-import {createClient, getImages} from "@rixl/sdk";
+import {createClient, imagesV1ImageServiceListImages} from "@rixl/sdk";
 
 const client = createClient({
   baseUrl: "https://api.rixl.com",
   auth: process.env.RIXL_API_KEY,
-  responseStyle: "data",
 });
 
-const page = await getImages({
+const {data, error} = await imagesV1ImageServiceListImages({
   client,
-  query: {limit: 10},
+  path: {project_id: "your_project_id"},
+  query: {"pagination.limit": 10},
 });
 
-console.log(page.data?.map((image) => image.id));
+if (error) {
+  console.error("Failed to list images:", error);
+} else {
+  console.log(data?.images?.map((image) => image.id));
+}
 ```
 
 `auth` can be either a string or a function, so you can plug in API keys, bearer tokens, or runtime token refresh logic.
@@ -43,22 +47,19 @@ console.log(page.data?.map((image) => image.id));
 Fetch a feed and read posts:
 
 ```ts
-import {createClient, getFeedsByFeedId} from "@rixl/sdk";
+import {createClient, postsV1PostServiceListPosts3} from "@rixl/sdk";
 
 const client = createClient({
   baseUrl: "https://api.rixl.com",
-  auth: process.env.RIXL_API_KEY,
-  responseStyle: "data",
 });
 
-const feed = await getFeedsByFeedId({
+const {data, error} = await postsV1PostServiceListPosts3({
   client,
-  path: {feedId: "FD4y3QB38S"},
-  query: {limit: 20, offset: 0},
+  path: {feed_id: "FD4y3QB38S"},
 });
 
-for (const post of feed.data ?? []) {
-  console.log(post.id, post.type);
+for (const post of data?.posts ?? []) {
+  console.log(post.id, post.creator_id);
 }
 ```
 
@@ -67,61 +68,50 @@ for (const post of feed.data ?? []) {
 List images and fetch one by ID:
 
 ```ts
-import {createClient, getImages, getImagesByImageId} from "@rixl/sdk";
+import {createClient, imagesV1ImageServiceGetImage, imagesV1ImageServiceListImages} from "@rixl/sdk";
 
 const client = createClient({
   baseUrl: "https://api.rixl.com",
   auth: process.env.RIXL_API_KEY,
-  responseStyle: "data",
 });
 
-const page = await getImages({
+const list = await imagesV1ImageServiceListImages({
   client,
-  query: {limit: 25, offset: 0},
+  path: {project_id: "your_project_id"},
+  query: {"pagination.limit": 25},
 });
 
-const image = await getImagesByImageId({
+const image = await imagesV1ImageServiceGetImage({
   client,
-  path: {imageId: "PS5IMKoFLm"},
+  path: {image_id: "PS5IMKoFLm"},
 });
 
-console.log(page.data?.length, image.id, image.width, image.height);
+console.log(list.data?.images?.length, image.data?.image?.id);
 ```
 
-Initialize an upload, PUT the bytes to storage, then complete the upload:
+Initialize an upload and PUT the bytes to storage:
 
 ```ts
-import {createClient, postImagesUploadComplete, postImagesUploadInit} from "@rixl/sdk";
+import {createClient, imagesV1ImageServiceCreateImageUpload} from "@rixl/sdk";
 
 const client = createClient({
   baseUrl: "https://api.rixl.com",
   auth: process.env.RIXL_API_KEY,
-  responseStyle: "data",
 });
 
-const init = await postImagesUploadInit({
+const init = await imagesV1ImageServiceCreateImageUpload({
   client,
-  body: {
-    name: "photo.jpg",
-    format: "jpeg",
-  },
+  path: {project_id: "your_project_id"},
+  body: {name: "photo.jpg"},
 });
 
-await fetch(init.presigned_url!, {
+await fetch(init.data?.upload_url!, {
   method: "PUT",
   body: imageBytes,
   headers: {"Content-Type": "image/jpeg"},
 });
 
-const image = await postImagesUploadComplete({
-  client,
-  body: {
-    image_id: init.image_id,
-    attached_to_video: false,
-  },
-});
-
-console.log(image.id);
+console.log(`Image ${init.data?.image_id} uploaded.`);
 ```
 
 ## Video API
@@ -129,67 +119,60 @@ console.log(image.id);
 List videos and fetch one by ID:
 
 ```ts
-import {createClient, getVideos, getVideosByVideoId} from "@rixl/sdk";
+import {createClient, videosV1VideoServiceGetVideo, videosV1VideoServiceListVideos} from "@rixl/sdk";
 
 const client = createClient({
   baseUrl: "https://api.rixl.com",
   auth: process.env.RIXL_API_KEY,
-  responseStyle: "data",
 });
 
-const page = await getVideos({
+const page = await videosV1VideoServiceListVideos({
   client,
-  query: {limit: 25, offset: 0},
+  path: {project_id: "your_project_id"},
+  query: {"pagination.limit": 25},
 });
 
-const video = await getVideosByVideoId({
+const video = await videosV1VideoServiceGetVideo({
   client,
-  path: {videoId: "VI9VXQxWXQ"},
+  path: {video_id: "VI9VXQxWXQ"},
 });
 
-console.log(page.data?.length, video.id, video.duration);
+console.log(page.data?.videos?.length, video.data?.video?.id, video.data?.video?.duration);
 ```
 
-Video uploads follow the same pattern, but `init` returns both video and poster upload URLs:
+Video uploads request presigned URLs for both the video and its poster:
 
 ```ts
-import {createClient, postVideosUploadComplete, postVideosUploadInit} from "@rixl/sdk";
+import {createClient, videosV1VideoServiceCreateVideoUpload} from "@rixl/sdk";
 
 const client = createClient({
   baseUrl: "https://api.rixl.com",
   auth: process.env.RIXL_API_KEY,
-  responseStyle: "data",
 });
 
-const init = await postVideosUploadInit({
+const init = await videosV1VideoServiceCreateVideoUpload({
   client,
+  path: {project_id: "your_project_id"},
   body: {
-    file_name: "clip.mp4",
-    image_format: "jpeg",
+    name: "clip.mp4",
+    video_quality: "VIDEO_QUALITY_PRO",
   },
 });
 
 await Promise.all([
-  fetch(init.video_presigned_url!, {
+  fetch(init.data?.video_upload_url!, {
     method: "PUT",
     body: videoBytes,
     headers: {"Content-Type": "video/mp4"},
   }),
-  fetch(init.poster_presigned_url!, {
+  fetch(init.data?.poster_upload_url!, {
     method: "PUT",
     body: posterBytes,
     headers: {"Content-Type": "image/jpeg"},
   }),
 ]);
 
-const video = await postVideosUploadComplete({
-  client,
-  body: {
-    video_id: init.video_id,
-  },
-});
-
-console.log(video.id);
+console.log(`Video ${init.data?.video_id} uploaded.`);
 ```
 
 ## Development
@@ -198,8 +181,9 @@ This repository uses [Vite+](https://viteplus.dev/guide/) as the unified toolcha
 
 ```bash
 vp install # Install dependencies
-vp run pack    # Build the library
+vp pack    # Build the library
 vp check   # Run formatting, linting, and type checks
+vp test    # Run Vitest test suite
 ```
 
 ## Issues

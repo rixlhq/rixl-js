@@ -1,76 +1,76 @@
+import {readFile} from "node:fs/promises";
+import {basename} from "node:path";
+
 import {
   createClient,
-  deleteVideosByVideoIdAudioTracks,
-  deleteVideosByVideoIdAudioTracksByTrackId,
-  deleteVideosByVideoIdAudioTracksLanguageByLangCode,
-  postVideosByVideoIdAudioTracks,
-  putVideosByVideoIdAudioTracksLanguageByLangCode,
+  videosV1AudioTrackServiceCreateAudioTrackUpload,
+  videosV1AudioTrackServiceDeleteAllAudioTracks,
+  videosV1AudioTrackServiceDeleteAudioTrack,
+  videosV1AudioTrackServiceDeleteAudioTracksByLanguage,
+  videosV1AudioTrackServiceListAudioTracks,
 } from "@rixl/sdk";
 
-import {assertDestructiveEnabled, fileFromPath, optionalEnv, requiredEnv} from "./shared";
+import {assertDestructiveEnabled, optionalEnv, requiredEnv} from "./shared";
 
 const client = createClient({
   auth: requiredEnv("RIXL_API_KEY"),
   baseUrl: optionalEnv("RIXL_BASE_URL") ?? "https://api.rixl.com/",
 });
 
+const projectId = requiredEnv("RIXL_PROJECT_ID", "Set it to your Rixl project ID.");
 const videoId = requiredEnv("RIXL_VIDEO_ID", "Set it to a video ID to attach audio tracks to.");
 const audioFilePath = requiredEnv("RIXL_AUDIO_FILE", "Set it to a path to an audio file on disk.");
 const langCode = requiredEnv("RIXL_AUDIO_LANGUAGE_CODE", "Set it to a BCP 47 language code, e.g. en-US.");
 
-// 1. Bulk-add one or more audio tracks via multipart upload.
-//    Pass `files` as `File[]` — that is what the server accepts and what
-//    the SDK serializes correctly at runtime.
-//
-//    The @ts-expect-error below is temporary. The upstream OpenAPI spec
-//    incorrectly types the multipart `files` field as Array<string>, so
-//    the SDK inherits that typing. Once the spec is fixed and the SDK
-//    is regenerated, this line will fail typecheck (no error to
-//    suppress) — that is the signal to remove it.
-//    Tracking: rixlhq/api — bulk multipart `files` typed as Array<string>.
-const audioFile = await fileFromPath(audioFilePath);
-
-const created = await postVideosByVideoIdAudioTracks({
+// 1. List existing audio tracks.
+const existing = await videosV1AudioTrackServiceListAudioTracks({
   client,
-  path: {videoId},
+  path: {video_id: videoId},
+});
+
+console.log(`Video ${videoId} currently has ${existing.data?.audio_tracks?.length ?? 0} audio tracks.`);
+
+// 2. Request a track upload URL.
+const uploadInit = await videosV1AudioTrackServiceCreateAudioTrackUpload({
+  client,
+  path: {project_id: projectId, video_id: videoId},
   body: {
-    // @ts-expect-error spec types `files` as Array<string>; runtime accepts File[].
-    files: [audioFile],
-    language_codes: langCode,
-    labels: `Audio (${langCode})`,
+    items: [
+      {
+        language_code: langCode,
+        label: `Audio (${langCode})`,
+        file_name: basename(audioFilePath),
+      },
+    ],
   },
 });
 
-if (created.error) {
-  console.error(`Add audio tracks failed (${created.response?.status ?? "no response"}):`, created.error);
+if (uploadInit.error) {
+  console.error(`Audio track upload init failed (${uploadInit.response?.status ?? "no response"}):`, uploadInit.error);
   process.exit(1);
 }
 
-const tracks = created.data ?? [];
-console.log(`Added ${tracks.length} audio track(s) to video ${videoId}.`);
-for (const track of tracks) {
-  console.log(`  - ${track.id} ${track.language_code ?? "?"} "${track.label ?? ""}"`);
+const target = uploadInit.data?.targets?.[0];
+if (!target?.upload_url) {
+  console.error("No upload target returned.");
+  process.exit(1);
 }
 
-// 2. Replace an existing audio track for a language. This endpoint takes
-//    a single file in the body — note the field name is `file`, not `files`.
-const replaced = await putVideosByVideoIdAudioTracksLanguageByLangCode({
-  client,
-  path: {videoId, lang_code: langCode},
-  body: {
-    file: audioFile,
-    label: `Audio (${langCode}, replaced)`,
-  },
+// 3. Upload audio file bytes.
+const audioBytes = await readFile(audioFilePath);
+const uploadRes = await fetch(target.upload_url, {
+  method: "PUT",
+  body: audioBytes,
 });
 
-if (replaced.error) {
-  console.error(`Replace audio track failed (${replaced.response?.status ?? "no response"}):`, replaced.error);
+if (!uploadRes.ok) {
+  console.error(`Audio PUT failed (${uploadRes.status} ${uploadRes.statusText}).`);
   process.exit(1);
 }
 
-console.log(`Replaced audio track for ${langCode}: id=${replaced.data?.id}.`);
+console.log(`Audio track uploaded for ${langCode}: track_id=${target.id ?? "?"}.`);
 
-// 3. Destructive: delete a specific track by ID.
+// 4. Destructive: delete a specific track by ID.
 const trackId = optionalEnv("RIXL_AUDIO_TRACK_ID");
 
 if (!trackId) {
@@ -78,9 +78,9 @@ if (!trackId) {
 } else {
   assertDestructiveEnabled(`Deleting audio track ${trackId}`);
 
-  const deleted = await deleteVideosByVideoIdAudioTracksByTrackId({
+  const deleted = await videosV1AudioTrackServiceDeleteAudioTrack({
     client,
-    path: {videoId, trackId},
+    path: {project_id: projectId, video_id: videoId, track_id: trackId},
   });
 
   if (deleted.error) {
@@ -91,15 +91,15 @@ if (!trackId) {
   console.log(`Deleted audio track ${trackId}.`);
 }
 
-// 4. Destructive: delete every track for a given language.
+// 5. Destructive: delete every track for a given language.
 if (optionalEnv("RIXL_RUN_DESTRUCTIVE") !== "1") {
   console.log("Skipping delete-by-language: set RIXL_RUN_DESTRUCTIVE=1 to delete tracks by language.");
 } else {
   assertDestructiveEnabled(`Deleting all ${langCode} audio tracks on video ${videoId}`);
 
-  const deletedLang = await deleteVideosByVideoIdAudioTracksLanguageByLangCode({
+  const deletedLang = await videosV1AudioTrackServiceDeleteAudioTracksByLanguage({
     client,
-    path: {videoId, lang_code: langCode},
+    path: {project_id: projectId, video_id: videoId, language_code: langCode},
   });
 
   if (deletedLang.error) {
@@ -109,12 +109,12 @@ if (optionalEnv("RIXL_RUN_DESTRUCTIVE") !== "1") {
 
   console.log(`Deleted all audio tracks for ${langCode}.`);
 
-  // 5. Destructive: delete every audio track on the video.
+  // 6. Destructive: delete every audio track on the video.
   assertDestructiveEnabled(`Deleting all audio tracks on video ${videoId}`);
 
-  const deletedAll = await deleteVideosByVideoIdAudioTracks({
+  const deletedAll = await videosV1AudioTrackServiceDeleteAllAudioTracks({
     client,
-    path: {videoId},
+    path: {project_id: projectId, video_id: videoId},
   });
 
   if (deletedAll.error) {

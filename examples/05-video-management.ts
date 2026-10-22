@@ -1,16 +1,25 @@
-import {createClient, deleteVideosByVideoIdDelete, getVideos, getVideosByVideoId, putVideosByVideoIdThumbnail} from "@rixl/sdk";
+import {
+  createClient,
+  videosV1VideoServiceDeleteVideo,
+  videosV1VideoServiceGetVideo,
+  videosV1VideoServiceListVideos,
+  videosV1VideoServiceUpdateVideoVisibility,
+} from "@rixl/sdk";
 
-import {assertDestructiveEnabled, fileFromPath, optionalEnv, requiredEnv} from "./shared";
+import {assertDestructiveEnabled, optionalEnv, requiredEnv} from "./shared";
 
 const client = createClient({
   auth: requiredEnv("RIXL_API_KEY"),
   baseUrl: optionalEnv("RIXL_BASE_URL") ?? "https://api.rixl.com/",
 });
 
+const projectId = requiredEnv("RIXL_PROJECT_ID", "Set it to a Rixl project ID.");
+
 // 1. List videos.
-const list = await getVideos({
+const list = await videosV1VideoServiceListVideos({
   client,
-  query: {limit: 10, offset: 0, sort: "created_at", order: "desc"},
+  path: {project_id: projectId},
+  query: {"pagination.limit": 10, "pagination.offset": 0},
 });
 
 if (list.error) {
@@ -18,8 +27,8 @@ if (list.error) {
   process.exit(1);
 }
 
-const videos = list.data?.data ?? [];
-console.log(`Listed ${videos.length} of ${list.data?.pagination?.total ?? "?"} videos.`);
+const videos = list.data?.videos ?? [];
+console.log(`Listed ${videos.length} of ${list.data?.total ?? "?"} videos.`);
 for (const video of videos) {
   console.log(`  - ${video.id} (${video.width ?? "?"}x${video.height ?? "?"}, ${video.duration ?? "?"}s)`);
 }
@@ -27,9 +36,9 @@ for (const video of videos) {
 // 2. Fetch a single video by ID.
 const videoId = requiredEnv("RIXL_VIDEO_ID", "Set it to an existing video ID.");
 
-const detail = await getVideosByVideoId({
+const detail = await videosV1VideoServiceGetVideo({
   client,
-  path: {videoId},
+  path: {video_id: videoId},
 });
 
 if (detail.error) {
@@ -38,31 +47,25 @@ if (detail.error) {
 }
 
 console.log(
-  `Video ${detail.data?.id}: ${detail.data?.codec ?? "?"} @ ${detail.data?.framerate ?? "?"}fps, ${detail.data?.chapters?.length ?? 0} chapters.`
+  `Video ${detail.data?.video?.id}: ${detail.data?.video?.width ?? "?"}x${detail.data?.video?.height ?? "?"}, duration=${detail.data?.video?.duration ?? "?"}s.`
 );
 
-// 3. Replace the thumbnail with a multipart upload.
-//    Hey API serializes the `body` object as multipart/form-data because
-//    the generated type declares `thumbnail: Blob | File`.
-const thumbnailFile = optionalEnv("RIXL_THUMBNAIL_FILE");
+// 3. Update visibility.
+const updateVisibility = optionalEnv("RIXL_UPDATE_VISIBILITY");
 
-if (!thumbnailFile) {
-  console.log("Skipping thumbnail update: set RIXL_THUMBNAIL_FILE to upload one.");
-} else {
-  const thumbnail = await fileFromPath(thumbnailFile);
-
-  const updated = await putVideosByVideoIdThumbnail({
+if (updateVisibility) {
+  const updated = await videosV1VideoServiceUpdateVideoVisibility({
     client,
-    path: {videoId},
-    body: {thumbnail},
+    path: {project_id: projectId, video_id: videoId},
+    body: {visibility: "VISIBILITY_PUBLIC"},
   });
 
   if (updated.error) {
-    console.error(`Thumbnail update failed (${updated.response?.status ?? "no response"}):`, updated.error);
+    console.error(`Visibility update failed (${updated.response?.status ?? "no response"}):`, updated.error);
     process.exit(1);
   }
 
-  console.log(`Thumbnail updated for video ${updated.data?.id}.`);
+  console.log(`Visibility updated for video ${videoId}.`);
 }
 
 // 4. Delete the video — only when explicitly opted in.
@@ -73,9 +76,9 @@ if (!deleteVideoId) {
 } else {
   assertDestructiveEnabled(`Deleting video ${deleteVideoId}`);
 
-  const deleted = await deleteVideosByVideoIdDelete({
+  const deleted = await videosV1VideoServiceDeleteVideo({
     client,
-    path: {videoId: deleteVideoId},
+    path: {project_id: projectId, video_id: deleteVideoId},
   });
 
   if (deleted.error) {

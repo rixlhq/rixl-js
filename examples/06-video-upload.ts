@@ -1,40 +1,43 @@
 import {readFile} from "node:fs/promises";
-import {basename, extname} from "node:path";
+import {basename} from "node:path";
 
-import type {GithubComRixlhqApiDbSqlcVideoQuality} from "@rixl/sdk";
-import {createClient, postVideosUploadComplete, postVideosUploadInit} from "@rixl/sdk";
+import type {CommonV1VideoQuality} from "@rixl/sdk";
+import {createClient, videosV1VideoServiceCreateVideoUpload} from "@rixl/sdk";
 
 import {optionalEnv, requiredEnv} from "./shared";
 
-const VIDEO_QUALITIES = ["basic", "shorts", "pro"] as const satisfies ReadonlyArray<GithubComRixlhqApiDbSqlcVideoQuality>;
+const VIDEO_QUALITIES = [
+  "VIDEO_QUALITY_BASIC",
+  "VIDEO_QUALITY_SHORTS",
+  "VIDEO_QUALITY_PRO",
+] as const satisfies ReadonlyArray<CommonV1VideoQuality>;
 
 const client = createClient({
   auth: requiredEnv("RIXL_API_KEY"),
   baseUrl: optionalEnv("RIXL_BASE_URL") ?? "https://api.rixl.com/",
 });
 
+const projectId = requiredEnv("RIXL_PROJECT_ID", "Set it to your Rixl project ID.");
 const videoFile = requiredEnv("RIXL_VIDEO_FILE", "Set it to a path to a local video file.");
 const posterFile = requiredEnv("RIXL_POSTER_FILE", "Set it to a path to a local poster image.");
 
 const rawQuality = optionalEnv("RIXL_VIDEO_QUALITY");
-let quality: GithubComRixlhqApiDbSqlcVideoQuality | undefined;
+let quality: CommonV1VideoQuality | undefined;
 
 if (rawQuality) {
   if (!(VIDEO_QUALITIES as ReadonlyArray<string>).includes(rawQuality)) {
     console.error(`RIXL_VIDEO_QUALITY must be one of: ${VIDEO_QUALITIES.join(", ")}.`);
     process.exit(1);
   }
-  quality = rawQuality as GithubComRixlhqApiDbSqlcVideoQuality;
+  quality = rawQuality as CommonV1VideoQuality;
 }
 
-const posterFormat = extname(posterFile).replace(/^\./, "").toLowerCase() || undefined;
-
 // 1. Ask the API for presigned URLs for both the video and its poster image.
-const init = await postVideosUploadInit({
+const init = await videosV1VideoServiceCreateVideoUpload({
   client,
+  path: {project_id: projectId},
   body: {
-    file_name: basename(videoFile),
-    image_format: posterFormat,
+    name: basename(videoFile),
     video_quality: quality,
   },
 });
@@ -44,10 +47,10 @@ if (init.error) {
   process.exit(1);
 }
 
-const {video_id: videoId, video_presigned_url: videoUrl, poster_presigned_url: posterUrl} = init.data ?? {};
+const {video_id: videoId, video_upload_url: videoUrl, poster_upload_url: posterUrl} = init.data ?? {};
 
 if (!videoId || !videoUrl || !posterUrl) {
-  console.error("Upload init succeeded but did not return video_id, video_presigned_url, and poster_presigned_url.");
+  console.error("Upload init succeeded but did not return video_id, video_upload_url, and poster_upload_url.");
   process.exit(1);
 }
 
@@ -73,18 +76,4 @@ if (!posterUpload.ok) {
 }
 
 console.log(`Uploaded video (${videoBytes.byteLength} bytes) and poster (${posterBytes.byteLength} bytes).`);
-
-// 3. Tell the API the upload finished so it can finalize the video record.
-const complete = await postVideosUploadComplete({
-  client,
-  body: {video_id: videoId},
-});
-
-if (complete.error) {
-  console.error(`Video upload complete failed (${complete.response?.status ?? "no response"}):`, complete.error);
-  process.exit(1);
-}
-
-console.log(
-  `Video ${complete.data?.id} ready: ${complete.data?.width ?? "?"}x${complete.data?.height ?? "?"}, ${complete.data?.duration ?? "?"}s.`
-);
+console.log(`Video ${videoId} uploaded successfully.`);

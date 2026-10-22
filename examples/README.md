@@ -13,10 +13,11 @@ vp install
 vp pack
 ```
 
-Set a Rixl API key:
+Set your Rixl API key and project ID:
 
 ```bash
 export RIXL_API_KEY="rk_..."
+export RIXL_PROJECT_ID="proj_..."
 ```
 
 ## Base URL
@@ -42,24 +43,26 @@ Without this flag the destructive code paths throw a clear error and exit.
 ## Available examples
 
 ```bash
-node examples/01-client-setup.ts
-node examples/02-public-feeds.ts
-node examples/03-image-management.ts
-node examples/04-image-upload.ts
-node examples/05-video-management.ts
-node examples/06-video-upload.ts
-node examples/07-video-chapters.ts
-node examples/08-audio-tracks.ts
-node examples/09-subtitles.ts
+bun examples/01-client-setup.ts
+bun examples/02-public-feeds.ts
+bun examples/03-image-management.ts
+bun examples/04-image-upload.ts
+bun examples/05-video-management.ts
+bun examples/06-video-upload.ts
+bun examples/07-video-chapters.ts
+bun examples/08-audio-tracks.ts
+bun examples/09-subtitles.ts
 ```
 
-`02-public-feeds.ts` requires `RIXL_FEED_ID`, `RIXL_POST_ID`, and `RIXL_CREATOR_ID`. It does not need `RIXL_API_KEY` — public feed endpoints are unauthenticated.
-
-`03-image-management.ts` requires `RIXL_API_KEY` and `RIXL_IMAGE_ID`. To exercise the delete path, also set `RIXL_DELETE_IMAGE_ID` and `RIXL_RUN_DESTRUCTIVE=1`.
-
-`04-image-upload.ts` requires `RIXL_API_KEY` and `RIXL_IMAGE_FILE` (a path to a local image). Optionally set `RIXL_IMAGE_FORMAT` to override the format inferred from the file extension.
-
-`05-video-management.ts` requires `RIXL_API_KEY` and `RIXL_VIDEO_ID`. Optionally set `RIXL_THUMBNAIL_FILE` to update the thumbnail. To exercise the delete path, set `RIXL_DELETE_VIDEO_ID` and `RIXL_RUN_DESTRUCTIVE=1`.
+- `01-client-setup.ts` requires `RIXL_API_KEY` and `RIXL_PROJECT_ID`.
+- `02-public-feeds.ts` requires `RIXL_FEED_ID`, `RIXL_POST_ID`, and `RIXL_CREATOR_ID`. It does not need `RIXL_API_KEY` — public feed endpoints are unauthenticated.
+- `03-image-management.ts` requires `RIXL_API_KEY`, `RIXL_PROJECT_ID`, and `RIXL_IMAGE_ID`. To exercise the delete path, also set `RIXL_DELETE_IMAGE_ID` and `RIXL_RUN_DESTRUCTIVE=1`.
+- `04-image-upload.ts` requires `RIXL_API_KEY`, `RIXL_PROJECT_ID`, and `RIXL_IMAGE_FILE` (a path to a local image).
+- `05-video-management.ts` requires `RIXL_API_KEY`, `RIXL_PROJECT_ID`, and `RIXL_VIDEO_ID`. Optionally set `RIXL_UPDATE_VISIBILITY=1` to update video visibility. To exercise the delete path, set `RIXL_DELETE_VIDEO_ID` and `RIXL_RUN_DESTRUCTIVE=1`.
+- `06-video-upload.ts` requires `RIXL_API_KEY`, `RIXL_PROJECT_ID`, `RIXL_VIDEO_FILE`, and `RIXL_POSTER_FILE`.
+- `07-video-chapters.ts` requires `RIXL_API_KEY`, `RIXL_PROJECT_ID`, and `RIXL_VIDEO_ID`.
+- `08-audio-tracks.ts` requires `RIXL_API_KEY`, `RIXL_PROJECT_ID`, `RIXL_VIDEO_ID`, `RIXL_AUDIO_FILE`, and `RIXL_AUDIO_LANGUAGE_CODE`.
+- `09-subtitles.ts` requires `RIXL_API_KEY`, `RIXL_PROJECT_ID`, `RIXL_VIDEO_ID`, `RIXL_SUBTITLE_FILE`, and `RIXL_SUBTITLE_LANGUAGE_CODE`.
 
 ## Typecheck
 

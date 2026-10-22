@@ -1,4 +1,4 @@
-import {createClient, getFeedsByFeedId, getFeedsByFeedIdByPostId, getFeedsByFeedIdCreatorsByCreatorId} from "@rixl/sdk";
+import {createClient, postsV1PostServiceGetPost3, postsV1PostServiceListPosts3, postsV1PostServiceListPosts4} from "@rixl/sdk";
 
 import {optionalEnv, requiredEnv} from "./shared";
 
@@ -12,10 +12,9 @@ const feedId = requiredEnv("RIXL_FEED_ID", "Set it to a feed ID to list posts fr
 const postId = requiredEnv("RIXL_POST_ID", "Set it to a post ID inside RIXL_FEED_ID.");
 const creatorId = requiredEnv("RIXL_CREATOR_ID", "Set it to a creator ID inside RIXL_FEED_ID.");
 
-const feed = await getFeedsByFeedId({
+const feed = await postsV1PostServiceListPosts3({
   client,
-  path: {feedId},
-  query: {limit: 5, offset: 0},
+  path: {feed_id: feedId},
 });
 
 if (feed.error) {
@@ -23,11 +22,11 @@ if (feed.error) {
   process.exit(1);
 }
 
-console.log(`Feed ${feedId}: ${feed.data?.data?.length ?? 0} posts (total ${feed.data?.pagination?.total ?? "?"}).`);
+console.log(`Feed ${feedId}: ${feed.data?.posts?.length ?? 0} posts (total ${feed.data?.total ?? "?"}).`);
 
-const post = await getFeedsByFeedIdByPostId({
+const post = await postsV1PostServiceGetPost3({
   client,
-  path: {feedId, postId},
+  path: {feed_id: feedId, post_id: postId},
 });
 
 if (post.error) {
@@ -35,12 +34,11 @@ if (post.error) {
   process.exit(1);
 }
 
-console.log(`Post ${postId}: type=${post.data?.type ?? "?"}, creator=${post.data?.creator_id ?? "?"}`);
+console.log(`Post ${postId}: creator=${post.data?.post?.creator_id ?? "?"}`);
 
-const creatorFeed = await getFeedsByFeedIdCreatorsByCreatorId({
+const creatorFeed = await postsV1PostServiceListPosts4({
   client,
-  path: {feedId, creatorId},
-  query: {limit: 5, offset: 0},
+  path: {feed_id: feedId, creator_id: creatorId},
 });
 
 if (creatorFeed.error) {
@@ -48,4 +46,4 @@ if (creatorFeed.error) {
   process.exit(1);
 }
 
-console.log(`Creator ${creatorId} in feed ${feedId}: ${creatorFeed.data?.data?.length ?? 0} posts.`);
+console.log(`Creator ${creatorId} in feed ${feedId}: ${creatorFeed.data?.posts?.length ?? 0} posts.`);

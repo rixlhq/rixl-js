@@ -1,91 +1,93 @@
+import {readFile} from "node:fs/promises";
+import {basename} from "node:path";
+
+import type {VideosV1Language} from "@rixl/sdk";
 import {
   createClient,
-  deleteVideosByVideoIdSubtitles,
-  deleteVideosByVideoIdSubtitlesBySubtitleId,
-  deleteVideosByVideoIdSubtitlesLanguageByLangCode,
-  getVideosLanguages,
-  postVideosByVideoIdSubtitles,
-  putVideosByVideoIdSubtitlesLanguageByLangCode,
+  videosV1LanguageServiceListLanguages,
+  videosV1SubtitleServiceCreateSubtitleUpload,
+  videosV1SubtitleServiceDeleteAllSubtitles,
+  videosV1SubtitleServiceDeleteSubtitle,
+  videosV1SubtitleServiceDeleteSubtitlesByLanguage,
+  videosV1SubtitleServiceListSubtitles,
 } from "@rixl/sdk";
 
-import {assertDestructiveEnabled, fileFromPath, optionalEnv, requiredEnv} from "./shared";
+import {assertDestructiveEnabled, optionalEnv, requiredEnv} from "./shared";
 
 const client = createClient({
   auth: requiredEnv("RIXL_API_KEY"),
   baseUrl: optionalEnv("RIXL_BASE_URL") ?? "https://api.rixl.com/",
 });
 
-// 1. List supported subtitle languages. This endpoint is reusable across
-//    accounts so it's a good first call to verify the chosen language code.
-const langs = await getVideosLanguages({client});
+const projectId = requiredEnv("RIXL_PROJECT_ID", "Set it to your Rixl project ID.");
+const videoId = requiredEnv("RIXL_VIDEO_ID", "Set it to a video ID to attach subtitles to.");
+const subtitleFilePath = requiredEnv("RIXL_SUBTITLE_FILE", "Set it to a path to a subtitle file (e.g. .vtt).");
+const langCode = requiredEnv("RIXL_SUBTITLE_LANGUAGE_CODE", "Set it to a BCP 47 language code, e.g. en-US.");
+
+// 1. List supported subtitle languages.
+const langs = await videosV1LanguageServiceListLanguages({client});
 
 if (langs.error) {
   console.error(`List languages failed (${langs.response?.status ?? "no response"}):`, langs.error);
   process.exit(1);
 }
 
-const supported = langs.data ?? [];
+const supported = langs.data?.languages ?? [];
 console.log(`API supports ${supported.length} subtitle languages.`);
 
-const videoId = requiredEnv("RIXL_VIDEO_ID", "Set it to a video ID to attach subtitles to.");
-const subtitleFilePath = requiredEnv("RIXL_SUBTITLE_FILE", "Set it to a path to a subtitle file (e.g. .vtt).");
-const langCode = requiredEnv("RIXL_SUBTITLE_LANGUAGE_CODE", "Set it to a BCP 47 language code, e.g. en-US.");
-
-if (supported.length > 0 && !supported.some((lang) => lang.code === langCode)) {
+if (supported.length > 0 && !supported.some((lang: VideosV1Language) => lang.code === langCode)) {
   console.warn(`Warning: ${langCode} is not in the supported language list — the upload may fail.`);
 }
 
-// 2. Bulk-add one or more subtitle files via multipart upload.
-//    Same shape as bulk audio tracks — pass `files` as `File[]`.
-//
-//    Same temporary @ts-expect-error: upstream OpenAPI spec types the
-//    multipart `files` field as Array<string>. Once the spec is fixed
-//    and the SDK regenerated, this line will fail typecheck and should
-//    be removed.
-//    Tracking: rixlhq/api — bulk multipart `files` typed as Array<string>.
-const subtitleFile = await fileFromPath(subtitleFilePath);
-
-const created = await postVideosByVideoIdSubtitles({
+// 2. List existing subtitles on the video.
+const existing = await videosV1SubtitleServiceListSubtitles({
   client,
-  path: {videoId},
+  path: {video_id: videoId},
+});
+
+console.log(`Video ${videoId} currently has ${existing.data?.subtitles?.length ?? 0} subtitle tracks.`);
+
+// 3. Request a subtitle upload URL.
+const uploadInit = await videosV1SubtitleServiceCreateSubtitleUpload({
+  client,
+  path: {project_id: projectId, video_id: videoId},
   body: {
-    // @ts-expect-error spec types `files` as Array<string>; runtime accepts File[].
-    files: [subtitleFile],
-    language_codes: langCode,
-    labels: `Subtitles (${langCode})`,
+    items: [
+      {
+        language_code: langCode,
+        label: `Subtitles (${langCode})`,
+        file_name: basename(subtitleFilePath),
+      },
+    ],
   },
 });
 
-if (created.error) {
-  console.error(`Add subtitles failed (${created.response?.status ?? "no response"}):`, created.error);
+if (uploadInit.error) {
+  console.error(`Subtitle upload init failed (${uploadInit.response?.status ?? "no response"}):`, uploadInit.error);
   process.exit(1);
 }
 
-const subtitles = created.data ?? [];
-console.log(`Added ${subtitles.length} subtitle track(s) to video ${videoId}.`);
-for (const subtitle of subtitles) {
-  console.log(`  - ${subtitle.id} ${subtitle.language_code ?? "?"} "${subtitle.label ?? ""}"`);
+const target = uploadInit.data?.targets?.[0];
+if (!target?.upload_url) {
+  console.error("No upload target returned.");
+  process.exit(1);
 }
 
-// 3. Replace the subtitle file for a language. Single-file body, field
-//    name is `file` (singular), not `files`.
-const replaced = await putVideosByVideoIdSubtitlesLanguageByLangCode({
-  client,
-  path: {videoId, lang_code: langCode},
-  body: {
-    file: subtitleFile,
-    label: `Subtitles (${langCode}, replaced)`,
-  },
+// 4. Upload subtitle file bytes.
+const subtitleBytes = await readFile(subtitleFilePath);
+const uploadRes = await fetch(target.upload_url, {
+  method: "PUT",
+  body: subtitleBytes,
 });
 
-if (replaced.error) {
-  console.error(`Replace subtitle failed (${replaced.response?.status ?? "no response"}):`, replaced.error);
+if (!uploadRes.ok) {
+  console.error(`Subtitle PUT failed (${uploadRes.status} ${uploadRes.statusText}).`);
   process.exit(1);
 }
 
-console.log(`Replaced subtitle for ${langCode}: id=${replaced.data?.id}.`);
+console.log(`Subtitles uploaded for ${langCode}: track_id=${target.id ?? "?"}.`);
 
-// 4. Destructive: delete a specific subtitle by ID.
+// 5. Destructive: delete a specific subtitle by ID.
 const subtitleId = optionalEnv("RIXL_SUBTITLE_ID");
 
 if (!subtitleId) {
@@ -93,9 +95,9 @@ if (!subtitleId) {
 } else {
   assertDestructiveEnabled(`Deleting subtitle ${subtitleId}`);
 
-  const deleted = await deleteVideosByVideoIdSubtitlesBySubtitleId({
+  const deleted = await videosV1SubtitleServiceDeleteSubtitle({
     client,
-    path: {videoId, subtitleId},
+    path: {project_id: projectId, video_id: videoId, subtitle_id: subtitleId},
   });
 
   if (deleted.error) {
@@ -106,15 +108,15 @@ if (!subtitleId) {
   console.log(`Deleted subtitle ${subtitleId}.`);
 }
 
-// 5. Destructive: delete every subtitle for a given language, then all subtitles.
+// 6. Destructive: delete every subtitle for a given language, then all subtitles.
 if (optionalEnv("RIXL_RUN_DESTRUCTIVE") !== "1") {
   console.log("Skipping delete-by-language and delete-all: set RIXL_RUN_DESTRUCTIVE=1 to run them.");
 } else {
   assertDestructiveEnabled(`Deleting all ${langCode} subtitles on video ${videoId}`);
 
-  const deletedLang = await deleteVideosByVideoIdSubtitlesLanguageByLangCode({
+  const deletedLang = await videosV1SubtitleServiceDeleteSubtitlesByLanguage({
     client,
-    path: {videoId, lang_code: langCode},
+    path: {project_id: projectId, video_id: videoId, language_code: langCode},
   });
 
   if (deletedLang.error) {
@@ -126,9 +128,9 @@ if (optionalEnv("RIXL_RUN_DESTRUCTIVE") !== "1") {
 
   assertDestructiveEnabled(`Deleting all subtitles on video ${videoId}`);
 
-  const deletedAll = await deleteVideosByVideoIdSubtitles({
+  const deletedAll = await videosV1SubtitleServiceDeleteAllSubtitles({
     client,
-    path: {videoId},
+    path: {project_id: projectId, video_id: videoId},
   });
 
   if (deletedAll.error) {
