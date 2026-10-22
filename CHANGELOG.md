@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.39.0](https://github.com/rixlhq/rixl-js/compare/v0.38.0...v0.39.0) (2026-10-22)
+
+
+### Features
+
+* **build:** support Node 26 registerHooks and update environment version pinning (#z90hj350fb) ([07f54a2](https://github.com/rixlhq/rixl-js/commit/07f54a260b8044006ec402bacbaa9d9e9443c6c9))
+
 ## [0.38.0](https://github.com/rixlhq/rixl-js/compare/v0.37.2...v0.38.0) (2026-10-22)
 
 
