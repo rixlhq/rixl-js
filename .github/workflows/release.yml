@@ -86,7 +86,7 @@ jobs:
         if: ${{ steps.release.outputs.releases_created == 'true' }}
         uses: actions/setup-node@v7
         with:
-          node-version: 25
+          node-version: 26
           registry-url: "https://registry.npmjs.org"
 
       - name: Publish to npm

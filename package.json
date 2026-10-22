@@ -76,6 +76,11 @@
       "name": "bun",
       "version": "1.4.4",
       "onFail": "warn"
+    },
+    "runtime": {
+      "name": "node",
+      "version": "26.12.1",
+      "onFail": "download"
     }
   },
   "engines": {

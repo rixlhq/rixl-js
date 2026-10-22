@@ -5,16 +5,28 @@ import {defineConfig} from "vite-plus";
 // Generate SDK workflow). Routine commands — vp check/fmt/test/pack and the
 // pre-commit hook — must never regenerate src/generated or hit the network.
 //
-// When RIXL_GENERATE=true, the loader hook (scripts/ts-compat-hook.mjs) bridges
-// `@hey-api/openapi-ts` to TypeScript 6 compiler APIs (`typescript-compat`), as
-// TypeScript 7 replaced the classic JS Compiler API with native Go tooling.
+// When RIXL_GENERATE=true, the loader hook bridges `@hey-api/openapi-ts` to
+// TypeScript 6 compiler APIs (`typescript-compat`), as TypeScript 7 replaced
+// the classic JS Compiler API with native Go tooling.
+// Node 24+ emits [DEP0205] with module.register(), so we prefer module.registerHooks().
 const codegenPlugins =
   process.env.RIXL_GENERATE === "true"
     ? await (async () => {
         try {
-          const {register} = await import("node:module");
-          const {pathToFileURL} = await import("node:url");
-          register(new URL("./scripts/ts-compat-hook.mjs", import.meta.url), pathToFileURL("./"));
+          const {register, registerHooks} = await import("node:module");
+          if (typeof registerHooks === "function") {
+            registerHooks({
+              resolve(specifier, context, nextResolve) {
+                if (specifier === "typescript") {
+                  return nextResolve("typescript-compat", context);
+                }
+                return nextResolve(specifier, context);
+              },
+            });
+          } else if (typeof register === "function") {
+            const {pathToFileURL} = await import("node:url");
+            register(new URL("./scripts/ts-compat-hook.mjs", import.meta.url), pathToFileURL("./"));
+          }
         } catch {
           // Ignore if hook registration is unsupported in this environment
         }
