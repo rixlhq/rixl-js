@@ -4,13 +4,13 @@ import {DomainSchema} from "./base";
 /**
  * Add domain request schema
  */
-export const AddDomainSchema = /* @__PURE__ */ v.object({
+export const AddDomainSchema = v.object({
   domain: DomainSchema,
 });
 
 /**
  * Update auto-join setting schema
  */
-export const UpdateAutoJoinSchema = /* @__PURE__ */ v.object({
-  enabled: /* @__PURE__ */ v.boolean("Auto-join setting must be a boolean"),
+export const UpdateAutoJoinSchema = v.object({
+  enabled: v.boolean("Auto-join setting must be a boolean"),
 });

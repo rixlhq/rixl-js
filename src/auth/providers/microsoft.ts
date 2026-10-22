@@ -6,7 +6,7 @@ import type {WritableAtom} from "nanostores";
 export interface MicrosoftProviderConfig extends OAuthProviderConfig {}
 
 // Create the Microsoft provider using the factory
-const microsoftProvider = /* @__PURE__ */ createOAuthProvider({
+const microsoftProvider = createOAuthProvider({
   provider: AuthProvider.MICROSOFT,
   metadata: {
     name: "Microsoft",

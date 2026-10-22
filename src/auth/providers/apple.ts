@@ -6,7 +6,7 @@ import type {WritableAtom} from "nanostores";
 export interface AppleProviderConfig extends OAuthProviderConfig {}
 
 // Create the Apple provider using the factory
-const appleProvider = /* @__PURE__ */ createOAuthProvider({
+const appleProvider = createOAuthProvider({
   provider: AuthProvider.APPLE,
   metadata: {
     name: "Apple",
