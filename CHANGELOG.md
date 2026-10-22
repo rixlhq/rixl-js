@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.37.2](https://github.com/rixlhq/rixl-js/compare/v0.37.1...v0.37.2) (2026-10-22)
+
+
+### Bug Fixes
+
+* **examples:** update examples and README to latest SDK operations (#z90hj350fb) ([1c9b0bb](https://github.com/rixlhq/rixl-js/commit/1c9b0bb45d2e274f37752f101b74bd105e01ec66))
+
 ## [0.37.1](https://github.com/rixlhq/rixl-js/compare/v0.37.0...v0.37.1) (2026-10-21)
 
 
