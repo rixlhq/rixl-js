@@ -1,23 +1,26 @@
-name: Release
+name: Build and Release
 
 on:
+  workflow_dispatch:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
+    branches: [main]
 
 permissions:
   contents: write
-  pull-requests: write
-  id-token: write
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
-  check-and-release:
+  build-release:
     runs-on: ubuntu-latest
+    # Caps the job so a hung install, SDK regen or npm publish can't burn
+    # GitHub's 6h default. Observed max over the last 41 runs: 1.7 min.
+    timeout-minutes: 10
+    permissions:
+      id-token: write # Required for NPMJS OIDC
+      contents: write
+      pull-requests: write
+      packages: write
     outputs:
       releases_created: ${{ steps.release.outputs.releases_created }}
       tag_name: ${{ steps.release.outputs.tag_name }}
@@ -70,49 +73,37 @@ jobs:
       - name: Tag the release
         id: release
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: googleapis/release-please-action@v4
+        uses: googleapis/release-please-action@v5
         with:
-          token: ${{ secrets.BOT_TOKEN }}
-          config-file: .release-please-config.json
+          token: ${{ secrets.BUILD_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
+          config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
           skip-github-pull-request: true
 
-      - name: Open next release PR
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        continue-on-error: true
-        uses: googleapis/release-please-action@v4
+      # Bun can't publish with NPM OIDC (Trusted Publishing) yet, so we pack with
+      # vp and publish with npm.
+      - name: Setup Node for npm publish
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
+        uses: actions/setup-node@v7
         with:
-          token: ${{ secrets.BOT_TOKEN }}
-          config-file: .release-please-config.json
+          node-version: 25
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Publish to npm
+        if: ${{ steps.release.outputs.releases_created == 'true' }}
+        run: vp pack && npm publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Last, so nothing between the tag and the publish can skip them. The PR
+      # only describes commits since the last release; if this fails, the next
+      # push to main opens it.
+      - name: Open the next release PR
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: googleapis/release-please-action@v5
+        with:
+          token: ${{ secrets.BUILD_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}
+          config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
           skip-github-release: true
-
-  publish:
-    needs: check-and-release
-    if: needs.check-and-release.outputs.releases_created == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 24
-          registry-url: https://registry.npmjs.org/
-      - uses: voidzero-dev/setup-vp@v1.21.2
-        with:
-          cache: "true"
-          run-install: "true"
-
-      - name: Build
-        run: vp pack
-
-      # npm publish, not `bun publish` or `vp publish`.
-      #
-      # Bun's npm registry client does not yet support npm's OIDC-based
-      # Trusted Publishing (`--provenance`). Publishing without provenance
-      # would bypass the SLSA-provenance chain consumers rely on. Since
-      # Node and npm are already installed by setup-node above, we use
-      # npm publish directly.
-      - name: Publish to npm with provenance
-        run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
