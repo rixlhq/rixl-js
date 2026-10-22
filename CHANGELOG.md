@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.38.0](https://github.com/rixlhq/rixl-js/compare/v0.37.2...v0.38.0) (2026-10-22)
+
+
+### Features
+
+* migrate test environment from jsdom to happy-dom (#z90hj350fb) ([d9f901f](https://github.com/rixlhq/rixl-js/commit/d9f901fb4324ecc9e60689384ba9bddddb3dfcd3))
+
 ## [0.37.2](https://github.com/rixlhq/rixl-js/compare/v0.37.1...v0.37.2) (2026-10-22)
 
 
