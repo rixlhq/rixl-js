@@ -1,6 +1,6 @@
 import {afterEach, beforeAll, beforeEach, vi} from "vite-plus/test";
 
-const createStorageMock = () => {
+const createStorageMock = (): Storage => {
   let store: Record<string, string> = {};
 
   return {
@@ -22,21 +22,6 @@ const createStorageMock = () => {
       return keys[index] || null;
     }),
   };
-};
-
-const resetStorage = (storage: Storage | undefined) => {
-  if (!storage) return;
-
-  storage.clear();
-  if (vi.isMockFunction(storage.getItem)) {
-    vi.mocked(storage.getItem).mockClear();
-  }
-  if (vi.isMockFunction(storage.setItem)) {
-    vi.mocked(storage.setItem).mockClear();
-  }
-  if (vi.isMockFunction(storage.removeItem)) {
-    vi.mocked(storage.removeItem).mockClear();
-  }
 };
 
 const clearAllCookies = () => {
@@ -78,12 +63,8 @@ beforeAll(() => {
 });
 
 beforeEach(() => {
-  vi.clearAllMocks();
-  vi.restoreAllMocks();
-  vi.unstubAllGlobals();
-
-  resetStorage(typeof localStorage !== "undefined" ? localStorage : undefined);
-  resetStorage(typeof sessionStorage !== "undefined" ? sessionStorage : undefined);
+  localStorage?.clear();
+  sessionStorage?.clear();
 
   clearAllCookies();
 });
