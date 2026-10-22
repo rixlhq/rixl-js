@@ -73,6 +73,7 @@ export function deleteCookie(name: string): void {
     return;
   }
   document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
 }
 
 const encodeName = (name: string) => encodeURIComponent(name).replace(/%(2[346B]|5E|60|7C)/g, decodeURIComponent);

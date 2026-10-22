@@ -1,6 +1,6 @@
 /**
  * getToken() deduplication across copies of the package
- * @vitest-environment jsdom
+ * @vitest-environment happy-dom
  */
 
 import {describe, it, expect, beforeEach, vi} from "vite-plus/test";

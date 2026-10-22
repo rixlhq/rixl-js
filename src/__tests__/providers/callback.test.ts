@@ -1,7 +1,7 @@
 /**
  * OAuth callback cleanup tests
  * Tests: completeOAuthCallback
- * @vitest-environment jsdom
+ * @vitest-environment happy-dom
  */
 
 import {describe, it, expect, beforeEach, afterEach} from "vite-plus/test";

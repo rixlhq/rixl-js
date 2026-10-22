@@ -5,7 +5,7 @@
  * evaluations of these modules in one realm. connect() configures exactly one of
  * them, so anything a login path reads has to resolve to the same object in all
  * of them.
- * @vitest-environment jsdom
+ * @vitest-environment happy-dom
  */
 
 import {describe, it, expect, beforeEach, vi} from "vite-plus/test";

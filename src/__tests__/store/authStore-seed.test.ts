@@ -1,7 +1,7 @@
 /**
  * AuthStore hydration tests
  * Tests: what isLogged is seeded from on module evaluation
- * @vitest-environment jsdom
+ * @vitest-environment happy-dom
  */
 
 import {describe, it, expect, beforeEach, vi} from "vite-plus/test";

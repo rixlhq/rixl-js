@@ -1,4 +1,4 @@
-// @vitest-environment jsdom
+// @vitest-environment happy-dom
 import {describe, it, expect, vi, beforeEach} from "vite-plus/test";
 import {redirectToLogin, setLoginRedirectUrl} from "../auth/authConfig";
 
