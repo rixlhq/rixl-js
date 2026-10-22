@@ -5,16 +5,16 @@
     "": {
       "name": "@rixl/sdk",
       "dependencies": {
-        "jose": "^6.2.3",
-        "nanostores": "^1.5.1",
-        "valibot": "^1.4.2",
+        "jose": "^6.2.13",
+        "nanostores": "^1.5.5",
+        "valibot": "^1.5.0",
       },
       "devDependencies": {
         "@hey-api/vite-plugin": "0.3.2",
-        "@types/node": "^26.1.1",
+        "@types/node": "^26.6.5",
         "@vitest/coverage-v8": "5.0.5",
         "@vitest/ui": "5.0.5",
-        "jsdom": "^30.0.0",
+        "jsdom": "^30.1.3",
         "lefthook": "^2.2.2",
         "typescript": "6.0.3",
         "vite": "npm:@voidzero-dev/vite-plus-core@1.3.0",
@@ -355,7 +355,7 @@
 
     "jiti": ["jiti@2.6.1", "", { "bin": { "jiti": "lib/jiti-cli.mjs" } }, "sha512-ekilCSN1jwRvIbgeg/57YFh8qQDNbwDb9xT/qu2DAHbFFZUicIl4ygVaAvzveMhMVr3LnpSKTNnwt8PoOfmKhQ=="],
 
-    "jose": ["jose@6.2.12", "", {}, "sha512-9NiFmJEex0sy2Dk58j2UGBSHgUs2ypF9eZSu4L6vjOX3Dp96Sw1F3uL+H+D1sx02jZZdzUT0HgvCy59CuvXcWw=="],
+    "jose": ["jose@6.2.13", "", {}, "sha512-7TIg10ZE1x82YediN+lcrPNvGMKge9yFHQD+Qho/b8y2adfugU3AsvvHfxV0fzyFllT6l9xCjf4RWY9g/Z9PJQ=="],
 
     "js-tokens": ["js-tokens@10.0.0", "", {}, "sha512-lM/UBzQmfJRo9ABXbPWemivdCW8V2G8FHaHdypQaIy523snUjog0W71ayWXTjiR+ixeMyVHN2XcpnTd/liPg/Q=="],
 
