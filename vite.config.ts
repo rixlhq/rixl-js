@@ -44,12 +44,11 @@ export default defineConfig({
       // https://tsdown.dev/options/dependencies#deps-resolvedepsubpath
       resolveDepSubpath: true,
     },
-    entry: {
-      index: "src/index.ts",
-      auth: "src/auth/index.ts",
-    },
+    entry: {index: "src/index.ts"},
     exports: true,
-    dts: true,
+    dts: {
+      generator: "tsgo",
+    },
     format: "esm",
     minify: false,
     platform: "browser",

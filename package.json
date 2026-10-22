@@ -27,7 +27,6 @@
   "types": "dist/index.d.ts",
   "exports": {
     ".": "./dist/index.js",
-    "./auth": "./dist/auth.js",
     "./package.json": "./package.json"
   },
   "publishConfig": {
