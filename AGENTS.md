@@ -10,6 +10,16 @@ Docs are local at `node_modules/vite-plus/docs` or online at https://viteplus.de
 
 `vp <name>` runs a built-in command. `vp run <name>` runs a `package.json` script or a `vite.config.ts` task. Scripts cannot overwrite built-ins, so `vp dev` and `vp run dev` may do different things. Check `package.json` and `vite.config.ts` first, and run `vp run <name>` when the project defines a script or task with that name.
 
+## Git Hooks Policy
+
+**Do NOT use Vite+ git hooks (`vp hooks`) or the `staged` block in `vite.config.ts`.**
+
+This project intentionally uses **Lefthook** (`lefthook.yml`) for git hooks management:
+
+- Pre-commit: runs `vp check --fix {staged_files}` and `vp fmt --write {staged_files}` via Lefthook.
+- Pre-push: runs `vp test --run && vp pack && vp run examples:check` via Lefthook.
+- Vite+ built-in hooks are disabled (`vp hooks disable`). Do not re-enable Vite+ hooks or add `staged` configuration to `vite.config.ts`.
+
 ## Tool Versions
 
 Run `vp toolchain` to show versions and relationships in the active Vite+
