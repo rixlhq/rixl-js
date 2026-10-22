@@ -75,7 +75,7 @@
     "packageManager": {
       "name": "bun",
       "version": "1.4.4",
-      "onFail": "download"
+      "onFail": "warn"
     }
   },
   "engines": {
