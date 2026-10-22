@@ -13,4 +13,4 @@ pre-commit:
 pre-push:
   commands:
     gate:
-      run: vp test --run && vp pack
+      run: vp test --run && vp pack && vp run examples:check
