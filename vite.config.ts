@@ -37,6 +37,9 @@ export default defineConfig({
       "~": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
+  staged: {
+    "*": "vp check --fix",
+  },
   pack: {
     deps: {
       // tsdown <0.23 compatibility: resolve external dependency subpaths.
