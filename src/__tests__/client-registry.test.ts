@@ -13,7 +13,9 @@ import {createClient, createConfig} from "../generated/client";
 import {client as generatedClient} from "../generated/client.gen";
 import {addClientInitializer, configureAllClients, registerClient} from "../client-registry";
 
-const PLACEHOLDER_BASE_URL = "https://raw.githubusercontent.com";
+// Whatever baseUrl the generator baked in (the spec's first server, or hey-api's
+// fallback when the spec has none) is the placeholder the guard rejects.
+const PLACEHOLDER_BASE_URL = generatedClient.getConfig().baseUrl ?? "https://raw.githubusercontent.com";
 const API_BASE_URL = "https://api.example.com";
 
 type AnyClient = typeof generatedClient;
@@ -121,6 +123,16 @@ describe("unconfigured client guard", () => {
     configureAllClients(API_BASE_URL);
 
     const request = await runRequestInterceptors(configured, `${API_BASE_URL}/media/v1/images/abc`);
+
+    expect(request.url).toContain("/media/v1/images/abc");
+  });
+
+  it("lets connect() choose the generator's default baseUrl", async () => {
+    const configured = makeClient(PLACEHOLDER_BASE_URL);
+    registerClient(configured);
+    configureAllClients(PLACEHOLDER_BASE_URL);
+
+    const request = await runRequestInterceptors(configured, `${PLACEHOLDER_BASE_URL}/media/v1/images/abc`);
 
     expect(request.url).toContain("/media/v1/images/abc");
   });
