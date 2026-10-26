@@ -5,10 +5,9 @@ type GeneratedClient = typeof client;
 type ClientInitializer = (target: GeneratedClient) => void;
 
 /**
- * The baseUrl the code generator bakes in. It is derived from the origin of the
- * OpenAPI input URL, not from a real server, so a client still holding it has
- * simply never been configured. Captured from the client itself rather than
- * hardcoded so it stays correct if the generator input ever moves.
+ * The baseUrl the code generator bakes in: the spec's first server, or the
+ * origin of the OpenAPI input URL when the spec has none. Captured from the
+ * client itself rather than hardcoded so it stays correct if either moves.
  */
 const placeholderBaseUrl = shared("placeholderBaseUrl", () => client.getConfig().baseUrl ?? "https://raw.githubusercontent.com");
 
@@ -20,9 +19,14 @@ const initializers = shared("clientInitializers", () => [] as ClientInitializer[
 /** Last baseUrl passed to {@link configureAllClients}, replayed onto late joiners. */
 const appliedConfig = shared("appliedConfig", () => ({baseUrl: undefined as string | undefined}));
 
+/**
+ * A client still holding the placeholder was never configured, unless connect()
+ * chose that same URL: once the spec names a real server, the default and the
+ * production baseUrl are identical.
+ */
 function isUnconfigured(target: GeneratedClient): boolean {
   const {baseUrl} = target.getConfig();
-  return !baseUrl || baseUrl === placeholderBaseUrl;
+  return !baseUrl || (baseUrl === placeholderBaseUrl && appliedConfig.baseUrl !== baseUrl);
 }
 
 /**
