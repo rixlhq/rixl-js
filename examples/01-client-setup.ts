@@ -1,16 +1,13 @@
-import {createClient, imagesV1ImageServiceListImages} from "@rixl/sdk";
+import {client, connect, imagesV1ImageServiceListImages} from "@rixl/sdk";
 
 import {optionalEnv, requiredEnv} from "./shared";
 
-const client = createClient({
-  auth: requiredEnv("RIXL_API_KEY", "Set it to a Rixl API key before running this example."),
-  baseUrl: optionalEnv("RIXL_BASE_URL") ?? "https://api.rixl.com/",
-});
+await connect({baseUrl: optionalEnv("RIXL_BASE_URL") ?? "https://api.rixl.com"});
+client.setConfig({headers: {"X-API-Key": requiredEnv("RIXL_API_KEY", "Set it to a Rixl API key before running this example.")}});
 
 const projectId = requiredEnv("RIXL_PROJECT_ID", "Set it to a Rixl project ID.");
 
 const {data, error, response} = await imagesV1ImageServiceListImages({
-  client,
   path: {project_id: projectId},
   query: {"pagination.limit": 1, "pagination.offset": 0},
 });

@@ -3,7 +3,8 @@ import {basename} from "node:path";
 
 import type {VideosV1Language} from "@rixl/sdk";
 import {
-  createClient,
+  client,
+  connect,
   videosV1LanguageServiceListLanguages,
   videosV1SubtitleServiceCreateSubtitleUpload,
   videosV1SubtitleServiceDeleteAllSubtitles,
@@ -14,10 +15,8 @@ import {
 
 import {assertDestructiveEnabled, optionalEnv, requiredEnv} from "./shared";
 
-const client = createClient({
-  auth: requiredEnv("RIXL_API_KEY"),
-  baseUrl: optionalEnv("RIXL_BASE_URL") ?? "https://api.rixl.com/",
-});
+await connect({baseUrl: optionalEnv("RIXL_BASE_URL") ?? "https://api.rixl.com"});
+client.setConfig({headers: {"X-API-Key": requiredEnv("RIXL_API_KEY")}});
 
 const projectId = requiredEnv("RIXL_PROJECT_ID", "Set it to your Rixl project ID.");
 const videoId = requiredEnv("RIXL_VIDEO_ID", "Set it to a video ID to attach subtitles to.");
@@ -25,7 +24,7 @@ const subtitleFilePath = requiredEnv("RIXL_SUBTITLE_FILE", "Set it to a path to 
 const langCode = requiredEnv("RIXL_SUBTITLE_LANGUAGE_CODE", "Set it to a BCP 47 language code, e.g. en-US.");
 
 // 1. List supported subtitle languages.
-const langs = await videosV1LanguageServiceListLanguages({client});
+const langs = await videosV1LanguageServiceListLanguages();
 
 if (langs.error) {
   console.error(`List languages failed (${langs.response?.status ?? "no response"}):`, langs.error);
@@ -41,7 +40,6 @@ if (supported.length > 0 && !supported.some((lang: VideosV1Language) => lang.cod
 
 // 2. List existing subtitles on the video.
 const existing = await videosV1SubtitleServiceListSubtitles({
-  client,
   path: {video_id: videoId},
 });
 
@@ -49,7 +47,6 @@ console.log(`Video ${videoId} currently has ${existing.data?.subtitles?.length ?
 
 // 3. Request a subtitle upload URL.
 const uploadInit = await videosV1SubtitleServiceCreateSubtitleUpload({
-  client,
   path: {project_id: projectId, video_id: videoId},
   body: {
     items: [
@@ -96,7 +93,6 @@ if (!subtitleId) {
   assertDestructiveEnabled(`Deleting subtitle ${subtitleId}`);
 
   const deleted = await videosV1SubtitleServiceDeleteSubtitle({
-    client,
     path: {project_id: projectId, video_id: videoId, subtitle_id: subtitleId},
   });
 
@@ -115,7 +111,6 @@ if (optionalEnv("RIXL_RUN_DESTRUCTIVE") !== "1") {
   assertDestructiveEnabled(`Deleting all ${langCode} subtitles on video ${videoId}`);
 
   const deletedLang = await videosV1SubtitleServiceDeleteSubtitlesByLanguage({
-    client,
     path: {project_id: projectId, video_id: videoId, language_code: langCode},
   });
 
@@ -129,7 +124,6 @@ if (optionalEnv("RIXL_RUN_DESTRUCTIVE") !== "1") {
   assertDestructiveEnabled(`Deleting all subtitles on video ${videoId}`);
 
   const deletedAll = await videosV1SubtitleServiceDeleteAllSubtitles({
-    client,
     path: {project_id: projectId, video_id: videoId},
   });
 
