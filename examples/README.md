@@ -2,7 +2,7 @@
 
 Runnable TypeScript examples for `@rixl/sdk`.
 
-Each example is a small, self-contained script. The client is constructed inline and the Hey API `{ data, error, response }` result tuple is handled inline — copy any example into your own project and it will work with minimal edits.
+Each example is a self-contained script. It calls `connect({baseUrl})`, sends the API key in the `X-API-Key` header via `client.setConfig`, and handles the `{ data, error, response }` result inline.
 
 ## Setup
 
@@ -22,12 +22,12 @@ export RIXL_PROJECT_ID="proj_..."
 
 ## Base URL
 
-> **Examples target production (`https://api.rixl.com/`) by default.** Destructive examples will hit your real account unless you override the base URL.
+> **Examples target production (`https://api.rixl.com`) by default.** Destructive examples will hit your real account unless you override the base URL.
 
 To target another environment:
 
 ```bash
-export RIXL_BASE_URL="https://api.staging.rixl.com/"
+export RIXL_BASE_URL="https://api.staging.rixl.com"
 ```
 
 ## Destructive operations
@@ -52,6 +52,7 @@ bun examples/06-video-upload.ts
 bun examples/07-video-chapters.ts
 bun examples/08-audio-tracks.ts
 bun examples/09-subtitles.ts
+bun examples/10-pagination.ts
 ```
 
 - `01-client-setup.ts` requires `RIXL_API_KEY` and `RIXL_PROJECT_ID`.
@@ -63,6 +64,7 @@ bun examples/09-subtitles.ts
 - `07-video-chapters.ts` requires `RIXL_API_KEY`, `RIXL_PROJECT_ID`, and `RIXL_VIDEO_ID`.
 - `08-audio-tracks.ts` requires `RIXL_API_KEY`, `RIXL_PROJECT_ID`, `RIXL_VIDEO_ID`, `RIXL_AUDIO_FILE`, and `RIXL_AUDIO_LANGUAGE_CODE`.
 - `09-subtitles.ts` requires `RIXL_API_KEY`, `RIXL_PROJECT_ID`, `RIXL_VIDEO_ID`, `RIXL_SUBTITLE_FILE`, and `RIXL_SUBTITLE_LANGUAGE_CODE`.
+- `10-pagination.ts` requires `RIXL_API_KEY` and `RIXL_PROJECT_ID`.
 
 ## Typecheck
 

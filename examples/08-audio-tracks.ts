@@ -2,7 +2,8 @@ import {readFile} from "node:fs/promises";
 import {basename} from "node:path";
 
 import {
-  createClient,
+  client,
+  connect,
   videosV1AudioTrackServiceCreateAudioTrackUpload,
   videosV1AudioTrackServiceDeleteAllAudioTracks,
   videosV1AudioTrackServiceDeleteAudioTrack,
@@ -12,10 +13,8 @@ import {
 
 import {assertDestructiveEnabled, optionalEnv, requiredEnv} from "./shared";
 
-const client = createClient({
-  auth: requiredEnv("RIXL_API_KEY"),
-  baseUrl: optionalEnv("RIXL_BASE_URL") ?? "https://api.rixl.com/",
-});
+await connect({baseUrl: optionalEnv("RIXL_BASE_URL") ?? "https://api.rixl.com"});
+client.setConfig({headers: {"X-API-Key": requiredEnv("RIXL_API_KEY")}});
 
 const projectId = requiredEnv("RIXL_PROJECT_ID", "Set it to your Rixl project ID.");
 const videoId = requiredEnv("RIXL_VIDEO_ID", "Set it to a video ID to attach audio tracks to.");
@@ -24,7 +23,6 @@ const langCode = requiredEnv("RIXL_AUDIO_LANGUAGE_CODE", "Set it to a BCP 47 lan
 
 // 1. List existing audio tracks.
 const existing = await videosV1AudioTrackServiceListAudioTracks({
-  client,
   path: {video_id: videoId},
 });
 
@@ -32,7 +30,6 @@ console.log(`Video ${videoId} currently has ${existing.data?.audio_tracks?.lengt
 
 // 2. Request a track upload URL.
 const uploadInit = await videosV1AudioTrackServiceCreateAudioTrackUpload({
-  client,
   path: {project_id: projectId, video_id: videoId},
   body: {
     items: [
@@ -79,7 +76,6 @@ if (!trackId) {
   assertDestructiveEnabled(`Deleting audio track ${trackId}`);
 
   const deleted = await videosV1AudioTrackServiceDeleteAudioTrack({
-    client,
     path: {project_id: projectId, video_id: videoId, track_id: trackId},
   });
 
@@ -98,7 +94,6 @@ if (optionalEnv("RIXL_RUN_DESTRUCTIVE") !== "1") {
   assertDestructiveEnabled(`Deleting all ${langCode} audio tracks on video ${videoId}`);
 
   const deletedLang = await videosV1AudioTrackServiceDeleteAudioTracksByLanguage({
-    client,
     path: {project_id: projectId, video_id: videoId, language_code: langCode},
   });
 
@@ -113,7 +108,6 @@ if (optionalEnv("RIXL_RUN_DESTRUCTIVE") !== "1") {
   assertDestructiveEnabled(`Deleting all audio tracks on video ${videoId}`);
 
   const deletedAll = await videosV1AudioTrackServiceDeleteAllAudioTracks({
-    client,
     path: {project_id: projectId, video_id: videoId},
   });
 

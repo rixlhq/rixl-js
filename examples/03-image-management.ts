@@ -1,17 +1,14 @@
-import {createClient, imagesV1ImageServiceDeleteImage, imagesV1ImageServiceGetImage, imagesV1ImageServiceListImages} from "@rixl/sdk";
+import {client, connect, imagesV1ImageServiceDeleteImage, imagesV1ImageServiceGetImage, imagesV1ImageServiceListImages} from "@rixl/sdk";
 
 import {assertDestructiveEnabled, optionalEnv, requiredEnv} from "./shared";
 
-const client = createClient({
-  auth: requiredEnv("RIXL_API_KEY"),
-  baseUrl: optionalEnv("RIXL_BASE_URL") ?? "https://api.rixl.com/",
-});
+await connect({baseUrl: optionalEnv("RIXL_BASE_URL") ?? "https://api.rixl.com"});
+client.setConfig({headers: {"X-API-Key": requiredEnv("RIXL_API_KEY")}});
 
 const projectId = requiredEnv("RIXL_PROJECT_ID", "Set it to a Rixl project ID.");
 
 // 1. List images.
 const list = await imagesV1ImageServiceListImages({
-  client,
   path: {project_id: projectId},
   query: {"pagination.limit": 10, "pagination.offset": 0},
 });
@@ -31,7 +28,6 @@ for (const image of images) {
 const imageId = requiredEnv("RIXL_IMAGE_ID", "Set it to an existing image ID.");
 
 const detail = await imagesV1ImageServiceGetImage({
-  client,
   path: {image_id: imageId},
 });
 
@@ -51,7 +47,6 @@ if (!deleteImageId) {
   assertDestructiveEnabled(`Deleting image ${deleteImageId}`);
 
   const deleted = await imagesV1ImageServiceDeleteImage({
-    client,
     path: {project_id: projectId, image_id: deleteImageId},
   });
 

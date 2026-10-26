@@ -1,21 +1,18 @@
 import {readFile} from "node:fs/promises";
 import {basename} from "node:path";
 
-import {createClient, imagesV1ImageServiceCreateImageUpload} from "@rixl/sdk";
+import {client, connect, imagesV1ImageServiceCreateImageUpload} from "@rixl/sdk";
 
 import {optionalEnv, requiredEnv} from "./shared";
 
-const client = createClient({
-  auth: requiredEnv("RIXL_API_KEY"),
-  baseUrl: optionalEnv("RIXL_BASE_URL") ?? "https://api.rixl.com/",
-});
+await connect({baseUrl: optionalEnv("RIXL_BASE_URL") ?? "https://api.rixl.com"});
+client.setConfig({headers: {"X-API-Key": requiredEnv("RIXL_API_KEY")}});
 
 const projectId = requiredEnv("RIXL_PROJECT_ID", "Set it to your Rixl project ID.");
 const filePath = requiredEnv("RIXL_IMAGE_FILE", "Set it to a path to an image file on disk.");
 
 // 1. Ask the API for a presigned URL to upload to.
 const init = await imagesV1ImageServiceCreateImageUpload({
-  client,
   path: {project_id: projectId},
   body: {
     name: basename(filePath),
