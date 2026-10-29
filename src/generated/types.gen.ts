@@ -8595,6 +8595,411 @@ export type VideosV1VideoView = {
     file?: VideosV1File;
 };
 
+/**
+ * CreateEndpointRequest
+ */
+export type WebhooksV1CreateEndpointRequest = {
+    /**
+     * project_id
+     */
+    project_id?: string;
+    /**
+     * url
+     */
+    url?: string;
+    /**
+     * event_types
+     */
+    event_types?: Array<'image.ready' | 'image.failed'>;
+};
+
+/**
+ * CreateEndpointResponse
+ */
+export type WebhooksV1CreateEndpointResponse = {
+    /**
+     * endpoint
+     */
+    endpoint?: WebhooksV1WebhookEndpoint;
+    /**
+     * secret
+     *
+     * Signing secret in whsec_<base64> form. Returned only here.
+     */
+    secret?: string;
+};
+
+/**
+ * DeleteEndpointRequest
+ */
+export type WebhooksV1DeleteEndpointRequest = {
+    /**
+     * project_id
+     */
+    project_id?: string;
+    /**
+     * endpoint_id
+     */
+    endpoint_id?: string;
+};
+
+/**
+ * GetEndpointRequest
+ */
+export type WebhooksV1GetEndpointRequest = {
+    /**
+     * project_id
+     */
+    project_id?: string;
+    /**
+     * endpoint_id
+     */
+    endpoint_id?: string;
+};
+
+/**
+ * GetEndpointResponse
+ */
+export type WebhooksV1GetEndpointResponse = {
+    /**
+     * endpoint
+     */
+    endpoint?: WebhooksV1WebhookEndpoint;
+};
+
+/**
+ * ListEndpointAttemptsRequest
+ */
+export type WebhooksV1ListEndpointAttemptsRequest = {
+    /**
+     * project_id
+     */
+    project_id?: string;
+    /**
+     * endpoint_id
+     */
+    endpoint_id?: string;
+    /**
+     * pagination
+     */
+    pagination?: CommonV1Pagination;
+};
+
+/**
+ * ListEndpointAttemptsResponse
+ */
+export type WebhooksV1ListEndpointAttemptsResponse = {
+    /**
+     * attempts
+     */
+    attempts?: Array<WebhooksV1WebhookAttempt>;
+    /**
+     * total
+     */
+    total?: string;
+    /**
+     * offset
+     */
+    offset?: number;
+    /**
+     * limit
+     */
+    limit?: number;
+};
+
+/**
+ * ListEndpointsRequest
+ */
+export type WebhooksV1ListEndpointsRequest = {
+    /**
+     * project_id
+     */
+    project_id?: string;
+    /**
+     * pagination
+     */
+    pagination?: CommonV1Pagination;
+};
+
+/**
+ * ListEndpointsResponse
+ */
+export type WebhooksV1ListEndpointsResponse = {
+    /**
+     * endpoints
+     */
+    endpoints?: Array<WebhooksV1WebhookEndpoint>;
+    /**
+     * total
+     */
+    total?: string;
+    /**
+     * offset
+     */
+    offset?: number;
+    /**
+     * limit
+     */
+    limit?: number;
+};
+
+/**
+ * ListEventsRequest
+ */
+export type WebhooksV1ListEventsRequest = {
+    /**
+     * project_id
+     */
+    project_id?: string;
+    /**
+     * pagination
+     */
+    pagination?: CommonV1Pagination;
+};
+
+/**
+ * ListEventsResponse
+ */
+export type WebhooksV1ListEventsResponse = {
+    /**
+     * events
+     */
+    events?: Array<WebhooksV1WebhookEvent>;
+    /**
+     * total
+     */
+    total?: string;
+    /**
+     * offset
+     */
+    offset?: number;
+    /**
+     * limit
+     */
+    limit?: number;
+};
+
+/**
+ * ReplayEventRequest
+ */
+export type WebhooksV1ReplayEventRequest = {
+    /**
+     * project_id
+     */
+    project_id?: string;
+    /**
+     * endpoint_id
+     */
+    endpoint_id?: string;
+    /**
+     * event_id
+     */
+    event_id?: string;
+};
+
+/**
+ * RotateEndpointSecretRequest
+ */
+export type WebhooksV1RotateEndpointSecretRequest = {
+    /**
+     * project_id
+     */
+    project_id?: string;
+    /**
+     * endpoint_id
+     */
+    endpoint_id?: string;
+};
+
+/**
+ * RotateEndpointSecretResponse
+ */
+export type WebhooksV1RotateEndpointSecretResponse = {
+    /**
+     * secret
+     */
+    secret?: string;
+};
+
+/**
+ * SendTestEventRequest
+ */
+export type WebhooksV1SendTestEventRequest = {
+    /**
+     * project_id
+     */
+    project_id?: string;
+    /**
+     * endpoint_id
+     */
+    endpoint_id?: string;
+};
+
+/**
+ * SendTestEventResponse
+ */
+export type WebhooksV1SendTestEventResponse = {
+    /**
+     * event_id
+     */
+    event_id?: string;
+};
+
+/**
+ * UpdateEndpointRequest
+ */
+export type WebhooksV1UpdateEndpointRequest = {
+    /**
+     * project_id
+     */
+    project_id?: string;
+    /**
+     * endpoint_id
+     */
+    endpoint_id?: string;
+    /**
+     * url
+     */
+    url?: string | null;
+    /**
+     * event_types
+     */
+    event_types?: Array<'image.ready' | 'image.failed'>;
+    /**
+     * enabled
+     */
+    enabled?: boolean | null;
+};
+
+/**
+ * UpdateEndpointResponse
+ */
+export type WebhooksV1UpdateEndpointResponse = {
+    /**
+     * endpoint
+     */
+    endpoint?: WebhooksV1WebhookEndpoint;
+};
+
+/**
+ * WebhookAttempt
+ *
+ * WebhookAttempt is one recorded delivery attempt for an event/endpoint pair.
+ */
+export type WebhooksV1WebhookAttempt = {
+    /**
+     * id
+     */
+    id?: string;
+    /**
+     * event_id
+     */
+    event_id?: string;
+    /**
+     * attempt
+     */
+    attempt?: number;
+    /**
+     * replay
+     *
+     * True when this delivery was triggered by ReplayEvent or SendTestEvent
+     * rather than the original subscription fan-out.
+     */
+    replay?: boolean;
+    /**
+     * status_code
+     */
+    status_code?: number | null;
+    /**
+     * error
+     */
+    error?: string;
+    /**
+     * duration_ms
+     */
+    duration_ms?: number;
+    /**
+     * created_at
+     */
+    created_at?: GoogleProtobufTimestamp;
+    /**
+     * response_snippet
+     *
+     * First 1 KiB of the endpoint's response body.
+     */
+    response_snippet?: string;
+};
+
+/**
+ * WebhookEndpoint
+ *
+ * WebhookEndpoint is a delivery target. Secrets are never returned; they are
+ * only shown once on create and rotate.
+ */
+export type WebhooksV1WebhookEndpoint = {
+    /**
+     * id
+     */
+    id?: string;
+    /**
+     * project_id
+     */
+    project_id?: string;
+    /**
+     * url
+     */
+    url?: string;
+    /**
+     * event_types
+     */
+    event_types?: Array<string>;
+    /**
+     * enabled
+     */
+    enabled?: boolean;
+    /**
+     * disabled_reason
+     */
+    disabled_reason?: string;
+    /**
+     * created_at
+     */
+    created_at?: GoogleProtobufTimestamp;
+    /**
+     * updated_at
+     */
+    updated_at?: GoogleProtobufTimestamp;
+};
+
+/**
+ * WebhookEvent
+ *
+ * WebhookEvent is a recorded outbound notification. `data` is the exact
+ * object embedded in the delivered payload envelope.
+ */
+export type WebhooksV1WebhookEvent = {
+    /**
+     * id
+     */
+    id?: string;
+    /**
+     * type
+     */
+    type?: string;
+    /**
+     * resource_id
+     */
+    resource_id?: string;
+    /**
+     * data
+     */
+    data?: GoogleProtobufStruct;
+    /**
+     * created_at
+     */
+    created_at?: GoogleProtobufTimestamp;
+};
+
 export type AnalyticsV1DashboardServiceGetDashboardStatsData = {
     body?: never;
     path?: never;
@@ -14579,3 +14984,348 @@ export type VideosV1VideoServiceGetVideoResponses = {
 };
 
 export type VideosV1VideoServiceGetVideoResponse = VideosV1VideoServiceGetVideoResponses[keyof VideosV1VideoServiceGetVideoResponses];
+
+export type WebhooksV1WebhookServiceListEndpointsData = {
+    body?: never;
+    path: {
+        /**
+         * project_id
+         *
+         * The project_id path parameter.
+         */
+        project_id: string;
+    };
+    query?: {
+        /**
+         * limit
+         *
+         * Maximum number of items to return.
+         */
+        'pagination.limit'?: number;
+        /**
+         * offset
+         *
+         * Number of items to skip before collecting the result set.
+         */
+        'pagination.offset'?: number;
+    };
+    url: '/webhooks/v1/projects/{project_id}/endpoints';
+};
+
+export type WebhooksV1WebhookServiceListEndpointsResponses = {
+    /**
+     * Success
+     */
+    200: WebhooksV1ListEndpointsResponse;
+};
+
+export type WebhooksV1WebhookServiceListEndpointsResponse = WebhooksV1WebhookServiceListEndpointsResponses[keyof WebhooksV1WebhookServiceListEndpointsResponses];
+
+export type WebhooksV1WebhookServiceCreateEndpointData = {
+    /**
+     * CreateEndpointRequest
+     */
+    body: {
+        /**
+         * url
+         */
+        url?: string;
+        /**
+         * event_types
+         */
+        event_types?: Array<'image.ready' | 'image.failed'>;
+    };
+    path: {
+        /**
+         * project_id
+         *
+         * The project_id path parameter.
+         */
+        project_id: string;
+    };
+    query?: never;
+    url: '/webhooks/v1/projects/{project_id}/endpoints';
+};
+
+export type WebhooksV1WebhookServiceCreateEndpointResponses = {
+    /**
+     * Success
+     */
+    200: WebhooksV1CreateEndpointResponse;
+};
+
+export type WebhooksV1WebhookServiceCreateEndpointResponse = WebhooksV1WebhookServiceCreateEndpointResponses[keyof WebhooksV1WebhookServiceCreateEndpointResponses];
+
+export type WebhooksV1WebhookServiceDeleteEndpointData = {
+    body?: never;
+    path: {
+        /**
+         * project_id
+         *
+         * The project_id path parameter.
+         */
+        project_id: string;
+        /**
+         * endpoint_id
+         *
+         * The endpoint_id path parameter.
+         */
+        endpoint_id: string;
+    };
+    query?: never;
+    url: '/webhooks/v1/projects/{project_id}/endpoints/{endpoint_id}';
+};
+
+export type WebhooksV1WebhookServiceDeleteEndpointResponses = {
+    /**
+     * Success
+     */
+    200: GoogleProtobufEmpty;
+};
+
+export type WebhooksV1WebhookServiceDeleteEndpointResponse = WebhooksV1WebhookServiceDeleteEndpointResponses[keyof WebhooksV1WebhookServiceDeleteEndpointResponses];
+
+export type WebhooksV1WebhookServiceGetEndpointData = {
+    body?: never;
+    path: {
+        /**
+         * project_id
+         *
+         * The project_id path parameter.
+         */
+        project_id: string;
+        /**
+         * endpoint_id
+         *
+         * The endpoint_id path parameter.
+         */
+        endpoint_id: string;
+    };
+    query?: never;
+    url: '/webhooks/v1/projects/{project_id}/endpoints/{endpoint_id}';
+};
+
+export type WebhooksV1WebhookServiceGetEndpointResponses = {
+    /**
+     * Success
+     */
+    200: WebhooksV1GetEndpointResponse;
+};
+
+export type WebhooksV1WebhookServiceGetEndpointResponse = WebhooksV1WebhookServiceGetEndpointResponses[keyof WebhooksV1WebhookServiceGetEndpointResponses];
+
+export type WebhooksV1WebhookServiceUpdateEndpointData = {
+    /**
+     * UpdateEndpointRequest
+     */
+    body: {
+        /**
+         * url
+         */
+        url?: string | null;
+        /**
+         * event_types
+         */
+        event_types?: Array<'image.ready' | 'image.failed'>;
+        /**
+         * enabled
+         */
+        enabled?: boolean | null;
+    };
+    path: {
+        /**
+         * project_id
+         *
+         * The project_id path parameter.
+         */
+        project_id: string;
+        /**
+         * endpoint_id
+         *
+         * The endpoint_id path parameter.
+         */
+        endpoint_id: string;
+    };
+    query?: never;
+    url: '/webhooks/v1/projects/{project_id}/endpoints/{endpoint_id}';
+};
+
+export type WebhooksV1WebhookServiceUpdateEndpointResponses = {
+    /**
+     * Success
+     */
+    200: WebhooksV1UpdateEndpointResponse;
+};
+
+export type WebhooksV1WebhookServiceUpdateEndpointResponse = WebhooksV1WebhookServiceUpdateEndpointResponses[keyof WebhooksV1WebhookServiceUpdateEndpointResponses];
+
+export type WebhooksV1WebhookServiceListEndpointAttemptsData = {
+    body?: never;
+    path: {
+        /**
+         * project_id
+         *
+         * The project_id path parameter.
+         */
+        project_id: string;
+        /**
+         * endpoint_id
+         *
+         * The endpoint_id path parameter.
+         */
+        endpoint_id: string;
+    };
+    query?: {
+        /**
+         * limit
+         *
+         * Maximum number of items to return.
+         */
+        'pagination.limit'?: number;
+        /**
+         * offset
+         *
+         * Number of items to skip before collecting the result set.
+         */
+        'pagination.offset'?: number;
+    };
+    url: '/webhooks/v1/projects/{project_id}/endpoints/{endpoint_id}/attempts';
+};
+
+export type WebhooksV1WebhookServiceListEndpointAttemptsResponses = {
+    /**
+     * Success
+     */
+    200: WebhooksV1ListEndpointAttemptsResponse;
+};
+
+export type WebhooksV1WebhookServiceListEndpointAttemptsResponse = WebhooksV1WebhookServiceListEndpointAttemptsResponses[keyof WebhooksV1WebhookServiceListEndpointAttemptsResponses];
+
+export type WebhooksV1WebhookServiceReplayEventData = {
+    body?: never;
+    path: {
+        /**
+         * project_id
+         *
+         * The project_id path parameter.
+         */
+        project_id: string;
+        /**
+         * endpoint_id
+         *
+         * The endpoint_id path parameter.
+         */
+        endpoint_id: string;
+        /**
+         * event_id
+         *
+         * The event_id path parameter.
+         */
+        event_id: string;
+    };
+    query?: never;
+    url: '/webhooks/v1/projects/{project_id}/endpoints/{endpoint_id}/events/{event_id}/replay';
+};
+
+export type WebhooksV1WebhookServiceReplayEventResponses = {
+    /**
+     * Success
+     */
+    200: GoogleProtobufEmpty;
+};
+
+export type WebhooksV1WebhookServiceReplayEventResponse = WebhooksV1WebhookServiceReplayEventResponses[keyof WebhooksV1WebhookServiceReplayEventResponses];
+
+export type WebhooksV1WebhookServiceRotateEndpointSecretData = {
+    body?: never;
+    path: {
+        /**
+         * project_id
+         *
+         * The project_id path parameter.
+         */
+        project_id: string;
+        /**
+         * endpoint_id
+         *
+         * The endpoint_id path parameter.
+         */
+        endpoint_id: string;
+    };
+    query?: never;
+    url: '/webhooks/v1/projects/{project_id}/endpoints/{endpoint_id}/rotate-secret';
+};
+
+export type WebhooksV1WebhookServiceRotateEndpointSecretResponses = {
+    /**
+     * Success
+     */
+    200: WebhooksV1RotateEndpointSecretResponse;
+};
+
+export type WebhooksV1WebhookServiceRotateEndpointSecretResponse = WebhooksV1WebhookServiceRotateEndpointSecretResponses[keyof WebhooksV1WebhookServiceRotateEndpointSecretResponses];
+
+export type WebhooksV1WebhookServiceSendTestEventData = {
+    body?: never;
+    path: {
+        /**
+         * project_id
+         *
+         * The project_id path parameter.
+         */
+        project_id: string;
+        /**
+         * endpoint_id
+         *
+         * The endpoint_id path parameter.
+         */
+        endpoint_id: string;
+    };
+    query?: never;
+    url: '/webhooks/v1/projects/{project_id}/endpoints/{endpoint_id}/test';
+};
+
+export type WebhooksV1WebhookServiceSendTestEventResponses = {
+    /**
+     * Success
+     */
+    200: WebhooksV1SendTestEventResponse;
+};
+
+export type WebhooksV1WebhookServiceSendTestEventResponse = WebhooksV1WebhookServiceSendTestEventResponses[keyof WebhooksV1WebhookServiceSendTestEventResponses];
+
+export type WebhooksV1WebhookServiceListEventsData = {
+    body?: never;
+    path: {
+        /**
+         * project_id
+         *
+         * The project_id path parameter.
+         */
+        project_id: string;
+    };
+    query?: {
+        /**
+         * limit
+         *
+         * Maximum number of items to return.
+         */
+        'pagination.limit'?: number;
+        /**
+         * offset
+         *
+         * Number of items to skip before collecting the result set.
+         */
+        'pagination.offset'?: number;
+    };
+    url: '/webhooks/v1/projects/{project_id}/events';
+};
+
+export type WebhooksV1WebhookServiceListEventsResponses = {
+    /**
+     * Success
+     */
+    200: WebhooksV1ListEventsResponse;
+};
+
+export type WebhooksV1WebhookServiceListEventsResponse = WebhooksV1WebhookServiceListEventsResponses[keyof WebhooksV1WebhookServiceListEventsResponses];
