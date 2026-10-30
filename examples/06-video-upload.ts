@@ -2,7 +2,7 @@ import {readFile} from "node:fs/promises";
 import {basename} from "node:path";
 
 import type {CommonV1VideoQuality} from "@rixl/sdk";
-import {createClient, videosV1VideoServiceCreateVideoUpload} from "@rixl/sdk";
+import {client, connect, videosV1VideoServiceCreateVideoUpload} from "@rixl/sdk";
 
 import {optionalEnv, requiredEnv} from "./shared";
 
@@ -12,10 +12,8 @@ const VIDEO_QUALITIES = [
   "VIDEO_QUALITY_PRO",
 ] as const satisfies ReadonlyArray<CommonV1VideoQuality>;
 
-const client = createClient({
-  auth: requiredEnv("RIXL_API_KEY"),
-  baseUrl: optionalEnv("RIXL_BASE_URL") ?? "https://api.rixl.com/",
-});
+await connect({baseUrl: optionalEnv("RIXL_BASE_URL") ?? "https://api.rixl.com"});
+client.setConfig({headers: {"X-API-Key": requiredEnv("RIXL_API_KEY")}});
 
 const projectId = requiredEnv("RIXL_PROJECT_ID", "Set it to your Rixl project ID.");
 const videoFile = requiredEnv("RIXL_VIDEO_FILE", "Set it to a path to a local video file.");
@@ -34,7 +32,6 @@ if (rawQuality) {
 
 // 1. Ask the API for presigned URLs for both the video and its poster image.
 const init = await videosV1VideoServiceCreateVideoUpload({
-  client,
   path: {project_id: projectId},
   body: {
     name: basename(videoFile),

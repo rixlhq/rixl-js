@@ -1,5 +1,6 @@
 import {
-  createClient,
+  client,
+  connect,
   videosV1ChapterServiceGetVideoChapters,
   videosV1ChapterServiceUpdateVideoChapters,
   videosV1ChapterServiceUpdateVideoChapters2,
@@ -7,17 +8,14 @@ import {
 
 import {assertDestructiveEnabled, optionalEnv, requiredEnv} from "./shared";
 
-const client = createClient({
-  auth: requiredEnv("RIXL_API_KEY"),
-  baseUrl: optionalEnv("RIXL_BASE_URL") ?? "https://api.rixl.com/",
-});
+await connect({baseUrl: optionalEnv("RIXL_BASE_URL") ?? "https://api.rixl.com"});
+client.setConfig({headers: {"X-API-Key": requiredEnv("RIXL_API_KEY")}});
 
 const projectId = requiredEnv("RIXL_PROJECT_ID", "Set it to your Rixl project ID.");
 const videoId = requiredEnv("RIXL_VIDEO_ID", "Set it to a video ID to manage chapters for.");
 
 // 1. Replace the chapter list.
 const updated = await videosV1ChapterServiceUpdateVideoChapters({
-  client,
   path: {project_id: projectId, video_id: videoId},
   body: {
     chapters: [
@@ -41,7 +39,6 @@ for (const chapter of chapters) {
 
 // 2. Fetch chapters.
 const fetched = await videosV1ChapterServiceGetVideoChapters({
-  client,
   path: {project_id: projectId, video_id: videoId},
 });
 
@@ -56,7 +53,6 @@ if (optionalEnv("RIXL_RUN_DESTRUCTIVE") !== "1") {
   assertDestructiveEnabled(`Clearing chapters on video ${videoId}`);
 
   const cleared = await videosV1ChapterServiceUpdateVideoChapters2({
-    client,
     path: {project_id: projectId, video_id: videoId},
   });
 
