@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.42.2](https://github.com/rixlhq/rixl-js/compare/v0.42.1...v0.42.2) (2026-11-09)
+
+
+### Bug Fixes
+
+* **deps:** bump vite alias to vite-plus-core@1.4.0 to match vite-plus ([e38ec3d](https://github.com/rixlhq/rixl-js/commit/e38ec3da31eeb9d4050b1367671aadb5390a7bb6))
+
 ## [0.42.1](https://github.com/rixlhq/rixl-js/compare/v0.42.0...v0.42.1) (2026-11-09)
 
 
