@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.42.1](https://github.com/rixlhq/rixl-js/compare/v0.42.0...v0.42.1) (2026-11-09)
+
+
+### Bug Fixes
+
+* **client:** accept connect() on the generator's default baseUrl ([ccad855](https://github.com/rixlhq/rixl-js/commit/ccad8551bca4806f3451f743fa64047d14748ba6))
+* **examples:** authenticate with X-API-Key and walk all pages ([d3bda33](https://github.com/rixlhq/rixl-js/commit/d3bda33bd50a5233ad75a615a11552331074dc9d))
+
 ## [0.42.0](https://github.com/rixlhq/rixl-js/compare/v0.41.0...v0.42.0) (2026-10-29)
 
 
