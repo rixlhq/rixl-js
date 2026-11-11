@@ -86,7 +86,9 @@ jobs:
         if: ${{ steps.release.outputs.releases_created == 'true' }}
         uses: actions/setup-node@v7
         with:
-          node-version: 26
+          # npm validates devEngines.runtime on publish; floating "26" drifts
+          # ahead of the pinned version and fails with EBADDEVENGINES.
+          node-version-file: .node-version
           registry-url: "https://registry.npmjs.org"
 
       - name: Publish to npm
