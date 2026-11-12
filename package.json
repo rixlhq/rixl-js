@@ -57,20 +57,20 @@
   "devDependencies": {
     "@hey-api/vite-plugin": "0.3.2",
     "@types/node": "^26.6.5",
-    "@vitest/coverage-v8": "5.0.5",
-    "@vitest/ui": "5.0.5",
+    "@vitest/coverage-v8": "5.1.0",
+    "@vitest/ui": "5.1.0",
     "happy-dom": "^21.0.4",
     "lefthook": "^2.2.2",
     "typescript": "^7.0.2",
     "typescript-compat": "npm:typescript@6.0.3",
-    "vite": "npm:@voidzero-dev/vite-plus-core@1.4.0",
-    "vite-plus": "1.4.0"
+    "vite": "npm:@voidzero-dev/vite-plus-core@1.5.0",
+    "vite-plus": "1.5.0"
   },
   "overrides": {
     "@hey-api/openapi-ts": {
       "typescript": "6.0.3"
     },
-    "vite": "npm:@voidzero-dev/vite-plus-core@1.4.0"
+    "vite": "npm:@voidzero-dev/vite-plus-core@1.5.0"
   },
   "devEngines": {
     "packageManager": {
