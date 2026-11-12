@@ -4,36 +4,36 @@ export type ClientOptions = {
     baseUrl: 'https://raw.githubusercontent.com' | (string & {});
 };
 
-export type AnalyticsV1AnalyticsEvent = ({
-    /**
-     * content_view
-     */
-    content_view?: AnalyticsV1ContentViewEvent;
-} | {
-    /**
-     * engagement
-     */
-    engagement?: AnalyticsV1EngagementEvent;
-} | {
-    /**
-     * error
-     */
-    error?: AnalyticsV1ErrorEvent;
-} | {
-    /**
-     * interaction
-     */
-    interaction?: AnalyticsV1InteractionEvent;
-} | {
-    /**
-     * session_start
-     */
-    session_start?: AnalyticsV1SessionStartEvent;
-}) & {
+/**
+ * AnalyticsEvent
+ *
+ * At most one of `session_start`, `content_view`, `engagement`, `interaction`, `error` may be set.
+ */
+export type AnalyticsV1AnalyticsEvent = {
     /**
      * timestamp
      */
     timestamp?: GoogleProtobufTimestamp;
+    /**
+     * session_start
+     */
+    session_start?: AnalyticsV1SessionStartEvent;
+    /**
+     * content_view
+     */
+    content_view?: AnalyticsV1ContentViewEvent;
+    /**
+     * engagement
+     */
+    engagement?: AnalyticsV1EngagementEvent;
+    /**
+     * interaction
+     */
+    interaction?: AnalyticsV1InteractionEvent;
+    /**
+     * error
+     */
+    error?: AnalyticsV1ErrorEvent;
 };
 
 /**
@@ -166,9 +166,6 @@ export type AnalyticsV1ContentViewEvent = {
     content_id?: string;
     /**
      * content_type
-     *
-     * enum.defined_only = true
-     *
      */
     content_type?: AnalyticscommonV1MediaType;
     /**
@@ -221,9 +218,6 @@ export type AnalyticsV1ContentViewEvent = {
     audio_language?: string;
     /**
      * quality
-     *
-     * enum.defined_only = true
-     *
      */
     quality?: AnalyticscommonV1VideoQuality;
 };
@@ -1487,9 +1481,6 @@ export type AnalyticsV1Segment = {
     audio_language?: string;
     /**
      * quality
-     *
-     * enum.defined_only = true
-     *
      */
     quality?: AnalyticscommonV1VideoQuality;
     /**
@@ -2597,21 +2588,24 @@ export type AuthV1DomainResponse = {
     status?: AuthV1DomainStatus;
 };
 
-export type AuthV1DomainStatus = ({
-    /**
-     * pending
-     */
-    pending?: AuthV1PendingDomain;
-} | {
-    /**
-     * verified
-     */
-    verified?: AuthV1VerifiedDomain;
-}) & {
+/**
+ * DomainStatus
+ *
+ * At most one of `verified`, `pending` may be set.
+ */
+export type AuthV1DomainStatus = {
     /**
      * auto_join
      */
     auto_join?: boolean;
+    /**
+     * verified
+     */
+    verified?: AuthV1VerifiedDomain;
+    /**
+     * pending
+     */
+    pending?: AuthV1PendingDomain;
 };
 
 /**
@@ -4469,6 +4463,9 @@ export type BillingV1CalculateGenericTaxRequest = {
     org_id?: string;
     /**
      * amount
+     *
+     * int64.gt = 0
+     *
      */
     amount?: string;
     /**
@@ -4511,9 +4508,6 @@ export type BillingV1CalculateTaxRequest = {
     currency: string;
     /**
      * billing_cycle
-     *
-     * enum.defined_only = true
-     *
      */
     billing_cycle?: BillingV1BillingCycle;
     /**
@@ -5280,7 +5274,7 @@ export type BillingV1PlanTaxCalculationResponse = {
     /**
      * tax_percentage
      */
-    tax_percentage?: number;
+    tax_percentage?: number | 'NaN' | 'Infinity' | '-Infinity';
     /**
      * billing_address
      */
@@ -5660,9 +5654,6 @@ export type BillingV1UpdateInvoiceStatusRequest = {
     invoice_id: string;
     /**
      * status
-     *
-     * enum.defined_only = true
-     *
      */
     status?: BillingV1InvoiceStatus;
 };
@@ -6193,6 +6184,17 @@ export type FeedsV1UpdateFeedRequest = {
 };
 
 /**
+ * Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+ */
+export type GoogleProtobufAny = {
+    /**
+     * A URL/resource name that uniquely identifies the type of the serialized message.
+     */
+    '@type'?: string;
+    [key: string]: unknown;
+};
+
+/**
  * A signed duration in seconds, with up to nine fractional digits and an `s` suffix (for example, `3s` or `-0.001s`).
  */
 export type GoogleProtobufDuration = string;
@@ -6212,12 +6214,9 @@ export type GoogleProtobufListValue = Array<GoogleProtobufValue>;
 /**
  * NullValue
  *
- * `NullValue` is a singleton enumeration to represent the null value for the
- * `Value` type union.
- *
- * The JSON representation for `NullValue` is JSON `null`.
+ * The JSON `null` value.
  */
-export type GoogleProtobufNullValue = 'NULL_VALUE';
+export type GoogleProtobufNullValue = null;
 
 /**
  * A JSON object whose property values may be any JSON value.
@@ -6236,6 +6235,24 @@ export type GoogleProtobufTimestamp = string;
  */
 export type GoogleProtobufValue = null | number | string | boolean | Array<unknown> | {
     [key: string]: unknown;
+};
+
+/**
+ * The Status type defines a logical error model suitable for gRPC and REST APIs.
+ */
+export type GoogleRpcStatus = {
+    /**
+     * The status code, which should be an enum value of google.rpc.Code.
+     */
+    code?: number;
+    /**
+     * A developer-facing error message.
+     */
+    message?: string;
+    /**
+     * A list of messages that carry the error details.
+     */
+    details?: Array<GoogleProtobufAny>;
 };
 
 /**
@@ -6477,9 +6494,6 @@ export type ImagesV1UpdateImageVisibilityRequest = {
     image_id?: string;
     /**
      * visibility
-     *
-     * enum.defined_only = true
-     *
      */
     visibility?: CommonV1Visibility;
 };
@@ -6570,17 +6584,12 @@ export type PlatformauthV1TokenResponse = {
     expires_at?: GoogleProtobufTimestamp;
 };
 
-export type PostsV1CreatePostRequest = ({
-    /**
-     * image_id
-     */
-    image_id?: string;
-} | {
-    /**
-     * video_id
-     */
-    video_id?: string;
-}) & {
+/**
+ * CreatePostRequest
+ *
+ * At most one of `image_id`, `video_id` may be set.
+ */
+export type PostsV1CreatePostRequest = {
     /**
      * project_id
      */
@@ -6599,11 +6608,16 @@ export type PostsV1CreatePostRequest = ({
     creator_id?: string;
     /**
      * type
-     *
-     * enum.defined_only = true
-     *
      */
     type?: CommonV1MediaType;
+    /**
+     * image_id
+     */
+    image_id?: string;
+    /**
+     * video_id
+     */
+    video_id?: string;
     /**
      * description
      */
@@ -6646,9 +6660,6 @@ export type PostsV1CreatePostUploadRequest = {
     description?: string;
     /**
      * content_type
-     *
-     * enum.defined_only = true
-     *
      */
     content_type?: CommonV1MediaType;
     /**
@@ -6761,17 +6772,12 @@ export type PostsV1ListPostsResponse = {
     limit?: number;
 };
 
-export type PostsV1Post = ({
-    /**
-     * image
-     */
-    image?: ImagesV1Image;
-} | {
-    /**
-     * video
-     */
-    video?: VideosV1Video;
-}) & {
+/**
+ * Post
+ *
+ * At most one of `image`, `video` may be set.
+ */
+export type PostsV1Post = {
     /**
      * id
      */
@@ -6796,6 +6802,14 @@ export type PostsV1Post = ({
      * created_at
      */
     created_at?: GoogleProtobufTimestamp;
+    /**
+     * image
+     */
+    image?: ImagesV1Image;
+    /**
+     * video
+     */
+    video?: VideosV1Video;
 };
 
 /**
@@ -7018,9 +7032,6 @@ export type ProjectV1UpdateVideoQualityRequest = {
     org_id?: string;
     /**
      * video_quality
-     *
-     * enum.defined_only = true
-     *
      */
     video_quality: CommonV1VideoQuality;
 };
@@ -7155,9 +7166,6 @@ export type SupportV1CreateTicketRequest = {
     message?: string;
     /**
      * priority
-     *
-     * enum.defined_only = true
-     *
      */
     priority?: SupportV1TicketPriority;
 };
@@ -7249,9 +7257,6 @@ export type SupportV1ListTicketsRequest = {
     pagination?: CommonV1Pagination;
     /**
      * status
-     *
-     * enum.defined_only = true
-     *
      */
     status?: SupportV1TicketStatus;
 };
@@ -7483,6 +7488,9 @@ export type UploadV1ReceiveStorageEventRequest = {
     object_key?: string;
     /**
      * object_size
+     *
+     * int64.gte = 0
+     *
      */
     object_size?: string | null;
 };
@@ -7956,7 +7964,7 @@ export type VideosV1Rendition = {
     /**
      * fps
      */
-    fps?: number;
+    fps?: number | 'NaN' | 'Infinity' | '-Infinity';
     /**
      * hdr
      */
@@ -8020,7 +8028,7 @@ export type VideosV1RenditionInput = {
     /**
      * fps
      */
-    fps?: number;
+    fps?: number | 'NaN' | 'Infinity' | '-Infinity';
     /**
      * hdr
      */
@@ -8314,7 +8322,7 @@ export type VideosV1UpdateVideoDataRequest = {
     /**
      * duration
      */
-    duration?: number;
+    duration?: number | 'NaN' | 'Infinity' | '-Infinity';
     /**
      * width
      */
@@ -8355,9 +8363,6 @@ export type VideosV1UpdateVideoVisibilityRequest = {
     video_id?: string;
     /**
      * visibility
-     *
-     * enum.defined_only = true
-     *
      */
     visibility?: CommonV1Visibility;
 };
@@ -8386,6 +8391,10 @@ export type VideosV1UploadVideoThumbnailRequest = {
     video_id?: string;
     /**
      * image
+     *
+     * bytes.max_len = 20971520
+     * bytes.min_len = 1
+     *
      */
     image?: string;
     /**
@@ -8506,7 +8515,7 @@ export type VideosV1VideoRecord = {
     /**
      * duration
      */
-    duration?: number;
+    duration?: number | 'NaN' | 'Infinity' | '-Infinity';
     /**
      * width
      */
@@ -9006,73 +9015,60 @@ export type AnalyticsV1DashboardServiceGetDashboardStatsData = {
     query: {
         /**
          * time_start
-         *
-         * The time_start query parameter.
          */
         time_start: string;
         /**
          * time_end
-         *
-         * The time_end query parameter.
          */
         time_end: string;
         /**
          * interval
-         *
-         * The interval query parameter.
          */
         interval?: string;
         /**
          * countries
-         *
-         * The filter.countries query parameter.
          */
         'filter.countries'?: Array<string>;
         /**
          * cities
-         *
-         * The filter.cities query parameter.
          */
         'filter.cities'?: Array<string>;
         /**
          * devices
-         *
-         * The filter.devices query parameter.
          */
         'filter.devices'?: Array<string>;
         /**
          * os
-         *
-         * The filter.os query parameter.
          */
         'filter.os'?: Array<string>;
         /**
          * languages
-         *
-         * The filter.languages query parameter.
          */
         'filter.languages'?: Array<string>;
         /**
          * regions
-         *
-         * The filter.regions query parameter.
          */
         'filter.regions'?: Array<string>;
         /**
          * browsers
-         *
-         * The filter.browsers query parameter.
          */
         'filter.browsers'?: Array<string>;
         /**
          * os_versions
-         *
-         * The filter.os_versions query parameter.
          */
         'filter.os_versions'?: Array<string>;
     };
     url: '/analytics/v1/dashboard';
 };
+
+export type AnalyticsV1DashboardServiceGetDashboardStatsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AnalyticsV1DashboardServiceGetDashboardStatsError = AnalyticsV1DashboardServiceGetDashboardStatsErrors[keyof AnalyticsV1DashboardServiceGetDashboardStatsErrors];
 
 export type AnalyticsV1DashboardServiceGetDashboardStatsResponses = {
     /**
@@ -9090,6 +9086,15 @@ export type AnalyticsV1DashboardServiceQueryChartData = {
     url: '/analytics/v1/dashboard/chart-query';
 };
 
+export type AnalyticsV1DashboardServiceQueryChartErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AnalyticsV1DashboardServiceQueryChartError = AnalyticsV1DashboardServiceQueryChartErrors[keyof AnalyticsV1DashboardServiceQueryChartErrors];
+
 export type AnalyticsV1DashboardServiceQueryChartResponses = {
     /**
      * Success
@@ -9105,6 +9110,15 @@ export type AnalyticsV1DashboardServiceBatchQueryChartData = {
     query?: never;
     url: '/analytics/v1/dashboard/chart-query/batch';
 };
+
+export type AnalyticsV1DashboardServiceBatchQueryChartErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AnalyticsV1DashboardServiceBatchQueryChartError = AnalyticsV1DashboardServiceBatchQueryChartErrors[keyof AnalyticsV1DashboardServiceBatchQueryChartErrors];
 
 export type AnalyticsV1DashboardServiceBatchQueryChartResponses = {
     /**
@@ -9122,6 +9136,15 @@ export type AnalyticsV1DashboardServiceListDatasetsData = {
     url: '/analytics/v1/dashboard/datasets';
 };
 
+export type AnalyticsV1DashboardServiceListDatasetsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AnalyticsV1DashboardServiceListDatasetsError = AnalyticsV1DashboardServiceListDatasetsErrors[keyof AnalyticsV1DashboardServiceListDatasetsErrors];
+
 export type AnalyticsV1DashboardServiceListDatasetsResponses = {
     /**
      * Success
@@ -9137,6 +9160,15 @@ export type AnalyticsV1DashboardServiceGetFilterOptionsData = {
     query?: never;
     url: '/analytics/v1/dashboard/filter-options';
 };
+
+export type AnalyticsV1DashboardServiceGetFilterOptionsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AnalyticsV1DashboardServiceGetFilterOptionsError = AnalyticsV1DashboardServiceGetFilterOptionsErrors[keyof AnalyticsV1DashboardServiceGetFilterOptionsErrors];
 
 export type AnalyticsV1DashboardServiceGetFilterOptionsResponses = {
     /**
@@ -9154,6 +9186,15 @@ export type AnalyticsV1DashboardServiceGetScopeTreeData = {
     url: '/analytics/v1/dashboard/scope-tree';
 };
 
+export type AnalyticsV1DashboardServiceGetScopeTreeErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AnalyticsV1DashboardServiceGetScopeTreeError = AnalyticsV1DashboardServiceGetScopeTreeErrors[keyof AnalyticsV1DashboardServiceGetScopeTreeErrors];
+
 export type AnalyticsV1DashboardServiceGetScopeTreeResponses = {
     /**
      * Success
@@ -9169,19 +9210,24 @@ export type AnalyticsV1DashboardServiceListDashboardsData = {
     query?: {
         /**
          * page_size
-         *
-         * The page_size query parameter.
          */
         page_size?: number;
         /**
          * page
-         *
-         * The page query parameter.
          */
         page?: number;
     };
     url: '/analytics/v1/dashboards';
 };
+
+export type AnalyticsV1DashboardServiceListDashboardsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AnalyticsV1DashboardServiceListDashboardsError = AnalyticsV1DashboardServiceListDashboardsErrors[keyof AnalyticsV1DashboardServiceListDashboardsErrors];
 
 export type AnalyticsV1DashboardServiceListDashboardsResponses = {
     /**
@@ -9199,6 +9245,15 @@ export type AnalyticsV1DashboardServiceCreateDashboardData = {
     url: '/analytics/v1/dashboards';
 };
 
+export type AnalyticsV1DashboardServiceCreateDashboardErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AnalyticsV1DashboardServiceCreateDashboardError = AnalyticsV1DashboardServiceCreateDashboardErrors[keyof AnalyticsV1DashboardServiceCreateDashboardErrors];
+
 export type AnalyticsV1DashboardServiceCreateDashboardResponses = {
     /**
      * Success
@@ -9213,21 +9268,26 @@ export type AnalyticsV1DashboardServiceDeleteWidgetData = {
     path: {
         /**
          * id
-         *
-         * The id path parameter.
          */
         id: string;
     };
     query: {
         /**
          * expected_revision
-         *
-         * The expected_revision query parameter.
          */
         expected_revision: number;
     };
     url: '/analytics/v1/dashboards/widgets/{id}';
 };
+
+export type AnalyticsV1DashboardServiceDeleteWidgetErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AnalyticsV1DashboardServiceDeleteWidgetError = AnalyticsV1DashboardServiceDeleteWidgetErrors[keyof AnalyticsV1DashboardServiceDeleteWidgetErrors];
 
 export type AnalyticsV1DashboardServiceDeleteWidgetResponses = {
     /**
@@ -9255,14 +9315,21 @@ export type AnalyticsV1DashboardServiceUpdateWidgetData = {
     path: {
         /**
          * id
-         *
-         * The id path parameter.
          */
         id: string;
     };
     query?: never;
     url: '/analytics/v1/dashboards/widgets/{id}';
 };
+
+export type AnalyticsV1DashboardServiceUpdateWidgetErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AnalyticsV1DashboardServiceUpdateWidgetError = AnalyticsV1DashboardServiceUpdateWidgetErrors[keyof AnalyticsV1DashboardServiceUpdateWidgetErrors];
 
 export type AnalyticsV1DashboardServiceUpdateWidgetResponses = {
     /**
@@ -9294,14 +9361,21 @@ export type AnalyticsV1DashboardServiceExportDashboardData = {
     path: {
         /**
          * dashboard_id
-         *
-         * The dashboard_id path parameter.
          */
         dashboard_id: string;
     };
     query?: never;
     url: '/analytics/v1/dashboards/{dashboard_id}/export';
 };
+
+export type AnalyticsV1DashboardServiceExportDashboardErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AnalyticsV1DashboardServiceExportDashboardError = AnalyticsV1DashboardServiceExportDashboardErrors[keyof AnalyticsV1DashboardServiceExportDashboardErrors];
 
 export type AnalyticsV1DashboardServiceExportDashboardResponses = {
     /**
@@ -9329,14 +9403,21 @@ export type AnalyticsV1DashboardServiceUpdateDashboardLayoutData = {
     path: {
         /**
          * dashboard_id
-         *
-         * The dashboard_id path parameter.
          */
         dashboard_id: string;
     };
     query?: never;
     url: '/analytics/v1/dashboards/{dashboard_id}/layout';
 };
+
+export type AnalyticsV1DashboardServiceUpdateDashboardLayoutErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AnalyticsV1DashboardServiceUpdateDashboardLayoutError = AnalyticsV1DashboardServiceUpdateDashboardLayoutErrors[keyof AnalyticsV1DashboardServiceUpdateDashboardLayoutErrors];
 
 export type AnalyticsV1DashboardServiceUpdateDashboardLayoutResponses = {
     /**
@@ -9355,21 +9436,26 @@ export type AnalyticsV1DashboardServiceCreateWidgetData = {
     path: {
         /**
          * dashboard_id
-         *
-         * The dashboard_id path parameter.
          */
         dashboard_id: string;
     };
     query: {
         /**
          * expected_revision
-         *
-         * The expected_revision query parameter.
          */
         expected_revision: number;
     };
     url: '/analytics/v1/dashboards/{dashboard_id}/widgets';
 };
+
+export type AnalyticsV1DashboardServiceCreateWidgetErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AnalyticsV1DashboardServiceCreateWidgetError = AnalyticsV1DashboardServiceCreateWidgetErrors[keyof AnalyticsV1DashboardServiceCreateWidgetErrors];
 
 export type AnalyticsV1DashboardServiceCreateWidgetResponses = {
     /**
@@ -9385,21 +9471,26 @@ export type AnalyticsV1DashboardServiceDeleteDashboardData = {
     path: {
         /**
          * id
-         *
-         * The id path parameter.
          */
         id: string;
     };
     query: {
         /**
          * expected_revision
-         *
-         * The expected_revision query parameter.
          */
         expected_revision: number;
     };
     url: '/analytics/v1/dashboards/{id}';
 };
+
+export type AnalyticsV1DashboardServiceDeleteDashboardErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AnalyticsV1DashboardServiceDeleteDashboardError = AnalyticsV1DashboardServiceDeleteDashboardErrors[keyof AnalyticsV1DashboardServiceDeleteDashboardErrors];
 
 export type AnalyticsV1DashboardServiceDeleteDashboardResponses = {
     /**
@@ -9415,14 +9506,21 @@ export type AnalyticsV1DashboardServiceGetDashboardData = {
     path: {
         /**
          * id
-         *
-         * The id path parameter.
          */
         id: string;
     };
     query?: never;
     url: '/analytics/v1/dashboards/{id}';
 };
+
+export type AnalyticsV1DashboardServiceGetDashboardErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AnalyticsV1DashboardServiceGetDashboardError = AnalyticsV1DashboardServiceGetDashboardErrors[keyof AnalyticsV1DashboardServiceGetDashboardErrors];
 
 export type AnalyticsV1DashboardServiceGetDashboardResponses = {
     /**
@@ -9454,14 +9552,21 @@ export type AnalyticsV1DashboardServiceUpdateDashboardData = {
     path: {
         /**
          * id
-         *
-         * The id path parameter.
          */
         id: string;
     };
     query?: never;
     url: '/analytics/v1/dashboards/{id}';
 };
+
+export type AnalyticsV1DashboardServiceUpdateDashboardErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AnalyticsV1DashboardServiceUpdateDashboardError = AnalyticsV1DashboardServiceUpdateDashboardErrors[keyof AnalyticsV1DashboardServiceUpdateDashboardErrors];
 
 export type AnalyticsV1DashboardServiceUpdateDashboardResponses = {
     /**
@@ -9477,14 +9582,21 @@ export type AnalyticsV1DashboardServiceSetDefaultDashboardData = {
     path: {
         /**
          * id
-         *
-         * The id path parameter.
          */
         id: string;
     };
     query?: never;
     url: '/analytics/v1/dashboards/{id}/default';
 };
+
+export type AnalyticsV1DashboardServiceSetDefaultDashboardErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AnalyticsV1DashboardServiceSetDefaultDashboardError = AnalyticsV1DashboardServiceSetDefaultDashboardErrors[keyof AnalyticsV1DashboardServiceSetDefaultDashboardErrors];
 
 export type AnalyticsV1DashboardServiceSetDefaultDashboardResponses = {
     /**
@@ -9502,6 +9614,15 @@ export type AnalyticsV1EventsServiceTrackEventsData = {
     url: '/analytics/v1/events';
 };
 
+export type AnalyticsV1EventsServiceTrackEventsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AnalyticsV1EventsServiceTrackEventsError = AnalyticsV1EventsServiceTrackEventsErrors[keyof AnalyticsV1EventsServiceTrackEventsErrors];
+
 export type AnalyticsV1EventsServiceTrackEventsResponses = {
     /**
      * Success
@@ -9516,27 +9637,30 @@ export type AnalyticsV1FeedsServiceGetFeedStatsData = {
     path: {
         /**
          * feed_id
-         *
-         * The feed_id path parameter.
          */
         feed_id: string;
     };
     query?: {
         /**
          * start
-         *
-         * The range.start query parameter.
          */
         'range.start'?: string;
         /**
          * end
-         *
-         * The range.end query parameter.
          */
         'range.end'?: string;
     };
     url: '/analytics/v1/feeds/{feed_id}/stats';
 };
+
+export type AnalyticsV1FeedsServiceGetFeedStatsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AnalyticsV1FeedsServiceGetFeedStatsError = AnalyticsV1FeedsServiceGetFeedStatsErrors[keyof AnalyticsV1FeedsServiceGetFeedStatsErrors];
 
 export type AnalyticsV1FeedsServiceGetFeedStatsResponses = {
     /**
@@ -9553,25 +9677,28 @@ export type AnalyticsV1FeedsServiceGetTopFeedsData = {
     query?: {
         /**
          * limit
-         *
-         * The limit query parameter.
          */
         limit?: number;
         /**
          * start
-         *
-         * The range.start query parameter.
          */
         'range.start'?: string;
         /**
          * end
-         *
-         * The range.end query parameter.
          */
         'range.end'?: string;
     };
     url: '/analytics/v1/top/feeds';
 };
+
+export type AnalyticsV1FeedsServiceGetTopFeedsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AnalyticsV1FeedsServiceGetTopFeedsError = AnalyticsV1FeedsServiceGetTopFeedsErrors[keyof AnalyticsV1FeedsServiceGetTopFeedsErrors];
 
 export type AnalyticsV1FeedsServiceGetTopFeedsResponses = {
     /**
@@ -9589,6 +9716,15 @@ export type AnalyticsV1FunnelsServiceGetFunnelAnalyticsData = {
     url: '/analytics/v1/funnels';
 };
 
+export type AnalyticsV1FunnelsServiceGetFunnelAnalyticsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AnalyticsV1FunnelsServiceGetFunnelAnalyticsError = AnalyticsV1FunnelsServiceGetFunnelAnalyticsErrors[keyof AnalyticsV1FunnelsServiceGetFunnelAnalyticsErrors];
+
 export type AnalyticsV1FunnelsServiceGetFunnelAnalyticsResponses = {
     /**
      * Success
@@ -9605,6 +9741,15 @@ export type AnalyticsV1FunnelsServiceGetRetentionAnalyticsData = {
     url: '/analytics/v1/retention';
 };
 
+export type AnalyticsV1FunnelsServiceGetRetentionAnalyticsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AnalyticsV1FunnelsServiceGetRetentionAnalyticsError = AnalyticsV1FunnelsServiceGetRetentionAnalyticsErrors[keyof AnalyticsV1FunnelsServiceGetRetentionAnalyticsErrors];
+
 export type AnalyticsV1FunnelsServiceGetRetentionAnalyticsResponses = {
     /**
      * Success
@@ -9619,33 +9764,34 @@ export type AnalyticsV1HeatmapServiceGetVideoHeatmapData = {
     path: {
         /**
          * video_id
-         *
-         * The video_id path parameter.
          */
         video_id: string;
     };
     query?: {
         /**
          * buckets
-         *
-         * The buckets query parameter.
          */
         buckets?: number;
         /**
          * start
-         *
-         * The range.start query parameter.
          */
         'range.start'?: string;
         /**
          * end
-         *
-         * The range.end query parameter.
          */
         'range.end'?: string;
     };
     url: '/analytics/v1/videos/{video_id}/heatmap';
 };
+
+export type AnalyticsV1HeatmapServiceGetVideoHeatmapErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AnalyticsV1HeatmapServiceGetVideoHeatmapError = AnalyticsV1HeatmapServiceGetVideoHeatmapErrors[keyof AnalyticsV1HeatmapServiceGetVideoHeatmapErrors];
 
 export type AnalyticsV1HeatmapServiceGetVideoHeatmapResponses = {
     /**
@@ -9661,27 +9807,30 @@ export type AnalyticsV1HeatmapServiceGetHotSegmentsData = {
     path: {
         /**
          * video_id
-         *
-         * The video_id path parameter.
          */
         video_id: string;
     };
     query?: {
         /**
          * start
-         *
-         * The range.start query parameter.
          */
         'range.start'?: string;
         /**
          * end
-         *
-         * The range.end query parameter.
          */
         'range.end'?: string;
     };
     url: '/analytics/v1/videos/{video_id}/hot-segments';
 };
+
+export type AnalyticsV1HeatmapServiceGetHotSegmentsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AnalyticsV1HeatmapServiceGetHotSegmentsError = AnalyticsV1HeatmapServiceGetHotSegmentsErrors[keyof AnalyticsV1HeatmapServiceGetHotSegmentsErrors];
 
 export type AnalyticsV1HeatmapServiceGetHotSegmentsResponses = {
     /**
@@ -9697,27 +9846,30 @@ export type AnalyticsV1ImagesServiceGetImageStatsData = {
     path: {
         /**
          * image_id
-         *
-         * The image_id path parameter.
          */
         image_id: string;
     };
     query?: {
         /**
          * start
-         *
-         * The range.start query parameter.
          */
         'range.start'?: string;
         /**
          * end
-         *
-         * The range.end query parameter.
          */
         'range.end'?: string;
     };
     url: '/analytics/v1/images/{image_id}/stats';
 };
+
+export type AnalyticsV1ImagesServiceGetImageStatsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AnalyticsV1ImagesServiceGetImageStatsError = AnalyticsV1ImagesServiceGetImageStatsErrors[keyof AnalyticsV1ImagesServiceGetImageStatsErrors];
 
 export type AnalyticsV1ImagesServiceGetImageStatsResponses = {
     /**
@@ -9734,25 +9886,28 @@ export type AnalyticsV1ImagesServiceGetTopImagesData = {
     query?: {
         /**
          * limit
-         *
-         * The limit query parameter.
          */
         limit?: number;
         /**
          * start
-         *
-         * The range.start query parameter.
          */
         'range.start'?: string;
         /**
          * end
-         *
-         * The range.end query parameter.
          */
         'range.end'?: string;
     };
     url: '/analytics/v1/top/images';
 };
+
+export type AnalyticsV1ImagesServiceGetTopImagesErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AnalyticsV1ImagesServiceGetTopImagesError = AnalyticsV1ImagesServiceGetTopImagesErrors[keyof AnalyticsV1ImagesServiceGetTopImagesErrors];
 
 export type AnalyticsV1ImagesServiceGetTopImagesResponses = {
     /**
@@ -9768,27 +9923,30 @@ export type AnalyticsV1PostsServiceGetPostStatsData = {
     path: {
         /**
          * post_id
-         *
-         * The post_id path parameter.
          */
         post_id: string;
     };
     query?: {
         /**
          * start
-         *
-         * The range.start query parameter.
          */
         'range.start'?: string;
         /**
          * end
-         *
-         * The range.end query parameter.
          */
         'range.end'?: string;
     };
     url: '/analytics/v1/posts/{post_id}/stats';
 };
+
+export type AnalyticsV1PostsServiceGetPostStatsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AnalyticsV1PostsServiceGetPostStatsError = AnalyticsV1PostsServiceGetPostStatsErrors[keyof AnalyticsV1PostsServiceGetPostStatsErrors];
 
 export type AnalyticsV1PostsServiceGetPostStatsResponses = {
     /**
@@ -9805,31 +9963,32 @@ export type AnalyticsV1PostsServiceGetTopPostsData = {
     query?: {
         /**
          * limit
-         *
-         * The limit query parameter.
          */
         limit?: number;
         /**
          * start
-         *
-         * The range.start query parameter.
          */
         'range.start'?: string;
         /**
          * end
-         *
-         * The range.end query parameter.
          */
         'range.end'?: string;
         /**
          * feed_id
-         *
-         * The feed_id query parameter.
          */
         feed_id?: string;
     };
     url: '/analytics/v1/top/posts';
 };
+
+export type AnalyticsV1PostsServiceGetTopPostsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AnalyticsV1PostsServiceGetTopPostsError = AnalyticsV1PostsServiceGetTopPostsErrors[keyof AnalyticsV1PostsServiceGetTopPostsErrors];
 
 export type AnalyticsV1PostsServiceGetTopPostsResponses = {
     /**
@@ -9847,6 +10006,15 @@ export type AnalyticsV1RealtimeServiceGetRealtimeStatsData = {
     url: '/analytics/v1/realtime';
 };
 
+export type AnalyticsV1RealtimeServiceGetRealtimeStatsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AnalyticsV1RealtimeServiceGetRealtimeStatsError = AnalyticsV1RealtimeServiceGetRealtimeStatsErrors[keyof AnalyticsV1RealtimeServiceGetRealtimeStatsErrors];
+
 export type AnalyticsV1RealtimeServiceGetRealtimeStatsResponses = {
     /**
      * Success
@@ -9862,25 +10030,28 @@ export type AnalyticsV1VideosServiceGetTopVideosData = {
     query?: {
         /**
          * limit
-         *
-         * The limit query parameter.
          */
         limit?: number;
         /**
          * start
-         *
-         * The range.start query parameter.
          */
         'range.start'?: string;
         /**
          * end
-         *
-         * The range.end query parameter.
          */
         'range.end'?: string;
     };
     url: '/analytics/v1/top/videos';
 };
+
+export type AnalyticsV1VideosServiceGetTopVideosErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AnalyticsV1VideosServiceGetTopVideosError = AnalyticsV1VideosServiceGetTopVideosErrors[keyof AnalyticsV1VideosServiceGetTopVideosErrors];
 
 export type AnalyticsV1VideosServiceGetTopVideosResponses = {
     /**
@@ -9896,27 +10067,30 @@ export type AnalyticsV1VideosServiceGetVideoStatsData = {
     path: {
         /**
          * video_id
-         *
-         * The video_id path parameter.
          */
         video_id: string;
     };
     query?: {
         /**
          * start
-         *
-         * The range.start query parameter.
          */
         'range.start'?: string;
         /**
          * end
-         *
-         * The range.end query parameter.
          */
         'range.end'?: string;
     };
     url: '/analytics/v1/videos/{video_id}/stats';
 };
+
+export type AnalyticsV1VideosServiceGetVideoStatsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AnalyticsV1VideosServiceGetVideoStatsError = AnalyticsV1VideosServiceGetVideoStatsErrors[keyof AnalyticsV1VideosServiceGetVideoStatsErrors];
 
 export type AnalyticsV1VideosServiceGetVideoStatsResponses = {
     /**
@@ -9932,8 +10106,6 @@ export type ApikeysV1ApiKeyServiceListApiKeysData = {
     path: {
         /**
          * org_id
-         *
-         * The org_id path parameter.
          */
         org_id: string;
     };
@@ -9953,6 +10125,15 @@ export type ApikeysV1ApiKeyServiceListApiKeysData = {
     };
     url: '/organizations/{org_id}/api-keys/v1';
 };
+
+export type ApikeysV1ApiKeyServiceListApiKeysErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type ApikeysV1ApiKeyServiceListApiKeysError = ApikeysV1ApiKeyServiceListApiKeysErrors[keyof ApikeysV1ApiKeyServiceListApiKeysErrors];
 
 export type ApikeysV1ApiKeyServiceListApiKeysResponses = {
     /**
@@ -9988,14 +10169,21 @@ export type ApikeysV1ApiKeyServiceCreateApiKeyData = {
     path: {
         /**
          * org_id
-         *
-         * The org_id path parameter.
          */
         org_id: string;
     };
     query?: never;
     url: '/organizations/{org_id}/api-keys/v1';
 };
+
+export type ApikeysV1ApiKeyServiceCreateApiKeyErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type ApikeysV1ApiKeyServiceCreateApiKeyError = ApikeysV1ApiKeyServiceCreateApiKeyErrors[keyof ApikeysV1ApiKeyServiceCreateApiKeyErrors];
 
 export type ApikeysV1ApiKeyServiceCreateApiKeyResponses = {
     /**
@@ -10011,20 +10199,25 @@ export type ApikeysV1ApiKeyServiceDeleteApiKeyData = {
     path: {
         /**
          * org_id
-         *
-         * The org_id path parameter.
          */
         org_id: string;
         /**
          * key_id
-         *
-         * The key_id path parameter.
          */
         key_id: string;
     };
     query?: never;
     url: '/organizations/{org_id}/api-keys/v1/{key_id}';
 };
+
+export type ApikeysV1ApiKeyServiceDeleteApiKeyErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type ApikeysV1ApiKeyServiceDeleteApiKeyError = ApikeysV1ApiKeyServiceDeleteApiKeyErrors[keyof ApikeysV1ApiKeyServiceDeleteApiKeyErrors];
 
 export type ApikeysV1ApiKeyServiceDeleteApiKeyResponses = {
     /**
@@ -10060,20 +10253,25 @@ export type ApikeysV1ApiKeyServiceUpdateApiKeyData = {
     path: {
         /**
          * org_id
-         *
-         * The org_id path parameter.
          */
         org_id: string;
         /**
          * key_id
-         *
-         * The key_id path parameter.
          */
         key_id: string;
     };
     query?: never;
     url: '/organizations/{org_id}/api-keys/v1/{key_id}';
 };
+
+export type ApikeysV1ApiKeyServiceUpdateApiKeyErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type ApikeysV1ApiKeyServiceUpdateApiKeyError = ApikeysV1ApiKeyServiceUpdateApiKeyErrors[keyof ApikeysV1ApiKeyServiceUpdateApiKeyErrors];
 
 export type ApikeysV1ApiKeyServiceUpdateApiKeyResponses = {
     /**
@@ -10089,20 +10287,25 @@ export type ApikeysV1ApiKeyServiceRotateApiKeyData = {
     path: {
         /**
          * org_id
-         *
-         * The org_id path parameter.
          */
         org_id: string;
         /**
          * key_id
-         *
-         * The key_id path parameter.
          */
         key_id: string;
     };
     query?: never;
     url: '/organizations/{org_id}/api-keys/v1/{key_id}/rotate';
 };
+
+export type ApikeysV1ApiKeyServiceRotateApiKeyErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type ApikeysV1ApiKeyServiceRotateApiKeyError = ApikeysV1ApiKeyServiceRotateApiKeyErrors[keyof ApikeysV1ApiKeyServiceRotateApiKeyErrors];
 
 export type ApikeysV1ApiKeyServiceRotateApiKeyResponses = {
     /**
@@ -10120,6 +10323,15 @@ export type AuthV1BlogServiceSendBlogBroadcastData = {
     url: '/auth/v1/blog/broadcast';
 };
 
+export type AuthV1BlogServiceSendBlogBroadcastErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1BlogServiceSendBlogBroadcastError = AuthV1BlogServiceSendBlogBroadcastErrors[keyof AuthV1BlogServiceSendBlogBroadcastErrors];
+
 export type AuthV1BlogServiceSendBlogBroadcastResponses = {
     /**
      * Success
@@ -10135,13 +10347,20 @@ export type AuthV1BlogServiceSubscribeBlogData = {
     query?: {
         /**
          * user_id
-         *
-         * The user_id query parameter.
          */
         user_id?: string;
     };
     url: '/auth/v1/blog/subscribe';
 };
+
+export type AuthV1BlogServiceSubscribeBlogErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1BlogServiceSubscribeBlogError = AuthV1BlogServiceSubscribeBlogErrors[keyof AuthV1BlogServiceSubscribeBlogErrors];
 
 export type AuthV1BlogServiceSubscribeBlogResponses = {
     /**
@@ -10158,13 +10377,20 @@ export type AuthV1BlogServiceGetBlogSubscriptionData = {
     query?: {
         /**
          * user_id
-         *
-         * The user_id query parameter.
          */
         user_id?: string;
     };
     url: '/auth/v1/blog/subscription';
 };
+
+export type AuthV1BlogServiceGetBlogSubscriptionErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1BlogServiceGetBlogSubscriptionError = AuthV1BlogServiceGetBlogSubscriptionErrors[keyof AuthV1BlogServiceGetBlogSubscriptionErrors];
 
 export type AuthV1BlogServiceGetBlogSubscriptionResponses = {
     /**
@@ -10181,13 +10407,20 @@ export type AuthV1BlogServiceUnsubscribeBlogData = {
     query?: {
         /**
          * user_id
-         *
-         * The user_id query parameter.
          */
         user_id?: string;
     };
     url: '/auth/v1/blog/unsubscribe';
 };
+
+export type AuthV1BlogServiceUnsubscribeBlogErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1BlogServiceUnsubscribeBlogError = AuthV1BlogServiceUnsubscribeBlogErrors[keyof AuthV1BlogServiceUnsubscribeBlogErrors];
 
 export type AuthV1BlogServiceUnsubscribeBlogResponses = {
     /**
@@ -10205,6 +10438,15 @@ export type AuthV1BlogServiceUnsubscribeBlogByEmailData = {
     url: '/auth/v1/blog/unsubscribe/email';
 };
 
+export type AuthV1BlogServiceUnsubscribeBlogByEmailErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1BlogServiceUnsubscribeBlogByEmailError = AuthV1BlogServiceUnsubscribeBlogByEmailErrors[keyof AuthV1BlogServiceUnsubscribeBlogByEmailErrors];
+
 export type AuthV1BlogServiceUnsubscribeBlogByEmailResponses = {
     /**
      * Success
@@ -10219,21 +10461,26 @@ export type AuthV1DomainServiceRemoveDomainData = {
     path: {
         /**
          * org_id
-         *
-         * The org_id path parameter.
          */
         org_id: string;
     };
     query?: {
         /**
          * user_id
-         *
-         * The user_id query parameter.
          */
         user_id?: string;
     };
     url: '/auth/v1/memberships/{org_id}/domain';
 };
+
+export type AuthV1DomainServiceRemoveDomainErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1DomainServiceRemoveDomainError = AuthV1DomainServiceRemoveDomainErrors[keyof AuthV1DomainServiceRemoveDomainErrors];
 
 export type AuthV1DomainServiceRemoveDomainResponses = {
     /**
@@ -10249,21 +10496,26 @@ export type AuthV1DomainServiceGetDomainStatusData = {
     path: {
         /**
          * org_id
-         *
-         * The org_id path parameter.
          */
         org_id: string;
     };
     query?: {
         /**
          * user_id
-         *
-         * The user_id query parameter.
          */
         user_id?: string;
     };
     url: '/auth/v1/memberships/{org_id}/domain';
 };
+
+export type AuthV1DomainServiceGetDomainStatusErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1DomainServiceGetDomainStatusError = AuthV1DomainServiceGetDomainStatusErrors[keyof AuthV1DomainServiceGetDomainStatusErrors];
 
 export type AuthV1DomainServiceGetDomainStatusResponses = {
     /**
@@ -10279,21 +10531,26 @@ export type AuthV1DomainServiceGetDomainAutoJoinData = {
     path: {
         /**
          * org_id
-         *
-         * The org_id path parameter.
          */
         org_id: string;
     };
     query?: {
         /**
          * user_id
-         *
-         * The user_id query parameter.
          */
         user_id?: string;
     };
     url: '/auth/v1/memberships/{org_id}/domain/auto-join';
 };
+
+export type AuthV1DomainServiceGetDomainAutoJoinErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1DomainServiceGetDomainAutoJoinError = AuthV1DomainServiceGetDomainAutoJoinErrors[keyof AuthV1DomainServiceGetDomainAutoJoinErrors];
 
 export type AuthV1DomainServiceGetDomainAutoJoinResponses = {
     /**
@@ -10309,21 +10566,26 @@ export type AuthV1DomainServiceCheckDomainVerificationData = {
     path: {
         /**
          * org_id
-         *
-         * The org_id path parameter.
          */
         org_id: string;
     };
     query?: {
         /**
          * user_id
-         *
-         * The user_id query parameter.
          */
         user_id?: string;
     };
     url: '/auth/v1/memberships/{org_id}/domain/verify';
 };
+
+export type AuthV1DomainServiceCheckDomainVerificationErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1DomainServiceCheckDomainVerificationError = AuthV1DomainServiceCheckDomainVerificationErrors[keyof AuthV1DomainServiceCheckDomainVerificationErrors];
 
 export type AuthV1DomainServiceCheckDomainVerificationResponses = {
     /**
@@ -10340,6 +10602,15 @@ export type AuthV1DomainServiceCreateDomainVerificationData = {
      */
     body: {
         /**
+         * UserOrgRequest
+         */
+        user?: {
+            /**
+             * user_id
+             */
+            user_id?: string;
+        };
+        /**
          * domain
          */
         domain?: string;
@@ -10347,14 +10618,21 @@ export type AuthV1DomainServiceCreateDomainVerificationData = {
     path: {
         /**
          * org_id
-         *
-         * The user.org_id path parameter.
          */
         'user.org_id': string;
     };
     query?: never;
     url: '/auth/v1/memberships/{user.org_id}/domain';
 };
+
+export type AuthV1DomainServiceCreateDomainVerificationErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1DomainServiceCreateDomainVerificationError = AuthV1DomainServiceCreateDomainVerificationErrors[keyof AuthV1DomainServiceCreateDomainVerificationErrors];
 
 export type AuthV1DomainServiceCreateDomainVerificationResponses = {
     /**
@@ -10371,6 +10649,15 @@ export type AuthV1DomainServiceSetDomainAutoJoinData = {
      */
     body: {
         /**
+         * UserOrgRequest
+         */
+        user?: {
+            /**
+             * user_id
+             */
+            user_id?: string;
+        };
+        /**
          * enabled
          */
         enabled?: boolean;
@@ -10378,14 +10665,21 @@ export type AuthV1DomainServiceSetDomainAutoJoinData = {
     path: {
         /**
          * org_id
-         *
-         * The user.org_id path parameter.
          */
         'user.org_id': string;
     };
     query?: never;
     url: '/auth/v1/memberships/{user.org_id}/domain/auto-join';
 };
+
+export type AuthV1DomainServiceSetDomainAutoJoinErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1DomainServiceSetDomainAutoJoinError = AuthV1DomainServiceSetDomainAutoJoinErrors[keyof AuthV1DomainServiceSetDomainAutoJoinErrors];
 
 export type AuthV1DomainServiceSetDomainAutoJoinResponses = {
     /**
@@ -10401,14 +10695,21 @@ export type AuthV1MembershipServiceAcceptInvitationData = {
     path: {
         /**
          * token
-         *
-         * The token path parameter.
          */
         token: string;
     };
     query?: never;
     url: '/auth/v1/invitations/{token}/accept';
 };
+
+export type AuthV1MembershipServiceAcceptInvitationErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1MembershipServiceAcceptInvitationError = AuthV1MembershipServiceAcceptInvitationErrors[keyof AuthV1MembershipServiceAcceptInvitationErrors];
 
 export type AuthV1MembershipServiceAcceptInvitationResponses = {
     /**
@@ -10424,14 +10725,21 @@ export type AuthV1MembershipServiceDeclineInvitationData = {
     path: {
         /**
          * token
-         *
-         * The token path parameter.
          */
         token: string;
     };
     query?: never;
     url: '/auth/v1/invitations/{token}/decline';
 };
+
+export type AuthV1MembershipServiceDeclineInvitationErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1MembershipServiceDeclineInvitationError = AuthV1MembershipServiceDeclineInvitationErrors[keyof AuthV1MembershipServiceDeclineInvitationErrors];
 
 export type AuthV1MembershipServiceDeclineInvitationResponses = {
     /**
@@ -10448,31 +10756,32 @@ export type AuthV1MembershipServiceListMembershipApplicationsData = {
     query?: {
         /**
          * user_id
-         *
-         * The user.user_id query parameter.
          */
         'user.user_id'?: string;
         /**
          * limit
-         *
-         * The limit query parameter.
          */
         limit?: number;
         /**
          * offset
-         *
-         * The offset query parameter.
          */
         offset?: number;
         /**
          * state
-         *
-         * The state query parameter.
          */
         state?: AuthV1MembershipApplicationState;
     };
     url: '/auth/v1/membership-applications';
 };
+
+export type AuthV1MembershipServiceListMembershipApplicationsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1MembershipServiceListMembershipApplicationsError = AuthV1MembershipServiceListMembershipApplicationsErrors[keyof AuthV1MembershipServiceListMembershipApplicationsErrors];
 
 export type AuthV1MembershipServiceListMembershipApplicationsResponses = {
     /**
@@ -10496,14 +10805,21 @@ export type AuthV1MembershipServiceRespondToMembershipApplicationData = {
     path: {
         /**
          * org_id
-         *
-         * The org_id path parameter.
          */
         org_id: string;
     };
     query?: never;
     url: '/auth/v1/membership-applications/{org_id}/state';
 };
+
+export type AuthV1MembershipServiceRespondToMembershipApplicationErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1MembershipServiceRespondToMembershipApplicationError = AuthV1MembershipServiceRespondToMembershipApplicationErrors[keyof AuthV1MembershipServiceRespondToMembershipApplicationErrors];
 
 export type AuthV1MembershipServiceRespondToMembershipApplicationResponses = {
     /**
@@ -10520,31 +10836,32 @@ export type AuthV1MembershipServiceListMembershipsData = {
     query?: {
         /**
          * user_id
-         *
-         * The user.user_id query parameter.
          */
         'user.user_id'?: string;
         /**
          * limit
-         *
-         * The limit query parameter.
          */
         limit?: number;
         /**
          * offset
-         *
-         * The offset query parameter.
          */
         offset?: number;
         /**
          * state
-         *
-         * The state query parameter.
          */
         state?: AuthV1MembershipState;
     };
     url: '/auth/v1/memberships';
 };
+
+export type AuthV1MembershipServiceListMembershipsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1MembershipServiceListMembershipsError = AuthV1MembershipServiceListMembershipsErrors[keyof AuthV1MembershipServiceListMembershipsErrors];
 
 export type AuthV1MembershipServiceListMembershipsResponses = {
     /**
@@ -10562,6 +10879,15 @@ export type AuthV1MembershipServiceUpdateActiveMembershipData = {
     url: '/auth/v1/memberships/active';
 };
 
+export type AuthV1MembershipServiceUpdateActiveMembershipErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1MembershipServiceUpdateActiveMembershipError = AuthV1MembershipServiceUpdateActiveMembershipErrors[keyof AuthV1MembershipServiceUpdateActiveMembershipErrors];
+
 export type AuthV1MembershipServiceUpdateActiveMembershipResponses = {
     /**
      * Success
@@ -10576,21 +10902,26 @@ export type AuthV1MembershipServiceCheckMembershipData = {
     path: {
         /**
          * org_id
-         *
-         * The org_id path parameter.
          */
         org_id: string;
     };
     query?: {
         /**
          * user_id
-         *
-         * The user_id query parameter.
          */
         user_id?: string;
     };
     url: '/auth/v1/memberships/{org_id}/check';
 };
+
+export type AuthV1MembershipServiceCheckMembershipErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1MembershipServiceCheckMembershipError = AuthV1MembershipServiceCheckMembershipErrors[keyof AuthV1MembershipServiceCheckMembershipErrors];
 
 export type AuthV1MembershipServiceCheckMembershipResponses = {
     /**
@@ -10606,21 +10937,26 @@ export type AuthV1MembershipServiceGetInternalMembershipInfoData = {
     path: {
         /**
          * org_id
-         *
-         * The org_id path parameter.
          */
         org_id: string;
     };
     query?: {
         /**
          * user_id
-         *
-         * The user_id query parameter.
          */
         user_id?: string;
     };
     url: '/auth/v1/memberships/{org_id}/info';
 };
+
+export type AuthV1MembershipServiceGetInternalMembershipInfoErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1MembershipServiceGetInternalMembershipInfoError = AuthV1MembershipServiceGetInternalMembershipInfoErrors[keyof AuthV1MembershipServiceGetInternalMembershipInfoErrors];
 
 export type AuthV1MembershipServiceGetInternalMembershipInfoResponses = {
     /**
@@ -10636,21 +10972,26 @@ export type AuthV1MembershipServiceLeaveOrganizationData = {
     path: {
         /**
          * org_id
-         *
-         * The org_id path parameter.
          */
         org_id: string;
     };
     query?: {
         /**
          * user_id
-         *
-         * The user_id query parameter.
          */
         user_id?: string;
     };
     url: '/auth/v1/memberships/{org_id}/leave';
 };
+
+export type AuthV1MembershipServiceLeaveOrganizationErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1MembershipServiceLeaveOrganizationError = AuthV1MembershipServiceLeaveOrganizationErrors[keyof AuthV1MembershipServiceLeaveOrganizationErrors];
 
 export type AuthV1MembershipServiceLeaveOrganizationResponses = {
     /**
@@ -10667,6 +11008,15 @@ export type AuthV1MembershipServiceInviteMemberData = {
      */
     body: {
         /**
+         * ActorOrgRequest
+         */
+        user?: {
+            /**
+             * actor_id
+             */
+            actor_id?: string;
+        };
+        /**
          * username
          */
         username?: string;
@@ -10678,14 +11028,21 @@ export type AuthV1MembershipServiceInviteMemberData = {
     path: {
         /**
          * org_id
-         *
-         * The user.org_id path parameter.
          */
         'user.org_id': string;
     };
     query?: never;
     url: '/auth/v1/memberships/{user.org_id}/invite';
 };
+
+export type AuthV1MembershipServiceInviteMemberErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1MembershipServiceInviteMemberError = AuthV1MembershipServiceInviteMemberErrors[keyof AuthV1MembershipServiceInviteMemberErrors];
 
 export type AuthV1MembershipServiceInviteMemberResponses = {
     /**
@@ -10702,6 +11059,15 @@ export type AuthV1MembershipServiceResendInvitationData = {
      */
     body: {
         /**
+         * ActorOrgRequest
+         */
+        user?: {
+            /**
+             * actor_id
+             */
+            actor_id?: string;
+        };
+        /**
          * user_id
          */
         user_id?: string;
@@ -10709,14 +11075,21 @@ export type AuthV1MembershipServiceResendInvitationData = {
     path: {
         /**
          * org_id
-         *
-         * The user.org_id path parameter.
          */
         'user.org_id': string;
     };
     query?: never;
     url: '/auth/v1/memberships/{user.org_id}/invite/resend';
 };
+
+export type AuthV1MembershipServiceResendInvitationErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1MembershipServiceResendInvitationError = AuthV1MembershipServiceResendInvitationErrors[keyof AuthV1MembershipServiceResendInvitationErrors];
 
 export type AuthV1MembershipServiceResendInvitationResponses = {
     /**
@@ -10732,20 +11105,30 @@ export type AuthV1MembershipServiceCancelInvitationData = {
     path: {
         /**
          * org_id
-         *
-         * The user.org_id path parameter.
          */
         'user.org_id': string;
         /**
          * user_id
-         *
-         * The user_id path parameter.
          */
         user_id: string;
     };
-    query?: never;
+    query?: {
+        /**
+         * actor_id
+         */
+        'user.actor_id'?: string;
+    };
     url: '/auth/v1/memberships/{user.org_id}/invite/{user_id}';
 };
+
+export type AuthV1MembershipServiceCancelInvitationErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1MembershipServiceCancelInvitationError = AuthV1MembershipServiceCancelInvitationErrors[keyof AuthV1MembershipServiceCancelInvitationErrors];
 
 export type AuthV1MembershipServiceCancelInvitationResponses = {
     /**
@@ -10761,27 +11144,34 @@ export type AuthV1MembershipServiceListOrganizationMembersData = {
     path: {
         /**
          * org_id
-         *
-         * The user.org_id path parameter.
          */
         'user.org_id': string;
     };
     query?: {
         /**
+         * user_id
+         */
+        'user.user_id'?: string;
+        /**
          * limit
-         *
-         * The limit query parameter.
          */
         limit?: number;
         /**
          * offset
-         *
-         * The offset query parameter.
          */
         offset?: number;
     };
     url: '/auth/v1/memberships/{user.org_id}/members';
 };
+
+export type AuthV1MembershipServiceListOrganizationMembersErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1MembershipServiceListOrganizationMembersError = AuthV1MembershipServiceListOrganizationMembersErrors[keyof AuthV1MembershipServiceListOrganizationMembersErrors];
 
 export type AuthV1MembershipServiceListOrganizationMembersResponses = {
     /**
@@ -10797,20 +11187,30 @@ export type AuthV1MembershipServiceRemoveMemberData = {
     path: {
         /**
          * org_id
-         *
-         * The user.org_id path parameter.
          */
         'user.org_id': string;
         /**
          * user_id
-         *
-         * The user_id path parameter.
          */
         user_id: string;
     };
-    query?: never;
+    query?: {
+        /**
+         * actor_id
+         */
+        'user.actor_id'?: string;
+    };
     url: '/auth/v1/memberships/{user.org_id}/members/{user_id}';
 };
+
+export type AuthV1MembershipServiceRemoveMemberErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1MembershipServiceRemoveMemberError = AuthV1MembershipServiceRemoveMemberErrors[keyof AuthV1MembershipServiceRemoveMemberErrors];
 
 export type AuthV1MembershipServiceRemoveMemberResponses = {
     /**
@@ -10826,20 +11226,30 @@ export type AuthV1MembershipServiceReactivateMemberData = {
     path: {
         /**
          * org_id
-         *
-         * The user.org_id path parameter.
          */
         'user.org_id': string;
         /**
          * user_id
-         *
-         * The user_id path parameter.
          */
         user_id: string;
     };
-    query?: never;
+    query?: {
+        /**
+         * actor_id
+         */
+        'user.actor_id'?: string;
+    };
     url: '/auth/v1/memberships/{user.org_id}/members/{user_id}/reactivate';
 };
+
+export type AuthV1MembershipServiceReactivateMemberErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1MembershipServiceReactivateMemberError = AuthV1MembershipServiceReactivateMemberErrors[keyof AuthV1MembershipServiceReactivateMemberErrors];
 
 export type AuthV1MembershipServiceReactivateMemberResponses = {
     /**
@@ -10856,6 +11266,15 @@ export type AuthV1MembershipServiceUpdateMemberRoleData = {
      */
     body: {
         /**
+         * ActorOrgRequest
+         */
+        user?: {
+            /**
+             * actor_id
+             */
+            actor_id?: string;
+        };
+        /**
          * role
          */
         role?: AuthV1MembershipRole;
@@ -10863,20 +11282,25 @@ export type AuthV1MembershipServiceUpdateMemberRoleData = {
     path: {
         /**
          * org_id
-         *
-         * The user.org_id path parameter.
          */
         'user.org_id': string;
         /**
          * user_id
-         *
-         * The user_id path parameter.
          */
         user_id: string;
     };
     query?: never;
     url: '/auth/v1/memberships/{user.org_id}/members/{user_id}/role';
 };
+
+export type AuthV1MembershipServiceUpdateMemberRoleErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1MembershipServiceUpdateMemberRoleError = AuthV1MembershipServiceUpdateMemberRoleErrors[keyof AuthV1MembershipServiceUpdateMemberRoleErrors];
 
 export type AuthV1MembershipServiceUpdateMemberRoleResponses = {
     /**
@@ -10892,20 +11316,30 @@ export type AuthV1MembershipServiceSuspendMemberData = {
     path: {
         /**
          * org_id
-         *
-         * The user.org_id path parameter.
          */
         'user.org_id': string;
         /**
          * user_id
-         *
-         * The user_id path parameter.
          */
         user_id: string;
     };
-    query?: never;
+    query?: {
+        /**
+         * actor_id
+         */
+        'user.actor_id'?: string;
+    };
     url: '/auth/v1/memberships/{user.org_id}/members/{user_id}/suspend';
 };
+
+export type AuthV1MembershipServiceSuspendMemberErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1MembershipServiceSuspendMemberError = AuthV1MembershipServiceSuspendMemberErrors[keyof AuthV1MembershipServiceSuspendMemberErrors];
 
 export type AuthV1MembershipServiceSuspendMemberResponses = {
     /**
@@ -10922,6 +11356,15 @@ export type AuthV1MembershipServiceUpdateOrgNameData = {
      */
     body: {
         /**
+         * ActorOrgRequest
+         */
+        user?: {
+            /**
+             * actor_id
+             */
+            actor_id?: string;
+        };
+        /**
          * full_name
          */
         full_name?: string;
@@ -10929,14 +11372,21 @@ export type AuthV1MembershipServiceUpdateOrgNameData = {
     path: {
         /**
          * org_id
-         *
-         * The user.org_id path parameter.
          */
         'user.org_id': string;
     };
     query?: never;
     url: '/auth/v1/memberships/{user.org_id}/name';
 };
+
+export type AuthV1MembershipServiceUpdateOrgNameErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1MembershipServiceUpdateOrgNameError = AuthV1MembershipServiceUpdateOrgNameErrors[keyof AuthV1MembershipServiceUpdateOrgNameErrors];
 
 export type AuthV1MembershipServiceUpdateOrgNameResponses = {
     /**
@@ -10953,6 +11403,15 @@ export type AuthV1MembershipServiceUpdateMembershipStateData = {
      */
     body: {
         /**
+         * UserOrgRequest
+         */
+        user?: {
+            /**
+             * user_id
+             */
+            user_id?: string;
+        };
+        /**
          * state
          */
         state?: AuthV1MembershipApplicationState;
@@ -10964,14 +11423,21 @@ export type AuthV1MembershipServiceUpdateMembershipStateData = {
     path: {
         /**
          * org_id
-         *
-         * The user.org_id path parameter.
          */
         'user.org_id': string;
     };
     query?: never;
     url: '/auth/v1/memberships/{user.org_id}/state';
 };
+
+export type AuthV1MembershipServiceUpdateMembershipStateErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1MembershipServiceUpdateMembershipStateError = AuthV1MembershipServiceUpdateMembershipStateErrors[keyof AuthV1MembershipServiceUpdateMembershipStateErrors];
 
 export type AuthV1MembershipServiceUpdateMembershipStateResponses = {
     /**
@@ -10988,6 +11454,15 @@ export type AuthV1MembershipServiceUpdateOrgUsernameData = {
      */
     body: {
         /**
+         * ActorOrgRequest
+         */
+        user?: {
+            /**
+             * actor_id
+             */
+            actor_id?: string;
+        };
+        /**
          * username
          */
         username?: string;
@@ -10995,14 +11470,21 @@ export type AuthV1MembershipServiceUpdateOrgUsernameData = {
     path: {
         /**
          * org_id
-         *
-         * The user.org_id path parameter.
          */
         'user.org_id': string;
     };
     query?: never;
     url: '/auth/v1/memberships/{user.org_id}/username';
 };
+
+export type AuthV1MembershipServiceUpdateOrgUsernameErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1MembershipServiceUpdateOrgUsernameError = AuthV1MembershipServiceUpdateOrgUsernameErrors[keyof AuthV1MembershipServiceUpdateOrgUsernameErrors];
 
 export type AuthV1MembershipServiceUpdateOrgUsernameResponses = {
     /**
@@ -11019,13 +11501,20 @@ export type AuthV1OtpServiceRegenerateBackupCodesData = {
     query?: {
         /**
          * user_id
-         *
-         * The user_id query parameter.
          */
         user_id?: string;
     };
     url: '/auth/v1/users/current/totp/backup-codes/regenerate';
 };
+
+export type AuthV1OtpServiceRegenerateBackupCodesErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1OtpServiceRegenerateBackupCodesError = AuthV1OtpServiceRegenerateBackupCodesErrors[keyof AuthV1OtpServiceRegenerateBackupCodesErrors];
 
 export type AuthV1OtpServiceRegenerateBackupCodesResponses = {
     /**
@@ -11042,13 +11531,20 @@ export type AuthV1OtpServiceDeleteOtpData = {
     query?: {
         /**
          * user_id
-         *
-         * The user_id query parameter.
          */
         user_id?: string;
     };
     url: '/auth/v1/users/current/totp/delete';
 };
+
+export type AuthV1OtpServiceDeleteOtpErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1OtpServiceDeleteOtpError = AuthV1OtpServiceDeleteOtpErrors[keyof AuthV1OtpServiceDeleteOtpErrors];
 
 export type AuthV1OtpServiceDeleteOtpResponses = {
     /**
@@ -11065,13 +11561,20 @@ export type AuthV1OtpServiceSetupOtpData = {
     query?: {
         /**
          * user_id
-         *
-         * The user_id query parameter.
          */
         user_id?: string;
     };
     url: '/auth/v1/users/current/totp/setup';
 };
+
+export type AuthV1OtpServiceSetupOtpErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1OtpServiceSetupOtpError = AuthV1OtpServiceSetupOtpErrors[keyof AuthV1OtpServiceSetupOtpErrors];
 
 export type AuthV1OtpServiceSetupOtpResponses = {
     /**
@@ -11088,13 +11591,20 @@ export type AuthV1OtpServiceGetOtpStatusData = {
     query?: {
         /**
          * user_id
-         *
-         * The user_id query parameter.
          */
         user_id?: string;
     };
     url: '/auth/v1/users/current/totp/status';
 };
+
+export type AuthV1OtpServiceGetOtpStatusErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1OtpServiceGetOtpStatusError = AuthV1OtpServiceGetOtpStatusErrors[keyof AuthV1OtpServiceGetOtpStatusErrors];
 
 export type AuthV1OtpServiceGetOtpStatusResponses = {
     /**
@@ -11112,6 +11622,15 @@ export type AuthV1OtpServiceVerifyOtpData = {
     url: '/auth/v1/users/current/totp/verify';
 };
 
+export type AuthV1OtpServiceVerifyOtpErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1OtpServiceVerifyOtpError = AuthV1OtpServiceVerifyOtpErrors[keyof AuthV1OtpServiceVerifyOtpErrors];
+
 export type AuthV1OtpServiceVerifyOtpResponses = {
     /**
      * Success
@@ -11127,6 +11646,15 @@ export type AuthV1OtpServiceVerifyTotpForLoginData = {
     query?: never;
     url: '/auth/v1/verify-totp';
 };
+
+export type AuthV1OtpServiceVerifyTotpForLoginErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1OtpServiceVerifyTotpForLoginError = AuthV1OtpServiceVerifyTotpForLoginErrors[keyof AuthV1OtpServiceVerifyTotpForLoginErrors];
 
 export type AuthV1OtpServiceVerifyTotpForLoginResponses = {
     /**
@@ -11144,6 +11672,15 @@ export type AuthV1PasskeyServicePasskeyLoginBeginData = {
     url: '/auth/v1/passkey/login/begin';
 };
 
+export type AuthV1PasskeyServicePasskeyLoginBeginErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1PasskeyServicePasskeyLoginBeginError = AuthV1PasskeyServicePasskeyLoginBeginErrors[keyof AuthV1PasskeyServicePasskeyLoginBeginErrors];
+
 export type AuthV1PasskeyServicePasskeyLoginBeginResponses = {
     /**
      * Success
@@ -11160,6 +11697,15 @@ export type AuthV1PasskeyServicePasskeyLoginFinishData = {
     url: '/auth/v1/passkey/login/finish';
 };
 
+export type AuthV1PasskeyServicePasskeyLoginFinishErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1PasskeyServicePasskeyLoginFinishError = AuthV1PasskeyServicePasskeyLoginFinishErrors[keyof AuthV1PasskeyServicePasskeyLoginFinishErrors];
+
 export type AuthV1PasskeyServicePasskeyLoginFinishResponses = {
     /**
      * Success
@@ -11175,13 +11721,20 @@ export type AuthV1PasskeyServiceListPasskeysData = {
     query?: {
         /**
          * user_id
-         *
-         * The user_id query parameter.
          */
         user_id?: string;
     };
     url: '/auth/v1/users/current/passkeys';
 };
+
+export type AuthV1PasskeyServiceListPasskeysErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1PasskeyServiceListPasskeysError = AuthV1PasskeyServiceListPasskeysErrors[keyof AuthV1PasskeyServiceListPasskeysErrors];
 
 export type AuthV1PasskeyServiceListPasskeysResponses = {
     /**
@@ -11199,6 +11752,15 @@ export type AuthV1PasskeyServicePasskeyRegisterBeginData = {
     url: '/auth/v1/users/current/passkeys/register/begin';
 };
 
+export type AuthV1PasskeyServicePasskeyRegisterBeginErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1PasskeyServicePasskeyRegisterBeginError = AuthV1PasskeyServicePasskeyRegisterBeginErrors[keyof AuthV1PasskeyServicePasskeyRegisterBeginErrors];
+
 export type AuthV1PasskeyServicePasskeyRegisterBeginResponses = {
     /**
      * Success
@@ -11215,6 +11777,15 @@ export type AuthV1PasskeyServicePasskeyRegisterFinishData = {
     url: '/auth/v1/users/current/passkeys/register/finish';
 };
 
+export type AuthV1PasskeyServicePasskeyRegisterFinishErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1PasskeyServicePasskeyRegisterFinishError = AuthV1PasskeyServicePasskeyRegisterFinishErrors[keyof AuthV1PasskeyServicePasskeyRegisterFinishErrors];
+
 export type AuthV1PasskeyServicePasskeyRegisterFinishResponses = {
     /**
      * Success
@@ -11229,21 +11800,26 @@ export type AuthV1PasskeyServiceDeletePasskeyData = {
     path: {
         /**
          * id
-         *
-         * The id path parameter.
          */
         id: string;
     };
     query?: {
         /**
          * user_id
-         *
-         * The user_id query parameter.
          */
         user_id?: string;
     };
     url: '/auth/v1/users/current/passkeys/{id}';
 };
+
+export type AuthV1PasskeyServiceDeletePasskeyErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1PasskeyServiceDeletePasskeyError = AuthV1PasskeyServiceDeletePasskeyErrors[keyof AuthV1PasskeyServiceDeletePasskeyErrors];
 
 export type AuthV1PasskeyServiceDeletePasskeyResponses = {
     /**
@@ -11271,14 +11847,21 @@ export type AuthV1PasskeyServiceRenamePasskeyData = {
     path: {
         /**
          * id
-         *
-         * The id path parameter.
          */
         id: string;
     };
     query?: never;
     url: '/auth/v1/users/current/passkeys/{id}';
 };
+
+export type AuthV1PasskeyServiceRenamePasskeyErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1PasskeyServiceRenamePasskeyError = AuthV1PasskeyServiceRenamePasskeyErrors[keyof AuthV1PasskeyServiceRenamePasskeyErrors];
 
 export type AuthV1PasskeyServiceRenamePasskeyResponses = {
     /**
@@ -11296,6 +11879,15 @@ export type AuthV1PasskeyServiceVerifyPasskeyForLoginData = {
     url: '/auth/v1/verify-passkey';
 };
 
+export type AuthV1PasskeyServiceVerifyPasskeyForLoginErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1PasskeyServiceVerifyPasskeyForLoginError = AuthV1PasskeyServiceVerifyPasskeyForLoginErrors[keyof AuthV1PasskeyServiceVerifyPasskeyForLoginErrors];
+
 export type AuthV1PasskeyServiceVerifyPasskeyForLoginResponses = {
     /**
      * Success
@@ -11310,21 +11902,26 @@ export type AuthV1PolicyServiceListPoliciesData = {
     path: {
         /**
          * org_id
-         *
-         * The org_id path parameter.
          */
         org_id: string;
     };
     query?: {
         /**
          * user_id
-         *
-         * The user_id query parameter.
          */
         user_id?: string;
     };
     url: '/auth/v1/memberships/{org_id}/policies';
 };
+
+export type AuthV1PolicyServiceListPoliciesErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1PolicyServiceListPoliciesError = AuthV1PolicyServiceListPoliciesErrors[keyof AuthV1PolicyServiceListPoliciesErrors];
 
 export type AuthV1PolicyServiceListPoliciesResponses = {
     /**
@@ -11340,20 +11937,30 @@ export type AuthV1PolicyServiceListUserPoliciesData = {
     path: {
         /**
          * org_id
-         *
-         * The user.org_id path parameter.
          */
         'user.org_id': string;
         /**
          * member_id
-         *
-         * The member_id path parameter.
          */
         member_id: string;
     };
-    query?: never;
+    query?: {
+        /**
+         * user_id
+         */
+        'user.user_id'?: string;
+    };
     url: '/auth/v1/memberships/{user.org_id}/members/{member_id}/policies';
 };
+
+export type AuthV1PolicyServiceListUserPoliciesErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1PolicyServiceListUserPoliciesError = AuthV1PolicyServiceListUserPoliciesErrors[keyof AuthV1PolicyServiceListUserPoliciesErrors];
 
 export type AuthV1PolicyServiceListUserPoliciesResponses = {
     /**
@@ -11370,6 +11977,15 @@ export type AuthV1PolicyServiceCreatePolicyData = {
      */
     body: {
         /**
+         * UserOrgRequest
+         */
+        user?: {
+            /**
+             * user_id
+             */
+            user_id?: string;
+        };
+        /**
          * name
          */
         name?: string;
@@ -11385,14 +12001,21 @@ export type AuthV1PolicyServiceCreatePolicyData = {
     path: {
         /**
          * org_id
-         *
-         * The user.org_id path parameter.
          */
         'user.org_id': string;
     };
     query?: never;
     url: '/auth/v1/memberships/{user.org_id}/policies';
 };
+
+export type AuthV1PolicyServiceCreatePolicyErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1PolicyServiceCreatePolicyError = AuthV1PolicyServiceCreatePolicyErrors[keyof AuthV1PolicyServiceCreatePolicyErrors];
 
 export type AuthV1PolicyServiceCreatePolicyResponses = {
     /**
@@ -11408,20 +12031,30 @@ export type AuthV1PolicyServiceDetachPolicyData = {
     path: {
         /**
          * org_id
-         *
-         * The user.org_id path parameter.
          */
         'user.org_id': string;
         /**
          * attachment_id
-         *
-         * The attachment_id path parameter.
          */
         attachment_id: string;
     };
-    query?: never;
+    query?: {
+        /**
+         * user_id
+         */
+        'user.user_id'?: string;
+    };
     url: '/auth/v1/memberships/{user.org_id}/policies/attachments/{attachment_id}';
 };
+
+export type AuthV1PolicyServiceDetachPolicyErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1PolicyServiceDetachPolicyError = AuthV1PolicyServiceDetachPolicyErrors[keyof AuthV1PolicyServiceDetachPolicyErrors];
 
 export type AuthV1PolicyServiceDetachPolicyResponses = {
     /**
@@ -11437,33 +12070,38 @@ export type AuthV1PolicyServiceListPermissionRegistryData = {
     path: {
         /**
          * org_id
-         *
-         * The user.org_id path parameter.
          */
         'user.org_id': string;
     };
     query?: {
         /**
+         * user_id
+         */
+        'user.user_id'?: string;
+        /**
          * types
-         *
-         * The types query parameter.
          */
         types?: Array<string>;
         /**
          * limit
-         *
-         * The limit query parameter.
          */
         limit?: number;
         /**
          * offset
-         *
-         * The offset query parameter.
          */
         offset?: number;
     };
     url: '/auth/v1/memberships/{user.org_id}/policies/permissions';
 };
+
+export type AuthV1PolicyServiceListPermissionRegistryErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1PolicyServiceListPermissionRegistryError = AuthV1PolicyServiceListPermissionRegistryErrors[keyof AuthV1PolicyServiceListPermissionRegistryErrors];
 
 export type AuthV1PolicyServiceListPermissionRegistryResponses = {
     /**
@@ -11479,20 +12117,30 @@ export type AuthV1PolicyServiceDeletePolicyData = {
     path: {
         /**
          * org_id
-         *
-         * The user.org_id path parameter.
          */
         'user.org_id': string;
         /**
          * policy_id
-         *
-         * The policy_id path parameter.
          */
         policy_id: string;
     };
-    query?: never;
+    query?: {
+        /**
+         * user_id
+         */
+        'user.user_id'?: string;
+    };
     url: '/auth/v1/memberships/{user.org_id}/policies/{policy_id}';
 };
+
+export type AuthV1PolicyServiceDeletePolicyErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1PolicyServiceDeletePolicyError = AuthV1PolicyServiceDeletePolicyErrors[keyof AuthV1PolicyServiceDeletePolicyErrors];
 
 export type AuthV1PolicyServiceDeletePolicyResponses = {
     /**
@@ -11508,20 +12156,30 @@ export type AuthV1PolicyServiceGetPolicyData = {
     path: {
         /**
          * org_id
-         *
-         * The user.org_id path parameter.
          */
         'user.org_id': string;
         /**
          * policy_id
-         *
-         * The policy_id path parameter.
          */
         policy_id: string;
     };
-    query?: never;
+    query?: {
+        /**
+         * user_id
+         */
+        'user.user_id'?: string;
+    };
     url: '/auth/v1/memberships/{user.org_id}/policies/{policy_id}';
 };
+
+export type AuthV1PolicyServiceGetPolicyErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1PolicyServiceGetPolicyError = AuthV1PolicyServiceGetPolicyErrors[keyof AuthV1PolicyServiceGetPolicyErrors];
 
 export type AuthV1PolicyServiceGetPolicyResponses = {
     /**
@@ -11538,6 +12196,15 @@ export type AuthV1PolicyServiceUpdatePolicyData = {
      */
     body: {
         /**
+         * UserOrgRequest
+         */
+        user?: {
+            /**
+             * user_id
+             */
+            user_id?: string;
+        };
+        /**
          * name
          */
         name?: string;
@@ -11553,20 +12220,25 @@ export type AuthV1PolicyServiceUpdatePolicyData = {
     path: {
         /**
          * org_id
-         *
-         * The user.org_id path parameter.
          */
         'user.org_id': string;
         /**
          * policy_id
-         *
-         * The policy_id path parameter.
          */
         policy_id: string;
     };
     query?: never;
     url: '/auth/v1/memberships/{user.org_id}/policies/{policy_id}';
 };
+
+export type AuthV1PolicyServiceUpdatePolicyErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1PolicyServiceUpdatePolicyError = AuthV1PolicyServiceUpdatePolicyErrors[keyof AuthV1PolicyServiceUpdatePolicyErrors];
 
 export type AuthV1PolicyServiceUpdatePolicyResponses = {
     /**
@@ -11582,20 +12254,30 @@ export type AuthV1PolicyServiceListPolicyAttachmentsData = {
     path: {
         /**
          * org_id
-         *
-         * The user.org_id path parameter.
          */
         'user.org_id': string;
         /**
          * policy_id
-         *
-         * The policy_id path parameter.
          */
         policy_id: string;
     };
-    query?: never;
+    query?: {
+        /**
+         * user_id
+         */
+        'user.user_id'?: string;
+    };
     url: '/auth/v1/memberships/{user.org_id}/policies/{policy_id}/attachments';
 };
+
+export type AuthV1PolicyServiceListPolicyAttachmentsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1PolicyServiceListPolicyAttachmentsError = AuthV1PolicyServiceListPolicyAttachmentsErrors[keyof AuthV1PolicyServiceListPolicyAttachmentsErrors];
 
 export type AuthV1PolicyServiceListPolicyAttachmentsResponses = {
     /**
@@ -11612,6 +12294,15 @@ export type AuthV1PolicyServiceAttachPolicyData = {
      */
     body: {
         /**
+         * UserOrgRequest
+         */
+        user?: {
+            /**
+             * user_id
+             */
+            user_id?: string;
+        };
+        /**
          * identity_type
          */
         identity_type?: AuthV1PolicyIdentityType;
@@ -11623,20 +12314,25 @@ export type AuthV1PolicyServiceAttachPolicyData = {
     path: {
         /**
          * org_id
-         *
-         * The user.org_id path parameter.
          */
         'user.org_id': string;
         /**
          * policy_id
-         *
-         * The policy_id path parameter.
          */
         policy_id: string;
     };
     query?: never;
     url: '/auth/v1/memberships/{user.org_id}/policies/{policy_id}/attachments';
 };
+
+export type AuthV1PolicyServiceAttachPolicyErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1PolicyServiceAttachPolicyError = AuthV1PolicyServiceAttachPolicyErrors[keyof AuthV1PolicyServiceAttachPolicyErrors];
 
 export type AuthV1PolicyServiceAttachPolicyResponses = {
     /**
@@ -11653,13 +12349,20 @@ export type AuthV1ProvidersServiceListProvidersData = {
     query?: {
         /**
          * user_id
-         *
-         * The user_id query parameter.
          */
         user_id?: string;
     };
     url: '/auth/v1/providers';
 };
+
+export type AuthV1ProvidersServiceListProvidersErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1ProvidersServiceListProvidersError = AuthV1ProvidersServiceListProvidersErrors[keyof AuthV1ProvidersServiceListProvidersErrors];
 
 export type AuthV1ProvidersServiceListProvidersResponses = {
     /**
@@ -11677,6 +12380,15 @@ export type AuthV1ProvidersServiceConnectProviderData = {
     url: '/auth/v1/providers/connect';
 };
 
+export type AuthV1ProvidersServiceConnectProviderErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1ProvidersServiceConnectProviderError = AuthV1ProvidersServiceConnectProviderErrors[keyof AuthV1ProvidersServiceConnectProviderErrors];
+
 export type AuthV1ProvidersServiceConnectProviderResponses = {
     /**
      * Success
@@ -11691,21 +12403,26 @@ export type AuthV1ProvidersServiceDisconnectProviderData = {
     path: {
         /**
          * provider
-         *
-         * The provider path parameter.
          */
         provider: AuthV1ExternalAccountProvider;
     };
     query?: {
         /**
          * user_id
-         *
-         * The user.user_id query parameter.
          */
         'user.user_id'?: string;
     };
     url: '/auth/v1/providers/{provider}';
 };
+
+export type AuthV1ProvidersServiceDisconnectProviderErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1ProvidersServiceDisconnectProviderError = AuthV1ProvidersServiceDisconnectProviderErrors[keyof AuthV1ProvidersServiceDisconnectProviderErrors];
 
 export type AuthV1ProvidersServiceDisconnectProviderResponses = {
     /**
@@ -11723,6 +12440,15 @@ export type AuthV1EmailServiceVerifyEmailData = {
     url: '/auth/v1/email/verify';
 };
 
+export type AuthV1EmailServiceVerifyEmailErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1EmailServiceVerifyEmailError = AuthV1EmailServiceVerifyEmailErrors[keyof AuthV1EmailServiceVerifyEmailErrors];
+
 export type AuthV1EmailServiceVerifyEmailResponses = {
     /**
      * Success
@@ -11738,6 +12464,15 @@ export type AuthV1EmailServiceResendVerificationData = {
     query?: never;
     url: '/auth/v1/email/verify/resend';
 };
+
+export type AuthV1EmailServiceResendVerificationErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1EmailServiceResendVerificationError = AuthV1EmailServiceResendVerificationErrors[keyof AuthV1EmailServiceResendVerificationErrors];
 
 export type AuthV1EmailServiceResendVerificationResponses = {
     /**
@@ -11755,6 +12490,15 @@ export type AuthV1EmailServiceLoginData = {
     url: '/auth/v1/login';
 };
 
+export type AuthV1EmailServiceLoginErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1EmailServiceLoginError = AuthV1EmailServiceLoginErrors[keyof AuthV1EmailServiceLoginErrors];
+
 export type AuthV1EmailServiceLoginResponses = {
     /**
      * Success
@@ -11770,6 +12514,15 @@ export type AuthV1TokenServiceLogoutData = {
     query?: never;
     url: '/auth/v1/logout';
 };
+
+export type AuthV1TokenServiceLogoutErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1TokenServiceLogoutError = AuthV1TokenServiceLogoutErrors[keyof AuthV1TokenServiceLogoutErrors];
 
 export type AuthV1TokenServiceLogoutResponses = {
     /**
@@ -11787,6 +12540,15 @@ export type AuthV1EmailServiceSendPasswordResetData = {
     url: '/auth/v1/password/reset';
 };
 
+export type AuthV1EmailServiceSendPasswordResetErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1EmailServiceSendPasswordResetError = AuthV1EmailServiceSendPasswordResetErrors[keyof AuthV1EmailServiceSendPasswordResetErrors];
+
 export type AuthV1EmailServiceSendPasswordResetResponses = {
     /**
      * Success
@@ -11802,6 +12564,15 @@ export type AuthV1EmailServiceResetPasswordData = {
     query?: never;
     url: '/auth/v1/password/reset/confirm';
 };
+
+export type AuthV1EmailServiceResetPasswordErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1EmailServiceResetPasswordError = AuthV1EmailServiceResetPasswordErrors[keyof AuthV1EmailServiceResetPasswordErrors];
 
 export type AuthV1EmailServiceResetPasswordResponses = {
     /**
@@ -11819,6 +12590,15 @@ export type AuthV1EmailServiceRegisterData = {
     url: '/auth/v1/register';
 };
 
+export type AuthV1EmailServiceRegisterErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1EmailServiceRegisterError = AuthV1EmailServiceRegisterErrors[keyof AuthV1EmailServiceRegisterErrors];
+
 export type AuthV1EmailServiceRegisterResponses = {
     /**
      * Success
@@ -11834,6 +12614,15 @@ export type AuthV1TokenServiceRefreshTokenData = {
     query?: never;
     url: '/auth/v1/token';
 };
+
+export type AuthV1TokenServiceRefreshTokenErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1TokenServiceRefreshTokenError = AuthV1TokenServiceRefreshTokenErrors[keyof AuthV1TokenServiceRefreshTokenErrors];
 
 export type AuthV1TokenServiceRefreshTokenResponses = {
     /**
@@ -11851,6 +12640,15 @@ export type AuthV1EmailServiceAddEmailData = {
     url: '/auth/v1/users/current/emails';
 };
 
+export type AuthV1EmailServiceAddEmailErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1EmailServiceAddEmailError = AuthV1EmailServiceAddEmailErrors[keyof AuthV1EmailServiceAddEmailErrors];
+
 export type AuthV1EmailServiceAddEmailResponses = {
     /**
      * Success
@@ -11867,6 +12665,15 @@ export type AuthV1EmailServiceInitiateEmailChangeData = {
     url: '/auth/v1/users/current/emails/change';
 };
 
+export type AuthV1EmailServiceInitiateEmailChangeErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1EmailServiceInitiateEmailChangeError = AuthV1EmailServiceInitiateEmailChangeErrors[keyof AuthV1EmailServiceInitiateEmailChangeErrors];
+
 export type AuthV1EmailServiceInitiateEmailChangeResponses = {
     /**
      * Success
@@ -11882,13 +12689,20 @@ export type AuthV1EmailServiceGetUserEmailStatusData = {
     query?: {
         /**
          * user_id
-         *
-         * The user_id query parameter.
          */
         user_id?: string;
     };
     url: '/auth/v1/users/current/emails/status';
 };
+
+export type AuthV1EmailServiceGetUserEmailStatusErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1EmailServiceGetUserEmailStatusError = AuthV1EmailServiceGetUserEmailStatusErrors[keyof AuthV1EmailServiceGetUserEmailStatusErrors];
 
 export type AuthV1EmailServiceGetUserEmailStatusResponses = {
     /**
@@ -11905,13 +12719,20 @@ export type AuthV1UserServiceGetUserInfoData = {
     query?: {
         /**
          * user_id
-         *
-         * The user_id query parameter.
          */
         user_id?: string;
     };
     url: '/auth/v1/userinfo';
 };
+
+export type AuthV1UserServiceGetUserInfoErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1UserServiceGetUserInfoError = AuthV1UserServiceGetUserInfoErrors[keyof AuthV1UserServiceGetUserInfoErrors];
 
 export type AuthV1UserServiceGetUserInfoResponses = {
     /**
@@ -11928,13 +12749,20 @@ export type AuthV1UserServiceGetUserData = {
     query?: {
         /**
          * user_id
-         *
-         * The user_id query parameter.
          */
         user_id?: string;
     };
     url: '/auth/v1/users/current';
 };
+
+export type AuthV1UserServiceGetUserErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1UserServiceGetUserError = AuthV1UserServiceGetUserErrors[keyof AuthV1UserServiceGetUserErrors];
 
 export type AuthV1UserServiceGetUserResponses = {
     /**
@@ -11952,6 +12780,15 @@ export type AuthV1UserServiceUpdateUserAvatarData = {
     url: '/auth/v1/users/current/avatar';
 };
 
+export type AuthV1UserServiceUpdateUserAvatarErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1UserServiceUpdateUserAvatarError = AuthV1UserServiceUpdateUserAvatarErrors[keyof AuthV1UserServiceUpdateUserAvatarErrors];
+
 export type AuthV1UserServiceUpdateUserAvatarResponses = {
     /**
      * Success
@@ -11967,13 +12804,20 @@ export type AuthV1UserServiceCreateAvatarUploadData = {
     query?: {
         /**
          * user_id
-         *
-         * The user_id query parameter.
          */
         user_id?: string;
     };
     url: '/auth/v1/users/current/avatar/upload';
 };
+
+export type AuthV1UserServiceCreateAvatarUploadErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1UserServiceCreateAvatarUploadError = AuthV1UserServiceCreateAvatarUploadErrors[keyof AuthV1UserServiceCreateAvatarUploadErrors];
 
 export type AuthV1UserServiceCreateAvatarUploadResponses = {
     /**
@@ -11991,6 +12835,15 @@ export type AuthV1UserServiceUpdateNameData = {
     url: '/auth/v1/users/current/name';
 };
 
+export type AuthV1UserServiceUpdateNameErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1UserServiceUpdateNameError = AuthV1UserServiceUpdateNameErrors[keyof AuthV1UserServiceUpdateNameErrors];
+
 export type AuthV1UserServiceUpdateNameResponses = {
     /**
      * Success
@@ -12007,6 +12860,15 @@ export type AuthV1UserServiceUpdateUsernameData = {
     url: '/auth/v1/users/current/username';
 };
 
+export type AuthV1UserServiceUpdateUsernameErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1UserServiceUpdateUsernameError = AuthV1UserServiceUpdateUsernameErrors[keyof AuthV1UserServiceUpdateUsernameErrors];
+
 export type AuthV1UserServiceUpdateUsernameResponses = {
     /**
      * Success
@@ -12022,8 +12884,6 @@ export type BillingV1InvoiceServiceListInvoicesData = {
     query?: {
         /**
          * org_id
-         *
-         * The org_id query parameter.
          */
         org_id?: string;
         /**
@@ -12042,6 +12902,15 @@ export type BillingV1InvoiceServiceListInvoicesData = {
     url: '/billing/v1/invoices';
 };
 
+export type BillingV1InvoiceServiceListInvoicesErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type BillingV1InvoiceServiceListInvoicesError = BillingV1InvoiceServiceListInvoicesErrors[keyof BillingV1InvoiceServiceListInvoicesErrors];
+
 export type BillingV1InvoiceServiceListInvoicesResponses = {
     /**
      * Success
@@ -12058,23 +12927,27 @@ export type BillingV1InvoiceServiceUpdateInvoiceStatusData = {
     body: {
         /**
          * status
-         *
-         * enum.defined_only = true
-         *
          */
         status?: BillingV1InvoiceStatus;
     };
     path: {
         /**
          * invoice_id
-         *
-         * The invoice_id path parameter.
          */
         invoice_id: string;
     };
     query?: never;
     url: '/billing/v1/invoices/{invoice_id}/status';
 };
+
+export type BillingV1InvoiceServiceUpdateInvoiceStatusErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type BillingV1InvoiceServiceUpdateInvoiceStatusError = BillingV1InvoiceServiceUpdateInvoiceStatusErrors[keyof BillingV1InvoiceServiceUpdateInvoiceStatusErrors];
 
 export type BillingV1InvoiceServiceUpdateInvoiceStatusResponses = {
     /**
@@ -12091,13 +12964,20 @@ export type BillingV1PaymentServiceGetBillingAddressData = {
     query?: {
         /**
          * org_id
-         *
-         * The org_id query parameter.
          */
         org_id?: string;
     };
     url: '/billing/v1/address';
 };
+
+export type BillingV1PaymentServiceGetBillingAddressErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type BillingV1PaymentServiceGetBillingAddressError = BillingV1PaymentServiceGetBillingAddressErrors[keyof BillingV1PaymentServiceGetBillingAddressErrors];
 
 export type BillingV1PaymentServiceGetBillingAddressResponses = {
     /**
@@ -12115,6 +12995,15 @@ export type BillingV1PaymentServiceUpsertBillingAddressData = {
     url: '/billing/v1/address';
 };
 
+export type BillingV1PaymentServiceUpsertBillingAddressErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type BillingV1PaymentServiceUpsertBillingAddressError = BillingV1PaymentServiceUpsertBillingAddressErrors[keyof BillingV1PaymentServiceUpsertBillingAddressErrors];
+
 export type BillingV1PaymentServiceUpsertBillingAddressResponses = {
     /**
      * Success
@@ -12130,6 +13019,15 @@ export type BillingV1PaymentServiceCreateCheckoutSessionData = {
     query?: never;
     url: '/billing/v1/checkout';
 };
+
+export type BillingV1PaymentServiceCreateCheckoutSessionErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type BillingV1PaymentServiceCreateCheckoutSessionError = BillingV1PaymentServiceCreateCheckoutSessionErrors[keyof BillingV1PaymentServiceCreateCheckoutSessionErrors];
 
 export type BillingV1PaymentServiceCreateCheckoutSessionResponses = {
     /**
@@ -12147,6 +13045,15 @@ export type BillingV1PaymentServiceGetBillingConfigData = {
     url: '/billing/v1/config';
 };
 
+export type BillingV1PaymentServiceGetBillingConfigErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type BillingV1PaymentServiceGetBillingConfigError = BillingV1PaymentServiceGetBillingConfigErrors[keyof BillingV1PaymentServiceGetBillingConfigErrors];
+
 export type BillingV1PaymentServiceGetBillingConfigResponses = {
     /**
      * Success
@@ -12162,19 +13069,24 @@ export type BillingV1PaymentServiceListPaymentMethodsData = {
     query?: {
         /**
          * org_id
-         *
-         * The org_id query parameter.
          */
         org_id?: string;
         /**
          * refresh
-         *
-         * The refresh query parameter.
          */
         refresh?: boolean;
     };
     url: '/billing/v1/payment-methods';
 };
+
+export type BillingV1PaymentServiceListPaymentMethodsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type BillingV1PaymentServiceListPaymentMethodsError = BillingV1PaymentServiceListPaymentMethodsErrors[keyof BillingV1PaymentServiceListPaymentMethodsErrors];
 
 export type BillingV1PaymentServiceListPaymentMethodsResponses = {
     /**
@@ -12192,6 +13104,15 @@ export type BillingV1PaymentServiceUpsertPaymentMethodData = {
     url: '/billing/v1/payment-methods';
 };
 
+export type BillingV1PaymentServiceUpsertPaymentMethodErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type BillingV1PaymentServiceUpsertPaymentMethodError = BillingV1PaymentServiceUpsertPaymentMethodErrors[keyof BillingV1PaymentServiceUpsertPaymentMethodErrors];
+
 export type BillingV1PaymentServiceUpsertPaymentMethodResponses = {
     /**
      * Success
@@ -12207,13 +13128,20 @@ export type BillingV1PaymentServiceGetPaymentMethodFromPaymentIntentData = {
     query?: {
         /**
          * payment_intent_id
-         *
-         * The payment_intent_id query parameter.
          */
         payment_intent_id?: string;
     };
     url: '/billing/v1/payment-methods/from-payment-intent';
 };
+
+export type BillingV1PaymentServiceGetPaymentMethodFromPaymentIntentErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type BillingV1PaymentServiceGetPaymentMethodFromPaymentIntentError = BillingV1PaymentServiceGetPaymentMethodFromPaymentIntentErrors[keyof BillingV1PaymentServiceGetPaymentMethodFromPaymentIntentErrors];
 
 export type BillingV1PaymentServiceGetPaymentMethodFromPaymentIntentResponses = {
     /**
@@ -12230,13 +13158,20 @@ export type BillingV1PaymentServiceGetPaymentMethodFromSetupIntentData = {
     query?: {
         /**
          * setup_intent_id
-         *
-         * The setup_intent_id query parameter.
          */
         setup_intent_id?: string;
     };
     url: '/billing/v1/payment-methods/from-setup-intent';
 };
+
+export type BillingV1PaymentServiceGetPaymentMethodFromSetupIntentErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type BillingV1PaymentServiceGetPaymentMethodFromSetupIntentError = BillingV1PaymentServiceGetPaymentMethodFromSetupIntentErrors[keyof BillingV1PaymentServiceGetPaymentMethodFromSetupIntentErrors];
 
 export type BillingV1PaymentServiceGetPaymentMethodFromSetupIntentResponses = {
     /**
@@ -12252,21 +13187,26 @@ export type BillingV1PaymentServiceDeletePaymentMethodData = {
     path: {
         /**
          * payment_method_id
-         *
-         * The payment_method_id path parameter.
          */
         payment_method_id: string;
     };
     query?: {
         /**
          * org_id
-         *
-         * The org_id query parameter.
          */
         org_id?: string;
     };
     url: '/billing/v1/payment-methods/{payment_method_id}';
 };
+
+export type BillingV1PaymentServiceDeletePaymentMethodErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type BillingV1PaymentServiceDeletePaymentMethodError = BillingV1PaymentServiceDeletePaymentMethodErrors[keyof BillingV1PaymentServiceDeletePaymentMethodErrors];
 
 export type BillingV1PaymentServiceDeletePaymentMethodResponses = {
     /**
@@ -12284,6 +13224,15 @@ export type BillingV1PaymentServiceCreateSetupIntentData = {
     url: '/billing/v1/setup-intent';
 };
 
+export type BillingV1PaymentServiceCreateSetupIntentErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type BillingV1PaymentServiceCreateSetupIntentError = BillingV1PaymentServiceCreateSetupIntentErrors[keyof BillingV1PaymentServiceCreateSetupIntentErrors];
+
 export type BillingV1PaymentServiceCreateSetupIntentResponses = {
     /**
      * Success
@@ -12299,6 +13248,15 @@ export type BillingV1PaymentServiceUpgradeSubscriptionData = {
     query?: never;
     url: '/billing/v1/subscription/upgrade';
 };
+
+export type BillingV1PaymentServiceUpgradeSubscriptionErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type BillingV1PaymentServiceUpgradeSubscriptionError = BillingV1PaymentServiceUpgradeSubscriptionErrors[keyof BillingV1PaymentServiceUpgradeSubscriptionErrors];
 
 export type BillingV1PaymentServiceUpgradeSubscriptionResponses = {
     /**
@@ -12316,6 +13274,15 @@ export type BillingV1PaymentServiceCalculateTaxData = {
     url: '/billing/v1/tax/calculate';
 };
 
+export type BillingV1PaymentServiceCalculateTaxErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type BillingV1PaymentServiceCalculateTaxError = BillingV1PaymentServiceCalculateTaxErrors[keyof BillingV1PaymentServiceCalculateTaxErrors];
+
 export type BillingV1PaymentServiceCalculateTaxResponses = {
     /**
      * Success
@@ -12332,6 +13299,15 @@ export type BillingV1PaymentServiceCalculateGenericTaxData = {
     url: '/billing/v1/tax/calculate-generic';
 };
 
+export type BillingV1PaymentServiceCalculateGenericTaxErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type BillingV1PaymentServiceCalculateGenericTaxError = BillingV1PaymentServiceCalculateGenericTaxErrors[keyof BillingV1PaymentServiceCalculateGenericTaxErrors];
+
 export type BillingV1PaymentServiceCalculateGenericTaxResponses = {
     /**
      * Success
@@ -12347,25 +13323,28 @@ export type BillingV1PlanServiceListPlansData = {
     query?: {
         /**
          * currency
-         *
-         * The currency query parameter.
          */
         currency?: string;
         /**
          * interval
-         *
-         * The interval query parameter.
          */
         interval?: string;
         /**
          * free
-         *
-         * The free query parameter.
          */
         free?: string;
     };
     url: '/billing/v1/plans';
 };
+
+export type BillingV1PlanServiceListPlansErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type BillingV1PlanServiceListPlansError = BillingV1PlanServiceListPlansErrors[keyof BillingV1PlanServiceListPlansErrors];
 
 export type BillingV1PlanServiceListPlansResponses = {
     /**
@@ -12391,6 +13370,15 @@ export type BillingV1PlanServiceGetPlanData = {
     url: '/billing/v1/plans/{plan_id}';
 };
 
+export type BillingV1PlanServiceGetPlanErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type BillingV1PlanServiceGetPlanError = BillingV1PlanServiceGetPlanErrors[keyof BillingV1PlanServiceGetPlanErrors];
+
 export type BillingV1PlanServiceGetPlanResponses = {
     /**
      * Success
@@ -12407,6 +13395,15 @@ export type BillingV1SalesServiceContactSalesData = {
     url: '/billing/v1/contact-sales';
 };
 
+export type BillingV1SalesServiceContactSalesErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type BillingV1SalesServiceContactSalesError = BillingV1SalesServiceContactSalesErrors[keyof BillingV1SalesServiceContactSalesErrors];
+
 export type BillingV1SalesServiceContactSalesResponses = {
     /**
      * Success
@@ -12422,13 +13419,20 @@ export type BillingV1SubscriptionServiceGetSubscriptionData = {
     query?: {
         /**
          * org_id
-         *
-         * The org_id query parameter.
          */
         org_id?: string;
     };
     url: '/billing/v1/subscription';
 };
+
+export type BillingV1SubscriptionServiceGetSubscriptionErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type BillingV1SubscriptionServiceGetSubscriptionError = BillingV1SubscriptionServiceGetSubscriptionErrors[keyof BillingV1SubscriptionServiceGetSubscriptionErrors];
 
 export type BillingV1SubscriptionServiceGetSubscriptionResponses = {
     /**
@@ -12446,6 +13450,15 @@ export type BillingV1SubscriptionServiceCreateSubscriptionData = {
     url: '/billing/v1/subscription';
 };
 
+export type BillingV1SubscriptionServiceCreateSubscriptionErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type BillingV1SubscriptionServiceCreateSubscriptionError = BillingV1SubscriptionServiceCreateSubscriptionErrors[keyof BillingV1SubscriptionServiceCreateSubscriptionErrors];
+
 export type BillingV1SubscriptionServiceCreateSubscriptionResponses = {
     /**
      * Success
@@ -12461,13 +13474,20 @@ export type BillingV1SubscriptionServiceCancelSubscriptionData = {
     query?: {
         /**
          * org_id
-         *
-         * The org_id query parameter.
          */
         org_id?: string;
     };
     url: '/billing/v1/subscription/cancel';
 };
+
+export type BillingV1SubscriptionServiceCancelSubscriptionErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type BillingV1SubscriptionServiceCancelSubscriptionError = BillingV1SubscriptionServiceCancelSubscriptionErrors[keyof BillingV1SubscriptionServiceCancelSubscriptionErrors];
 
 export type BillingV1SubscriptionServiceCancelSubscriptionResponses = {
     /**
@@ -12484,8 +13504,6 @@ export type BillingV1SubscriptionServiceGetSubscriptionHistoryData = {
     query?: {
         /**
          * org_id
-         *
-         * The org_id query parameter.
          */
         org_id?: string;
         /**
@@ -12504,6 +13522,15 @@ export type BillingV1SubscriptionServiceGetSubscriptionHistoryData = {
     url: '/billing/v1/subscription/history';
 };
 
+export type BillingV1SubscriptionServiceGetSubscriptionHistoryErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type BillingV1SubscriptionServiceGetSubscriptionHistoryError = BillingV1SubscriptionServiceGetSubscriptionHistoryErrors[keyof BillingV1SubscriptionServiceGetSubscriptionHistoryErrors];
+
 export type BillingV1SubscriptionServiceGetSubscriptionHistoryResponses = {
     /**
      * Success
@@ -12519,13 +13546,20 @@ export type BillingV1SubscriptionServiceReactivateSubscriptionData = {
     query?: {
         /**
          * org_id
-         *
-         * The org_id query parameter.
          */
         org_id?: string;
     };
     url: '/billing/v1/subscription/reactivate';
 };
+
+export type BillingV1SubscriptionServiceReactivateSubscriptionErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type BillingV1SubscriptionServiceReactivateSubscriptionError = BillingV1SubscriptionServiceReactivateSubscriptionErrors[keyof BillingV1SubscriptionServiceReactivateSubscriptionErrors];
 
 export type BillingV1SubscriptionServiceReactivateSubscriptionResponses = {
     /**
@@ -12542,13 +13576,20 @@ export type BillingV1UsageServiceGetBandwidthUsageData = {
     query?: {
         /**
          * org_id
-         *
-         * The org_id query parameter.
          */
         org_id?: string;
     };
     url: '/billing/v1/bandwidth-usage';
 };
+
+export type BillingV1UsageServiceGetBandwidthUsageErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type BillingV1UsageServiceGetBandwidthUsageError = BillingV1UsageServiceGetBandwidthUsageErrors[keyof BillingV1UsageServiceGetBandwidthUsageErrors];
 
 export type BillingV1UsageServiceGetBandwidthUsageResponses = {
     /**
@@ -12565,19 +13606,24 @@ export type BillingV1UsageServiceGetBandwidthUsageHistoryData = {
     query?: {
         /**
          * org_id
-         *
-         * The org_id query parameter.
          */
         org_id?: string;
         /**
          * days
-         *
-         * The days query parameter.
          */
         days?: number;
     };
     url: '/billing/v1/bandwidth-usage/history';
 };
+
+export type BillingV1UsageServiceGetBandwidthUsageHistoryErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type BillingV1UsageServiceGetBandwidthUsageHistoryError = BillingV1UsageServiceGetBandwidthUsageHistoryErrors[keyof BillingV1UsageServiceGetBandwidthUsageHistoryErrors];
 
 export type BillingV1UsageServiceGetBandwidthUsageHistoryResponses = {
     /**
@@ -12594,13 +13640,20 @@ export type BillingV1UsageServiceRefreshBandwidthUsageData = {
     query?: {
         /**
          * org_id
-         *
-         * The org_id query parameter.
          */
         org_id?: string;
     };
     url: '/billing/v1/bandwidth-usage/refresh';
 };
+
+export type BillingV1UsageServiceRefreshBandwidthUsageErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type BillingV1UsageServiceRefreshBandwidthUsageError = BillingV1UsageServiceRefreshBandwidthUsageErrors[keyof BillingV1UsageServiceRefreshBandwidthUsageErrors];
 
 export type BillingV1UsageServiceRefreshBandwidthUsageResponses = {
     /**
@@ -12617,13 +13670,20 @@ export type BillingV1UsageServiceGetStorageUsageData = {
     query?: {
         /**
          * org_id
-         *
-         * The org_id query parameter.
          */
         org_id?: string;
     };
     url: '/billing/v1/storage-usage';
 };
+
+export type BillingV1UsageServiceGetStorageUsageErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type BillingV1UsageServiceGetStorageUsageError = BillingV1UsageServiceGetStorageUsageErrors[keyof BillingV1UsageServiceGetStorageUsageErrors];
 
 export type BillingV1UsageServiceGetStorageUsageResponses = {
     /**
@@ -12640,19 +13700,24 @@ export type BillingV1UsageServiceGetStorageUsageHistoryData = {
     query?: {
         /**
          * org_id
-         *
-         * The org_id query parameter.
          */
         org_id?: string;
         /**
          * days
-         *
-         * The days query parameter.
          */
         days?: number;
     };
     url: '/billing/v1/storage-usage/history';
 };
+
+export type BillingV1UsageServiceGetStorageUsageHistoryErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type BillingV1UsageServiceGetStorageUsageHistoryError = BillingV1UsageServiceGetStorageUsageHistoryErrors[keyof BillingV1UsageServiceGetStorageUsageHistoryErrors];
 
 export type BillingV1UsageServiceGetStorageUsageHistoryResponses = {
     /**
@@ -12669,13 +13734,20 @@ export type BillingV1UsageServiceRefreshStorageUsageData = {
     query?: {
         /**
          * org_id
-         *
-         * The org_id query parameter.
          */
         org_id?: string;
     };
     url: '/billing/v1/storage-usage/refresh';
 };
+
+export type BillingV1UsageServiceRefreshStorageUsageErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type BillingV1UsageServiceRefreshStorageUsageError = BillingV1UsageServiceRefreshStorageUsageErrors[keyof BillingV1UsageServiceRefreshStorageUsageErrors];
 
 export type BillingV1UsageServiceRefreshStorageUsageResponses = {
     /**
@@ -12692,8 +13764,6 @@ export type ClientauthV1ClientCredentialServiceListClientCredentialsData = {
     query?: {
         /**
          * org_id
-         *
-         * The org_id query parameter.
          */
         org_id?: string;
         /**
@@ -12712,6 +13782,15 @@ export type ClientauthV1ClientCredentialServiceListClientCredentialsData = {
     url: '/platform/clientauth/v1/credentials';
 };
 
+export type ClientauthV1ClientCredentialServiceListClientCredentialsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type ClientauthV1ClientCredentialServiceListClientCredentialsError = ClientauthV1ClientCredentialServiceListClientCredentialsErrors[keyof ClientauthV1ClientCredentialServiceListClientCredentialsErrors];
+
 export type ClientauthV1ClientCredentialServiceListClientCredentialsResponses = {
     /**
      * Success
@@ -12728,6 +13807,15 @@ export type ClientauthV1ClientCredentialServiceCreateClientCredentialData = {
     url: '/platform/clientauth/v1/credentials';
 };
 
+export type ClientauthV1ClientCredentialServiceCreateClientCredentialErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type ClientauthV1ClientCredentialServiceCreateClientCredentialError = ClientauthV1ClientCredentialServiceCreateClientCredentialErrors[keyof ClientauthV1ClientCredentialServiceCreateClientCredentialErrors];
+
 export type ClientauthV1ClientCredentialServiceCreateClientCredentialResponses = {
     /**
      * Success
@@ -12742,21 +13830,26 @@ export type ClientauthV1ClientCredentialServiceRevokeClientCredentialData = {
     path: {
         /**
          * credential_id
-         *
-         * The credential_id path parameter.
          */
         credential_id: string;
     };
     query?: {
         /**
          * org_id
-         *
-         * The org_id query parameter.
          */
         org_id?: string;
     };
     url: '/platform/clientauth/v1/credentials/{credential_id}/revoke';
 };
+
+export type ClientauthV1ClientCredentialServiceRevokeClientCredentialErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type ClientauthV1ClientCredentialServiceRevokeClientCredentialError = ClientauthV1ClientCredentialServiceRevokeClientCredentialErrors[keyof ClientauthV1ClientCredentialServiceRevokeClientCredentialErrors];
 
 export type ClientauthV1ClientCredentialServiceRevokeClientCredentialResponses = {
     /**
@@ -12774,6 +13867,15 @@ export type ClientauthV1ClientCredentialServiceMintClientTokenData = {
     url: '/platform/clientauth/v1/token';
 };
 
+export type ClientauthV1ClientCredentialServiceMintClientTokenErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type ClientauthV1ClientCredentialServiceMintClientTokenError = ClientauthV1ClientCredentialServiceMintClientTokenErrors[keyof ClientauthV1ClientCredentialServiceMintClientTokenErrors];
+
 export type ClientauthV1ClientCredentialServiceMintClientTokenResponses = {
     /**
      * Success
@@ -12788,8 +13890,6 @@ export type FeedsV1FeedServiceListFeedsData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
     };
@@ -12809,6 +13909,15 @@ export type FeedsV1FeedServiceListFeedsData = {
     };
     url: '/feeds/v1/projects/{project_id}/feeds';
 };
+
+export type FeedsV1FeedServiceListFeedsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type FeedsV1FeedServiceListFeedsError = FeedsV1FeedServiceListFeedsErrors[keyof FeedsV1FeedServiceListFeedsErrors];
 
 export type FeedsV1FeedServiceListFeedsResponses = {
     /**
@@ -12856,14 +13965,21 @@ export type FeedsV1FeedServiceCreateFeedData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
     };
     query?: never;
     url: '/feeds/v1/projects/{project_id}/feeds';
 };
+
+export type FeedsV1FeedServiceCreateFeedErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type FeedsV1FeedServiceCreateFeedError = FeedsV1FeedServiceCreateFeedErrors[keyof FeedsV1FeedServiceCreateFeedErrors];
 
 export type FeedsV1FeedServiceCreateFeedResponses = {
     /**
@@ -12879,20 +13995,25 @@ export type FeedsV1FeedServiceDeleteFeedData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
          * feed_id
-         *
-         * The feed_id path parameter.
          */
         feed_id: string;
     };
     query?: never;
     url: '/feeds/v1/projects/{project_id}/feeds/{feed_id}';
 };
+
+export type FeedsV1FeedServiceDeleteFeedErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type FeedsV1FeedServiceDeleteFeedError = FeedsV1FeedServiceDeleteFeedErrors[keyof FeedsV1FeedServiceDeleteFeedErrors];
 
 export type FeedsV1FeedServiceDeleteFeedResponses = {
     /**
@@ -12908,20 +14029,25 @@ export type FeedsV1FeedServiceGetFeedData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
          * feed_id
-         *
-         * The feed_id path parameter.
          */
         feed_id: string;
     };
     query?: never;
     url: '/feeds/v1/projects/{project_id}/feeds/{feed_id}';
 };
+
+export type FeedsV1FeedServiceGetFeedErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type FeedsV1FeedServiceGetFeedError = FeedsV1FeedServiceGetFeedErrors[keyof FeedsV1FeedServiceGetFeedErrors];
 
 export type FeedsV1FeedServiceGetFeedResponses = {
     /**
@@ -12969,20 +14095,25 @@ export type FeedsV1FeedServiceUpdateFeedData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
          * feed_id
-         *
-         * The feed_id path parameter.
          */
         feed_id: string;
     };
     query?: never;
     url: '/feeds/v1/projects/{project_id}/feeds/{feed_id}';
 };
+
+export type FeedsV1FeedServiceUpdateFeedErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type FeedsV1FeedServiceUpdateFeedError = FeedsV1FeedServiceUpdateFeedErrors[keyof FeedsV1FeedServiceUpdateFeedErrors];
 
 export type FeedsV1FeedServiceUpdateFeedResponses = {
     /**
@@ -13000,6 +14131,15 @@ export type ImagesV1ImageConversionServiceMarkImageFailedData = {
     url: '/internal/images/mark-failed';
 };
 
+export type ImagesV1ImageConversionServiceMarkImageFailedErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type ImagesV1ImageConversionServiceMarkImageFailedError = ImagesV1ImageConversionServiceMarkImageFailedErrors[keyof ImagesV1ImageConversionServiceMarkImageFailedErrors];
+
 export type ImagesV1ImageConversionServiceMarkImageFailedResponses = {
     /**
      * Success
@@ -13015,6 +14155,15 @@ export type ImagesV1ImageConversionServiceMarkImageProcessedData = {
     query?: never;
     url: '/internal/images/mark-processed';
 };
+
+export type ImagesV1ImageConversionServiceMarkImageProcessedErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type ImagesV1ImageConversionServiceMarkImageProcessedError = ImagesV1ImageConversionServiceMarkImageProcessedErrors[keyof ImagesV1ImageConversionServiceMarkImageProcessedErrors];
 
 export type ImagesV1ImageConversionServiceMarkImageProcessedResponses = {
     /**
@@ -13032,6 +14181,15 @@ export type ImagesV1ImageConversionServiceTakeUnprocessedImageData = {
     url: '/internal/images/take';
 };
 
+export type ImagesV1ImageConversionServiceTakeUnprocessedImageErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type ImagesV1ImageConversionServiceTakeUnprocessedImageError = ImagesV1ImageConversionServiceTakeUnprocessedImageErrors[keyof ImagesV1ImageConversionServiceTakeUnprocessedImageErrors];
+
 export type ImagesV1ImageConversionServiceTakeUnprocessedImageResponses = {
     /**
      * Success
@@ -13046,14 +14204,21 @@ export type ImagesV1ImageServiceGetImageData = {
     path: {
         /**
          * image_id
-         *
-         * The image_id path parameter.
          */
         image_id: string;
     };
     query?: never;
     url: '/media/v1/images/{image_id}';
 };
+
+export type ImagesV1ImageServiceGetImageErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type ImagesV1ImageServiceGetImageError = ImagesV1ImageServiceGetImageErrors[keyof ImagesV1ImageServiceGetImageErrors];
 
 export type ImagesV1ImageServiceGetImageResponses = {
     /**
@@ -13069,8 +14234,6 @@ export type ImagesV1ImageServiceListImagesData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
     };
@@ -13089,19 +14252,24 @@ export type ImagesV1ImageServiceListImagesData = {
         'pagination.offset'?: number;
         /**
          * sort_field
-         *
-         * The sort_field query parameter.
          */
         sort_field?: string;
         /**
          * sort_direction
-         *
-         * The sort_direction query parameter.
          */
         sort_direction?: string;
     };
     url: '/media/v1/projects/{project_id}/images';
 };
+
+export type ImagesV1ImageServiceListImagesErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type ImagesV1ImageServiceListImagesError = ImagesV1ImageServiceListImagesErrors[keyof ImagesV1ImageServiceListImagesErrors];
 
 export type ImagesV1ImageServiceListImagesResponses = {
     /**
@@ -13129,14 +14297,21 @@ export type ImagesV1ImageServiceCreateImageUploadData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
     };
     query?: never;
     url: '/media/v1/projects/{project_id}/images/upload';
 };
+
+export type ImagesV1ImageServiceCreateImageUploadErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type ImagesV1ImageServiceCreateImageUploadError = ImagesV1ImageServiceCreateImageUploadErrors[keyof ImagesV1ImageServiceCreateImageUploadErrors];
 
 export type ImagesV1ImageServiceCreateImageUploadResponses = {
     /**
@@ -13152,20 +14327,25 @@ export type ImagesV1ImageServiceDeleteImageData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
          * image_id
-         *
-         * The image_id path parameter.
          */
         image_id: string;
     };
     query?: never;
     url: '/media/v1/projects/{project_id}/images/{image_id}';
 };
+
+export type ImagesV1ImageServiceDeleteImageErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type ImagesV1ImageServiceDeleteImageError = ImagesV1ImageServiceDeleteImageErrors[keyof ImagesV1ImageServiceDeleteImageErrors];
 
 export type ImagesV1ImageServiceDeleteImageResponses = {
     /**
@@ -13183,29 +14363,31 @@ export type ImagesV1ImageServiceUpdateImageVisibilityData = {
     body: {
         /**
          * visibility
-         *
-         * enum.defined_only = true
-         *
          */
         visibility?: CommonV1Visibility;
     };
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
          * image_id
-         *
-         * The image_id path parameter.
          */
         image_id: string;
     };
     query?: never;
     url: '/media/v1/projects/{project_id}/images/{image_id}/visibility';
 };
+
+export type ImagesV1ImageServiceUpdateImageVisibilityErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type ImagesV1ImageServiceUpdateImageVisibilityError = ImagesV1ImageServiceUpdateImageVisibilityErrors[keyof ImagesV1ImageServiceUpdateImageVisibilityErrors];
 
 export type ImagesV1ImageServiceUpdateImageVisibilityResponses = {
     /**
@@ -13223,6 +14405,15 @@ export type PlatformauthV1PlatformAuthServiceRefreshPlatformTokenData = {
     url: '/platform/auth/v1/refresh';
 };
 
+export type PlatformauthV1PlatformAuthServiceRefreshPlatformTokenErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type PlatformauthV1PlatformAuthServiceRefreshPlatformTokenError = PlatformauthV1PlatformAuthServiceRefreshPlatformTokenErrors[keyof PlatformauthV1PlatformAuthServiceRefreshPlatformTokenErrors];
+
 export type PlatformauthV1PlatformAuthServiceRefreshPlatformTokenResponses = {
     /**
      * Success
@@ -13239,6 +14430,15 @@ export type PlatformauthV1PlatformAuthServiceExchangeApiKeyData = {
     url: '/platform/auth/v1/token';
 };
 
+export type PlatformauthV1PlatformAuthServiceExchangeApiKeyErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type PlatformauthV1PlatformAuthServiceExchangeApiKeyError = PlatformauthV1PlatformAuthServiceExchangeApiKeyErrors[keyof PlatformauthV1PlatformAuthServiceExchangeApiKeyErrors];
+
 export type PlatformauthV1PlatformAuthServiceExchangeApiKeyResponses = {
     /**
      * Success
@@ -13253,16 +14453,12 @@ export type PostsV1PostServiceListPosts3Data = {
     path: {
         /**
          * feed_id
-         *
-         * The feed_id path parameter.
          */
         feed_id: string;
     };
     query?: {
         /**
          * project_id
-         *
-         * The project_id query parameter.
          */
         project_id?: string;
         /**
@@ -13279,13 +14475,20 @@ export type PostsV1PostServiceListPosts3Data = {
         'pagination.offset'?: number;
         /**
          * creator_id
-         *
-         * The creator_id query parameter.
          */
         creator_id?: string;
     };
     url: '/posts/v1/feeds/{feed_id}';
 };
+
+export type PostsV1PostServiceListPosts3Errors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type PostsV1PostServiceListPosts3Error = PostsV1PostServiceListPosts3Errors[keyof PostsV1PostServiceListPosts3Errors];
 
 export type PostsV1PostServiceListPosts3Responses = {
     /**
@@ -13301,22 +14504,16 @@ export type PostsV1PostServiceListPosts4Data = {
     path: {
         /**
          * feed_id
-         *
-         * The feed_id path parameter.
          */
         feed_id: string;
         /**
          * creator_id
-         *
-         * The creator_id path parameter.
          */
         creator_id: string;
     };
     query?: {
         /**
          * project_id
-         *
-         * The project_id query parameter.
          */
         project_id?: string;
         /**
@@ -13334,6 +14531,15 @@ export type PostsV1PostServiceListPosts4Data = {
     };
     url: '/posts/v1/feeds/{feed_id}/creators/{creator_id}';
 };
+
+export type PostsV1PostServiceListPosts4Errors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type PostsV1PostServiceListPosts4Error = PostsV1PostServiceListPosts4Errors[keyof PostsV1PostServiceListPosts4Errors];
 
 export type PostsV1PostServiceListPosts4Responses = {
     /**
@@ -13356,21 +14562,26 @@ export type PostsV1PostServiceGetPost3Data = {
         feed_id: string;
         /**
          * post_id
-         *
-         * The post_id path parameter.
          */
         post_id: string;
     };
     query?: {
         /**
          * project_id
-         *
-         * The project_id query parameter.
          */
         project_id?: string;
     };
     url: '/posts/v1/feeds/{feed_id}/{post_id}';
 };
+
+export type PostsV1PostServiceGetPost3Errors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type PostsV1PostServiceGetPost3Error = PostsV1PostServiceGetPost3Errors[keyof PostsV1PostServiceGetPost3Errors];
 
 export type PostsV1PostServiceGetPost3Responses = {
     /**
@@ -13386,14 +14597,10 @@ export type PostsV1PostServiceListPostsData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
          * feed_id
-         *
-         * The feed_id path parameter.
          */
         feed_id: string;
     };
@@ -13412,13 +14619,20 @@ export type PostsV1PostServiceListPostsData = {
         'pagination.offset'?: number;
         /**
          * creator_id
-         *
-         * The creator_id query parameter.
          */
         creator_id?: string;
     };
     url: '/posts/v1/projects/{project_id}/feeds/{feed_id}/posts';
 };
+
+export type PostsV1PostServiceListPostsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type PostsV1PostServiceListPostsError = PostsV1PostServiceListPostsErrors[keyof PostsV1PostServiceListPostsErrors];
 
 export type PostsV1PostServiceListPostsResponses = {
     /**
@@ -13430,17 +14644,12 @@ export type PostsV1PostServiceListPostsResponses = {
 export type PostsV1PostServiceListPostsResponse = PostsV1PostServiceListPostsResponses[keyof PostsV1PostServiceListPostsResponses];
 
 export type PostsV1PostServiceCreatePostData = {
-    body: ({
-        /**
-         * image_id
-         */
-        image_id?: string;
-    } | {
-        /**
-         * video_id
-         */
-        video_id?: string;
-    }) & {
+    /**
+     * CreatePostRequest
+     *
+     * At most one of `image_id`, `video_id` may be set.
+     */
+    body: {
         /**
          * org_id
          */
@@ -13451,11 +14660,16 @@ export type PostsV1PostServiceCreatePostData = {
         creator_id?: string;
         /**
          * type
-         *
-         * enum.defined_only = true
-         *
          */
         type?: CommonV1MediaType;
+        /**
+         * image_id
+         */
+        image_id?: string;
+        /**
+         * video_id
+         */
+        video_id?: string;
         /**
          * description
          */
@@ -13464,20 +14678,25 @@ export type PostsV1PostServiceCreatePostData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
          * feed_id
-         *
-         * The feed_id path parameter.
          */
         feed_id: string;
     };
     query?: never;
     url: '/posts/v1/projects/{project_id}/feeds/{feed_id}/posts';
 };
+
+export type PostsV1PostServiceCreatePostErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type PostsV1PostServiceCreatePostError = PostsV1PostServiceCreatePostErrors[keyof PostsV1PostServiceCreatePostErrors];
 
 export type PostsV1PostServiceCreatePostResponses = {
     /**
@@ -13493,20 +14712,14 @@ export type PostsV1PostServiceListPosts2Data = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
          * feed_id
-         *
-         * The feed_id path parameter.
          */
         feed_id: string;
         /**
          * creator_id
-         *
-         * The creator_id path parameter.
          */
         creator_id: string;
     };
@@ -13526,6 +14739,15 @@ export type PostsV1PostServiceListPosts2Data = {
     };
     url: '/posts/v1/projects/{project_id}/feeds/{feed_id}/posts/creators/{creator_id}';
 };
+
+export type PostsV1PostServiceListPosts2Errors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type PostsV1PostServiceListPosts2Error = PostsV1PostServiceListPosts2Errors[keyof PostsV1PostServiceListPosts2Errors];
 
 export type PostsV1PostServiceListPosts2Responses = {
     /**
@@ -13555,9 +14777,6 @@ export type PostsV1PostServiceCreatePostUploadData = {
         description?: string;
         /**
          * content_type
-         *
-         * enum.defined_only = true
-         *
          */
         content_type?: CommonV1MediaType;
         /**
@@ -13572,20 +14791,25 @@ export type PostsV1PostServiceCreatePostUploadData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
          * feed_id
-         *
-         * The feed_id path parameter.
          */
         feed_id: string;
     };
     query?: never;
     url: '/posts/v1/projects/{project_id}/feeds/{feed_id}/posts/upload';
 };
+
+export type PostsV1PostServiceCreatePostUploadErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type PostsV1PostServiceCreatePostUploadError = PostsV1PostServiceCreatePostUploadErrors[keyof PostsV1PostServiceCreatePostUploadErrors];
 
 export type PostsV1PostServiceCreatePostUploadResponses = {
     /**
@@ -13601,8 +14825,6 @@ export type PostsV1PostServiceDeletePost2Data = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
@@ -13614,14 +14836,21 @@ export type PostsV1PostServiceDeletePost2Data = {
         feed_id: string;
         /**
          * post_id
-         *
-         * The post_id path parameter.
          */
         post_id: string;
     };
     query?: never;
     url: '/posts/v1/projects/{project_id}/feeds/{feed_id}/posts/{post_id}';
 };
+
+export type PostsV1PostServiceDeletePost2Errors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type PostsV1PostServiceDeletePost2Error = PostsV1PostServiceDeletePost2Errors[keyof PostsV1PostServiceDeletePost2Errors];
 
 export type PostsV1PostServiceDeletePost2Responses = {
     /**
@@ -13637,8 +14866,6 @@ export type PostsV1PostServiceGetPost2Data = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
@@ -13650,14 +14877,21 @@ export type PostsV1PostServiceGetPost2Data = {
         feed_id: string;
         /**
          * post_id
-         *
-         * The post_id path parameter.
          */
         post_id: string;
     };
     query?: never;
     url: '/posts/v1/projects/{project_id}/feeds/{feed_id}/posts/{post_id}';
 };
+
+export type PostsV1PostServiceGetPost2Errors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type PostsV1PostServiceGetPost2Error = PostsV1PostServiceGetPost2Errors[keyof PostsV1PostServiceGetPost2Errors];
 
 export type PostsV1PostServiceGetPost2Responses = {
     /**
@@ -13673,14 +14907,10 @@ export type PostsV1PostServiceDeletePostData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
          * post_id
-         *
-         * The post_id path parameter.
          */
         post_id: string;
     };
@@ -13696,6 +14926,15 @@ export type PostsV1PostServiceDeletePostData = {
     url: '/posts/v1/projects/{project_id}/posts/{post_id}';
 };
 
+export type PostsV1PostServiceDeletePostErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type PostsV1PostServiceDeletePostError = PostsV1PostServiceDeletePostErrors[keyof PostsV1PostServiceDeletePostErrors];
+
 export type PostsV1PostServiceDeletePostResponses = {
     /**
      * Success
@@ -13710,14 +14949,10 @@ export type PostsV1PostServiceGetPostData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
          * post_id
-         *
-         * The post_id path parameter.
          */
         post_id: string;
     };
@@ -13733,6 +14968,15 @@ export type PostsV1PostServiceGetPostData = {
     url: '/posts/v1/projects/{project_id}/posts/{post_id}';
 };
 
+export type PostsV1PostServiceGetPostErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type PostsV1PostServiceGetPostError = PostsV1PostServiceGetPostErrors[keyof PostsV1PostServiceGetPostErrors];
+
 export type PostsV1PostServiceGetPostResponses = {
     /**
      * Success
@@ -13747,14 +14991,21 @@ export type ProjectV1ProjectServiceListProjectsData = {
     path: {
         /**
          * org_id
-         *
-         * The org_id path parameter.
          */
         org_id: string;
     };
     query?: never;
     url: '/organizations/{org_id}/projects/v1';
 };
+
+export type ProjectV1ProjectServiceListProjectsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type ProjectV1ProjectServiceListProjectsError = ProjectV1ProjectServiceListProjectsErrors[keyof ProjectV1ProjectServiceListProjectsErrors];
 
 export type ProjectV1ProjectServiceListProjectsResponses = {
     /**
@@ -13786,14 +15037,21 @@ export type ProjectV1ProjectServiceCreateProjectData = {
     path: {
         /**
          * org_id
-         *
-         * The org_id path parameter.
          */
         org_id: string;
     };
     query?: never;
     url: '/organizations/{org_id}/projects/v1';
 };
+
+export type ProjectV1ProjectServiceCreateProjectErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type ProjectV1ProjectServiceCreateProjectError = ProjectV1ProjectServiceCreateProjectErrors[keyof ProjectV1ProjectServiceCreateProjectErrors];
 
 export type ProjectV1ProjectServiceCreateProjectResponses = {
     /**
@@ -13809,20 +15067,25 @@ export type ProjectV1ProjectServiceDeleteProjectData = {
     path: {
         /**
          * org_id
-         *
-         * The org_id path parameter.
          */
         org_id: string;
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
     };
     query?: never;
     url: '/organizations/{org_id}/projects/v1/{project_id}';
 };
+
+export type ProjectV1ProjectServiceDeleteProjectErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type ProjectV1ProjectServiceDeleteProjectError = ProjectV1ProjectServiceDeleteProjectErrors[keyof ProjectV1ProjectServiceDeleteProjectErrors];
 
 export type ProjectV1ProjectServiceDeleteProjectResponses = {
     /**
@@ -13838,20 +15101,25 @@ export type ProjectV1ProjectServiceGetProjectData = {
     path: {
         /**
          * org_id
-         *
-         * The org_id path parameter.
          */
         org_id: string;
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
     };
     query?: never;
     url: '/organizations/{org_id}/projects/v1/{project_id}';
 };
+
+export type ProjectV1ProjectServiceGetProjectErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type ProjectV1ProjectServiceGetProjectError = ProjectV1ProjectServiceGetProjectErrors[keyof ProjectV1ProjectServiceGetProjectErrors];
 
 export type ProjectV1ProjectServiceGetProjectResponses = {
     /**
@@ -13867,20 +15135,25 @@ export type ProjectV1ProjectServiceRemoveCustomDomainData = {
     path: {
         /**
          * org_id
-         *
-         * The org_id path parameter.
          */
         org_id: string;
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
     };
     query?: never;
     url: '/organizations/{org_id}/projects/v1/{project_id}/custom-domain';
 };
+
+export type ProjectV1ProjectServiceRemoveCustomDomainErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type ProjectV1ProjectServiceRemoveCustomDomainError = ProjectV1ProjectServiceRemoveCustomDomainErrors[keyof ProjectV1ProjectServiceRemoveCustomDomainErrors];
 
 export type ProjectV1ProjectServiceRemoveCustomDomainResponses = {
     /**
@@ -13904,20 +15177,25 @@ export type ProjectV1ProjectServiceSetCustomDomainData = {
     path: {
         /**
          * org_id
-         *
-         * The org_id path parameter.
          */
         org_id: string;
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
     };
     query?: never;
     url: '/organizations/{org_id}/projects/v1/{project_id}/custom-domain';
 };
+
+export type ProjectV1ProjectServiceSetCustomDomainErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type ProjectV1ProjectServiceSetCustomDomainError = ProjectV1ProjectServiceSetCustomDomainErrors[keyof ProjectV1ProjectServiceSetCustomDomainErrors];
 
 export type ProjectV1ProjectServiceSetCustomDomainResponses = {
     /**
@@ -13941,20 +15219,25 @@ export type ProjectV1ProjectServiceMoveProjectData = {
     path: {
         /**
          * org_id
-         *
-         * The org_id path parameter.
          */
         org_id: string;
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
     };
     query?: never;
     url: '/organizations/{org_id}/projects/v1/{project_id}/move';
 };
+
+export type ProjectV1ProjectServiceMoveProjectErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type ProjectV1ProjectServiceMoveProjectError = ProjectV1ProjectServiceMoveProjectErrors[keyof ProjectV1ProjectServiceMoveProjectErrors];
 
 export type ProjectV1ProjectServiceMoveProjectResponses = {
     /**
@@ -13978,20 +15261,25 @@ export type ProjectV1ProjectServiceUpdateProjectNameData = {
     path: {
         /**
          * org_id
-         *
-         * The org_id path parameter.
          */
         org_id: string;
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
     };
     query?: never;
     url: '/organizations/{org_id}/projects/v1/{project_id}/name';
 };
+
+export type ProjectV1ProjectServiceUpdateProjectNameErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type ProjectV1ProjectServiceUpdateProjectNameError = ProjectV1ProjectServiceUpdateProjectNameErrors[keyof ProjectV1ProjectServiceUpdateProjectNameErrors];
 
 export type ProjectV1ProjectServiceUpdateProjectNameResponses = {
     /**
@@ -14009,29 +15297,31 @@ export type ProjectV1ProjectServiceUpdateVideoQualityData = {
     body: {
         /**
          * video_quality
-         *
-         * enum.defined_only = true
-         *
          */
         video_quality: CommonV1VideoQuality;
     };
     path: {
         /**
          * org_id
-         *
-         * The org_id path parameter.
          */
         org_id: string;
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
     };
     query?: never;
     url: '/organizations/{org_id}/projects/v1/{project_id}/video-quality';
 };
+
+export type ProjectV1ProjectServiceUpdateVideoQualityErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type ProjectV1ProjectServiceUpdateVideoQualityError = ProjectV1ProjectServiceUpdateVideoQualityErrors[keyof ProjectV1ProjectServiceUpdateVideoQualityErrors];
 
 export type ProjectV1ProjectServiceUpdateVideoQualityResponses = {
     /**
@@ -14052,13 +15342,20 @@ export type SupportV1SupportChatServiceListChatMessagesData = {
         after?: string;
         /**
          * limit
-         *
-         * The limit query parameter.
          */
         limit?: number;
     };
     url: '/support/v1/chat/messages';
 };
+
+export type SupportV1SupportChatServiceListChatMessagesErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type SupportV1SupportChatServiceListChatMessagesError = SupportV1SupportChatServiceListChatMessagesErrors[keyof SupportV1SupportChatServiceListChatMessagesErrors];
 
 export type SupportV1SupportChatServiceListChatMessagesResponses = {
     /**
@@ -14076,6 +15373,15 @@ export type SupportV1SupportChatServiceSendChatMessageData = {
     url: '/support/v1/chat/messages';
 };
 
+export type SupportV1SupportChatServiceSendChatMessageErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type SupportV1SupportChatServiceSendChatMessageError = SupportV1SupportChatServiceSendChatMessageErrors[keyof SupportV1SupportChatServiceSendChatMessageErrors];
+
 export type SupportV1SupportChatServiceSendChatMessageResponses = {
     /**
      * Success
@@ -14092,6 +15398,15 @@ export type SupportV1SupportTicketServiceListCategoriesData = {
     url: '/support/v1/categories';
 };
 
+export type SupportV1SupportTicketServiceListCategoriesErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type SupportV1SupportTicketServiceListCategoriesError = SupportV1SupportTicketServiceListCategoriesErrors[keyof SupportV1SupportTicketServiceListCategoriesErrors];
+
 export type SupportV1SupportTicketServiceListCategoriesResponses = {
     /**
      * Success
@@ -14106,21 +15421,26 @@ export type SupportV1SupportTicketServiceListTopics2Data = {
     path: {
         /**
          * category_id
-         *
-         * The category_id path parameter.
          */
         category_id: string;
     };
     query?: {
         /**
          * query
-         *
-         * The query query parameter.
          */
         query?: string;
     };
     url: '/support/v1/categories/{category_id}/topics';
 };
+
+export type SupportV1SupportTicketServiceListTopics2Errors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type SupportV1SupportTicketServiceListTopics2Error = SupportV1SupportTicketServiceListTopics2Errors[keyof SupportV1SupportTicketServiceListTopics2Errors];
 
 export type SupportV1SupportTicketServiceListTopics2Responses = {
     /**
@@ -14149,14 +15469,20 @@ export type SupportV1SupportTicketServiceListTicketsData = {
         'pagination.offset'?: number;
         /**
          * status
-         *
-         * enum.defined_only = true
-         *
          */
         status?: SupportV1TicketStatus;
     };
     url: '/support/v1/tickets';
 };
+
+export type SupportV1SupportTicketServiceListTicketsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type SupportV1SupportTicketServiceListTicketsError = SupportV1SupportTicketServiceListTicketsErrors[keyof SupportV1SupportTicketServiceListTicketsErrors];
 
 export type SupportV1SupportTicketServiceListTicketsResponses = {
     /**
@@ -14174,6 +15500,15 @@ export type SupportV1SupportTicketServiceCreateTicketData = {
     url: '/support/v1/tickets';
 };
 
+export type SupportV1SupportTicketServiceCreateTicketErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type SupportV1SupportTicketServiceCreateTicketError = SupportV1SupportTicketServiceCreateTicketErrors[keyof SupportV1SupportTicketServiceCreateTicketErrors];
+
 export type SupportV1SupportTicketServiceCreateTicketResponses = {
     /**
      * Success
@@ -14188,14 +15523,21 @@ export type SupportV1SupportTicketServiceGetTicketData = {
     path: {
         /**
          * ticket_id
-         *
-         * The ticket_id path parameter.
          */
         ticket_id: string;
     };
     query?: never;
     url: '/support/v1/tickets/{ticket_id}';
 };
+
+export type SupportV1SupportTicketServiceGetTicketErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type SupportV1SupportTicketServiceGetTicketError = SupportV1SupportTicketServiceGetTicketErrors[keyof SupportV1SupportTicketServiceGetTicketErrors];
 
 export type SupportV1SupportTicketServiceGetTicketResponses = {
     /**
@@ -14211,14 +15553,21 @@ export type SupportV1SupportTicketServiceCloseTicketData = {
     path: {
         /**
          * ticket_id
-         *
-         * The ticket_id path parameter.
          */
         ticket_id: string;
     };
     query?: never;
     url: '/support/v1/tickets/{ticket_id}/close';
 };
+
+export type SupportV1SupportTicketServiceCloseTicketErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type SupportV1SupportTicketServiceCloseTicketError = SupportV1SupportTicketServiceCloseTicketErrors[keyof SupportV1SupportTicketServiceCloseTicketErrors];
 
 export type SupportV1SupportTicketServiceCloseTicketResponses = {
     /**
@@ -14242,14 +15591,21 @@ export type SupportV1SupportTicketServiceAddTicketMessageData = {
     path: {
         /**
          * ticket_id
-         *
-         * The ticket_id path parameter.
          */
         ticket_id: string;
     };
     query?: never;
     url: '/support/v1/tickets/{ticket_id}/messages';
 };
+
+export type SupportV1SupportTicketServiceAddTicketMessageErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type SupportV1SupportTicketServiceAddTicketMessageError = SupportV1SupportTicketServiceAddTicketMessageErrors[keyof SupportV1SupportTicketServiceAddTicketMessageErrors];
 
 export type SupportV1SupportTicketServiceAddTicketMessageResponses = {
     /**
@@ -14266,19 +15622,24 @@ export type SupportV1SupportTicketServiceListTopicsData = {
     query?: {
         /**
          * category_id
-         *
-         * The category_id query parameter.
          */
         category_id?: string;
         /**
          * query
-         *
-         * The query query parameter.
          */
         query?: string;
     };
     url: '/support/v1/topics';
 };
+
+export type SupportV1SupportTicketServiceListTopicsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type SupportV1SupportTicketServiceListTopicsError = SupportV1SupportTicketServiceListTopicsErrors[keyof SupportV1SupportTicketServiceListTopicsErrors];
 
 export type SupportV1SupportTicketServiceListTopicsResponses = {
     /**
@@ -14294,20 +15655,25 @@ export type VideosV1AudioTrackServiceDeleteAllAudioTracksData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
          * video_id
-         *
-         * The video_id path parameter.
          */
         video_id: string;
     };
     query?: never;
     url: '/media/v1/projects/{project_id}/videos/{video_id}/audio-tracks';
 };
+
+export type VideosV1AudioTrackServiceDeleteAllAudioTracksErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type VideosV1AudioTrackServiceDeleteAllAudioTracksError = VideosV1AudioTrackServiceDeleteAllAudioTracksErrors[keyof VideosV1AudioTrackServiceDeleteAllAudioTracksErrors];
 
 export type VideosV1AudioTrackServiceDeleteAllAudioTracksResponses = {
     /**
@@ -14323,26 +15689,29 @@ export type VideosV1AudioTrackServiceDeleteAudioTracksByLanguageData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
          * video_id
-         *
-         * The video_id path parameter.
          */
         video_id: string;
         /**
          * language_code
-         *
-         * The language_code path parameter.
          */
         language_code: string;
     };
     query?: never;
     url: '/media/v1/projects/{project_id}/videos/{video_id}/audio-tracks/language/{language_code}';
 };
+
+export type VideosV1AudioTrackServiceDeleteAudioTracksByLanguageErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type VideosV1AudioTrackServiceDeleteAudioTracksByLanguageError = VideosV1AudioTrackServiceDeleteAudioTracksByLanguageErrors[keyof VideosV1AudioTrackServiceDeleteAudioTracksByLanguageErrors];
 
 export type VideosV1AudioTrackServiceDeleteAudioTracksByLanguageResponses = {
     /**
@@ -14370,20 +15739,25 @@ export type VideosV1AudioTrackServiceCreateAudioTrackUploadData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
          * video_id
-         *
-         * The video_id path parameter.
          */
         video_id: string;
     };
     query?: never;
     url: '/media/v1/projects/{project_id}/videos/{video_id}/audio-tracks/upload';
 };
+
+export type VideosV1AudioTrackServiceCreateAudioTrackUploadErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type VideosV1AudioTrackServiceCreateAudioTrackUploadError = VideosV1AudioTrackServiceCreateAudioTrackUploadErrors[keyof VideosV1AudioTrackServiceCreateAudioTrackUploadErrors];
 
 export type VideosV1AudioTrackServiceCreateAudioTrackUploadResponses = {
     /**
@@ -14399,26 +15773,29 @@ export type VideosV1AudioTrackServiceDeleteAudioTrackData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
          * video_id
-         *
-         * The video_id path parameter.
          */
         video_id: string;
         /**
          * track_id
-         *
-         * The track_id path parameter.
          */
         track_id: string;
     };
     query?: never;
     url: '/media/v1/projects/{project_id}/videos/{video_id}/audio-tracks/{track_id}';
 };
+
+export type VideosV1AudioTrackServiceDeleteAudioTrackErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type VideosV1AudioTrackServiceDeleteAudioTrackError = VideosV1AudioTrackServiceDeleteAudioTrackErrors[keyof VideosV1AudioTrackServiceDeleteAudioTrackErrors];
 
 export type VideosV1AudioTrackServiceDeleteAudioTrackResponses = {
     /**
@@ -14434,14 +15811,21 @@ export type VideosV1AudioTrackServiceListAudioTracksData = {
     path: {
         /**
          * video_id
-         *
-         * The video_id path parameter.
          */
         video_id: string;
     };
     query?: never;
     url: '/media/v1/videos/{video_id}/audio-tracks';
 };
+
+export type VideosV1AudioTrackServiceListAudioTracksErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type VideosV1AudioTrackServiceListAudioTracksError = VideosV1AudioTrackServiceListAudioTracksErrors[keyof VideosV1AudioTrackServiceListAudioTracksErrors];
 
 export type VideosV1AudioTrackServiceListAudioTracksResponses = {
     /**
@@ -14457,33 +15841,34 @@ export type VideosV1ChapterServiceUpdateVideoChapters2Data = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
          * video_id
-         *
-         * The video_id path parameter.
          */
         video_id: string;
     };
     query?: {
         /**
          * title
-         *
-         * The chapters.title query parameter.
          */
         'chapters.title'?: string;
         /**
          * start_time_sec
-         *
-         * The chapters.start_time_sec query parameter.
          */
         'chapters.start_time_sec'?: number;
     };
     url: '/media/v1/projects/{project_id}/videos/{video_id}/chapters';
 };
+
+export type VideosV1ChapterServiceUpdateVideoChapters2Errors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type VideosV1ChapterServiceUpdateVideoChapters2Error = VideosV1ChapterServiceUpdateVideoChapters2Errors[keyof VideosV1ChapterServiceUpdateVideoChapters2Errors];
 
 export type VideosV1ChapterServiceUpdateVideoChapters2Responses = {
     /**
@@ -14499,20 +15884,25 @@ export type VideosV1ChapterServiceGetVideoChaptersData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
          * video_id
-         *
-         * The video_id path parameter.
          */
         video_id: string;
     };
     query?: never;
     url: '/media/v1/projects/{project_id}/videos/{video_id}/chapters';
 };
+
+export type VideosV1ChapterServiceGetVideoChaptersErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type VideosV1ChapterServiceGetVideoChaptersError = VideosV1ChapterServiceGetVideoChaptersErrors[keyof VideosV1ChapterServiceGetVideoChaptersErrors];
 
 export type VideosV1ChapterServiceGetVideoChaptersResponses = {
     /**
@@ -14536,20 +15926,25 @@ export type VideosV1ChapterServiceUpdateVideoChaptersData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
          * video_id
-         *
-         * The video_id path parameter.
          */
         video_id: string;
     };
     query?: never;
     url: '/media/v1/projects/{project_id}/videos/{video_id}/chapters';
 };
+
+export type VideosV1ChapterServiceUpdateVideoChaptersErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type VideosV1ChapterServiceUpdateVideoChaptersError = VideosV1ChapterServiceUpdateVideoChaptersErrors[keyof VideosV1ChapterServiceUpdateVideoChaptersErrors];
 
 export type VideosV1ChapterServiceUpdateVideoChaptersResponses = {
     /**
@@ -14565,26 +15960,29 @@ export type VideosV1ChapterServiceDeleteVideoChapterData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
          * video_id
-         *
-         * The video_id path parameter.
          */
         video_id: string;
         /**
          * start_time_sec
-         *
-         * The start_time_sec path parameter.
          */
         start_time_sec: string;
     };
     query?: never;
     url: '/media/v1/projects/{project_id}/videos/{video_id}/chapters/{start_time_sec}';
 };
+
+export type VideosV1ChapterServiceDeleteVideoChapterErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type VideosV1ChapterServiceDeleteVideoChapterError = VideosV1ChapterServiceDeleteVideoChapterErrors[keyof VideosV1ChapterServiceDeleteVideoChapterErrors];
 
 export type VideosV1ChapterServiceDeleteVideoChapterResponses = {
     /**
@@ -14602,6 +16000,15 @@ export type VideosV1VideoConversionServiceMarkVideoFailedData = {
     url: '/internal/videos/mark-failed';
 };
 
+export type VideosV1VideoConversionServiceMarkVideoFailedErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type VideosV1VideoConversionServiceMarkVideoFailedError = VideosV1VideoConversionServiceMarkVideoFailedErrors[keyof VideosV1VideoConversionServiceMarkVideoFailedErrors];
+
 export type VideosV1VideoConversionServiceMarkVideoFailedResponses = {
     /**
      * Success
@@ -14617,6 +16024,15 @@ export type VideosV1VideoConversionServiceMarkVideoProcessedData = {
     query?: never;
     url: '/internal/videos/mark-processed';
 };
+
+export type VideosV1VideoConversionServiceMarkVideoProcessedErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type VideosV1VideoConversionServiceMarkVideoProcessedError = VideosV1VideoConversionServiceMarkVideoProcessedErrors[keyof VideosV1VideoConversionServiceMarkVideoProcessedErrors];
 
 export type VideosV1VideoConversionServiceMarkVideoProcessedResponses = {
     /**
@@ -14634,6 +16050,15 @@ export type VideosV1LanguageServiceListLanguagesData = {
     url: '/media/v1/languages';
 };
 
+export type VideosV1LanguageServiceListLanguagesErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type VideosV1LanguageServiceListLanguagesError = VideosV1LanguageServiceListLanguagesErrors[keyof VideosV1LanguageServiceListLanguagesErrors];
+
 export type VideosV1LanguageServiceListLanguagesResponses = {
     /**
      * Success
@@ -14648,20 +16073,25 @@ export type VideosV1SubtitleServiceDeleteAllSubtitlesData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
          * video_id
-         *
-         * The video_id path parameter.
          */
         video_id: string;
     };
     query?: never;
     url: '/media/v1/projects/{project_id}/videos/{video_id}/subtitles';
 };
+
+export type VideosV1SubtitleServiceDeleteAllSubtitlesErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type VideosV1SubtitleServiceDeleteAllSubtitlesError = VideosV1SubtitleServiceDeleteAllSubtitlesErrors[keyof VideosV1SubtitleServiceDeleteAllSubtitlesErrors];
 
 export type VideosV1SubtitleServiceDeleteAllSubtitlesResponses = {
     /**
@@ -14677,26 +16107,29 @@ export type VideosV1SubtitleServiceDeleteSubtitlesByLanguageData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
          * video_id
-         *
-         * The video_id path parameter.
          */
         video_id: string;
         /**
          * language_code
-         *
-         * The language_code path parameter.
          */
         language_code: string;
     };
     query?: never;
     url: '/media/v1/projects/{project_id}/videos/{video_id}/subtitles/language/{language_code}';
 };
+
+export type VideosV1SubtitleServiceDeleteSubtitlesByLanguageErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type VideosV1SubtitleServiceDeleteSubtitlesByLanguageError = VideosV1SubtitleServiceDeleteSubtitlesByLanguageErrors[keyof VideosV1SubtitleServiceDeleteSubtitlesByLanguageErrors];
 
 export type VideosV1SubtitleServiceDeleteSubtitlesByLanguageResponses = {
     /**
@@ -14724,20 +16157,25 @@ export type VideosV1SubtitleServiceCreateSubtitleUploadData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
          * video_id
-         *
-         * The video_id path parameter.
          */
         video_id: string;
     };
     query?: never;
     url: '/media/v1/projects/{project_id}/videos/{video_id}/subtitles/upload';
 };
+
+export type VideosV1SubtitleServiceCreateSubtitleUploadErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type VideosV1SubtitleServiceCreateSubtitleUploadError = VideosV1SubtitleServiceCreateSubtitleUploadErrors[keyof VideosV1SubtitleServiceCreateSubtitleUploadErrors];
 
 export type VideosV1SubtitleServiceCreateSubtitleUploadResponses = {
     /**
@@ -14753,26 +16191,29 @@ export type VideosV1SubtitleServiceDeleteSubtitleData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
          * video_id
-         *
-         * The video_id path parameter.
          */
         video_id: string;
         /**
          * subtitle_id
-         *
-         * The subtitle_id path parameter.
          */
         subtitle_id: string;
     };
     query?: never;
     url: '/media/v1/projects/{project_id}/videos/{video_id}/subtitles/{subtitle_id}';
 };
+
+export type VideosV1SubtitleServiceDeleteSubtitleErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type VideosV1SubtitleServiceDeleteSubtitleError = VideosV1SubtitleServiceDeleteSubtitleErrors[keyof VideosV1SubtitleServiceDeleteSubtitleErrors];
 
 export type VideosV1SubtitleServiceDeleteSubtitleResponses = {
     /**
@@ -14788,14 +16229,21 @@ export type VideosV1SubtitleServiceListSubtitlesData = {
     path: {
         /**
          * video_id
-         *
-         * The video_id path parameter.
          */
         video_id: string;
     };
     query?: never;
     url: '/media/v1/videos/{video_id}/subtitles';
 };
+
+export type VideosV1SubtitleServiceListSubtitlesErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type VideosV1SubtitleServiceListSubtitlesError = VideosV1SubtitleServiceListSubtitlesErrors[keyof VideosV1SubtitleServiceListSubtitlesErrors];
 
 export type VideosV1SubtitleServiceListSubtitlesResponses = {
     /**
@@ -14811,8 +16259,6 @@ export type VideosV1VideoServiceListVideosData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
     };
@@ -14831,19 +16277,24 @@ export type VideosV1VideoServiceListVideosData = {
         'pagination.offset'?: number;
         /**
          * sort_field
-         *
-         * The sort_field query parameter.
          */
         sort_field?: string;
         /**
          * sort_direction
-         *
-         * The sort_direction query parameter.
          */
         sort_direction?: string;
     };
     url: '/media/v1/projects/{project_id}/videos';
 };
+
+export type VideosV1VideoServiceListVideosErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type VideosV1VideoServiceListVideosError = VideosV1VideoServiceListVideosErrors[keyof VideosV1VideoServiceListVideosErrors];
 
 export type VideosV1VideoServiceListVideosResponses = {
     /**
@@ -14875,14 +16326,21 @@ export type VideosV1VideoServiceCreateVideoUploadData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
     };
     query?: never;
     url: '/media/v1/projects/{project_id}/videos/upload';
 };
+
+export type VideosV1VideoServiceCreateVideoUploadErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type VideosV1VideoServiceCreateVideoUploadError = VideosV1VideoServiceCreateVideoUploadErrors[keyof VideosV1VideoServiceCreateVideoUploadErrors];
 
 export type VideosV1VideoServiceCreateVideoUploadResponses = {
     /**
@@ -14898,20 +16356,25 @@ export type VideosV1VideoServiceDeleteVideoData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
          * video_id
-         *
-         * The video_id path parameter.
          */
         video_id: string;
     };
     query?: never;
     url: '/media/v1/projects/{project_id}/videos/{video_id}';
 };
+
+export type VideosV1VideoServiceDeleteVideoErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type VideosV1VideoServiceDeleteVideoError = VideosV1VideoServiceDeleteVideoErrors[keyof VideosV1VideoServiceDeleteVideoErrors];
 
 export type VideosV1VideoServiceDeleteVideoResponses = {
     /**
@@ -14929,29 +16392,31 @@ export type VideosV1VideoServiceUpdateVideoVisibilityData = {
     body: {
         /**
          * visibility
-         *
-         * enum.defined_only = true
-         *
          */
         visibility?: CommonV1Visibility;
     };
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
          * video_id
-         *
-         * The video_id path parameter.
          */
         video_id: string;
     };
     query?: never;
     url: '/media/v1/projects/{project_id}/videos/{video_id}/visibility';
 };
+
+export type VideosV1VideoServiceUpdateVideoVisibilityErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type VideosV1VideoServiceUpdateVideoVisibilityError = VideosV1VideoServiceUpdateVideoVisibilityErrors[keyof VideosV1VideoServiceUpdateVideoVisibilityErrors];
 
 export type VideosV1VideoServiceUpdateVideoVisibilityResponses = {
     /**
@@ -14967,14 +16432,21 @@ export type VideosV1VideoServiceGetVideoData = {
     path: {
         /**
          * video_id
-         *
-         * The video_id path parameter.
          */
         video_id: string;
     };
     query?: never;
     url: '/media/v1/videos/{video_id}';
 };
+
+export type VideosV1VideoServiceGetVideoErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type VideosV1VideoServiceGetVideoError = VideosV1VideoServiceGetVideoErrors[keyof VideosV1VideoServiceGetVideoErrors];
 
 export type VideosV1VideoServiceGetVideoResponses = {
     /**
@@ -14990,8 +16462,6 @@ export type WebhooksV1WebhookServiceListEndpointsData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
     };
@@ -15011,6 +16481,15 @@ export type WebhooksV1WebhookServiceListEndpointsData = {
     };
     url: '/webhooks/v1/projects/{project_id}/endpoints';
 };
+
+export type WebhooksV1WebhookServiceListEndpointsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type WebhooksV1WebhookServiceListEndpointsError = WebhooksV1WebhookServiceListEndpointsErrors[keyof WebhooksV1WebhookServiceListEndpointsErrors];
 
 export type WebhooksV1WebhookServiceListEndpointsResponses = {
     /**
@@ -15038,14 +16517,21 @@ export type WebhooksV1WebhookServiceCreateEndpointData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
     };
     query?: never;
     url: '/webhooks/v1/projects/{project_id}/endpoints';
 };
+
+export type WebhooksV1WebhookServiceCreateEndpointErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type WebhooksV1WebhookServiceCreateEndpointError = WebhooksV1WebhookServiceCreateEndpointErrors[keyof WebhooksV1WebhookServiceCreateEndpointErrors];
 
 export type WebhooksV1WebhookServiceCreateEndpointResponses = {
     /**
@@ -15061,20 +16547,25 @@ export type WebhooksV1WebhookServiceDeleteEndpointData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
          * endpoint_id
-         *
-         * The endpoint_id path parameter.
          */
         endpoint_id: string;
     };
     query?: never;
     url: '/webhooks/v1/projects/{project_id}/endpoints/{endpoint_id}';
 };
+
+export type WebhooksV1WebhookServiceDeleteEndpointErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type WebhooksV1WebhookServiceDeleteEndpointError = WebhooksV1WebhookServiceDeleteEndpointErrors[keyof WebhooksV1WebhookServiceDeleteEndpointErrors];
 
 export type WebhooksV1WebhookServiceDeleteEndpointResponses = {
     /**
@@ -15090,20 +16581,25 @@ export type WebhooksV1WebhookServiceGetEndpointData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
          * endpoint_id
-         *
-         * The endpoint_id path parameter.
          */
         endpoint_id: string;
     };
     query?: never;
     url: '/webhooks/v1/projects/{project_id}/endpoints/{endpoint_id}';
 };
+
+export type WebhooksV1WebhookServiceGetEndpointErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type WebhooksV1WebhookServiceGetEndpointError = WebhooksV1WebhookServiceGetEndpointErrors[keyof WebhooksV1WebhookServiceGetEndpointErrors];
 
 export type WebhooksV1WebhookServiceGetEndpointResponses = {
     /**
@@ -15135,20 +16631,25 @@ export type WebhooksV1WebhookServiceUpdateEndpointData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
          * endpoint_id
-         *
-         * The endpoint_id path parameter.
          */
         endpoint_id: string;
     };
     query?: never;
     url: '/webhooks/v1/projects/{project_id}/endpoints/{endpoint_id}';
 };
+
+export type WebhooksV1WebhookServiceUpdateEndpointErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type WebhooksV1WebhookServiceUpdateEndpointError = WebhooksV1WebhookServiceUpdateEndpointErrors[keyof WebhooksV1WebhookServiceUpdateEndpointErrors];
 
 export type WebhooksV1WebhookServiceUpdateEndpointResponses = {
     /**
@@ -15164,14 +16665,10 @@ export type WebhooksV1WebhookServiceListEndpointAttemptsData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
          * endpoint_id
-         *
-         * The endpoint_id path parameter.
          */
         endpoint_id: string;
     };
@@ -15192,6 +16689,15 @@ export type WebhooksV1WebhookServiceListEndpointAttemptsData = {
     url: '/webhooks/v1/projects/{project_id}/endpoints/{endpoint_id}/attempts';
 };
 
+export type WebhooksV1WebhookServiceListEndpointAttemptsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type WebhooksV1WebhookServiceListEndpointAttemptsError = WebhooksV1WebhookServiceListEndpointAttemptsErrors[keyof WebhooksV1WebhookServiceListEndpointAttemptsErrors];
+
 export type WebhooksV1WebhookServiceListEndpointAttemptsResponses = {
     /**
      * Success
@@ -15206,26 +16712,29 @@ export type WebhooksV1WebhookServiceReplayEventData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
          * endpoint_id
-         *
-         * The endpoint_id path parameter.
          */
         endpoint_id: string;
         /**
          * event_id
-         *
-         * The event_id path parameter.
          */
         event_id: string;
     };
     query?: never;
     url: '/webhooks/v1/projects/{project_id}/endpoints/{endpoint_id}/events/{event_id}/replay';
 };
+
+export type WebhooksV1WebhookServiceReplayEventErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type WebhooksV1WebhookServiceReplayEventError = WebhooksV1WebhookServiceReplayEventErrors[keyof WebhooksV1WebhookServiceReplayEventErrors];
 
 export type WebhooksV1WebhookServiceReplayEventResponses = {
     /**
@@ -15241,20 +16750,25 @@ export type WebhooksV1WebhookServiceRotateEndpointSecretData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
          * endpoint_id
-         *
-         * The endpoint_id path parameter.
          */
         endpoint_id: string;
     };
     query?: never;
     url: '/webhooks/v1/projects/{project_id}/endpoints/{endpoint_id}/rotate-secret';
 };
+
+export type WebhooksV1WebhookServiceRotateEndpointSecretErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type WebhooksV1WebhookServiceRotateEndpointSecretError = WebhooksV1WebhookServiceRotateEndpointSecretErrors[keyof WebhooksV1WebhookServiceRotateEndpointSecretErrors];
 
 export type WebhooksV1WebhookServiceRotateEndpointSecretResponses = {
     /**
@@ -15270,20 +16784,25 @@ export type WebhooksV1WebhookServiceSendTestEventData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
         /**
          * endpoint_id
-         *
-         * The endpoint_id path parameter.
          */
         endpoint_id: string;
     };
     query?: never;
     url: '/webhooks/v1/projects/{project_id}/endpoints/{endpoint_id}/test';
 };
+
+export type WebhooksV1WebhookServiceSendTestEventErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type WebhooksV1WebhookServiceSendTestEventError = WebhooksV1WebhookServiceSendTestEventErrors[keyof WebhooksV1WebhookServiceSendTestEventErrors];
 
 export type WebhooksV1WebhookServiceSendTestEventResponses = {
     /**
@@ -15299,8 +16818,6 @@ export type WebhooksV1WebhookServiceListEventsData = {
     path: {
         /**
          * project_id
-         *
-         * The project_id path parameter.
          */
         project_id: string;
     };
@@ -15320,6 +16837,15 @@ export type WebhooksV1WebhookServiceListEventsData = {
     };
     url: '/webhooks/v1/projects/{project_id}/events';
 };
+
+export type WebhooksV1WebhookServiceListEventsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type WebhooksV1WebhookServiceListEventsError = WebhooksV1WebhookServiceListEventsErrors[keyof WebhooksV1WebhookServiceListEventsErrors];
 
 export type WebhooksV1WebhookServiceListEventsResponses = {
     /**
