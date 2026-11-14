@@ -54,7 +54,8 @@ export interface LoginErrorResponse {
  * OAuth 2.0 error response from token endpoint
  */
 export interface OAuth2ErrorResponse {
-  error: "invalid_grant" | string;
+  // `string & {}` keeps "invalid_grant" in editor suggestions; a bare `| string` absorbs it.
+  error: "invalid_grant" | (string & {});
   error_description: string;
 }
 

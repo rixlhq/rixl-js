@@ -15,6 +15,24 @@ function isWireErrorBody(error: unknown): error is WireErrorBody {
   return typeof error === "object" && error !== null;
 }
 
+function errorMessage(error: unknown, body?: WireErrorBody): string {
+  return body?.error || body?.details || (typeof error === "string" ? error : "Request failed");
+}
+
+// The generated client throws the parsed error body (a plain object or string),
+// which defeats every instanceof-based status mapping downstream. Wrap it into
+// an ApiError carrying the HTTP status so apiCall error maps and consumers can
+// handle errors by code.
+function toApiError(error: unknown, response?: Response, request?: Request): Error {
+  if (error instanceof Error) {
+    return error;
+  }
+  const body = isWireErrorBody(error) ? error : undefined;
+  const status = response?.status ?? body?.code ?? 0;
+  const endpoint = request ? new URL(request.url).pathname : "";
+  return new ApiError(errorMessage(error, body), status, endpoint, error);
+}
+
 type TokenResolver = () => Promise<string | undefined>;
 
 // Shared across copies of this package so a duplicate copy cannot end up with a
@@ -112,19 +130,6 @@ export function configureSdkClient(): void {
       return request;
     });
 
-    // The generated client throws the parsed error body (a plain object or string),
-    // which defeats every instanceof-based status mapping downstream. Wrap it into
-    // an ApiError carrying the HTTP status so apiCall error maps and consumers can
-    // handle errors by code.
-    client.interceptors.error.use((error, response, request) => {
-      if (error instanceof Error) {
-        return error;
-      }
-      const body = isWireErrorBody(error) ? error : undefined;
-      const status = response?.status ?? body?.code ?? 0;
-      const message = body?.error || body?.details || (typeof error === "string" ? error : "Request failed");
-      const endpoint = request ? new URL(request.url).pathname : "";
-      return new ApiError(message, status, endpoint, error);
-    });
+    client.interceptors.error.use(toApiError);
   });
 }
