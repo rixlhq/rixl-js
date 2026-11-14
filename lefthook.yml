@@ -3,11 +3,11 @@ pre-commit:
   commands:
     check:
       glob: "*.{js,ts}"
-      run: vp check --fix {staged_files}
+      run: vp check --fix {staged_files} < /dev/null
       stage_fixed: true
     format:
       glob: "*.{json,md,yaml,yml}"
-      run: vp fmt --write {staged_files}
+      run: vp fmt --write {staged_files} < /dev/null
       stage_fixed: true
 
 pre-push:
