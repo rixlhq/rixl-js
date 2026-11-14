@@ -1,13 +1,13 @@
 schema: spec-driven
 
-# Project context (optional)
-# This is shown to AI when creating artifacts.
-# Add your tech stack, conventions, style guides, domain knowledge, etc.
-# Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
+context: |
+  @rixl/sdk: the TypeScript SDK for the Rixl API, published to npm and used by
+  dashboard, internal-dashboard, blog-posts and customer apps.
+  src/generated/ is generated from rixlhq/openapi and never edited by hand;
+  src/auth/ is the hand-written auth layer (providers, passkeys, PKCE, sessions).
+  Toolchain: Vite+ (vp check, vp test, vp pack). Rules: .agents/rules/.
+  Removing or changing anything src/index.ts exports is a breaking change.
+  Conventional commits; Release Please versions and publishes.
 
 # Per-artifact rules (optional)
 # Add custom rules for specific artifacts.
