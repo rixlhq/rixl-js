@@ -18,7 +18,7 @@ export interface VerificationSentResponse {
   code_sent?: boolean;
 }
 
-export interface Token {
+interface Token {
   access_token: string;
   refresh_token: string;
   expires_in: number;

@@ -1,5 +1,5 @@
 /** An OpenID Connect authorization code, with what the backend needs to redeem it. */
-export interface AuthorizationCode {
+interface AuthorizationCode {
   code: string;
   codeVerifier: string;
   redirectUri: string;
