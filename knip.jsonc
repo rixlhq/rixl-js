@@ -1,0 +1,17 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "entry": [
+    // Claude Code runs this hook from .agents/settings.json; Knip doesn't read it.
+    ".agents/hooks/*.mjs",
+    // vite.config.ts registers it as a string URL when module.registerHooks is missing.
+    "scripts/ts-compat-hook.mjs",
+    // Type-checked by `vp run examples:check`; they show consumers how to use the SDK.
+    "examples/*.ts",
+  ],
+  "ignoreDependencies": [
+    // `vp test --ui` loads it; Knip only follows `vitest --ui`.
+    "@vitest/ui",
+  ],
+  // Generated from the OpenAPI spec; unused operations are the spec's, not dead code.
+  "ignore": ["src/generated/**"],
+}

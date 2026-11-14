@@ -6,7 +6,7 @@ import {apiCall} from "../api/utils";
 import {persistTokens} from "../api/tokens";
 import {HTTP_STATUS} from "../constants";
 import type {LoginErrorResponse, TwoFactorAuthMethod, TwoFactorResponse} from "./types";
-import type {AuthV1AuthMethod, AuthV1LoginResponse} from "../../generated/types.gen";
+import type {AuthV1LoginResponse} from "../../generated/types.gen";
 
 /**
  * Maps the AuthV1AuthMethod values returned by the gateway to the SDK's
@@ -18,7 +18,8 @@ import type {AuthV1AuthMethod, AuthV1LoginResponse} from "../../generated/types.
 function toTwoFactorAuthMethods(methods: AuthV1LoginResponse["authentication"]): TwoFactorAuthMethod[] {
   if (!methods) return [];
   const mapped: TwoFactorAuthMethod[] = [];
-  for (const m of methods as Array<AuthV1AuthMethod | string>) {
+  // The gateway may send either serialization (see above), so compare as plain strings.
+  for (const m of methods as string[]) {
     if (m === "AUTH_METHOD_PASSKEY" || m === "passkey") {
       mapped.push("passkey");
     } else if (m === "AUTH_METHOD_TOTP" || m === "totp") {

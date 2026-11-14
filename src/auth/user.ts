@@ -8,7 +8,7 @@ import {
   authV1OtpServiceDeleteOtp,
   authV1OtpServiceRegenerateBackupCodes,
 } from "../generated/sdk.gen";
-import type {AuthV1Policy} from "../generated/types.gen";
+import type {AuthV1Policy, AuthV1UserInfo} from "../generated/types.gen";
 import {validateInput} from "./validation/base";
 import {UpdateNameSchema, UpdateUsernameSchema} from "./validation/user";
 import {VerifyOTPCodeSchema} from "./validation/auth";
@@ -56,6 +56,26 @@ export interface UserInfo {
   permissions: string[];
 }
 
+// The gateway omits empty fields; UserInfo always has them, as "" or [].
+const text = (value?: string | null): string => value ?? "";
+
+function toUserInfo(data: AuthV1UserInfo): UserInfo {
+  return {
+    id: text(data.id),
+    username: text(data.username),
+    email: text(data.email),
+    email_verified: data.email_verified ?? false,
+    first_name: text(data.first_name),
+    last_name: text(data.last_name),
+    image_url: text(data.image_url),
+    language_code: text(data.language_code),
+    country_code: text(data.country_code),
+    active_org_id: text(data.active_org_id),
+    policies: data.policies ?? [],
+    permissions: data.permissions ?? [],
+  };
+}
+
 export const getUserInfo = async (userId?: string): Promise<UserInfo> => {
   return apiCall(
     async () => {
@@ -64,20 +84,7 @@ export const getUserInfo = async (userId?: string): Promise<UserInfo> => {
         throwOnError: true,
       });
 
-      return {
-        id: data.id ?? "",
-        username: data.username ?? "",
-        email: data.email ?? "",
-        email_verified: data.email_verified ?? false,
-        first_name: data.first_name ?? "",
-        last_name: data.last_name ?? "",
-        image_url: data.image_url ?? "",
-        language_code: data.language_code ?? "",
-        country_code: data.country_code ?? "",
-        active_org_id: data.active_org_id ?? "",
-        policies: data.policies ?? [],
-        permissions: data.permissions ?? [],
-      };
+      return toUserInfo(data);
     },
     {
       [HTTP_STATUS.UNAUTHORIZED]: () => new Error("Token is missing or invalid; user is not authenticated."),

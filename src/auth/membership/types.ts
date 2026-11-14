@@ -15,7 +15,7 @@ export enum MembershipState {
   DECLINE = "decline",
 }
 
-export interface Common {
+interface Common {
   id: string;
   user_id: string;
   org_id: string;

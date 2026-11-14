@@ -6,6 +6,7 @@ import {
   authV1DomainServiceRemoveDomain,
 } from "../../generated/sdk.gen";
 import {apiCall} from "../api/utils";
+import {ApiError} from "../api/types";
 import {HTTP_STATUS} from "../constants";
 import {validateInput} from "../validation/base";
 import {AddDomainSchema, UpdateAutoJoinSchema} from "../validation/domain";
@@ -23,8 +24,9 @@ export const getDomainStatus = async (orgId: string): Promise<DomainResponse | n
           throwOnError: true,
         });
         return toDomainResponse(data);
-      } catch (error: any) {
-        if (error?.code === HTTP_STATUS.NOT_FOUND) {
+      } catch (error) {
+        // The client's error interceptor wraps every failed response in an ApiError with the HTTP status.
+        if (error instanceof ApiError && error.status === HTTP_STATUS.NOT_FOUND) {
           return null;
         }
         throw error;

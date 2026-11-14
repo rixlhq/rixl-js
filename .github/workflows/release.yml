@@ -31,15 +31,6 @@ jobs:
           cache: "true"
           run-install: "true"
 
-      - name: Format check
-        run: vp fmt --check
-
-      - name: Lint and type-check
-        run: vp check
-
-      - name: Check examples
-        run: vp run examples:check
-
       - name: Verify generated SDK is up-to-date
         run: |
           RIXL_GENERATE=true vp pack
@@ -49,12 +40,13 @@ jobs:
             exit 1
           fi
 
-      - parallel:
-          - name: Build SDK
-            run: vp pack
-
-          - name: Run tests with coverage
-            run: vp test --coverage --run
+      # The gate, before anything is tagged or published, on PRs and on main
+      # alike: vp check (format, lint caps, types), the lint-suppression check,
+      # Knip, the examples typecheck, tests with the coverage floor, the build,
+      # the size budget (.size-limit.json) and publint. The steps run in order:
+      # build and test conflict when run in parallel.
+      - name: Gate
+        run: vp run ci
 
       - name: Report coverage to PR
         if: github.event_name == 'pull_request'

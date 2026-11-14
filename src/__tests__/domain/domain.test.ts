@@ -1,6 +1,7 @@
 import {describe, it, expect, beforeEach, vi} from "vite-plus/test";
 import {DomainStatus} from "@/domain";
 import * as initialization from "../../auth/initialization";
+import {ApiError} from "../../auth/api/types";
 
 const mockAuthV1DomainServiceGetDomainStatus = vi.fn();
 const mockAuthV1DomainServiceCreateDomainVerification = vi.fn();
@@ -60,10 +61,8 @@ describe("Domain Management Module", () => {
     });
 
     it("should return null when no domain is found (404)", async () => {
-      mockAuthV1DomainServiceGetDomainStatus.mockRejectedValue({
-        error: "not_found",
-        code: 404,
-      });
+      // The SDK client's error interceptor turns every failed response into an ApiError carrying the HTTP status.
+      mockAuthV1DomainServiceGetDomainStatus.mockRejectedValue(new ApiError("not_found", 404, "/auth/v1/orgs/org123/domain"));
 
       const result = await getDomainStatus("org123");
 
@@ -100,12 +99,9 @@ describe("Domain Management Module", () => {
     });
 
     it("should handle unauthorized error", async () => {
-      mockAuthV1DomainServiceGetDomainStatus.mockRejectedValue({
-        error: "unauthorized",
-        code: 401,
-      });
+      mockAuthV1DomainServiceGetDomainStatus.mockRejectedValue(new ApiError("unauthorized", 401, "/auth/v1/orgs/org123/domain"));
 
-      await expect(getDomainStatus("org123")).rejects.toThrow();
+      await expect(getDomainStatus("org123")).rejects.toThrow("Not authorized to view domain settings");
     });
   });
 
