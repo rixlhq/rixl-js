@@ -326,5 +326,11 @@ describe("Social Connections Module", () => {
 
       expect(callOrder).toEqual(["setSocialConnectAttempt", "login"]);
     });
+
+    it("rejects when login fails, so the caller can show the error", async () => {
+      mockLogin.mockRejectedValueOnce(new Error("google provider is not configured."));
+
+      await expect(connectSocial("google")).rejects.toThrow("google provider is not configured.");
+    });
   });
 });
