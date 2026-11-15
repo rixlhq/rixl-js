@@ -4,6 +4,7 @@ import {AuthProvider} from "./types";
 import {hasAuthorizationCode} from "./authorization-code";
 import type {ProviderCredential} from "./credential";
 import {readTelegramCode} from "./telegram";
+import {readGitHubCode} from "./github";
 
 /**
  * Extracts the provider identifier from a state parameter
@@ -56,10 +57,17 @@ const telegramCode: ProviderCallbackReader = {
   read: readTelegramCode,
 };
 
+const githubCode: ProviderCallbackReader = {
+  provider: AuthProvider.GITHUB,
+  matches: () => !!readGitHubCode(),
+  read: readGitHubCode,
+};
+
 // Checked in order, and the first match wins.
 const CALLBACK_READERS: ReadonlyArray<ProviderCallbackReader> = [
   tokenParam(AuthProvider.TELEGRAM_MINI_APP),
   telegramCode,
+  githubCode,
   idTokenWithState(AuthProvider.GOOGLE),
   idTokenWithState(AuthProvider.APPLE),
   idTokenWithState(AuthProvider.MICROSOFT),

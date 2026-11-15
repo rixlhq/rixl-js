@@ -1,6 +1,6 @@
 import {atom, type WritableAtom} from "nanostores";
 import {refreshTokens} from "./api/refresh-tokens";
-import {appleAuthUrl, AuthProvider, googleAuthUrl, telegramAuthUrl, microsoftAuthUrl} from "./providers";
+import {appleAuthUrl, AuthProvider, googleAuthUrl, telegramAuthUrl, microsoftAuthUrl, githubAuthUrl} from "./providers";
 import {initDeferred} from "./initialization";
 import {initVals, readStoreCookies, setStoreCookie} from "./cookie";
 import {user} from "./userStore";
@@ -93,6 +93,8 @@ const getProviderUrlAtom = (provider: ProviderType): WritableAtom<string | null>
       return microsoftAuthUrl;
     case "telegram":
       return telegramAuthUrl;
+    case "github":
+      return githubAuthUrl;
     default:
       return undefined;
   }

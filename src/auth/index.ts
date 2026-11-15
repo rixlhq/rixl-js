@@ -22,7 +22,7 @@ export type {User, TokenResponse, LimitedScopeTokenResponse, RequiresAction} fro
 export {initClient, type AuthClientConfig} from "./init";
 
 // Provider exports
-export {type GoogleProviderConfig, type AppleProviderConfig, type TelegramProviderConfig} from "./providers";
+export {type GoogleProviderConfig, type AppleProviderConfig, type TelegramProviderConfig, type GitHubProviderConfig} from "./providers";
 
 export {
   leaveOrganization,

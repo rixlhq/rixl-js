@@ -3,7 +3,13 @@ import {apiURL} from "./auth/api-url";
 import {configureAllClients} from "./client-registry";
 import {configureSdkClient, setTokenResolver} from "./auth/api/sdk-client";
 import {exchangeApiKey, getPlatformToken} from "./platform/platformAuthStore";
-import type {GoogleProviderConfig, AppleProviderConfig, MicrosoftProviderConfig, TelegramProviderConfig} from "./auth/providers";
+import type {
+  GoogleProviderConfig,
+  AppleProviderConfig,
+  MicrosoftProviderConfig,
+  TelegramProviderConfig,
+  GitHubProviderConfig,
+} from "./auth/providers";
 
 export interface AuthConfig {
   loginRedirectUrl?: string;
@@ -11,6 +17,7 @@ export interface AuthConfig {
   apple?: AppleProviderConfig;
   microsoft?: MicrosoftProviderConfig;
   telegram?: TelegramProviderConfig;
+  github?: GitHubProviderConfig;
 }
 
 export interface ConnectConfig {
@@ -54,6 +61,7 @@ export const connect = async (config: ConnectConfig): Promise<string | undefined
       appleProvider: config.auth.apple,
       microsoftProvider: config.auth.microsoft,
       telegramProvider: config.auth.telegram,
+      githubProvider: config.auth.github,
     });
   }
 

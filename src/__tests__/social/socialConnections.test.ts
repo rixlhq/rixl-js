@@ -15,6 +15,7 @@ vi.mock("../../generated/sdk.gen", () => ({
 vi.mock("../../auth/authStore", () => ({
   getToken: vi.fn().mockResolvedValue("mock-token"),
   login: vi.fn(),
+  setTokens: vi.fn(),
 }));
 
 vi.mock("../../auth/social/socialState", () => ({
@@ -79,6 +80,14 @@ describe("Social Connections Module", () => {
         },
       ];
       expect(result).toEqual(expected);
+    });
+
+    it("maps GitHub accounts returned by auth-api", async () => {
+      mockGetAuthV1Providers.mockResolvedValue({
+        data: {providers: [{provider: "EXTERNAL_ACCOUNT_PROVIDER_GITHUB", username: "octocat"}]},
+      });
+
+      await expect(listSocials()).resolves.toEqual([{provider: "github", username: "octocat"}]);
     });
 
     it("should return empty array when no providers connected", async () => {
@@ -146,6 +155,23 @@ describe("Social Connections Module", () => {
 
       expect(result).toHaveLength(1);
       expect(result[0]?.provider).toBe("google");
+    });
+  });
+
+  it("links a GitHub authorization code with the authenticated RIXL session", async () => {
+    mockPostAuthV1ProvidersConnect.mockResolvedValue({data: {access_token: "next", refresh_token: "rotated", expires_in: 3600}});
+
+    await connectSocialInternal("github", {
+      authorizationCode: {code: "one-use-code", codeVerifier: "pkce-verifier", redirectUri: "https://app.example.com/github/callback"},
+    });
+
+    const request = mockPostAuthV1ProvidersConnect.mock.calls[0][0];
+    expect(request.headers).toEqual({Authorization: "Bearer mock-token"});
+    expect(request.body).toMatchObject({
+      provider: "EXTERNAL_ACCOUNT_PROVIDER_GITHUB",
+      token: "one-use-code",
+      code_verifier: "pkce-verifier",
+      redirect_uri: "https://app.example.com/github/callback",
     });
   });
 

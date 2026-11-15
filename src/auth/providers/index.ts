@@ -1,5 +1,6 @@
 // Export provider types
 export {AuthProvider} from "./types";
+export {githubConfig, githubAuthUrl, updateGitHubAuthUrl, type GitHubProviderConfig} from "./github";
 
 // Export provider configurations and URL atoms
 export {googleConfig, googleAuthUrl, updateGoogleAuthUrl, type GoogleProviderConfig} from "./google";
