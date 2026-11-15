@@ -14,7 +14,7 @@ import {HTTP_STATUS} from "../constants";
 import {validateInput} from "../validation/base";
 import {ConnectProviderSchema} from "../validation/auth";
 
-export type ProviderType = "google" | "apple" | "microsoft" | "facebook" | "telegram";
+export type ProviderType = "google" | "apple" | "microsoft" | "facebook" | "telegram" | "github";
 
 export interface ConnectedProvider {
   provider: ProviderType;
@@ -31,14 +31,16 @@ const PROVIDER_TO_PROTO: Record<ProviderType, AuthV1ExternalAccountProvider> = {
   microsoft: "EXTERNAL_ACCOUNT_PROVIDER_MICROSOFT",
   facebook: "EXTERNAL_ACCOUNT_PROVIDER_FACEBOOK",
   telegram: "EXTERNAL_ACCOUNT_PROVIDER_TELEGRAM",
+  github: "EXTERNAL_ACCOUNT_PROVIDER_GITHUB" as AuthV1ExternalAccountProvider,
 };
 
-const PROVIDER_FROM_PROTO: Partial<Record<AuthV1ExternalAccountProvider, ProviderType>> = {
+const PROVIDER_FROM_PROTO: Record<string, ProviderType | undefined> = {
   EXTERNAL_ACCOUNT_PROVIDER_GOOGLE: "google",
   EXTERNAL_ACCOUNT_PROVIDER_APPLE: "apple",
   EXTERNAL_ACCOUNT_PROVIDER_MICROSOFT: "microsoft",
   EXTERNAL_ACCOUNT_PROVIDER_FACEBOOK: "facebook",
   EXTERNAL_ACCOUNT_PROVIDER_TELEGRAM: "telegram",
+  EXTERNAL_ACCOUNT_PROVIDER_GITHUB: "github",
 };
 
 // Both Telegram login flavors connect the same external account.

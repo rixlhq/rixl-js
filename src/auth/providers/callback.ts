@@ -5,6 +5,7 @@ import {updateAppleAuthUrl} from "./apple";
 import {updateGoogleAuthUrl} from "./google";
 import {updateMicrosoftAuthUrl} from "./microsoft";
 import {updateTelegramAuthUrl} from "./telegram";
+import {updateGitHubAuthUrl} from "./github";
 import {AuthProvider} from "./types";
 import {detectProvider} from "./utils";
 
@@ -37,6 +38,7 @@ const AUTH_URL_UPDATERS: Partial<Record<AuthProvider, () => void>> = {
   [AuthProvider.APPLE]: updateAppleAuthUrl,
   [AuthProvider.MICROSOFT]: updateMicrosoftAuthUrl,
   [AuthProvider.TELEGRAM_OIDC]: updateTelegramAuthUrl,
+  [AuthProvider.GITHUB]: () => void updateGitHubAuthUrl(),
 };
 
 /** Returns undefined when the half holds no credential, meaning it is the app's own and must not be touched. */

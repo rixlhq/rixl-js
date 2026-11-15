@@ -1,0 +1,5 @@
+- [x] Document the SDK and auth-api contract, callback safety, and dashboard setup.
+- [x] Add GitHub authorization-code login with state, PKCE and minimal scopes.
+- [x] Add authenticated GitHub provider linking through auth-api.
+- [x] Add and run focused tests, lint, typecheck, examples check, and build.
+- [ ] Review implementation with code-simplifier, commit, and open a PR.

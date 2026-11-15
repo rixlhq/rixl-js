@@ -12,14 +12,17 @@ import {
   type TelegramProviderConfig,
   type AppleProviderConfig,
   type MicrosoftProviderConfig,
+  type GitHubProviderConfig,
   googleConfig,
   telegramConfig,
   appleConfig,
   microsoftConfig,
+  githubConfig,
   updateGoogleAuthUrl,
   updateAppleAuthUrl,
   updateMicrosoftAuthUrl,
   updateTelegramAuthUrl,
+  updateGitHubAuthUrl,
   getProviderCredential,
   credentialFields,
   type ProviderCredential,
@@ -49,6 +52,8 @@ export interface AuthClientConfig {
   appleProvider?: AppleProviderConfig;
   /** Microsoft authentication provider configuration (optional) */
   microsoftProvider?: MicrosoftProviderConfig;
+  /** GitHub personal account authentication configuration (optional). */
+  githubProvider?: GitHubProviderConfig;
   /** Telegram authentication provider configuration (optional) */
   telegramProvider?: TelegramProviderConfig;
 }
@@ -111,6 +116,10 @@ const initConfig = async (config: AuthClientConfig) => {
     // Its URL carries an async PKCE challenge; without waiting, login("telegram")
     // right after initClient() would find no URL yet.
     await updateTelegramAuthUrl();
+  }
+  if (config.githubProvider) {
+    githubConfig.set(config.githubProvider);
+    await updateGitHubAuthUrl();
   }
 };
 

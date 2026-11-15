@@ -28,6 +28,7 @@ export {
   initClient,
   type AuthClientConfig,
   type GoogleProviderConfig,
+  type GitHubProviderConfig,
   type AppleProviderConfig,
   type TelegramProviderConfig,
   leaveOrganization,

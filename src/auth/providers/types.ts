@@ -6,4 +6,5 @@ export enum AuthProvider {
   GOOGLE = "google",
   APPLE = "apple",
   MICROSOFT = "microsoft",
+  GITHUB = "github",
 }
