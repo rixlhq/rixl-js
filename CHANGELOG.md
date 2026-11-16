@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.44.0](https://github.com/rixlhq/rixl-js/compare/v0.43.0...v0.44.0) (2026-11-16)
+
+
+### Features
+
+* **auth:** add GitHub personal OAuth ([4cdcdb6](https://github.com/rixlhq/rixl-js/commit/4cdcdb6cb17e0aa62176458ce19036dbf137b09e))
+* **auth:** add GitHub personal OAuth ([664627a](https://github.com/rixlhq/rixl-js/commit/664627a5a711a7e9e4ae940ebe34c35cd2c544cf))
+
+
+### Bug Fixes
+
+* **diagnostics:** print object and array JWT claims as JSON ([c2da0de](https://github.com/rixlhq/rixl-js/commit/c2da0de44e1e33d028443f2bc557586defe6e430))
+* **domain:** return null from getDomainStatus when the org has no domain ([c0209e2](https://github.com/rixlhq/rixl-js/commit/c0209e25c341d9247071db682ac3c1757e6b55c2))
+* **social:** let connectSocial callers see a failed login ([b4777b2](https://github.com/rixlhq/rixl-js/commit/b4777b2be826b28a2b5b1ef6f40cbc408220080e))
+
 ## [0.43.0](https://github.com/rixlhq/rixl-js/compare/v0.42.2...v0.43.0) (2026-11-12)
 
 
