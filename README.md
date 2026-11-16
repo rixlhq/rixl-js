@@ -179,11 +179,15 @@ The API contract is documented once, in the Rixl docs:
 This repository uses [Vite+](https://viteplus.dev/guide/) as the unified toolchain and package manager wrapper, with Bun underneath.
 
 ```bash
-vp install # Install dependencies
-vp pack    # Build the library
-vp check   # Run formatting, linting, and type checks
-vp test    # Run Vitest test suite
+vp install         # Install dependencies
+vp pack            # Build the library
+vp check           # Run formatting, linting, and type checks
+vp test            # Run Vitest test suite
+vp run ci          # The full gate the release job runs before publishing
+vp run generate    # Regenerate src/generated from rixlhq/openapi
 ```
+
+`src/generated/` is rebuilt from the API spec and opened as a PR automatically; don't edit it by hand. The release workflow runs `vp run ci` on every PR and on `main` before `npm publish`. Contributor and agent rules are in `AGENTS.md` and `.agents/rules/`.
 
 ## Issues
 

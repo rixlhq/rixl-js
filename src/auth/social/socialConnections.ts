@@ -125,7 +125,7 @@ export const disconnectSocial = async (provider: ProviderType): Promise<void> =>
   );
 };
 
-export const connectSocial = (provider: ProviderType): void => {
+export const connectSocial = (provider: ProviderType): Promise<void> => {
   setSocialConnectAttempt(provider);
-  login(provider);
+  return login(provider);
 };

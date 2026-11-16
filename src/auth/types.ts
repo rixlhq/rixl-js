@@ -3,11 +3,6 @@
  */
 
 /**
- * Entity types that can be updated (name/username)
- */
-export type EntityUpdateType = "name" | "username";
-
-/**
  * Email verification types
  */
 export type EmailVerificationType = "verification" | "email_change";

@@ -5,6 +5,7 @@ import {apiCall} from "../api/utils";
 import {HTTP_STATUS} from "../constants";
 import type {RegistrationResponse, VerificationSentResponse} from "./types";
 
+// oxlint-disable-next-line eslint/max-params -- public API: an options object would break every caller; do it in the next major
 export const registerWithEmail = async (
   email: string,
   password: string,

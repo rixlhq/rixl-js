@@ -24,20 +24,26 @@ interface CredentialClaims {
   note?: string;
 }
 
+// A claim can be a string, an array (aud) or an object; String() would print an object as "[object Object]".
+const claimText = (value: unknown): string => {
+  if (value === undefined || value === null) return "";
+  return typeof value === "string" ? value : JSON.stringify(value);
+};
+
 const claimsOf = (token: string): CredentialClaims => {
   try {
     const {iss, aud, exp, nonce, email} = decodeJwt(token) as Record<string, unknown>;
     return {
-      iss: String(iss ?? ""),
+      iss: claimText(iss),
       // Must equal the client ID the gateway is configured with. A mismatch here
       // is the usual reason a perfectly valid Google token comes back as 401.
-      aud: String(aud ?? ""),
+      aud: claimText(aud),
       exp: exp ? new Date(Number(exp) * 1000).toISOString() : undefined,
       expired: typeof exp === "number" && Date.now() >= exp * 1000,
       // The SDK sends the OAuth `state` as the nonce, so this should match the
       // `state` param the provider echoed back.
-      nonce: String(nonce ?? ""),
-      email: String(email ?? ""),
+      nonce: claimText(nonce),
+      email: claimText(email),
     };
   } catch {
     return {note: "not a JWT — expected for Telegram, unexpected for Google/Apple/Microsoft"};
