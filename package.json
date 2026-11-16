@@ -45,6 +45,7 @@
     "test": "vp test",
     "test:ui": "vp test --ui",
     "test:coverage": "vp test --coverage",
+    "test:mutation": "stryker run",
     "budget": "size-limit",
     "publint": "publint --strict",
     "ci": "vp check && vp run lint:suppressions && vp run knip && vp run examples:check && vp test --coverage --run && vp pack && vp run budget && vp run publint",
@@ -62,6 +63,9 @@
   "devDependencies": {
     "@hey-api/vite-plugin": "0.3.2",
     "@size-limit/file": "^14.3.0",
+    "@stryker-mutator/api": "^10.1.1",
+    "@stryker-mutator/core": "^10.1.1",
+    "@stryker-mutator/vitest-runner": "^10.1.1",
     "@types/node": "^26.6.5",
     "@vitest/coverage-v8": "5.1.0",
     "@vitest/ui": "5.1.0",

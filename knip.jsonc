@@ -5,6 +5,8 @@
     ".agents/hooks/*.mjs",
     // vite.config.ts registers it as a string URL when module.registerHooks is missing.
     "scripts/ts-compat-hook.mjs",
+    // stryker.config.mjs names the Vitest config as a string; Knip doesn't read it.
+    "test/stryker.vitest.config.ts",
     // Type-checked by `vp run examples:check`; they show consumers how to use the SDK.
     "examples/*.ts",
   ],

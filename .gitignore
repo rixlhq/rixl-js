@@ -45,6 +45,8 @@ openapi.yaml
 
 # stryker temp files
 .stryker-tmp
+.stryker-cache
+reports/mutation
 
 # Playwright
 playwright-report

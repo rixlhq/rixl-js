@@ -58,6 +58,7 @@ vp install                # Install dependencies
 vp check                  # Format, lint (complexity caps), type check
 vp test                   # Unit tests
 vp run test:coverage      # Tests with coverage; fails under the floor in vite.config.ts
+vp run test:mutation      # Stryker (CI only, weekly: .github/workflows/mutation.yml)
 vp run generate           # Regenerate src/generated from rixlhq/openapi (network)
 vp run examples:check     # Typecheck examples/ against the public API
 vp pack                   # Build dist/

@@ -1,0 +1,87 @@
+name: Weekly mutation report
+
+on:
+  schedule:
+    - cron: "0 6 * * 1" # Mondays 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mutation-report
+  cancel-in-progress: false
+
+jobs:
+  mutate:
+    runs-on: ubuntu-latest
+    # A cold cache mutates every file; later runs reuse it and retest only changed code. 360 is the GitHub-hosted maximum.
+    timeout-minutes: 360
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v7
+
+      - name: ⚙️ Setup Vite+
+        uses: voidzero-dev/setup-vp@v1.22.0
+        with:
+          cache: "true"
+
+      - name: ♻️ Restore Stryker cache
+        uses: actions/cache/restore@v6
+        with:
+          path: .stryker-cache
+          key: stryker-${{ github.run_id }}
+          restore-keys: stryker-
+
+      - name: 🧬 Mutation testing
+        run: vp run test:mutation
+
+      - name: 💾 Save Stryker cache
+        if: ${{ !cancelled() }}
+        uses: actions/cache/save@v6
+        with:
+          path: .stryker-cache
+          key: stryker-${{ github.run_id }}
+
+      - name: 📝 Summarise
+        run: |
+          node scripts/mutation-summary.mjs reports/mutation/mutation.json \
+            "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" > reports/mutation/summary.md
+          cat reports/mutation/summary.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: 📤 Upload report
+        uses: actions/upload-artifact@v7
+        with:
+          name: mutation-report
+          path: reports/mutation/
+          retention-days: 30
+
+  notify:
+    needs: mutate
+    # gh is preinstalled on GitHub-hosted runners.
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      # Optional repo variable: a GitHub login to assign, so they are notified even without watching the repo.
+      ASSIGNEE: ${{ vars.MUTATION_REPORT_ASSIGNEE }}
+    steps:
+      - name: 📥 Download summary
+        uses: actions/download-artifact@v8
+        with:
+          name: mutation-report
+          path: report
+
+      - name: 📣 Open this week's issue
+        run: |
+          gh label create mutation-report --color 5319e7 --description "Weekly Stryker report" --force
+          previous=$(gh issue list --label mutation-report --state open --json number --jq '.[].number')
+          args=(--label mutation-report --title "Weekly mutation report $(date -u +%Y-%m-%d)" --body-file report/summary.md)
+          if [ -n "$ASSIGNEE" ]; then args+=(--assignee "$ASSIGNEE"); fi
+          url=$(gh issue create "${args[@]}")
+          for number in $previous; do
+            gh issue close "$number" --comment "Superseded by $url"
+          done

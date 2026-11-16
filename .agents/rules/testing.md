@@ -8,6 +8,7 @@
 | Examples typecheck   | `examples/` still compiles against the public API         | `vp run examples:check`           |
 | size-limit           | `dist/index.js` stays within `.size-limit.json`           | `vp run budget`, after `vp pack`  |
 | publint              | The `package.json` exports map resolves                   | `vp run publint`, after `vp pack` |
+| Stryker              | Mutation testing of hand-written `src/` (test strength)   | CI only, weekly (`mutation.yml`)  |
 
 Tests import Vitest APIs from `vite-plus/test`.
 
