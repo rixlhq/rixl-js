@@ -14129,81 +14129,6 @@ export type FeedsV1FeedServiceUpdateFeedResponses = {
 
 export type FeedsV1FeedServiceUpdateFeedResponse = FeedsV1FeedServiceUpdateFeedResponses[keyof FeedsV1FeedServiceUpdateFeedResponses];
 
-export type ImagesV1ImageConversionServiceMarkImageFailedData = {
-    body: ImagesV1MarkImageFailedRequest;
-    path?: never;
-    query?: never;
-    url: '/internal/images/mark-failed';
-};
-
-export type ImagesV1ImageConversionServiceMarkImageFailedErrors = {
-    /**
-     * An unexpected error response.
-     */
-    default: GoogleRpcStatus;
-};
-
-export type ImagesV1ImageConversionServiceMarkImageFailedError = ImagesV1ImageConversionServiceMarkImageFailedErrors[keyof ImagesV1ImageConversionServiceMarkImageFailedErrors];
-
-export type ImagesV1ImageConversionServiceMarkImageFailedResponses = {
-    /**
-     * Success
-     */
-    200: GoogleProtobufEmpty;
-};
-
-export type ImagesV1ImageConversionServiceMarkImageFailedResponse = ImagesV1ImageConversionServiceMarkImageFailedResponses[keyof ImagesV1ImageConversionServiceMarkImageFailedResponses];
-
-export type ImagesV1ImageConversionServiceMarkImageProcessedData = {
-    body: ImagesV1MarkImageProcessedRequest;
-    path?: never;
-    query?: never;
-    url: '/internal/images/mark-processed';
-};
-
-export type ImagesV1ImageConversionServiceMarkImageProcessedErrors = {
-    /**
-     * An unexpected error response.
-     */
-    default: GoogleRpcStatus;
-};
-
-export type ImagesV1ImageConversionServiceMarkImageProcessedError = ImagesV1ImageConversionServiceMarkImageProcessedErrors[keyof ImagesV1ImageConversionServiceMarkImageProcessedErrors];
-
-export type ImagesV1ImageConversionServiceMarkImageProcessedResponses = {
-    /**
-     * Success
-     */
-    200: GoogleProtobufEmpty;
-};
-
-export type ImagesV1ImageConversionServiceMarkImageProcessedResponse = ImagesV1ImageConversionServiceMarkImageProcessedResponses[keyof ImagesV1ImageConversionServiceMarkImageProcessedResponses];
-
-export type ImagesV1ImageConversionServiceTakeUnprocessedImageData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/internal/images/take';
-};
-
-export type ImagesV1ImageConversionServiceTakeUnprocessedImageErrors = {
-    /**
-     * An unexpected error response.
-     */
-    default: GoogleRpcStatus;
-};
-
-export type ImagesV1ImageConversionServiceTakeUnprocessedImageError = ImagesV1ImageConversionServiceTakeUnprocessedImageErrors[keyof ImagesV1ImageConversionServiceTakeUnprocessedImageErrors];
-
-export type ImagesV1ImageConversionServiceTakeUnprocessedImageResponses = {
-    /**
-     * Success
-     */
-    200: ImagesV1UnprocessedImage;
-};
-
-export type ImagesV1ImageConversionServiceTakeUnprocessedImageResponse = ImagesV1ImageConversionServiceTakeUnprocessedImageResponses[keyof ImagesV1ImageConversionServiceTakeUnprocessedImageResponses];
-
 export type ImagesV1ImageServiceGetImageData = {
     body?: never;
     path: {
@@ -15997,56 +15922,6 @@ export type VideosV1ChapterServiceDeleteVideoChapterResponses = {
 };
 
 export type VideosV1ChapterServiceDeleteVideoChapterResponse = VideosV1ChapterServiceDeleteVideoChapterResponses[keyof VideosV1ChapterServiceDeleteVideoChapterResponses];
-
-export type VideosV1VideoConversionServiceMarkVideoFailedData = {
-    body: VideosV1MarkVideoFailedRequest;
-    path?: never;
-    query?: never;
-    url: '/internal/videos/mark-failed';
-};
-
-export type VideosV1VideoConversionServiceMarkVideoFailedErrors = {
-    /**
-     * An unexpected error response.
-     */
-    default: GoogleRpcStatus;
-};
-
-export type VideosV1VideoConversionServiceMarkVideoFailedError = VideosV1VideoConversionServiceMarkVideoFailedErrors[keyof VideosV1VideoConversionServiceMarkVideoFailedErrors];
-
-export type VideosV1VideoConversionServiceMarkVideoFailedResponses = {
-    /**
-     * Success
-     */
-    200: GoogleProtobufEmpty;
-};
-
-export type VideosV1VideoConversionServiceMarkVideoFailedResponse = VideosV1VideoConversionServiceMarkVideoFailedResponses[keyof VideosV1VideoConversionServiceMarkVideoFailedResponses];
-
-export type VideosV1VideoConversionServiceMarkVideoProcessedData = {
-    body: VideosV1MarkVideoProcessedRequest;
-    path?: never;
-    query?: never;
-    url: '/internal/videos/mark-processed';
-};
-
-export type VideosV1VideoConversionServiceMarkVideoProcessedErrors = {
-    /**
-     * An unexpected error response.
-     */
-    default: GoogleRpcStatus;
-};
-
-export type VideosV1VideoConversionServiceMarkVideoProcessedError = VideosV1VideoConversionServiceMarkVideoProcessedErrors[keyof VideosV1VideoConversionServiceMarkVideoProcessedErrors];
-
-export type VideosV1VideoConversionServiceMarkVideoProcessedResponses = {
-    /**
-     * Success
-     */
-    200: GoogleProtobufEmpty;
-};
-
-export type VideosV1VideoConversionServiceMarkVideoProcessedResponse = VideosV1VideoConversionServiceMarkVideoProcessedResponses[keyof VideosV1VideoConversionServiceMarkVideoProcessedResponses];
 
 export type VideosV1LanguageServiceListLanguagesData = {
     body?: never;
