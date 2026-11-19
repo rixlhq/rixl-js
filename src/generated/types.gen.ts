@@ -2629,7 +2629,7 @@ export type AuthV1EmailStatusResponse = {
 /**
  * ExternalAccountProvider
  */
-export type AuthV1ExternalAccountProvider = 'EXTERNAL_ACCOUNT_PROVIDER_UNSPECIFIED' | 'EXTERNAL_ACCOUNT_PROVIDER_GOOGLE' | 'EXTERNAL_ACCOUNT_PROVIDER_APPLE' | 'EXTERNAL_ACCOUNT_PROVIDER_MICROSOFT' | 'EXTERNAL_ACCOUNT_PROVIDER_FACEBOOK' | 'EXTERNAL_ACCOUNT_PROVIDER_TELEGRAM';
+export type AuthV1ExternalAccountProvider = 'EXTERNAL_ACCOUNT_PROVIDER_UNSPECIFIED' | 'EXTERNAL_ACCOUNT_PROVIDER_GOOGLE' | 'EXTERNAL_ACCOUNT_PROVIDER_APPLE' | 'EXTERNAL_ACCOUNT_PROVIDER_MICROSOFT' | 'EXTERNAL_ACCOUNT_PROVIDER_FACEBOOK' | 'EXTERNAL_ACCOUNT_PROVIDER_TELEGRAM' | 'EXTERNAL_ACCOUNT_PROVIDER_GITHUB';
 
 /**
  * GetInternalMembershipInfoResponse
@@ -9008,6 +9008,11 @@ export type WebhooksV1WebhookEvent = {
      */
     created_at?: GoogleProtobufTimestamp;
 };
+
+/**
+ * Optional key (1-255 visible ASCII characters) that makes the request safe to retry. The first successful response is stored for 24 hours and a retry with the same key and payload is replayed verbatim — same IDs, URLs and expiry — with the response header `Idempotent-Replayed: true`. Reusing the key with a different payload fails with `400`; while the first request is still in flight a retry fails with `409` and a `Retry-After` header. A request that fails stores nothing, so the key can be reused. Replayed responses still count as billed API requests.
+ */
+export type IdempotencyKey = string;
 
 export type AnalyticsV1DashboardServiceGetDashboardStatsData = {
     body?: never;
@@ -16322,6 +16327,12 @@ export type VideosV1VideoServiceCreateVideoUploadData = {
          * video_quality
          */
         video_quality?: CommonV1VideoQuality;
+    };
+    headers?: {
+        /**
+         * Optional key (1-255 visible ASCII characters) that makes the request safe to retry. The first successful response is stored for 24 hours and a retry with the same key and payload is replayed verbatim — same IDs, URLs and expiry — with the response header `Idempotent-Replayed: true`. Reusing the key with a different payload fails with `400`; while the first request is still in flight a retry fails with `409` and a `Retry-After` header. A request that fails stores nothing, so the key can be reused. Replayed responses still count as billed API requests.
+         */
+        'Idempotency-Key'?: string;
     };
     path: {
         /**
