@@ -21,12 +21,17 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
 /**
  * GetDashboardStats
  */
-export const analyticsV1DashboardServiceGetDashboardStats = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1DashboardServiceGetDashboardStatsData, ThrowOnError>) => (options.client ?? client).get<AnalyticsV1DashboardServiceGetDashboardStatsResponses, AnalyticsV1DashboardServiceGetDashboardStatsErrors, ThrowOnError>({ url: '/analytics/v1/dashboard', ...options });
+export const analyticsV1DashboardServiceGetDashboardStats = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1DashboardServiceGetDashboardStatsData, ThrowOnError>) => (options.client ?? client).get<AnalyticsV1DashboardServiceGetDashboardStatsResponses, AnalyticsV1DashboardServiceGetDashboardStatsErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/analytics/v1/dashboard',
+    ...options
+});
 
 /**
  * QueryChart
  */
 export const analyticsV1DashboardServiceQueryChart = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1DashboardServiceQueryChartData, ThrowOnError>) => (options.client ?? client).post<AnalyticsV1DashboardServiceQueryChartResponses, AnalyticsV1DashboardServiceQueryChartErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/analytics/v1/dashboard/chart-query',
     ...options,
     headers: {
@@ -39,6 +44,7 @@ export const analyticsV1DashboardServiceQueryChart = <ThrowOnError extends boole
  * BatchQueryChart
  */
 export const analyticsV1DashboardServiceBatchQueryChart = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1DashboardServiceBatchQueryChartData, ThrowOnError>) => (options.client ?? client).post<AnalyticsV1DashboardServiceBatchQueryChartResponses, AnalyticsV1DashboardServiceBatchQueryChartErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/analytics/v1/dashboard/chart-query/batch',
     ...options,
     headers: {
@@ -50,12 +56,17 @@ export const analyticsV1DashboardServiceBatchQueryChart = <ThrowOnError extends 
 /**
  * ListDatasets
  */
-export const analyticsV1DashboardServiceListDatasets = <ThrowOnError extends boolean = false>(options?: Options<AnalyticsV1DashboardServiceListDatasetsData, ThrowOnError>) => (options?.client ?? client).get<AnalyticsV1DashboardServiceListDatasetsResponses, AnalyticsV1DashboardServiceListDatasetsErrors, ThrowOnError>({ url: '/analytics/v1/dashboard/datasets', ...options });
+export const analyticsV1DashboardServiceListDatasets = <ThrowOnError extends boolean = false>(options?: Options<AnalyticsV1DashboardServiceListDatasetsData, ThrowOnError>) => (options?.client ?? client).get<AnalyticsV1DashboardServiceListDatasetsResponses, AnalyticsV1DashboardServiceListDatasetsErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/analytics/v1/dashboard/datasets',
+    ...options
+});
 
 /**
  * GetFilterOptions
  */
 export const analyticsV1DashboardServiceGetFilterOptions = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1DashboardServiceGetFilterOptionsData, ThrowOnError>) => (options.client ?? client).post<AnalyticsV1DashboardServiceGetFilterOptionsResponses, AnalyticsV1DashboardServiceGetFilterOptionsErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/analytics/v1/dashboard/filter-options',
     ...options,
     headers: {
@@ -68,6 +79,7 @@ export const analyticsV1DashboardServiceGetFilterOptions = <ThrowOnError extends
  * GetScopeTree
  */
 export const analyticsV1DashboardServiceGetScopeTree = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1DashboardServiceGetScopeTreeData, ThrowOnError>) => (options.client ?? client).post<AnalyticsV1DashboardServiceGetScopeTreeResponses, AnalyticsV1DashboardServiceGetScopeTreeErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/analytics/v1/dashboard/scope-tree',
     ...options,
     headers: {
@@ -79,12 +91,17 @@ export const analyticsV1DashboardServiceGetScopeTree = <ThrowOnError extends boo
 /**
  * ListDashboards
  */
-export const analyticsV1DashboardServiceListDashboards = <ThrowOnError extends boolean = false>(options?: Options<AnalyticsV1DashboardServiceListDashboardsData, ThrowOnError>) => (options?.client ?? client).get<AnalyticsV1DashboardServiceListDashboardsResponses, AnalyticsV1DashboardServiceListDashboardsErrors, ThrowOnError>({ url: '/analytics/v1/dashboards', ...options });
+export const analyticsV1DashboardServiceListDashboards = <ThrowOnError extends boolean = false>(options?: Options<AnalyticsV1DashboardServiceListDashboardsData, ThrowOnError>) => (options?.client ?? client).get<AnalyticsV1DashboardServiceListDashboardsResponses, AnalyticsV1DashboardServiceListDashboardsErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/analytics/v1/dashboards',
+    ...options
+});
 
 /**
  * CreateDashboard
  */
 export const analyticsV1DashboardServiceCreateDashboard = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1DashboardServiceCreateDashboardData, ThrowOnError>) => (options.client ?? client).post<AnalyticsV1DashboardServiceCreateDashboardResponses, AnalyticsV1DashboardServiceCreateDashboardErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/analytics/v1/dashboards',
     ...options,
     headers: {
@@ -96,12 +113,17 @@ export const analyticsV1DashboardServiceCreateDashboard = <ThrowOnError extends 
 /**
  * DeleteWidget
  */
-export const analyticsV1DashboardServiceDeleteWidget = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1DashboardServiceDeleteWidgetData, ThrowOnError>) => (options.client ?? client).delete<AnalyticsV1DashboardServiceDeleteWidgetResponses, AnalyticsV1DashboardServiceDeleteWidgetErrors, ThrowOnError>({ url: '/analytics/v1/dashboards/widgets/{id}', ...options });
+export const analyticsV1DashboardServiceDeleteWidget = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1DashboardServiceDeleteWidgetData, ThrowOnError>) => (options.client ?? client).delete<AnalyticsV1DashboardServiceDeleteWidgetResponses, AnalyticsV1DashboardServiceDeleteWidgetErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/analytics/v1/dashboards/widgets/{id}',
+    ...options
+});
 
 /**
  * UpdateWidget
  */
 export const analyticsV1DashboardServiceUpdateWidget = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1DashboardServiceUpdateWidgetData, ThrowOnError>) => (options.client ?? client).patch<AnalyticsV1DashboardServiceUpdateWidgetResponses, AnalyticsV1DashboardServiceUpdateWidgetErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/analytics/v1/dashboards/widgets/{id}',
     ...options,
     headers: {
@@ -114,6 +136,7 @@ export const analyticsV1DashboardServiceUpdateWidget = <ThrowOnError extends boo
  * ExportDashboard
  */
 export const analyticsV1DashboardServiceExportDashboard = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1DashboardServiceExportDashboardData, ThrowOnError>) => (options.client ?? client).post<AnalyticsV1DashboardServiceExportDashboardResponses, AnalyticsV1DashboardServiceExportDashboardErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/analytics/v1/dashboards/{dashboard_id}/export',
     ...options,
     headers: {
@@ -126,6 +149,7 @@ export const analyticsV1DashboardServiceExportDashboard = <ThrowOnError extends 
  * UpdateDashboardLayout
  */
 export const analyticsV1DashboardServiceUpdateDashboardLayout = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1DashboardServiceUpdateDashboardLayoutData, ThrowOnError>) => (options.client ?? client).post<AnalyticsV1DashboardServiceUpdateDashboardLayoutResponses, AnalyticsV1DashboardServiceUpdateDashboardLayoutErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/analytics/v1/dashboards/{dashboard_id}/layout',
     ...options,
     headers: {
@@ -138,6 +162,7 @@ export const analyticsV1DashboardServiceUpdateDashboardLayout = <ThrowOnError ex
  * CreateWidget
  */
 export const analyticsV1DashboardServiceCreateWidget = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1DashboardServiceCreateWidgetData, ThrowOnError>) => (options.client ?? client).post<AnalyticsV1DashboardServiceCreateWidgetResponses, AnalyticsV1DashboardServiceCreateWidgetErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/analytics/v1/dashboards/{dashboard_id}/widgets',
     ...options,
     headers: {
@@ -149,17 +174,26 @@ export const analyticsV1DashboardServiceCreateWidget = <ThrowOnError extends boo
 /**
  * DeleteDashboard
  */
-export const analyticsV1DashboardServiceDeleteDashboard = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1DashboardServiceDeleteDashboardData, ThrowOnError>) => (options.client ?? client).delete<AnalyticsV1DashboardServiceDeleteDashboardResponses, AnalyticsV1DashboardServiceDeleteDashboardErrors, ThrowOnError>({ url: '/analytics/v1/dashboards/{id}', ...options });
+export const analyticsV1DashboardServiceDeleteDashboard = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1DashboardServiceDeleteDashboardData, ThrowOnError>) => (options.client ?? client).delete<AnalyticsV1DashboardServiceDeleteDashboardResponses, AnalyticsV1DashboardServiceDeleteDashboardErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/analytics/v1/dashboards/{id}',
+    ...options
+});
 
 /**
  * GetDashboard
  */
-export const analyticsV1DashboardServiceGetDashboard = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1DashboardServiceGetDashboardData, ThrowOnError>) => (options.client ?? client).get<AnalyticsV1DashboardServiceGetDashboardResponses, AnalyticsV1DashboardServiceGetDashboardErrors, ThrowOnError>({ url: '/analytics/v1/dashboards/{id}', ...options });
+export const analyticsV1DashboardServiceGetDashboard = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1DashboardServiceGetDashboardData, ThrowOnError>) => (options.client ?? client).get<AnalyticsV1DashboardServiceGetDashboardResponses, AnalyticsV1DashboardServiceGetDashboardErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/analytics/v1/dashboards/{id}',
+    ...options
+});
 
 /**
  * UpdateDashboard
  */
 export const analyticsV1DashboardServiceUpdateDashboard = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1DashboardServiceUpdateDashboardData, ThrowOnError>) => (options.client ?? client).patch<AnalyticsV1DashboardServiceUpdateDashboardResponses, AnalyticsV1DashboardServiceUpdateDashboardErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/analytics/v1/dashboards/{id}',
     ...options,
     headers: {
@@ -171,12 +205,17 @@ export const analyticsV1DashboardServiceUpdateDashboard = <ThrowOnError extends 
 /**
  * SetDefaultDashboard
  */
-export const analyticsV1DashboardServiceSetDefaultDashboard = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1DashboardServiceSetDefaultDashboardData, ThrowOnError>) => (options.client ?? client).post<AnalyticsV1DashboardServiceSetDefaultDashboardResponses, AnalyticsV1DashboardServiceSetDefaultDashboardErrors, ThrowOnError>({ url: '/analytics/v1/dashboards/{id}/default', ...options });
+export const analyticsV1DashboardServiceSetDefaultDashboard = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1DashboardServiceSetDefaultDashboardData, ThrowOnError>) => (options.client ?? client).post<AnalyticsV1DashboardServiceSetDefaultDashboardResponses, AnalyticsV1DashboardServiceSetDefaultDashboardErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/analytics/v1/dashboards/{id}/default',
+    ...options
+});
 
 /**
  * TrackEvents
  */
 export const analyticsV1EventsServiceTrackEvents = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1EventsServiceTrackEventsData, ThrowOnError>) => (options.client ?? client).post<AnalyticsV1EventsServiceTrackEventsResponses, AnalyticsV1EventsServiceTrackEventsErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/analytics/v1/events',
     ...options,
     headers: {
@@ -188,17 +227,26 @@ export const analyticsV1EventsServiceTrackEvents = <ThrowOnError extends boolean
 /**
  * GetFeedStats
  */
-export const analyticsV1FeedsServiceGetFeedStats = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1FeedsServiceGetFeedStatsData, ThrowOnError>) => (options.client ?? client).get<AnalyticsV1FeedsServiceGetFeedStatsResponses, AnalyticsV1FeedsServiceGetFeedStatsErrors, ThrowOnError>({ url: '/analytics/v1/feeds/{feed_id}/stats', ...options });
+export const analyticsV1FeedsServiceGetFeedStats = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1FeedsServiceGetFeedStatsData, ThrowOnError>) => (options.client ?? client).get<AnalyticsV1FeedsServiceGetFeedStatsResponses, AnalyticsV1FeedsServiceGetFeedStatsErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/analytics/v1/feeds/{feed_id}/stats',
+    ...options
+});
 
 /**
  * GetTopFeeds
  */
-export const analyticsV1FeedsServiceGetTopFeeds = <ThrowOnError extends boolean = false>(options?: Options<AnalyticsV1FeedsServiceGetTopFeedsData, ThrowOnError>) => (options?.client ?? client).get<AnalyticsV1FeedsServiceGetTopFeedsResponses, AnalyticsV1FeedsServiceGetTopFeedsErrors, ThrowOnError>({ url: '/analytics/v1/top/feeds', ...options });
+export const analyticsV1FeedsServiceGetTopFeeds = <ThrowOnError extends boolean = false>(options?: Options<AnalyticsV1FeedsServiceGetTopFeedsData, ThrowOnError>) => (options?.client ?? client).get<AnalyticsV1FeedsServiceGetTopFeedsResponses, AnalyticsV1FeedsServiceGetTopFeedsErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/analytics/v1/top/feeds',
+    ...options
+});
 
 /**
  * GetFunnelAnalytics
  */
 export const analyticsV1FunnelsServiceGetFunnelAnalytics = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1FunnelsServiceGetFunnelAnalyticsData, ThrowOnError>) => (options.client ?? client).post<AnalyticsV1FunnelsServiceGetFunnelAnalyticsResponses, AnalyticsV1FunnelsServiceGetFunnelAnalyticsErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/analytics/v1/funnels',
     ...options,
     headers: {
@@ -211,6 +259,7 @@ export const analyticsV1FunnelsServiceGetFunnelAnalytics = <ThrowOnError extends
  * GetRetentionAnalytics
  */
 export const analyticsV1FunnelsServiceGetRetentionAnalytics = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1FunnelsServiceGetRetentionAnalyticsData, ThrowOnError>) => (options.client ?? client).post<AnalyticsV1FunnelsServiceGetRetentionAnalyticsResponses, AnalyticsV1FunnelsServiceGetRetentionAnalyticsErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/analytics/v1/retention',
     ...options,
     headers: {
@@ -222,57 +271,98 @@ export const analyticsV1FunnelsServiceGetRetentionAnalytics = <ThrowOnError exte
 /**
  * GetVideoHeatmap
  */
-export const analyticsV1HeatmapServiceGetVideoHeatmap = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1HeatmapServiceGetVideoHeatmapData, ThrowOnError>) => (options.client ?? client).get<AnalyticsV1HeatmapServiceGetVideoHeatmapResponses, AnalyticsV1HeatmapServiceGetVideoHeatmapErrors, ThrowOnError>({ url: '/analytics/v1/videos/{video_id}/heatmap', ...options });
+export const analyticsV1HeatmapServiceGetVideoHeatmap = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1HeatmapServiceGetVideoHeatmapData, ThrowOnError>) => (options.client ?? client).get<AnalyticsV1HeatmapServiceGetVideoHeatmapResponses, AnalyticsV1HeatmapServiceGetVideoHeatmapErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/analytics/v1/videos/{video_id}/heatmap',
+    ...options
+});
 
 /**
  * GetHotSegments
  */
-export const analyticsV1HeatmapServiceGetHotSegments = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1HeatmapServiceGetHotSegmentsData, ThrowOnError>) => (options.client ?? client).get<AnalyticsV1HeatmapServiceGetHotSegmentsResponses, AnalyticsV1HeatmapServiceGetHotSegmentsErrors, ThrowOnError>({ url: '/analytics/v1/videos/{video_id}/hot-segments', ...options });
+export const analyticsV1HeatmapServiceGetHotSegments = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1HeatmapServiceGetHotSegmentsData, ThrowOnError>) => (options.client ?? client).get<AnalyticsV1HeatmapServiceGetHotSegmentsResponses, AnalyticsV1HeatmapServiceGetHotSegmentsErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/analytics/v1/videos/{video_id}/hot-segments',
+    ...options
+});
 
 /**
  * GetImageStats
  */
-export const analyticsV1ImagesServiceGetImageStats = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1ImagesServiceGetImageStatsData, ThrowOnError>) => (options.client ?? client).get<AnalyticsV1ImagesServiceGetImageStatsResponses, AnalyticsV1ImagesServiceGetImageStatsErrors, ThrowOnError>({ url: '/analytics/v1/images/{image_id}/stats', ...options });
+export const analyticsV1ImagesServiceGetImageStats = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1ImagesServiceGetImageStatsData, ThrowOnError>) => (options.client ?? client).get<AnalyticsV1ImagesServiceGetImageStatsResponses, AnalyticsV1ImagesServiceGetImageStatsErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/analytics/v1/images/{image_id}/stats',
+    ...options
+});
 
 /**
  * GetTopImages
  */
-export const analyticsV1ImagesServiceGetTopImages = <ThrowOnError extends boolean = false>(options?: Options<AnalyticsV1ImagesServiceGetTopImagesData, ThrowOnError>) => (options?.client ?? client).get<AnalyticsV1ImagesServiceGetTopImagesResponses, AnalyticsV1ImagesServiceGetTopImagesErrors, ThrowOnError>({ url: '/analytics/v1/top/images', ...options });
+export const analyticsV1ImagesServiceGetTopImages = <ThrowOnError extends boolean = false>(options?: Options<AnalyticsV1ImagesServiceGetTopImagesData, ThrowOnError>) => (options?.client ?? client).get<AnalyticsV1ImagesServiceGetTopImagesResponses, AnalyticsV1ImagesServiceGetTopImagesErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/analytics/v1/top/images',
+    ...options
+});
 
 /**
  * GetPostStats
  */
-export const analyticsV1PostsServiceGetPostStats = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1PostsServiceGetPostStatsData, ThrowOnError>) => (options.client ?? client).get<AnalyticsV1PostsServiceGetPostStatsResponses, AnalyticsV1PostsServiceGetPostStatsErrors, ThrowOnError>({ url: '/analytics/v1/posts/{post_id}/stats', ...options });
+export const analyticsV1PostsServiceGetPostStats = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1PostsServiceGetPostStatsData, ThrowOnError>) => (options.client ?? client).get<AnalyticsV1PostsServiceGetPostStatsResponses, AnalyticsV1PostsServiceGetPostStatsErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/analytics/v1/posts/{post_id}/stats',
+    ...options
+});
 
 /**
  * GetTopPosts
  */
-export const analyticsV1PostsServiceGetTopPosts = <ThrowOnError extends boolean = false>(options?: Options<AnalyticsV1PostsServiceGetTopPostsData, ThrowOnError>) => (options?.client ?? client).get<AnalyticsV1PostsServiceGetTopPostsResponses, AnalyticsV1PostsServiceGetTopPostsErrors, ThrowOnError>({ url: '/analytics/v1/top/posts', ...options });
+export const analyticsV1PostsServiceGetTopPosts = <ThrowOnError extends boolean = false>(options?: Options<AnalyticsV1PostsServiceGetTopPostsData, ThrowOnError>) => (options?.client ?? client).get<AnalyticsV1PostsServiceGetTopPostsResponses, AnalyticsV1PostsServiceGetTopPostsErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/analytics/v1/top/posts',
+    ...options
+});
 
 /**
  * GetRealtimeStats
  */
-export const analyticsV1RealtimeServiceGetRealtimeStats = <ThrowOnError extends boolean = false>(options?: Options<AnalyticsV1RealtimeServiceGetRealtimeStatsData, ThrowOnError>) => (options?.client ?? client).get<AnalyticsV1RealtimeServiceGetRealtimeStatsResponses, AnalyticsV1RealtimeServiceGetRealtimeStatsErrors, ThrowOnError>({ url: '/analytics/v1/realtime', ...options });
+export const analyticsV1RealtimeServiceGetRealtimeStats = <ThrowOnError extends boolean = false>(options?: Options<AnalyticsV1RealtimeServiceGetRealtimeStatsData, ThrowOnError>) => (options?.client ?? client).get<AnalyticsV1RealtimeServiceGetRealtimeStatsResponses, AnalyticsV1RealtimeServiceGetRealtimeStatsErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/analytics/v1/realtime',
+    ...options
+});
 
 /**
  * GetTopVideos
  */
-export const analyticsV1VideosServiceGetTopVideos = <ThrowOnError extends boolean = false>(options?: Options<AnalyticsV1VideosServiceGetTopVideosData, ThrowOnError>) => (options?.client ?? client).get<AnalyticsV1VideosServiceGetTopVideosResponses, AnalyticsV1VideosServiceGetTopVideosErrors, ThrowOnError>({ url: '/analytics/v1/top/videos', ...options });
+export const analyticsV1VideosServiceGetTopVideos = <ThrowOnError extends boolean = false>(options?: Options<AnalyticsV1VideosServiceGetTopVideosData, ThrowOnError>) => (options?.client ?? client).get<AnalyticsV1VideosServiceGetTopVideosResponses, AnalyticsV1VideosServiceGetTopVideosErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/analytics/v1/top/videos',
+    ...options
+});
 
 /**
  * GetVideoStats
  */
-export const analyticsV1VideosServiceGetVideoStats = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1VideosServiceGetVideoStatsData, ThrowOnError>) => (options.client ?? client).get<AnalyticsV1VideosServiceGetVideoStatsResponses, AnalyticsV1VideosServiceGetVideoStatsErrors, ThrowOnError>({ url: '/analytics/v1/videos/{video_id}/stats', ...options });
+export const analyticsV1VideosServiceGetVideoStats = <ThrowOnError extends boolean = false>(options: Options<AnalyticsV1VideosServiceGetVideoStatsData, ThrowOnError>) => (options.client ?? client).get<AnalyticsV1VideosServiceGetVideoStatsResponses, AnalyticsV1VideosServiceGetVideoStatsErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/analytics/v1/videos/{video_id}/stats',
+    ...options
+});
 
 /**
  * ListApiKeys
  */
-export const apikeysV1ApiKeyServiceListApiKeys = <ThrowOnError extends boolean = false>(options: Options<ApikeysV1ApiKeyServiceListApiKeysData, ThrowOnError>) => (options.client ?? client).get<ApikeysV1ApiKeyServiceListApiKeysResponses, ApikeysV1ApiKeyServiceListApiKeysErrors, ThrowOnError>({ url: '/organizations/{org_id}/api-keys/v1', ...options });
+export const apikeysV1ApiKeyServiceListApiKeys = <ThrowOnError extends boolean = false>(options: Options<ApikeysV1ApiKeyServiceListApiKeysData, ThrowOnError>) => (options.client ?? client).get<ApikeysV1ApiKeyServiceListApiKeysResponses, ApikeysV1ApiKeyServiceListApiKeysErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/organizations/{org_id}/api-keys/v1',
+    ...options
+});
 
 /**
  * CreateApiKey
  */
 export const apikeysV1ApiKeyServiceCreateApiKey = <ThrowOnError extends boolean = false>(options: Options<ApikeysV1ApiKeyServiceCreateApiKeyData, ThrowOnError>) => (options.client ?? client).post<ApikeysV1ApiKeyServiceCreateApiKeyResponses, ApikeysV1ApiKeyServiceCreateApiKeyErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/organizations/{org_id}/api-keys/v1',
     ...options,
     headers: {
@@ -284,12 +374,17 @@ export const apikeysV1ApiKeyServiceCreateApiKey = <ThrowOnError extends boolean 
 /**
  * DeleteApiKey
  */
-export const apikeysV1ApiKeyServiceDeleteApiKey = <ThrowOnError extends boolean = false>(options: Options<ApikeysV1ApiKeyServiceDeleteApiKeyData, ThrowOnError>) => (options.client ?? client).delete<ApikeysV1ApiKeyServiceDeleteApiKeyResponses, ApikeysV1ApiKeyServiceDeleteApiKeyErrors, ThrowOnError>({ url: '/organizations/{org_id}/api-keys/v1/{key_id}', ...options });
+export const apikeysV1ApiKeyServiceDeleteApiKey = <ThrowOnError extends boolean = false>(options: Options<ApikeysV1ApiKeyServiceDeleteApiKeyData, ThrowOnError>) => (options.client ?? client).delete<ApikeysV1ApiKeyServiceDeleteApiKeyResponses, ApikeysV1ApiKeyServiceDeleteApiKeyErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/organizations/{org_id}/api-keys/v1/{key_id}',
+    ...options
+});
 
 /**
  * UpdateApiKey
  */
 export const apikeysV1ApiKeyServiceUpdateApiKey = <ThrowOnError extends boolean = false>(options: Options<ApikeysV1ApiKeyServiceUpdateApiKeyData, ThrowOnError>) => (options.client ?? client).patch<ApikeysV1ApiKeyServiceUpdateApiKeyResponses, ApikeysV1ApiKeyServiceUpdateApiKeyErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/organizations/{org_id}/api-keys/v1/{key_id}',
     ...options,
     headers: {
@@ -301,7 +396,11 @@ export const apikeysV1ApiKeyServiceUpdateApiKey = <ThrowOnError extends boolean 
 /**
  * RotateApiKey
  */
-export const apikeysV1ApiKeyServiceRotateApiKey = <ThrowOnError extends boolean = false>(options: Options<ApikeysV1ApiKeyServiceRotateApiKeyData, ThrowOnError>) => (options.client ?? client).post<ApikeysV1ApiKeyServiceRotateApiKeyResponses, ApikeysV1ApiKeyServiceRotateApiKeyErrors, ThrowOnError>({ url: '/organizations/{org_id}/api-keys/v1/{key_id}/rotate', ...options });
+export const apikeysV1ApiKeyServiceRotateApiKey = <ThrowOnError extends boolean = false>(options: Options<ApikeysV1ApiKeyServiceRotateApiKeyData, ThrowOnError>) => (options.client ?? client).post<ApikeysV1ApiKeyServiceRotateApiKeyResponses, ApikeysV1ApiKeyServiceRotateApiKeyErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/organizations/{org_id}/api-keys/v1/{key_id}/rotate',
+    ...options
+});
 
 /**
  * SendBlogBroadcast
@@ -318,17 +417,29 @@ export const authV1BlogServiceSendBlogBroadcast = <ThrowOnError extends boolean 
 /**
  * SubscribeBlog
  */
-export const authV1BlogServiceSubscribeBlog = <ThrowOnError extends boolean = false>(options?: Options<AuthV1BlogServiceSubscribeBlogData, ThrowOnError>) => (options?.client ?? client).post<AuthV1BlogServiceSubscribeBlogResponses, AuthV1BlogServiceSubscribeBlogErrors, ThrowOnError>({ url: '/auth/v1/blog/subscribe', ...options });
+export const authV1BlogServiceSubscribeBlog = <ThrowOnError extends boolean = false>(options?: Options<AuthV1BlogServiceSubscribeBlogData, ThrowOnError>) => (options?.client ?? client).post<AuthV1BlogServiceSubscribeBlogResponses, AuthV1BlogServiceSubscribeBlogErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/blog/subscribe',
+    ...options
+});
 
 /**
  * GetBlogSubscription
  */
-export const authV1BlogServiceGetBlogSubscription = <ThrowOnError extends boolean = false>(options?: Options<AuthV1BlogServiceGetBlogSubscriptionData, ThrowOnError>) => (options?.client ?? client).get<AuthV1BlogServiceGetBlogSubscriptionResponses, AuthV1BlogServiceGetBlogSubscriptionErrors, ThrowOnError>({ url: '/auth/v1/blog/subscription', ...options });
+export const authV1BlogServiceGetBlogSubscription = <ThrowOnError extends boolean = false>(options?: Options<AuthV1BlogServiceGetBlogSubscriptionData, ThrowOnError>) => (options?.client ?? client).get<AuthV1BlogServiceGetBlogSubscriptionResponses, AuthV1BlogServiceGetBlogSubscriptionErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/blog/subscription',
+    ...options
+});
 
 /**
  * UnsubscribeBlog
  */
-export const authV1BlogServiceUnsubscribeBlog = <ThrowOnError extends boolean = false>(options?: Options<AuthV1BlogServiceUnsubscribeBlogData, ThrowOnError>) => (options?.client ?? client).post<AuthV1BlogServiceUnsubscribeBlogResponses, AuthV1BlogServiceUnsubscribeBlogErrors, ThrowOnError>({ url: '/auth/v1/blog/unsubscribe', ...options });
+export const authV1BlogServiceUnsubscribeBlog = <ThrowOnError extends boolean = false>(options?: Options<AuthV1BlogServiceUnsubscribeBlogData, ThrowOnError>) => (options?.client ?? client).post<AuthV1BlogServiceUnsubscribeBlogResponses, AuthV1BlogServiceUnsubscribeBlogErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/blog/unsubscribe',
+    ...options
+});
 
 /**
  * UnsubscribeBlogByEmail
@@ -345,27 +456,44 @@ export const authV1BlogServiceUnsubscribeBlogByEmail = <ThrowOnError extends boo
 /**
  * RemoveDomain
  */
-export const authV1DomainServiceRemoveDomain = <ThrowOnError extends boolean = false>(options: Options<AuthV1DomainServiceRemoveDomainData, ThrowOnError>) => (options.client ?? client).delete<AuthV1DomainServiceRemoveDomainResponses, AuthV1DomainServiceRemoveDomainErrors, ThrowOnError>({ url: '/auth/v1/memberships/{org_id}/domain', ...options });
+export const authV1DomainServiceRemoveDomain = <ThrowOnError extends boolean = false>(options: Options<AuthV1DomainServiceRemoveDomainData, ThrowOnError>) => (options.client ?? client).delete<AuthV1DomainServiceRemoveDomainResponses, AuthV1DomainServiceRemoveDomainErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/memberships/{org_id}/domain',
+    ...options
+});
 
 /**
  * GetDomainStatus
  */
-export const authV1DomainServiceGetDomainStatus = <ThrowOnError extends boolean = false>(options: Options<AuthV1DomainServiceGetDomainStatusData, ThrowOnError>) => (options.client ?? client).get<AuthV1DomainServiceGetDomainStatusResponses, AuthV1DomainServiceGetDomainStatusErrors, ThrowOnError>({ url: '/auth/v1/memberships/{org_id}/domain', ...options });
+export const authV1DomainServiceGetDomainStatus = <ThrowOnError extends boolean = false>(options: Options<AuthV1DomainServiceGetDomainStatusData, ThrowOnError>) => (options.client ?? client).get<AuthV1DomainServiceGetDomainStatusResponses, AuthV1DomainServiceGetDomainStatusErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/memberships/{org_id}/domain',
+    ...options
+});
 
 /**
  * GetDomainAutoJoin
  */
-export const authV1DomainServiceGetDomainAutoJoin = <ThrowOnError extends boolean = false>(options: Options<AuthV1DomainServiceGetDomainAutoJoinData, ThrowOnError>) => (options.client ?? client).get<AuthV1DomainServiceGetDomainAutoJoinResponses, AuthV1DomainServiceGetDomainAutoJoinErrors, ThrowOnError>({ url: '/auth/v1/memberships/{org_id}/domain/auto-join', ...options });
+export const authV1DomainServiceGetDomainAutoJoin = <ThrowOnError extends boolean = false>(options: Options<AuthV1DomainServiceGetDomainAutoJoinData, ThrowOnError>) => (options.client ?? client).get<AuthV1DomainServiceGetDomainAutoJoinResponses, AuthV1DomainServiceGetDomainAutoJoinErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/memberships/{org_id}/domain/auto-join',
+    ...options
+});
 
 /**
  * CheckDomainVerification
  */
-export const authV1DomainServiceCheckDomainVerification = <ThrowOnError extends boolean = false>(options: Options<AuthV1DomainServiceCheckDomainVerificationData, ThrowOnError>) => (options.client ?? client).post<AuthV1DomainServiceCheckDomainVerificationResponses, AuthV1DomainServiceCheckDomainVerificationErrors, ThrowOnError>({ url: '/auth/v1/memberships/{org_id}/domain/verify', ...options });
+export const authV1DomainServiceCheckDomainVerification = <ThrowOnError extends boolean = false>(options: Options<AuthV1DomainServiceCheckDomainVerificationData, ThrowOnError>) => (options.client ?? client).post<AuthV1DomainServiceCheckDomainVerificationResponses, AuthV1DomainServiceCheckDomainVerificationErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/memberships/{org_id}/domain/verify',
+    ...options
+});
 
 /**
  * CreateDomainVerification
  */
 export const authV1DomainServiceCreateDomainVerification = <ThrowOnError extends boolean = false>(options: Options<AuthV1DomainServiceCreateDomainVerificationData, ThrowOnError>) => (options.client ?? client).post<AuthV1DomainServiceCreateDomainVerificationResponses, AuthV1DomainServiceCreateDomainVerificationErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/auth/v1/memberships/{user.org_id}/domain',
     ...options,
     headers: {
@@ -378,6 +506,7 @@ export const authV1DomainServiceCreateDomainVerification = <ThrowOnError extends
  * SetDomainAutoJoin
  */
 export const authV1DomainServiceSetDomainAutoJoin = <ThrowOnError extends boolean = false>(options: Options<AuthV1DomainServiceSetDomainAutoJoinData, ThrowOnError>) => (options.client ?? client).put<AuthV1DomainServiceSetDomainAutoJoinResponses, AuthV1DomainServiceSetDomainAutoJoinErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/auth/v1/memberships/{user.org_id}/domain/auto-join',
     ...options,
     headers: {
@@ -399,12 +528,17 @@ export const authV1MembershipServiceDeclineInvitation = <ThrowOnError extends bo
 /**
  * ListMembershipApplications
  */
-export const authV1MembershipServiceListMembershipApplications = <ThrowOnError extends boolean = false>(options?: Options<AuthV1MembershipServiceListMembershipApplicationsData, ThrowOnError>) => (options?.client ?? client).get<AuthV1MembershipServiceListMembershipApplicationsResponses, AuthV1MembershipServiceListMembershipApplicationsErrors, ThrowOnError>({ url: '/auth/v1/membership-applications', ...options });
+export const authV1MembershipServiceListMembershipApplications = <ThrowOnError extends boolean = false>(options?: Options<AuthV1MembershipServiceListMembershipApplicationsData, ThrowOnError>) => (options?.client ?? client).get<AuthV1MembershipServiceListMembershipApplicationsResponses, AuthV1MembershipServiceListMembershipApplicationsErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/membership-applications',
+    ...options
+});
 
 /**
  * RespondToMembershipApplication
  */
 export const authV1MembershipServiceRespondToMembershipApplication = <ThrowOnError extends boolean = false>(options: Options<AuthV1MembershipServiceRespondToMembershipApplicationData, ThrowOnError>) => (options.client ?? client).patch<AuthV1MembershipServiceRespondToMembershipApplicationResponses, AuthV1MembershipServiceRespondToMembershipApplicationErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/auth/v1/membership-applications/{org_id}/state',
     ...options,
     headers: {
@@ -416,12 +550,17 @@ export const authV1MembershipServiceRespondToMembershipApplication = <ThrowOnErr
 /**
  * ListMemberships
  */
-export const authV1MembershipServiceListMemberships = <ThrowOnError extends boolean = false>(options?: Options<AuthV1MembershipServiceListMembershipsData, ThrowOnError>) => (options?.client ?? client).get<AuthV1MembershipServiceListMembershipsResponses, AuthV1MembershipServiceListMembershipsErrors, ThrowOnError>({ url: '/auth/v1/memberships', ...options });
+export const authV1MembershipServiceListMemberships = <ThrowOnError extends boolean = false>(options?: Options<AuthV1MembershipServiceListMembershipsData, ThrowOnError>) => (options?.client ?? client).get<AuthV1MembershipServiceListMembershipsResponses, AuthV1MembershipServiceListMembershipsErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/memberships',
+    ...options
+});
 
 /**
  * UpdateActiveMembership
  */
 export const authV1MembershipServiceUpdateActiveMembership = <ThrowOnError extends boolean = false>(options: Options<AuthV1MembershipServiceUpdateActiveMembershipData, ThrowOnError>) => (options.client ?? client).patch<AuthV1MembershipServiceUpdateActiveMembershipResponses, AuthV1MembershipServiceUpdateActiveMembershipErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/auth/v1/memberships/active',
     ...options,
     headers: {
@@ -433,22 +572,35 @@ export const authV1MembershipServiceUpdateActiveMembership = <ThrowOnError exten
 /**
  * CheckMembership
  */
-export const authV1MembershipServiceCheckMembership = <ThrowOnError extends boolean = false>(options: Options<AuthV1MembershipServiceCheckMembershipData, ThrowOnError>) => (options.client ?? client).get<AuthV1MembershipServiceCheckMembershipResponses, AuthV1MembershipServiceCheckMembershipErrors, ThrowOnError>({ url: '/auth/v1/memberships/{org_id}/check', ...options });
+export const authV1MembershipServiceCheckMembership = <ThrowOnError extends boolean = false>(options: Options<AuthV1MembershipServiceCheckMembershipData, ThrowOnError>) => (options.client ?? client).get<AuthV1MembershipServiceCheckMembershipResponses, AuthV1MembershipServiceCheckMembershipErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/memberships/{org_id}/check',
+    ...options
+});
 
 /**
  * GetInternalMembershipInfo
  */
-export const authV1MembershipServiceGetInternalMembershipInfo = <ThrowOnError extends boolean = false>(options: Options<AuthV1MembershipServiceGetInternalMembershipInfoData, ThrowOnError>) => (options.client ?? client).get<AuthV1MembershipServiceGetInternalMembershipInfoResponses, AuthV1MembershipServiceGetInternalMembershipInfoErrors, ThrowOnError>({ url: '/auth/v1/memberships/{org_id}/info', ...options });
+export const authV1MembershipServiceGetInternalMembershipInfo = <ThrowOnError extends boolean = false>(options: Options<AuthV1MembershipServiceGetInternalMembershipInfoData, ThrowOnError>) => (options.client ?? client).get<AuthV1MembershipServiceGetInternalMembershipInfoResponses, AuthV1MembershipServiceGetInternalMembershipInfoErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/memberships/{org_id}/info',
+    ...options
+});
 
 /**
  * LeaveOrganization
  */
-export const authV1MembershipServiceLeaveOrganization = <ThrowOnError extends boolean = false>(options: Options<AuthV1MembershipServiceLeaveOrganizationData, ThrowOnError>) => (options.client ?? client).post<AuthV1MembershipServiceLeaveOrganizationResponses, AuthV1MembershipServiceLeaveOrganizationErrors, ThrowOnError>({ url: '/auth/v1/memberships/{org_id}/leave', ...options });
+export const authV1MembershipServiceLeaveOrganization = <ThrowOnError extends boolean = false>(options: Options<AuthV1MembershipServiceLeaveOrganizationData, ThrowOnError>) => (options.client ?? client).post<AuthV1MembershipServiceLeaveOrganizationResponses, AuthV1MembershipServiceLeaveOrganizationErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/memberships/{org_id}/leave',
+    ...options
+});
 
 /**
  * InviteMember
  */
 export const authV1MembershipServiceInviteMember = <ThrowOnError extends boolean = false>(options: Options<AuthV1MembershipServiceInviteMemberData, ThrowOnError>) => (options.client ?? client).post<AuthV1MembershipServiceInviteMemberResponses, AuthV1MembershipServiceInviteMemberErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/auth/v1/memberships/{user.org_id}/invite',
     ...options,
     headers: {
@@ -461,6 +613,7 @@ export const authV1MembershipServiceInviteMember = <ThrowOnError extends boolean
  * ResendInvitation
  */
 export const authV1MembershipServiceResendInvitation = <ThrowOnError extends boolean = false>(options: Options<AuthV1MembershipServiceResendInvitationData, ThrowOnError>) => (options.client ?? client).post<AuthV1MembershipServiceResendInvitationResponses, AuthV1MembershipServiceResendInvitationErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/auth/v1/memberships/{user.org_id}/invite/resend',
     ...options,
     headers: {
@@ -472,27 +625,44 @@ export const authV1MembershipServiceResendInvitation = <ThrowOnError extends boo
 /**
  * CancelInvitation
  */
-export const authV1MembershipServiceCancelInvitation = <ThrowOnError extends boolean = false>(options: Options<AuthV1MembershipServiceCancelInvitationData, ThrowOnError>) => (options.client ?? client).delete<AuthV1MembershipServiceCancelInvitationResponses, AuthV1MembershipServiceCancelInvitationErrors, ThrowOnError>({ url: '/auth/v1/memberships/{user.org_id}/invite/{user_id}', ...options });
+export const authV1MembershipServiceCancelInvitation = <ThrowOnError extends boolean = false>(options: Options<AuthV1MembershipServiceCancelInvitationData, ThrowOnError>) => (options.client ?? client).delete<AuthV1MembershipServiceCancelInvitationResponses, AuthV1MembershipServiceCancelInvitationErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/memberships/{user.org_id}/invite/{user_id}',
+    ...options
+});
 
 /**
  * ListOrganizationMembers
  */
-export const authV1MembershipServiceListOrganizationMembers = <ThrowOnError extends boolean = false>(options: Options<AuthV1MembershipServiceListOrganizationMembersData, ThrowOnError>) => (options.client ?? client).get<AuthV1MembershipServiceListOrganizationMembersResponses, AuthV1MembershipServiceListOrganizationMembersErrors, ThrowOnError>({ url: '/auth/v1/memberships/{user.org_id}/members', ...options });
+export const authV1MembershipServiceListOrganizationMembers = <ThrowOnError extends boolean = false>(options: Options<AuthV1MembershipServiceListOrganizationMembersData, ThrowOnError>) => (options.client ?? client).get<AuthV1MembershipServiceListOrganizationMembersResponses, AuthV1MembershipServiceListOrganizationMembersErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/memberships/{user.org_id}/members',
+    ...options
+});
 
 /**
  * RemoveMember
  */
-export const authV1MembershipServiceRemoveMember = <ThrowOnError extends boolean = false>(options: Options<AuthV1MembershipServiceRemoveMemberData, ThrowOnError>) => (options.client ?? client).delete<AuthV1MembershipServiceRemoveMemberResponses, AuthV1MembershipServiceRemoveMemberErrors, ThrowOnError>({ url: '/auth/v1/memberships/{user.org_id}/members/{user_id}', ...options });
+export const authV1MembershipServiceRemoveMember = <ThrowOnError extends boolean = false>(options: Options<AuthV1MembershipServiceRemoveMemberData, ThrowOnError>) => (options.client ?? client).delete<AuthV1MembershipServiceRemoveMemberResponses, AuthV1MembershipServiceRemoveMemberErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/memberships/{user.org_id}/members/{user_id}',
+    ...options
+});
 
 /**
  * ReactivateMember
  */
-export const authV1MembershipServiceReactivateMember = <ThrowOnError extends boolean = false>(options: Options<AuthV1MembershipServiceReactivateMemberData, ThrowOnError>) => (options.client ?? client).patch<AuthV1MembershipServiceReactivateMemberResponses, AuthV1MembershipServiceReactivateMemberErrors, ThrowOnError>({ url: '/auth/v1/memberships/{user.org_id}/members/{user_id}/reactivate', ...options });
+export const authV1MembershipServiceReactivateMember = <ThrowOnError extends boolean = false>(options: Options<AuthV1MembershipServiceReactivateMemberData, ThrowOnError>) => (options.client ?? client).patch<AuthV1MembershipServiceReactivateMemberResponses, AuthV1MembershipServiceReactivateMemberErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/memberships/{user.org_id}/members/{user_id}/reactivate',
+    ...options
+});
 
 /**
  * UpdateMemberRole
  */
 export const authV1MembershipServiceUpdateMemberRole = <ThrowOnError extends boolean = false>(options: Options<AuthV1MembershipServiceUpdateMemberRoleData, ThrowOnError>) => (options.client ?? client).patch<AuthV1MembershipServiceUpdateMemberRoleResponses, AuthV1MembershipServiceUpdateMemberRoleErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/auth/v1/memberships/{user.org_id}/members/{user_id}/role',
     ...options,
     headers: {
@@ -504,12 +674,17 @@ export const authV1MembershipServiceUpdateMemberRole = <ThrowOnError extends boo
 /**
  * SuspendMember
  */
-export const authV1MembershipServiceSuspendMember = <ThrowOnError extends boolean = false>(options: Options<AuthV1MembershipServiceSuspendMemberData, ThrowOnError>) => (options.client ?? client).patch<AuthV1MembershipServiceSuspendMemberResponses, AuthV1MembershipServiceSuspendMemberErrors, ThrowOnError>({ url: '/auth/v1/memberships/{user.org_id}/members/{user_id}/suspend', ...options });
+export const authV1MembershipServiceSuspendMember = <ThrowOnError extends boolean = false>(options: Options<AuthV1MembershipServiceSuspendMemberData, ThrowOnError>) => (options.client ?? client).patch<AuthV1MembershipServiceSuspendMemberResponses, AuthV1MembershipServiceSuspendMemberErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/memberships/{user.org_id}/members/{user_id}/suspend',
+    ...options
+});
 
 /**
  * UpdateOrgName
  */
 export const authV1MembershipServiceUpdateOrgName = <ThrowOnError extends boolean = false>(options: Options<AuthV1MembershipServiceUpdateOrgNameData, ThrowOnError>) => (options.client ?? client).patch<AuthV1MembershipServiceUpdateOrgNameResponses, AuthV1MembershipServiceUpdateOrgNameErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/auth/v1/memberships/{user.org_id}/name',
     ...options,
     headers: {
@@ -522,6 +697,7 @@ export const authV1MembershipServiceUpdateOrgName = <ThrowOnError extends boolea
  * UpdateMembershipState
  */
 export const authV1MembershipServiceUpdateMembershipState = <ThrowOnError extends boolean = false>(options: Options<AuthV1MembershipServiceUpdateMembershipStateData, ThrowOnError>) => (options.client ?? client).patch<AuthV1MembershipServiceUpdateMembershipStateResponses, AuthV1MembershipServiceUpdateMembershipStateErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/auth/v1/memberships/{user.org_id}/state',
     ...options,
     headers: {
@@ -534,6 +710,7 @@ export const authV1MembershipServiceUpdateMembershipState = <ThrowOnError extend
  * UpdateOrgUsername
  */
 export const authV1MembershipServiceUpdateOrgUsername = <ThrowOnError extends boolean = false>(options: Options<AuthV1MembershipServiceUpdateOrgUsernameData, ThrowOnError>) => (options.client ?? client).patch<AuthV1MembershipServiceUpdateOrgUsernameResponses, AuthV1MembershipServiceUpdateOrgUsernameErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/auth/v1/memberships/{user.org_id}/username',
     ...options,
     headers: {
@@ -545,27 +722,44 @@ export const authV1MembershipServiceUpdateOrgUsername = <ThrowOnError extends bo
 /**
  * RegenerateBackupCodes
  */
-export const authV1OtpServiceRegenerateBackupCodes = <ThrowOnError extends boolean = false>(options?: Options<AuthV1OtpServiceRegenerateBackupCodesData, ThrowOnError>) => (options?.client ?? client).post<AuthV1OtpServiceRegenerateBackupCodesResponses, AuthV1OtpServiceRegenerateBackupCodesErrors, ThrowOnError>({ url: '/auth/v1/users/current/totp/backup-codes/regenerate', ...options });
+export const authV1OtpServiceRegenerateBackupCodes = <ThrowOnError extends boolean = false>(options?: Options<AuthV1OtpServiceRegenerateBackupCodesData, ThrowOnError>) => (options?.client ?? client).post<AuthV1OtpServiceRegenerateBackupCodesResponses, AuthV1OtpServiceRegenerateBackupCodesErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/users/current/totp/backup-codes/regenerate',
+    ...options
+});
 
 /**
  * DeleteOTP
  */
-export const authV1OtpServiceDeleteOtp = <ThrowOnError extends boolean = false>(options?: Options<AuthV1OtpServiceDeleteOtpData, ThrowOnError>) => (options?.client ?? client).delete<AuthV1OtpServiceDeleteOtpResponses, AuthV1OtpServiceDeleteOtpErrors, ThrowOnError>({ url: '/auth/v1/users/current/totp/delete', ...options });
+export const authV1OtpServiceDeleteOtp = <ThrowOnError extends boolean = false>(options?: Options<AuthV1OtpServiceDeleteOtpData, ThrowOnError>) => (options?.client ?? client).delete<AuthV1OtpServiceDeleteOtpResponses, AuthV1OtpServiceDeleteOtpErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/users/current/totp/delete',
+    ...options
+});
 
 /**
  * SetupOTP
  */
-export const authV1OtpServiceSetupOtp = <ThrowOnError extends boolean = false>(options?: Options<AuthV1OtpServiceSetupOtpData, ThrowOnError>) => (options?.client ?? client).post<AuthV1OtpServiceSetupOtpResponses, AuthV1OtpServiceSetupOtpErrors, ThrowOnError>({ url: '/auth/v1/users/current/totp/setup', ...options });
+export const authV1OtpServiceSetupOtp = <ThrowOnError extends boolean = false>(options?: Options<AuthV1OtpServiceSetupOtpData, ThrowOnError>) => (options?.client ?? client).post<AuthV1OtpServiceSetupOtpResponses, AuthV1OtpServiceSetupOtpErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/users/current/totp/setup',
+    ...options
+});
 
 /**
  * GetOTPStatus
  */
-export const authV1OtpServiceGetOtpStatus = <ThrowOnError extends boolean = false>(options?: Options<AuthV1OtpServiceGetOtpStatusData, ThrowOnError>) => (options?.client ?? client).get<AuthV1OtpServiceGetOtpStatusResponses, AuthV1OtpServiceGetOtpStatusErrors, ThrowOnError>({ url: '/auth/v1/users/current/totp/status', ...options });
+export const authV1OtpServiceGetOtpStatus = <ThrowOnError extends boolean = false>(options?: Options<AuthV1OtpServiceGetOtpStatusData, ThrowOnError>) => (options?.client ?? client).get<AuthV1OtpServiceGetOtpStatusResponses, AuthV1OtpServiceGetOtpStatusErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/users/current/totp/status',
+    ...options
+});
 
 /**
  * VerifyOTP
  */
 export const authV1OtpServiceVerifyOtp = <ThrowOnError extends boolean = false>(options: Options<AuthV1OtpServiceVerifyOtpData, ThrowOnError>) => (options.client ?? client).post<AuthV1OtpServiceVerifyOtpResponses, AuthV1OtpServiceVerifyOtpErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/auth/v1/users/current/totp/verify',
     ...options,
     headers: {
@@ -613,12 +807,17 @@ export const authV1PasskeyServicePasskeyLoginFinish = <ThrowOnError extends bool
 /**
  * ListPasskeys
  */
-export const authV1PasskeyServiceListPasskeys = <ThrowOnError extends boolean = false>(options?: Options<AuthV1PasskeyServiceListPasskeysData, ThrowOnError>) => (options?.client ?? client).get<AuthV1PasskeyServiceListPasskeysResponses, AuthV1PasskeyServiceListPasskeysErrors, ThrowOnError>({ url: '/auth/v1/users/current/passkeys', ...options });
+export const authV1PasskeyServiceListPasskeys = <ThrowOnError extends boolean = false>(options?: Options<AuthV1PasskeyServiceListPasskeysData, ThrowOnError>) => (options?.client ?? client).get<AuthV1PasskeyServiceListPasskeysResponses, AuthV1PasskeyServiceListPasskeysErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/users/current/passkeys',
+    ...options
+});
 
 /**
  * PasskeyRegisterBegin
  */
 export const authV1PasskeyServicePasskeyRegisterBegin = <ThrowOnError extends boolean = false>(options: Options<AuthV1PasskeyServicePasskeyRegisterBeginData, ThrowOnError>) => (options.client ?? client).post<AuthV1PasskeyServicePasskeyRegisterBeginResponses, AuthV1PasskeyServicePasskeyRegisterBeginErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/auth/v1/users/current/passkeys/register/begin',
     ...options,
     headers: {
@@ -631,6 +830,7 @@ export const authV1PasskeyServicePasskeyRegisterBegin = <ThrowOnError extends bo
  * PasskeyRegisterFinish
  */
 export const authV1PasskeyServicePasskeyRegisterFinish = <ThrowOnError extends boolean = false>(options: Options<AuthV1PasskeyServicePasskeyRegisterFinishData, ThrowOnError>) => (options.client ?? client).post<AuthV1PasskeyServicePasskeyRegisterFinishResponses, AuthV1PasskeyServicePasskeyRegisterFinishErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/auth/v1/users/current/passkeys/register/finish',
     ...options,
     headers: {
@@ -642,12 +842,17 @@ export const authV1PasskeyServicePasskeyRegisterFinish = <ThrowOnError extends b
 /**
  * DeletePasskey
  */
-export const authV1PasskeyServiceDeletePasskey = <ThrowOnError extends boolean = false>(options: Options<AuthV1PasskeyServiceDeletePasskeyData, ThrowOnError>) => (options.client ?? client).delete<AuthV1PasskeyServiceDeletePasskeyResponses, AuthV1PasskeyServiceDeletePasskeyErrors, ThrowOnError>({ url: '/auth/v1/users/current/passkeys/{id}', ...options });
+export const authV1PasskeyServiceDeletePasskey = <ThrowOnError extends boolean = false>(options: Options<AuthV1PasskeyServiceDeletePasskeyData, ThrowOnError>) => (options.client ?? client).delete<AuthV1PasskeyServiceDeletePasskeyResponses, AuthV1PasskeyServiceDeletePasskeyErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/users/current/passkeys/{id}',
+    ...options
+});
 
 /**
  * RenamePasskey
  */
 export const authV1PasskeyServiceRenamePasskey = <ThrowOnError extends boolean = false>(options: Options<AuthV1PasskeyServiceRenamePasskeyData, ThrowOnError>) => (options.client ?? client).patch<AuthV1PasskeyServiceRenamePasskeyResponses, AuthV1PasskeyServiceRenamePasskeyErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/auth/v1/users/current/passkeys/{id}',
     ...options,
     headers: {
@@ -671,17 +876,26 @@ export const authV1PasskeyServiceVerifyPasskeyForLogin = <ThrowOnError extends b
 /**
  * ListPolicies
  */
-export const authV1PolicyServiceListPolicies = <ThrowOnError extends boolean = false>(options: Options<AuthV1PolicyServiceListPoliciesData, ThrowOnError>) => (options.client ?? client).get<AuthV1PolicyServiceListPoliciesResponses, AuthV1PolicyServiceListPoliciesErrors, ThrowOnError>({ url: '/auth/v1/memberships/{org_id}/policies', ...options });
+export const authV1PolicyServiceListPolicies = <ThrowOnError extends boolean = false>(options: Options<AuthV1PolicyServiceListPoliciesData, ThrowOnError>) => (options.client ?? client).get<AuthV1PolicyServiceListPoliciesResponses, AuthV1PolicyServiceListPoliciesErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/memberships/{org_id}/policies',
+    ...options
+});
 
 /**
  * ListUserPolicies
  */
-export const authV1PolicyServiceListUserPolicies = <ThrowOnError extends boolean = false>(options: Options<AuthV1PolicyServiceListUserPoliciesData, ThrowOnError>) => (options.client ?? client).get<AuthV1PolicyServiceListUserPoliciesResponses, AuthV1PolicyServiceListUserPoliciesErrors, ThrowOnError>({ url: '/auth/v1/memberships/{user.org_id}/members/{member_id}/policies', ...options });
+export const authV1PolicyServiceListUserPolicies = <ThrowOnError extends boolean = false>(options: Options<AuthV1PolicyServiceListUserPoliciesData, ThrowOnError>) => (options.client ?? client).get<AuthV1PolicyServiceListUserPoliciesResponses, AuthV1PolicyServiceListUserPoliciesErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/memberships/{user.org_id}/members/{member_id}/policies',
+    ...options
+});
 
 /**
  * CreatePolicy
  */
 export const authV1PolicyServiceCreatePolicy = <ThrowOnError extends boolean = false>(options: Options<AuthV1PolicyServiceCreatePolicyData, ThrowOnError>) => (options.client ?? client).post<AuthV1PolicyServiceCreatePolicyResponses, AuthV1PolicyServiceCreatePolicyErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/auth/v1/memberships/{user.org_id}/policies',
     ...options,
     headers: {
@@ -693,27 +907,44 @@ export const authV1PolicyServiceCreatePolicy = <ThrowOnError extends boolean = f
 /**
  * DetachPolicy
  */
-export const authV1PolicyServiceDetachPolicy = <ThrowOnError extends boolean = false>(options: Options<AuthV1PolicyServiceDetachPolicyData, ThrowOnError>) => (options.client ?? client).delete<AuthV1PolicyServiceDetachPolicyResponses, AuthV1PolicyServiceDetachPolicyErrors, ThrowOnError>({ url: '/auth/v1/memberships/{user.org_id}/policies/attachments/{attachment_id}', ...options });
+export const authV1PolicyServiceDetachPolicy = <ThrowOnError extends boolean = false>(options: Options<AuthV1PolicyServiceDetachPolicyData, ThrowOnError>) => (options.client ?? client).delete<AuthV1PolicyServiceDetachPolicyResponses, AuthV1PolicyServiceDetachPolicyErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/memberships/{user.org_id}/policies/attachments/{attachment_id}',
+    ...options
+});
 
 /**
  * ListPermissionRegistry
  */
-export const authV1PolicyServiceListPermissionRegistry = <ThrowOnError extends boolean = false>(options: Options<AuthV1PolicyServiceListPermissionRegistryData, ThrowOnError>) => (options.client ?? client).get<AuthV1PolicyServiceListPermissionRegistryResponses, AuthV1PolicyServiceListPermissionRegistryErrors, ThrowOnError>({ url: '/auth/v1/memberships/{user.org_id}/policies/permissions', ...options });
+export const authV1PolicyServiceListPermissionRegistry = <ThrowOnError extends boolean = false>(options: Options<AuthV1PolicyServiceListPermissionRegistryData, ThrowOnError>) => (options.client ?? client).get<AuthV1PolicyServiceListPermissionRegistryResponses, AuthV1PolicyServiceListPermissionRegistryErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/memberships/{user.org_id}/policies/permissions',
+    ...options
+});
 
 /**
  * DeletePolicy
  */
-export const authV1PolicyServiceDeletePolicy = <ThrowOnError extends boolean = false>(options: Options<AuthV1PolicyServiceDeletePolicyData, ThrowOnError>) => (options.client ?? client).delete<AuthV1PolicyServiceDeletePolicyResponses, AuthV1PolicyServiceDeletePolicyErrors, ThrowOnError>({ url: '/auth/v1/memberships/{user.org_id}/policies/{policy_id}', ...options });
+export const authV1PolicyServiceDeletePolicy = <ThrowOnError extends boolean = false>(options: Options<AuthV1PolicyServiceDeletePolicyData, ThrowOnError>) => (options.client ?? client).delete<AuthV1PolicyServiceDeletePolicyResponses, AuthV1PolicyServiceDeletePolicyErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/memberships/{user.org_id}/policies/{policy_id}',
+    ...options
+});
 
 /**
  * GetPolicy
  */
-export const authV1PolicyServiceGetPolicy = <ThrowOnError extends boolean = false>(options: Options<AuthV1PolicyServiceGetPolicyData, ThrowOnError>) => (options.client ?? client).get<AuthV1PolicyServiceGetPolicyResponses, AuthV1PolicyServiceGetPolicyErrors, ThrowOnError>({ url: '/auth/v1/memberships/{user.org_id}/policies/{policy_id}', ...options });
+export const authV1PolicyServiceGetPolicy = <ThrowOnError extends boolean = false>(options: Options<AuthV1PolicyServiceGetPolicyData, ThrowOnError>) => (options.client ?? client).get<AuthV1PolicyServiceGetPolicyResponses, AuthV1PolicyServiceGetPolicyErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/memberships/{user.org_id}/policies/{policy_id}',
+    ...options
+});
 
 /**
  * UpdatePolicy
  */
 export const authV1PolicyServiceUpdatePolicy = <ThrowOnError extends boolean = false>(options: Options<AuthV1PolicyServiceUpdatePolicyData, ThrowOnError>) => (options.client ?? client).put<AuthV1PolicyServiceUpdatePolicyResponses, AuthV1PolicyServiceUpdatePolicyErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/auth/v1/memberships/{user.org_id}/policies/{policy_id}',
     ...options,
     headers: {
@@ -725,12 +956,17 @@ export const authV1PolicyServiceUpdatePolicy = <ThrowOnError extends boolean = f
 /**
  * ListPolicyAttachments
  */
-export const authV1PolicyServiceListPolicyAttachments = <ThrowOnError extends boolean = false>(options: Options<AuthV1PolicyServiceListPolicyAttachmentsData, ThrowOnError>) => (options.client ?? client).get<AuthV1PolicyServiceListPolicyAttachmentsResponses, AuthV1PolicyServiceListPolicyAttachmentsErrors, ThrowOnError>({ url: '/auth/v1/memberships/{user.org_id}/policies/{policy_id}/attachments', ...options });
+export const authV1PolicyServiceListPolicyAttachments = <ThrowOnError extends boolean = false>(options: Options<AuthV1PolicyServiceListPolicyAttachmentsData, ThrowOnError>) => (options.client ?? client).get<AuthV1PolicyServiceListPolicyAttachmentsResponses, AuthV1PolicyServiceListPolicyAttachmentsErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/memberships/{user.org_id}/policies/{policy_id}/attachments',
+    ...options
+});
 
 /**
  * AttachPolicy
  */
 export const authV1PolicyServiceAttachPolicy = <ThrowOnError extends boolean = false>(options: Options<AuthV1PolicyServiceAttachPolicyData, ThrowOnError>) => (options.client ?? client).post<AuthV1PolicyServiceAttachPolicyResponses, AuthV1PolicyServiceAttachPolicyErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/auth/v1/memberships/{user.org_id}/policies/{policy_id}/attachments',
     ...options,
     headers: {
@@ -742,12 +978,17 @@ export const authV1PolicyServiceAttachPolicy = <ThrowOnError extends boolean = f
 /**
  * ListProviders
  */
-export const authV1ProvidersServiceListProviders = <ThrowOnError extends boolean = false>(options?: Options<AuthV1ProvidersServiceListProvidersData, ThrowOnError>) => (options?.client ?? client).get<AuthV1ProvidersServiceListProvidersResponses, AuthV1ProvidersServiceListProvidersErrors, ThrowOnError>({ url: '/auth/v1/providers', ...options });
+export const authV1ProvidersServiceListProviders = <ThrowOnError extends boolean = false>(options?: Options<AuthV1ProvidersServiceListProvidersData, ThrowOnError>) => (options?.client ?? client).get<AuthV1ProvidersServiceListProvidersResponses, AuthV1ProvidersServiceListProvidersErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/providers',
+    ...options
+});
 
 /**
  * ConnectProvider
  */
 export const authV1ProvidersServiceConnectProvider = <ThrowOnError extends boolean = false>(options: Options<AuthV1ProvidersServiceConnectProviderData, ThrowOnError>) => (options.client ?? client).post<AuthV1ProvidersServiceConnectProviderResponses, AuthV1ProvidersServiceConnectProviderErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/auth/v1/providers/connect',
     ...options,
     headers: {
@@ -759,7 +1000,11 @@ export const authV1ProvidersServiceConnectProvider = <ThrowOnError extends boole
 /**
  * DisconnectProvider
  */
-export const authV1ProvidersServiceDisconnectProvider = <ThrowOnError extends boolean = false>(options: Options<AuthV1ProvidersServiceDisconnectProviderData, ThrowOnError>) => (options.client ?? client).delete<AuthV1ProvidersServiceDisconnectProviderResponses, AuthV1ProvidersServiceDisconnectProviderErrors, ThrowOnError>({ url: '/auth/v1/providers/{provider}', ...options });
+export const authV1ProvidersServiceDisconnectProvider = <ThrowOnError extends boolean = false>(options: Options<AuthV1ProvidersServiceDisconnectProviderData, ThrowOnError>) => (options.client ?? client).delete<AuthV1ProvidersServiceDisconnectProviderResponses, AuthV1ProvidersServiceDisconnectProviderErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/providers/{provider}',
+    ...options
+});
 
 /**
  * VerifyEmail
@@ -861,6 +1106,7 @@ export const authV1TokenServiceRefreshToken = <ThrowOnError extends boolean = fa
  * AddEmail
  */
 export const authV1EmailServiceAddEmail = <ThrowOnError extends boolean = false>(options: Options<AuthV1EmailServiceAddEmailData, ThrowOnError>) => (options.client ?? client).post<AuthV1EmailServiceAddEmailResponses, AuthV1EmailServiceAddEmailErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/auth/v1/users/current/emails',
     ...options,
     headers: {
@@ -873,6 +1119,7 @@ export const authV1EmailServiceAddEmail = <ThrowOnError extends boolean = false>
  * InitiateEmailChange
  */
 export const authV1EmailServiceInitiateEmailChange = <ThrowOnError extends boolean = false>(options: Options<AuthV1EmailServiceInitiateEmailChangeData, ThrowOnError>) => (options.client ?? client).put<AuthV1EmailServiceInitiateEmailChangeResponses, AuthV1EmailServiceInitiateEmailChangeErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/auth/v1/users/current/emails/change',
     ...options,
     headers: {
@@ -884,22 +1131,35 @@ export const authV1EmailServiceInitiateEmailChange = <ThrowOnError extends boole
 /**
  * GetUserEmailStatus
  */
-export const authV1EmailServiceGetUserEmailStatus = <ThrowOnError extends boolean = false>(options?: Options<AuthV1EmailServiceGetUserEmailStatusData, ThrowOnError>) => (options?.client ?? client).get<AuthV1EmailServiceGetUserEmailStatusResponses, AuthV1EmailServiceGetUserEmailStatusErrors, ThrowOnError>({ url: '/auth/v1/users/current/emails/status', ...options });
+export const authV1EmailServiceGetUserEmailStatus = <ThrowOnError extends boolean = false>(options?: Options<AuthV1EmailServiceGetUserEmailStatusData, ThrowOnError>) => (options?.client ?? client).get<AuthV1EmailServiceGetUserEmailStatusResponses, AuthV1EmailServiceGetUserEmailStatusErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/users/current/emails/status',
+    ...options
+});
 
 /**
  * GetUserInfo
  */
-export const authV1UserServiceGetUserInfo = <ThrowOnError extends boolean = false>(options?: Options<AuthV1UserServiceGetUserInfoData, ThrowOnError>) => (options?.client ?? client).get<AuthV1UserServiceGetUserInfoResponses, AuthV1UserServiceGetUserInfoErrors, ThrowOnError>({ url: '/auth/v1/userinfo', ...options });
+export const authV1UserServiceGetUserInfo = <ThrowOnError extends boolean = false>(options?: Options<AuthV1UserServiceGetUserInfoData, ThrowOnError>) => (options?.client ?? client).get<AuthV1UserServiceGetUserInfoResponses, AuthV1UserServiceGetUserInfoErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/userinfo',
+    ...options
+});
 
 /**
  * GetUser
  */
-export const authV1UserServiceGetUser = <ThrowOnError extends boolean = false>(options?: Options<AuthV1UserServiceGetUserData, ThrowOnError>) => (options?.client ?? client).get<AuthV1UserServiceGetUserResponses, AuthV1UserServiceGetUserErrors, ThrowOnError>({ url: '/auth/v1/users/current', ...options });
+export const authV1UserServiceGetUser = <ThrowOnError extends boolean = false>(options?: Options<AuthV1UserServiceGetUserData, ThrowOnError>) => (options?.client ?? client).get<AuthV1UserServiceGetUserResponses, AuthV1UserServiceGetUserErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/users/current',
+    ...options
+});
 
 /**
  * UpdateUserAvatar
  */
 export const authV1UserServiceUpdateUserAvatar = <ThrowOnError extends boolean = false>(options: Options<AuthV1UserServiceUpdateUserAvatarData, ThrowOnError>) => (options.client ?? client).patch<AuthV1UserServiceUpdateUserAvatarResponses, AuthV1UserServiceUpdateUserAvatarErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/auth/v1/users/current/avatar',
     ...options,
     headers: {
@@ -911,12 +1171,17 @@ export const authV1UserServiceUpdateUserAvatar = <ThrowOnError extends boolean =
 /**
  * CreateAvatarUpload
  */
-export const authV1UserServiceCreateAvatarUpload = <ThrowOnError extends boolean = false>(options?: Options<AuthV1UserServiceCreateAvatarUploadData, ThrowOnError>) => (options?.client ?? client).post<AuthV1UserServiceCreateAvatarUploadResponses, AuthV1UserServiceCreateAvatarUploadErrors, ThrowOnError>({ url: '/auth/v1/users/current/avatar/upload', ...options });
+export const authV1UserServiceCreateAvatarUpload = <ThrowOnError extends boolean = false>(options?: Options<AuthV1UserServiceCreateAvatarUploadData, ThrowOnError>) => (options?.client ?? client).post<AuthV1UserServiceCreateAvatarUploadResponses, AuthV1UserServiceCreateAvatarUploadErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/users/current/avatar/upload',
+    ...options
+});
 
 /**
  * UpdateName
  */
 export const authV1UserServiceUpdateName = <ThrowOnError extends boolean = false>(options: Options<AuthV1UserServiceUpdateNameData, ThrowOnError>) => (options.client ?? client).patch<AuthV1UserServiceUpdateNameResponses, AuthV1UserServiceUpdateNameErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/auth/v1/users/current/name',
     ...options,
     headers: {
@@ -929,6 +1194,7 @@ export const authV1UserServiceUpdateName = <ThrowOnError extends boolean = false
  * UpdateUsername
  */
 export const authV1UserServiceUpdateUsername = <ThrowOnError extends boolean = false>(options: Options<AuthV1UserServiceUpdateUsernameData, ThrowOnError>) => (options.client ?? client).patch<AuthV1UserServiceUpdateUsernameResponses, AuthV1UserServiceUpdateUsernameErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/auth/v1/users/current/username',
     ...options,
     headers: {
@@ -940,12 +1206,17 @@ export const authV1UserServiceUpdateUsername = <ThrowOnError extends boolean = f
 /**
  * ListInvoices
  */
-export const billingV1InvoiceServiceListInvoices = <ThrowOnError extends boolean = false>(options?: Options<BillingV1InvoiceServiceListInvoicesData, ThrowOnError>) => (options?.client ?? client).get<BillingV1InvoiceServiceListInvoicesResponses, BillingV1InvoiceServiceListInvoicesErrors, ThrowOnError>({ url: '/billing/v1/invoices', ...options });
+export const billingV1InvoiceServiceListInvoices = <ThrowOnError extends boolean = false>(options?: Options<BillingV1InvoiceServiceListInvoicesData, ThrowOnError>) => (options?.client ?? client).get<BillingV1InvoiceServiceListInvoicesResponses, BillingV1InvoiceServiceListInvoicesErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/billing/v1/invoices',
+    ...options
+});
 
 /**
  * UpdateInvoiceStatus
  */
 export const billingV1InvoiceServiceUpdateInvoiceStatus = <ThrowOnError extends boolean = false>(options: Options<BillingV1InvoiceServiceUpdateInvoiceStatusData, ThrowOnError>) => (options.client ?? client).patch<BillingV1InvoiceServiceUpdateInvoiceStatusResponses, BillingV1InvoiceServiceUpdateInvoiceStatusErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/billing/v1/invoices/{invoice_id}/status',
     ...options,
     headers: {
@@ -957,12 +1228,17 @@ export const billingV1InvoiceServiceUpdateInvoiceStatus = <ThrowOnError extends 
 /**
  * GetBillingAddress
  */
-export const billingV1PaymentServiceGetBillingAddress = <ThrowOnError extends boolean = false>(options?: Options<BillingV1PaymentServiceGetBillingAddressData, ThrowOnError>) => (options?.client ?? client).get<BillingV1PaymentServiceGetBillingAddressResponses, BillingV1PaymentServiceGetBillingAddressErrors, ThrowOnError>({ url: '/billing/v1/address', ...options });
+export const billingV1PaymentServiceGetBillingAddress = <ThrowOnError extends boolean = false>(options?: Options<BillingV1PaymentServiceGetBillingAddressData, ThrowOnError>) => (options?.client ?? client).get<BillingV1PaymentServiceGetBillingAddressResponses, BillingV1PaymentServiceGetBillingAddressErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/billing/v1/address',
+    ...options
+});
 
 /**
  * UpsertBillingAddress
  */
 export const billingV1PaymentServiceUpsertBillingAddress = <ThrowOnError extends boolean = false>(options: Options<BillingV1PaymentServiceUpsertBillingAddressData, ThrowOnError>) => (options.client ?? client).put<BillingV1PaymentServiceUpsertBillingAddressResponses, BillingV1PaymentServiceUpsertBillingAddressErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/billing/v1/address',
     ...options,
     headers: {
@@ -975,6 +1251,7 @@ export const billingV1PaymentServiceUpsertBillingAddress = <ThrowOnError extends
  * CreateCheckoutSession
  */
 export const billingV1PaymentServiceCreateCheckoutSession = <ThrowOnError extends boolean = false>(options: Options<BillingV1PaymentServiceCreateCheckoutSessionData, ThrowOnError>) => (options.client ?? client).post<BillingV1PaymentServiceCreateCheckoutSessionResponses, BillingV1PaymentServiceCreateCheckoutSessionErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/billing/v1/checkout',
     ...options,
     headers: {
@@ -986,17 +1263,26 @@ export const billingV1PaymentServiceCreateCheckoutSession = <ThrowOnError extend
 /**
  * GetBillingConfig
  */
-export const billingV1PaymentServiceGetBillingConfig = <ThrowOnError extends boolean = false>(options?: Options<BillingV1PaymentServiceGetBillingConfigData, ThrowOnError>) => (options?.client ?? client).get<BillingV1PaymentServiceGetBillingConfigResponses, BillingV1PaymentServiceGetBillingConfigErrors, ThrowOnError>({ url: '/billing/v1/config', ...options });
+export const billingV1PaymentServiceGetBillingConfig = <ThrowOnError extends boolean = false>(options?: Options<BillingV1PaymentServiceGetBillingConfigData, ThrowOnError>) => (options?.client ?? client).get<BillingV1PaymentServiceGetBillingConfigResponses, BillingV1PaymentServiceGetBillingConfigErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/billing/v1/config',
+    ...options
+});
 
 /**
  * ListPaymentMethods
  */
-export const billingV1PaymentServiceListPaymentMethods = <ThrowOnError extends boolean = false>(options?: Options<BillingV1PaymentServiceListPaymentMethodsData, ThrowOnError>) => (options?.client ?? client).get<BillingV1PaymentServiceListPaymentMethodsResponses, BillingV1PaymentServiceListPaymentMethodsErrors, ThrowOnError>({ url: '/billing/v1/payment-methods', ...options });
+export const billingV1PaymentServiceListPaymentMethods = <ThrowOnError extends boolean = false>(options?: Options<BillingV1PaymentServiceListPaymentMethodsData, ThrowOnError>) => (options?.client ?? client).get<BillingV1PaymentServiceListPaymentMethodsResponses, BillingV1PaymentServiceListPaymentMethodsErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/billing/v1/payment-methods',
+    ...options
+});
 
 /**
  * UpsertPaymentMethod
  */
 export const billingV1PaymentServiceUpsertPaymentMethod = <ThrowOnError extends boolean = false>(options: Options<BillingV1PaymentServiceUpsertPaymentMethodData, ThrowOnError>) => (options.client ?? client).put<BillingV1PaymentServiceUpsertPaymentMethodResponses, BillingV1PaymentServiceUpsertPaymentMethodErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/billing/v1/payment-methods',
     ...options,
     headers: {
@@ -1008,22 +1294,35 @@ export const billingV1PaymentServiceUpsertPaymentMethod = <ThrowOnError extends 
 /**
  * GetPaymentMethodFromPaymentIntent
  */
-export const billingV1PaymentServiceGetPaymentMethodFromPaymentIntent = <ThrowOnError extends boolean = false>(options?: Options<BillingV1PaymentServiceGetPaymentMethodFromPaymentIntentData, ThrowOnError>) => (options?.client ?? client).get<BillingV1PaymentServiceGetPaymentMethodFromPaymentIntentResponses, BillingV1PaymentServiceGetPaymentMethodFromPaymentIntentErrors, ThrowOnError>({ url: '/billing/v1/payment-methods/from-payment-intent', ...options });
+export const billingV1PaymentServiceGetPaymentMethodFromPaymentIntent = <ThrowOnError extends boolean = false>(options?: Options<BillingV1PaymentServiceGetPaymentMethodFromPaymentIntentData, ThrowOnError>) => (options?.client ?? client).get<BillingV1PaymentServiceGetPaymentMethodFromPaymentIntentResponses, BillingV1PaymentServiceGetPaymentMethodFromPaymentIntentErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/billing/v1/payment-methods/from-payment-intent',
+    ...options
+});
 
 /**
  * GetPaymentMethodFromSetupIntent
  */
-export const billingV1PaymentServiceGetPaymentMethodFromSetupIntent = <ThrowOnError extends boolean = false>(options?: Options<BillingV1PaymentServiceGetPaymentMethodFromSetupIntentData, ThrowOnError>) => (options?.client ?? client).get<BillingV1PaymentServiceGetPaymentMethodFromSetupIntentResponses, BillingV1PaymentServiceGetPaymentMethodFromSetupIntentErrors, ThrowOnError>({ url: '/billing/v1/payment-methods/from-setup-intent', ...options });
+export const billingV1PaymentServiceGetPaymentMethodFromSetupIntent = <ThrowOnError extends boolean = false>(options?: Options<BillingV1PaymentServiceGetPaymentMethodFromSetupIntentData, ThrowOnError>) => (options?.client ?? client).get<BillingV1PaymentServiceGetPaymentMethodFromSetupIntentResponses, BillingV1PaymentServiceGetPaymentMethodFromSetupIntentErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/billing/v1/payment-methods/from-setup-intent',
+    ...options
+});
 
 /**
  * DeletePaymentMethod
  */
-export const billingV1PaymentServiceDeletePaymentMethod = <ThrowOnError extends boolean = false>(options: Options<BillingV1PaymentServiceDeletePaymentMethodData, ThrowOnError>) => (options.client ?? client).delete<BillingV1PaymentServiceDeletePaymentMethodResponses, BillingV1PaymentServiceDeletePaymentMethodErrors, ThrowOnError>({ url: '/billing/v1/payment-methods/{payment_method_id}', ...options });
+export const billingV1PaymentServiceDeletePaymentMethod = <ThrowOnError extends boolean = false>(options: Options<BillingV1PaymentServiceDeletePaymentMethodData, ThrowOnError>) => (options.client ?? client).delete<BillingV1PaymentServiceDeletePaymentMethodResponses, BillingV1PaymentServiceDeletePaymentMethodErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/billing/v1/payment-methods/{payment_method_id}',
+    ...options
+});
 
 /**
  * CreateSetupIntent
  */
 export const billingV1PaymentServiceCreateSetupIntent = <ThrowOnError extends boolean = false>(options: Options<BillingV1PaymentServiceCreateSetupIntentData, ThrowOnError>) => (options.client ?? client).post<BillingV1PaymentServiceCreateSetupIntentResponses, BillingV1PaymentServiceCreateSetupIntentErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/billing/v1/setup-intent',
     ...options,
     headers: {
@@ -1036,6 +1335,7 @@ export const billingV1PaymentServiceCreateSetupIntent = <ThrowOnError extends bo
  * UpgradeSubscription
  */
 export const billingV1PaymentServiceUpgradeSubscription = <ThrowOnError extends boolean = false>(options: Options<BillingV1PaymentServiceUpgradeSubscriptionData, ThrowOnError>) => (options.client ?? client).post<BillingV1PaymentServiceUpgradeSubscriptionResponses, BillingV1PaymentServiceUpgradeSubscriptionErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/billing/v1/subscription/upgrade',
     ...options,
     headers: {
@@ -1048,6 +1348,7 @@ export const billingV1PaymentServiceUpgradeSubscription = <ThrowOnError extends 
  * CalculateTax
  */
 export const billingV1PaymentServiceCalculateTax = <ThrowOnError extends boolean = false>(options: Options<BillingV1PaymentServiceCalculateTaxData, ThrowOnError>) => (options.client ?? client).post<BillingV1PaymentServiceCalculateTaxResponses, BillingV1PaymentServiceCalculateTaxErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/billing/v1/tax/calculate',
     ...options,
     headers: {
@@ -1060,6 +1361,7 @@ export const billingV1PaymentServiceCalculateTax = <ThrowOnError extends boolean
  * CalculateGenericTax
  */
 export const billingV1PaymentServiceCalculateGenericTax = <ThrowOnError extends boolean = false>(options: Options<BillingV1PaymentServiceCalculateGenericTaxData, ThrowOnError>) => (options.client ?? client).post<BillingV1PaymentServiceCalculateGenericTaxResponses, BillingV1PaymentServiceCalculateGenericTaxErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/billing/v1/tax/calculate-generic',
     ...options,
     headers: {
@@ -1071,17 +1373,26 @@ export const billingV1PaymentServiceCalculateGenericTax = <ThrowOnError extends 
 /**
  * ListPlans
  */
-export const billingV1PlanServiceListPlans = <ThrowOnError extends boolean = false>(options?: Options<BillingV1PlanServiceListPlansData, ThrowOnError>) => (options?.client ?? client).get<BillingV1PlanServiceListPlansResponses, BillingV1PlanServiceListPlansErrors, ThrowOnError>({ url: '/billing/v1/plans', ...options });
+export const billingV1PlanServiceListPlans = <ThrowOnError extends boolean = false>(options?: Options<BillingV1PlanServiceListPlansData, ThrowOnError>) => (options?.client ?? client).get<BillingV1PlanServiceListPlansResponses, BillingV1PlanServiceListPlansErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/billing/v1/plans',
+    ...options
+});
 
 /**
  * GetPlan
  */
-export const billingV1PlanServiceGetPlan = <ThrowOnError extends boolean = false>(options: Options<BillingV1PlanServiceGetPlanData, ThrowOnError>) => (options.client ?? client).get<BillingV1PlanServiceGetPlanResponses, BillingV1PlanServiceGetPlanErrors, ThrowOnError>({ url: '/billing/v1/plans/{plan_id}', ...options });
+export const billingV1PlanServiceGetPlan = <ThrowOnError extends boolean = false>(options: Options<BillingV1PlanServiceGetPlanData, ThrowOnError>) => (options.client ?? client).get<BillingV1PlanServiceGetPlanResponses, BillingV1PlanServiceGetPlanErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/billing/v1/plans/{plan_id}',
+    ...options
+});
 
 /**
  * ContactSales
  */
 export const billingV1SalesServiceContactSales = <ThrowOnError extends boolean = false>(options: Options<BillingV1SalesServiceContactSalesData, ThrowOnError>) => (options.client ?? client).post<BillingV1SalesServiceContactSalesResponses, BillingV1SalesServiceContactSalesErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/billing/v1/contact-sales',
     ...options,
     headers: {
@@ -1093,12 +1404,17 @@ export const billingV1SalesServiceContactSales = <ThrowOnError extends boolean =
 /**
  * GetSubscription
  */
-export const billingV1SubscriptionServiceGetSubscription = <ThrowOnError extends boolean = false>(options?: Options<BillingV1SubscriptionServiceGetSubscriptionData, ThrowOnError>) => (options?.client ?? client).get<BillingV1SubscriptionServiceGetSubscriptionResponses, BillingV1SubscriptionServiceGetSubscriptionErrors, ThrowOnError>({ url: '/billing/v1/subscription', ...options });
+export const billingV1SubscriptionServiceGetSubscription = <ThrowOnError extends boolean = false>(options?: Options<BillingV1SubscriptionServiceGetSubscriptionData, ThrowOnError>) => (options?.client ?? client).get<BillingV1SubscriptionServiceGetSubscriptionResponses, BillingV1SubscriptionServiceGetSubscriptionErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/billing/v1/subscription',
+    ...options
+});
 
 /**
  * CreateSubscription
  */
 export const billingV1SubscriptionServiceCreateSubscription = <ThrowOnError extends boolean = false>(options: Options<BillingV1SubscriptionServiceCreateSubscriptionData, ThrowOnError>) => (options.client ?? client).post<BillingV1SubscriptionServiceCreateSubscriptionResponses, BillingV1SubscriptionServiceCreateSubscriptionErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/billing/v1/subscription',
     ...options,
     headers: {
@@ -1110,57 +1426,98 @@ export const billingV1SubscriptionServiceCreateSubscription = <ThrowOnError exte
 /**
  * CancelSubscription
  */
-export const billingV1SubscriptionServiceCancelSubscription = <ThrowOnError extends boolean = false>(options?: Options<BillingV1SubscriptionServiceCancelSubscriptionData, ThrowOnError>) => (options?.client ?? client).post<BillingV1SubscriptionServiceCancelSubscriptionResponses, BillingV1SubscriptionServiceCancelSubscriptionErrors, ThrowOnError>({ url: '/billing/v1/subscription/cancel', ...options });
+export const billingV1SubscriptionServiceCancelSubscription = <ThrowOnError extends boolean = false>(options?: Options<BillingV1SubscriptionServiceCancelSubscriptionData, ThrowOnError>) => (options?.client ?? client).post<BillingV1SubscriptionServiceCancelSubscriptionResponses, BillingV1SubscriptionServiceCancelSubscriptionErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/billing/v1/subscription/cancel',
+    ...options
+});
 
 /**
  * GetSubscriptionHistory
  */
-export const billingV1SubscriptionServiceGetSubscriptionHistory = <ThrowOnError extends boolean = false>(options?: Options<BillingV1SubscriptionServiceGetSubscriptionHistoryData, ThrowOnError>) => (options?.client ?? client).get<BillingV1SubscriptionServiceGetSubscriptionHistoryResponses, BillingV1SubscriptionServiceGetSubscriptionHistoryErrors, ThrowOnError>({ url: '/billing/v1/subscription/history', ...options });
+export const billingV1SubscriptionServiceGetSubscriptionHistory = <ThrowOnError extends boolean = false>(options?: Options<BillingV1SubscriptionServiceGetSubscriptionHistoryData, ThrowOnError>) => (options?.client ?? client).get<BillingV1SubscriptionServiceGetSubscriptionHistoryResponses, BillingV1SubscriptionServiceGetSubscriptionHistoryErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/billing/v1/subscription/history',
+    ...options
+});
 
 /**
  * ReactivateSubscription
  */
-export const billingV1SubscriptionServiceReactivateSubscription = <ThrowOnError extends boolean = false>(options?: Options<BillingV1SubscriptionServiceReactivateSubscriptionData, ThrowOnError>) => (options?.client ?? client).post<BillingV1SubscriptionServiceReactivateSubscriptionResponses, BillingV1SubscriptionServiceReactivateSubscriptionErrors, ThrowOnError>({ url: '/billing/v1/subscription/reactivate', ...options });
+export const billingV1SubscriptionServiceReactivateSubscription = <ThrowOnError extends boolean = false>(options?: Options<BillingV1SubscriptionServiceReactivateSubscriptionData, ThrowOnError>) => (options?.client ?? client).post<BillingV1SubscriptionServiceReactivateSubscriptionResponses, BillingV1SubscriptionServiceReactivateSubscriptionErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/billing/v1/subscription/reactivate',
+    ...options
+});
 
 /**
  * GetBandwidthUsage
  */
-export const billingV1UsageServiceGetBandwidthUsage = <ThrowOnError extends boolean = false>(options?: Options<BillingV1UsageServiceGetBandwidthUsageData, ThrowOnError>) => (options?.client ?? client).get<BillingV1UsageServiceGetBandwidthUsageResponses, BillingV1UsageServiceGetBandwidthUsageErrors, ThrowOnError>({ url: '/billing/v1/bandwidth-usage', ...options });
+export const billingV1UsageServiceGetBandwidthUsage = <ThrowOnError extends boolean = false>(options?: Options<BillingV1UsageServiceGetBandwidthUsageData, ThrowOnError>) => (options?.client ?? client).get<BillingV1UsageServiceGetBandwidthUsageResponses, BillingV1UsageServiceGetBandwidthUsageErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/billing/v1/bandwidth-usage',
+    ...options
+});
 
 /**
  * GetBandwidthUsageHistory
  */
-export const billingV1UsageServiceGetBandwidthUsageHistory = <ThrowOnError extends boolean = false>(options?: Options<BillingV1UsageServiceGetBandwidthUsageHistoryData, ThrowOnError>) => (options?.client ?? client).get<BillingV1UsageServiceGetBandwidthUsageHistoryResponses, BillingV1UsageServiceGetBandwidthUsageHistoryErrors, ThrowOnError>({ url: '/billing/v1/bandwidth-usage/history', ...options });
+export const billingV1UsageServiceGetBandwidthUsageHistory = <ThrowOnError extends boolean = false>(options?: Options<BillingV1UsageServiceGetBandwidthUsageHistoryData, ThrowOnError>) => (options?.client ?? client).get<BillingV1UsageServiceGetBandwidthUsageHistoryResponses, BillingV1UsageServiceGetBandwidthUsageHistoryErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/billing/v1/bandwidth-usage/history',
+    ...options
+});
 
 /**
  * RefreshBandwidthUsage
  */
-export const billingV1UsageServiceRefreshBandwidthUsage = <ThrowOnError extends boolean = false>(options?: Options<BillingV1UsageServiceRefreshBandwidthUsageData, ThrowOnError>) => (options?.client ?? client).post<BillingV1UsageServiceRefreshBandwidthUsageResponses, BillingV1UsageServiceRefreshBandwidthUsageErrors, ThrowOnError>({ url: '/billing/v1/bandwidth-usage/refresh', ...options });
+export const billingV1UsageServiceRefreshBandwidthUsage = <ThrowOnError extends boolean = false>(options?: Options<BillingV1UsageServiceRefreshBandwidthUsageData, ThrowOnError>) => (options?.client ?? client).post<BillingV1UsageServiceRefreshBandwidthUsageResponses, BillingV1UsageServiceRefreshBandwidthUsageErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/billing/v1/bandwidth-usage/refresh',
+    ...options
+});
 
 /**
  * GetStorageUsage
  */
-export const billingV1UsageServiceGetStorageUsage = <ThrowOnError extends boolean = false>(options?: Options<BillingV1UsageServiceGetStorageUsageData, ThrowOnError>) => (options?.client ?? client).get<BillingV1UsageServiceGetStorageUsageResponses, BillingV1UsageServiceGetStorageUsageErrors, ThrowOnError>({ url: '/billing/v1/storage-usage', ...options });
+export const billingV1UsageServiceGetStorageUsage = <ThrowOnError extends boolean = false>(options?: Options<BillingV1UsageServiceGetStorageUsageData, ThrowOnError>) => (options?.client ?? client).get<BillingV1UsageServiceGetStorageUsageResponses, BillingV1UsageServiceGetStorageUsageErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/billing/v1/storage-usage',
+    ...options
+});
 
 /**
  * GetStorageUsageHistory
  */
-export const billingV1UsageServiceGetStorageUsageHistory = <ThrowOnError extends boolean = false>(options?: Options<BillingV1UsageServiceGetStorageUsageHistoryData, ThrowOnError>) => (options?.client ?? client).get<BillingV1UsageServiceGetStorageUsageHistoryResponses, BillingV1UsageServiceGetStorageUsageHistoryErrors, ThrowOnError>({ url: '/billing/v1/storage-usage/history', ...options });
+export const billingV1UsageServiceGetStorageUsageHistory = <ThrowOnError extends boolean = false>(options?: Options<BillingV1UsageServiceGetStorageUsageHistoryData, ThrowOnError>) => (options?.client ?? client).get<BillingV1UsageServiceGetStorageUsageHistoryResponses, BillingV1UsageServiceGetStorageUsageHistoryErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/billing/v1/storage-usage/history',
+    ...options
+});
 
 /**
  * RefreshStorageUsage
  */
-export const billingV1UsageServiceRefreshStorageUsage = <ThrowOnError extends boolean = false>(options?: Options<BillingV1UsageServiceRefreshStorageUsageData, ThrowOnError>) => (options?.client ?? client).post<BillingV1UsageServiceRefreshStorageUsageResponses, BillingV1UsageServiceRefreshStorageUsageErrors, ThrowOnError>({ url: '/billing/v1/storage-usage/refresh', ...options });
+export const billingV1UsageServiceRefreshStorageUsage = <ThrowOnError extends boolean = false>(options?: Options<BillingV1UsageServiceRefreshStorageUsageData, ThrowOnError>) => (options?.client ?? client).post<BillingV1UsageServiceRefreshStorageUsageResponses, BillingV1UsageServiceRefreshStorageUsageErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/billing/v1/storage-usage/refresh',
+    ...options
+});
 
 /**
  * ListClientCredentials
  */
-export const clientauthV1ClientCredentialServiceListClientCredentials = <ThrowOnError extends boolean = false>(options?: Options<ClientauthV1ClientCredentialServiceListClientCredentialsData, ThrowOnError>) => (options?.client ?? client).get<ClientauthV1ClientCredentialServiceListClientCredentialsResponses, ClientauthV1ClientCredentialServiceListClientCredentialsErrors, ThrowOnError>({ url: '/platform/clientauth/v1/credentials', ...options });
+export const clientauthV1ClientCredentialServiceListClientCredentials = <ThrowOnError extends boolean = false>(options?: Options<ClientauthV1ClientCredentialServiceListClientCredentialsData, ThrowOnError>) => (options?.client ?? client).get<ClientauthV1ClientCredentialServiceListClientCredentialsResponses, ClientauthV1ClientCredentialServiceListClientCredentialsErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/platform/clientauth/v1/credentials',
+    ...options
+});
 
 /**
  * CreateClientCredential
  */
 export const clientauthV1ClientCredentialServiceCreateClientCredential = <ThrowOnError extends boolean = false>(options: Options<ClientauthV1ClientCredentialServiceCreateClientCredentialData, ThrowOnError>) => (options.client ?? client).post<ClientauthV1ClientCredentialServiceCreateClientCredentialResponses, ClientauthV1ClientCredentialServiceCreateClientCredentialErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/platform/clientauth/v1/credentials',
     ...options,
     headers: {
@@ -1172,7 +1529,11 @@ export const clientauthV1ClientCredentialServiceCreateClientCredential = <ThrowO
 /**
  * RevokeClientCredential
  */
-export const clientauthV1ClientCredentialServiceRevokeClientCredential = <ThrowOnError extends boolean = false>(options: Options<ClientauthV1ClientCredentialServiceRevokeClientCredentialData, ThrowOnError>) => (options.client ?? client).post<ClientauthV1ClientCredentialServiceRevokeClientCredentialResponses, ClientauthV1ClientCredentialServiceRevokeClientCredentialErrors, ThrowOnError>({ url: '/platform/clientauth/v1/credentials/{credential_id}/revoke', ...options });
+export const clientauthV1ClientCredentialServiceRevokeClientCredential = <ThrowOnError extends boolean = false>(options: Options<ClientauthV1ClientCredentialServiceRevokeClientCredentialData, ThrowOnError>) => (options.client ?? client).post<ClientauthV1ClientCredentialServiceRevokeClientCredentialResponses, ClientauthV1ClientCredentialServiceRevokeClientCredentialErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/platform/clientauth/v1/credentials/{credential_id}/revoke',
+    ...options
+});
 
 /**
  * MintClientToken
@@ -1189,12 +1550,17 @@ export const clientauthV1ClientCredentialServiceMintClientToken = <ThrowOnError 
 /**
  * ListFeeds
  */
-export const feedsV1FeedServiceListFeeds = <ThrowOnError extends boolean = false>(options: Options<FeedsV1FeedServiceListFeedsData, ThrowOnError>) => (options.client ?? client).get<FeedsV1FeedServiceListFeedsResponses, FeedsV1FeedServiceListFeedsErrors, ThrowOnError>({ url: '/feeds/v1/projects/{project_id}/feeds', ...options });
+export const feedsV1FeedServiceListFeeds = <ThrowOnError extends boolean = false>(options: Options<FeedsV1FeedServiceListFeedsData, ThrowOnError>) => (options.client ?? client).get<FeedsV1FeedServiceListFeedsResponses, FeedsV1FeedServiceListFeedsErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/feeds/v1/projects/{project_id}/feeds',
+    ...options
+});
 
 /**
  * CreateFeed
  */
 export const feedsV1FeedServiceCreateFeed = <ThrowOnError extends boolean = false>(options: Options<FeedsV1FeedServiceCreateFeedData, ThrowOnError>) => (options.client ?? client).post<FeedsV1FeedServiceCreateFeedResponses, FeedsV1FeedServiceCreateFeedErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/feeds/v1/projects/{project_id}/feeds',
     ...options,
     headers: {
@@ -1206,17 +1572,26 @@ export const feedsV1FeedServiceCreateFeed = <ThrowOnError extends boolean = fals
 /**
  * DeleteFeed
  */
-export const feedsV1FeedServiceDeleteFeed = <ThrowOnError extends boolean = false>(options: Options<FeedsV1FeedServiceDeleteFeedData, ThrowOnError>) => (options.client ?? client).delete<FeedsV1FeedServiceDeleteFeedResponses, FeedsV1FeedServiceDeleteFeedErrors, ThrowOnError>({ url: '/feeds/v1/projects/{project_id}/feeds/{feed_id}', ...options });
+export const feedsV1FeedServiceDeleteFeed = <ThrowOnError extends boolean = false>(options: Options<FeedsV1FeedServiceDeleteFeedData, ThrowOnError>) => (options.client ?? client).delete<FeedsV1FeedServiceDeleteFeedResponses, FeedsV1FeedServiceDeleteFeedErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/feeds/v1/projects/{project_id}/feeds/{feed_id}',
+    ...options
+});
 
 /**
  * GetFeed
  */
-export const feedsV1FeedServiceGetFeed = <ThrowOnError extends boolean = false>(options: Options<FeedsV1FeedServiceGetFeedData, ThrowOnError>) => (options.client ?? client).get<FeedsV1FeedServiceGetFeedResponses, FeedsV1FeedServiceGetFeedErrors, ThrowOnError>({ url: '/feeds/v1/projects/{project_id}/feeds/{feed_id}', ...options });
+export const feedsV1FeedServiceGetFeed = <ThrowOnError extends boolean = false>(options: Options<FeedsV1FeedServiceGetFeedData, ThrowOnError>) => (options.client ?? client).get<FeedsV1FeedServiceGetFeedResponses, FeedsV1FeedServiceGetFeedErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/feeds/v1/projects/{project_id}/feeds/{feed_id}',
+    ...options
+});
 
 /**
  * UpdateFeed
  */
 export const feedsV1FeedServiceUpdateFeed = <ThrowOnError extends boolean = false>(options: Options<FeedsV1FeedServiceUpdateFeedData, ThrowOnError>) => (options.client ?? client).put<FeedsV1FeedServiceUpdateFeedResponses, FeedsV1FeedServiceUpdateFeedErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/feeds/v1/projects/{project_id}/feeds/{feed_id}',
     ...options,
     headers: {
@@ -1233,12 +1608,17 @@ export const imagesV1ImageServiceGetImage = <ThrowOnError extends boolean = fals
 /**
  * ListImages
  */
-export const imagesV1ImageServiceListImages = <ThrowOnError extends boolean = false>(options: Options<ImagesV1ImageServiceListImagesData, ThrowOnError>) => (options.client ?? client).get<ImagesV1ImageServiceListImagesResponses, ImagesV1ImageServiceListImagesErrors, ThrowOnError>({ url: '/media/v1/projects/{project_id}/images', ...options });
+export const imagesV1ImageServiceListImages = <ThrowOnError extends boolean = false>(options: Options<ImagesV1ImageServiceListImagesData, ThrowOnError>) => (options.client ?? client).get<ImagesV1ImageServiceListImagesResponses, ImagesV1ImageServiceListImagesErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/media/v1/projects/{project_id}/images',
+    ...options
+});
 
 /**
  * CreateImageUpload
  */
 export const imagesV1ImageServiceCreateImageUpload = <ThrowOnError extends boolean = false>(options: Options<ImagesV1ImageServiceCreateImageUploadData, ThrowOnError>) => (options.client ?? client).post<ImagesV1ImageServiceCreateImageUploadResponses, ImagesV1ImageServiceCreateImageUploadErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/media/v1/projects/{project_id}/images/upload',
     ...options,
     headers: {
@@ -1250,12 +1630,17 @@ export const imagesV1ImageServiceCreateImageUpload = <ThrowOnError extends boole
 /**
  * DeleteImage
  */
-export const imagesV1ImageServiceDeleteImage = <ThrowOnError extends boolean = false>(options: Options<ImagesV1ImageServiceDeleteImageData, ThrowOnError>) => (options.client ?? client).delete<ImagesV1ImageServiceDeleteImageResponses, ImagesV1ImageServiceDeleteImageErrors, ThrowOnError>({ url: '/media/v1/projects/{project_id}/images/{image_id}', ...options });
+export const imagesV1ImageServiceDeleteImage = <ThrowOnError extends boolean = false>(options: Options<ImagesV1ImageServiceDeleteImageData, ThrowOnError>) => (options.client ?? client).delete<ImagesV1ImageServiceDeleteImageResponses, ImagesV1ImageServiceDeleteImageErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/media/v1/projects/{project_id}/images/{image_id}',
+    ...options
+});
 
 /**
  * UpdateImageVisibility
  */
 export const imagesV1ImageServiceUpdateImageVisibility = <ThrowOnError extends boolean = false>(options: Options<ImagesV1ImageServiceUpdateImageVisibilityData, ThrowOnError>) => (options.client ?? client).patch<ImagesV1ImageServiceUpdateImageVisibilityResponses, ImagesV1ImageServiceUpdateImageVisibilityErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/media/v1/projects/{project_id}/images/{image_id}/visibility',
     ...options,
     headers: {
@@ -1306,12 +1691,17 @@ export const postsV1PostServiceGetPost3 = <ThrowOnError extends boolean = false>
 /**
  * ListPosts
  */
-export const postsV1PostServiceListPosts = <ThrowOnError extends boolean = false>(options: Options<PostsV1PostServiceListPostsData, ThrowOnError>) => (options.client ?? client).get<PostsV1PostServiceListPostsResponses, PostsV1PostServiceListPostsErrors, ThrowOnError>({ url: '/posts/v1/projects/{project_id}/feeds/{feed_id}/posts', ...options });
+export const postsV1PostServiceListPosts = <ThrowOnError extends boolean = false>(options: Options<PostsV1PostServiceListPostsData, ThrowOnError>) => (options.client ?? client).get<PostsV1PostServiceListPostsResponses, PostsV1PostServiceListPostsErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/posts/v1/projects/{project_id}/feeds/{feed_id}/posts',
+    ...options
+});
 
 /**
  * CreatePost
  */
 export const postsV1PostServiceCreatePost = <ThrowOnError extends boolean = false>(options: Options<PostsV1PostServiceCreatePostData, ThrowOnError>) => (options.client ?? client).post<PostsV1PostServiceCreatePostResponses, PostsV1PostServiceCreatePostErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/posts/v1/projects/{project_id}/feeds/{feed_id}/posts',
     ...options,
     headers: {
@@ -1323,12 +1713,17 @@ export const postsV1PostServiceCreatePost = <ThrowOnError extends boolean = fals
 /**
  * ListPosts
  */
-export const postsV1PostServiceListPosts2 = <ThrowOnError extends boolean = false>(options: Options<PostsV1PostServiceListPosts2Data, ThrowOnError>) => (options.client ?? client).get<PostsV1PostServiceListPosts2Responses, PostsV1PostServiceListPosts2Errors, ThrowOnError>({ url: '/posts/v1/projects/{project_id}/feeds/{feed_id}/posts/creators/{creator_id}', ...options });
+export const postsV1PostServiceListPosts2 = <ThrowOnError extends boolean = false>(options: Options<PostsV1PostServiceListPosts2Data, ThrowOnError>) => (options.client ?? client).get<PostsV1PostServiceListPosts2Responses, PostsV1PostServiceListPosts2Errors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/posts/v1/projects/{project_id}/feeds/{feed_id}/posts/creators/{creator_id}',
+    ...options
+});
 
 /**
  * CreatePostUpload
  */
 export const postsV1PostServiceCreatePostUpload = <ThrowOnError extends boolean = false>(options: Options<PostsV1PostServiceCreatePostUploadData, ThrowOnError>) => (options.client ?? client).post<PostsV1PostServiceCreatePostUploadResponses, PostsV1PostServiceCreatePostUploadErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/posts/v1/projects/{project_id}/feeds/{feed_id}/posts/upload',
     ...options,
     headers: {
@@ -1340,32 +1735,53 @@ export const postsV1PostServiceCreatePostUpload = <ThrowOnError extends boolean 
 /**
  * DeletePost
  */
-export const postsV1PostServiceDeletePost2 = <ThrowOnError extends boolean = false>(options: Options<PostsV1PostServiceDeletePost2Data, ThrowOnError>) => (options.client ?? client).delete<PostsV1PostServiceDeletePost2Responses, PostsV1PostServiceDeletePost2Errors, ThrowOnError>({ url: '/posts/v1/projects/{project_id}/feeds/{feed_id}/posts/{post_id}', ...options });
+export const postsV1PostServiceDeletePost2 = <ThrowOnError extends boolean = false>(options: Options<PostsV1PostServiceDeletePost2Data, ThrowOnError>) => (options.client ?? client).delete<PostsV1PostServiceDeletePost2Responses, PostsV1PostServiceDeletePost2Errors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/posts/v1/projects/{project_id}/feeds/{feed_id}/posts/{post_id}',
+    ...options
+});
 
 /**
  * GetPost
  */
-export const postsV1PostServiceGetPost2 = <ThrowOnError extends boolean = false>(options: Options<PostsV1PostServiceGetPost2Data, ThrowOnError>) => (options.client ?? client).get<PostsV1PostServiceGetPost2Responses, PostsV1PostServiceGetPost2Errors, ThrowOnError>({ url: '/posts/v1/projects/{project_id}/feeds/{feed_id}/posts/{post_id}', ...options });
+export const postsV1PostServiceGetPost2 = <ThrowOnError extends boolean = false>(options: Options<PostsV1PostServiceGetPost2Data, ThrowOnError>) => (options.client ?? client).get<PostsV1PostServiceGetPost2Responses, PostsV1PostServiceGetPost2Errors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/posts/v1/projects/{project_id}/feeds/{feed_id}/posts/{post_id}',
+    ...options
+});
 
 /**
  * DeletePost
  */
-export const postsV1PostServiceDeletePost = <ThrowOnError extends boolean = false>(options: Options<PostsV1PostServiceDeletePostData, ThrowOnError>) => (options.client ?? client).delete<PostsV1PostServiceDeletePostResponses, PostsV1PostServiceDeletePostErrors, ThrowOnError>({ url: '/posts/v1/projects/{project_id}/posts/{post_id}', ...options });
+export const postsV1PostServiceDeletePost = <ThrowOnError extends boolean = false>(options: Options<PostsV1PostServiceDeletePostData, ThrowOnError>) => (options.client ?? client).delete<PostsV1PostServiceDeletePostResponses, PostsV1PostServiceDeletePostErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/posts/v1/projects/{project_id}/posts/{post_id}',
+    ...options
+});
 
 /**
  * GetPost
  */
-export const postsV1PostServiceGetPost = <ThrowOnError extends boolean = false>(options: Options<PostsV1PostServiceGetPostData, ThrowOnError>) => (options.client ?? client).get<PostsV1PostServiceGetPostResponses, PostsV1PostServiceGetPostErrors, ThrowOnError>({ url: '/posts/v1/projects/{project_id}/posts/{post_id}', ...options });
+export const postsV1PostServiceGetPost = <ThrowOnError extends boolean = false>(options: Options<PostsV1PostServiceGetPostData, ThrowOnError>) => (options.client ?? client).get<PostsV1PostServiceGetPostResponses, PostsV1PostServiceGetPostErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/posts/v1/projects/{project_id}/posts/{post_id}',
+    ...options
+});
 
 /**
  * ListProjects
  */
-export const projectV1ProjectServiceListProjects = <ThrowOnError extends boolean = false>(options: Options<ProjectV1ProjectServiceListProjectsData, ThrowOnError>) => (options.client ?? client).get<ProjectV1ProjectServiceListProjectsResponses, ProjectV1ProjectServiceListProjectsErrors, ThrowOnError>({ url: '/organizations/{org_id}/projects/v1', ...options });
+export const projectV1ProjectServiceListProjects = <ThrowOnError extends boolean = false>(options: Options<ProjectV1ProjectServiceListProjectsData, ThrowOnError>) => (options.client ?? client).get<ProjectV1ProjectServiceListProjectsResponses, ProjectV1ProjectServiceListProjectsErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/organizations/{org_id}/projects/v1',
+    ...options
+});
 
 /**
  * CreateProject
  */
 export const projectV1ProjectServiceCreateProject = <ThrowOnError extends boolean = false>(options: Options<ProjectV1ProjectServiceCreateProjectData, ThrowOnError>) => (options.client ?? client).post<ProjectV1ProjectServiceCreateProjectResponses, ProjectV1ProjectServiceCreateProjectErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/organizations/{org_id}/projects/v1',
     ...options,
     headers: {
@@ -1377,22 +1793,35 @@ export const projectV1ProjectServiceCreateProject = <ThrowOnError extends boolea
 /**
  * DeleteProject
  */
-export const projectV1ProjectServiceDeleteProject = <ThrowOnError extends boolean = false>(options: Options<ProjectV1ProjectServiceDeleteProjectData, ThrowOnError>) => (options.client ?? client).delete<ProjectV1ProjectServiceDeleteProjectResponses, ProjectV1ProjectServiceDeleteProjectErrors, ThrowOnError>({ url: '/organizations/{org_id}/projects/v1/{project_id}', ...options });
+export const projectV1ProjectServiceDeleteProject = <ThrowOnError extends boolean = false>(options: Options<ProjectV1ProjectServiceDeleteProjectData, ThrowOnError>) => (options.client ?? client).delete<ProjectV1ProjectServiceDeleteProjectResponses, ProjectV1ProjectServiceDeleteProjectErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/organizations/{org_id}/projects/v1/{project_id}',
+    ...options
+});
 
 /**
  * GetProject
  */
-export const projectV1ProjectServiceGetProject = <ThrowOnError extends boolean = false>(options: Options<ProjectV1ProjectServiceGetProjectData, ThrowOnError>) => (options.client ?? client).get<ProjectV1ProjectServiceGetProjectResponses, ProjectV1ProjectServiceGetProjectErrors, ThrowOnError>({ url: '/organizations/{org_id}/projects/v1/{project_id}', ...options });
+export const projectV1ProjectServiceGetProject = <ThrowOnError extends boolean = false>(options: Options<ProjectV1ProjectServiceGetProjectData, ThrowOnError>) => (options.client ?? client).get<ProjectV1ProjectServiceGetProjectResponses, ProjectV1ProjectServiceGetProjectErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/organizations/{org_id}/projects/v1/{project_id}',
+    ...options
+});
 
 /**
  * RemoveCustomDomain
  */
-export const projectV1ProjectServiceRemoveCustomDomain = <ThrowOnError extends boolean = false>(options: Options<ProjectV1ProjectServiceRemoveCustomDomainData, ThrowOnError>) => (options.client ?? client).delete<ProjectV1ProjectServiceRemoveCustomDomainResponses, ProjectV1ProjectServiceRemoveCustomDomainErrors, ThrowOnError>({ url: '/organizations/{org_id}/projects/v1/{project_id}/custom-domain', ...options });
+export const projectV1ProjectServiceRemoveCustomDomain = <ThrowOnError extends boolean = false>(options: Options<ProjectV1ProjectServiceRemoveCustomDomainData, ThrowOnError>) => (options.client ?? client).delete<ProjectV1ProjectServiceRemoveCustomDomainResponses, ProjectV1ProjectServiceRemoveCustomDomainErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/organizations/{org_id}/projects/v1/{project_id}/custom-domain',
+    ...options
+});
 
 /**
  * SetCustomDomain
  */
 export const projectV1ProjectServiceSetCustomDomain = <ThrowOnError extends boolean = false>(options: Options<ProjectV1ProjectServiceSetCustomDomainData, ThrowOnError>) => (options.client ?? client).put<ProjectV1ProjectServiceSetCustomDomainResponses, ProjectV1ProjectServiceSetCustomDomainErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/organizations/{org_id}/projects/v1/{project_id}/custom-domain',
     ...options,
     headers: {
@@ -1405,6 +1834,7 @@ export const projectV1ProjectServiceSetCustomDomain = <ThrowOnError extends bool
  * MoveProject
  */
 export const projectV1ProjectServiceMoveProject = <ThrowOnError extends boolean = false>(options: Options<ProjectV1ProjectServiceMoveProjectData, ThrowOnError>) => (options.client ?? client).post<ProjectV1ProjectServiceMoveProjectResponses, ProjectV1ProjectServiceMoveProjectErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/organizations/{org_id}/projects/v1/{project_id}/move',
     ...options,
     headers: {
@@ -1417,6 +1847,7 @@ export const projectV1ProjectServiceMoveProject = <ThrowOnError extends boolean 
  * UpdateProjectName
  */
 export const projectV1ProjectServiceUpdateProjectName = <ThrowOnError extends boolean = false>(options: Options<ProjectV1ProjectServiceUpdateProjectNameData, ThrowOnError>) => (options.client ?? client).patch<ProjectV1ProjectServiceUpdateProjectNameResponses, ProjectV1ProjectServiceUpdateProjectNameErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/organizations/{org_id}/projects/v1/{project_id}/name',
     ...options,
     headers: {
@@ -1429,6 +1860,7 @@ export const projectV1ProjectServiceUpdateProjectName = <ThrowOnError extends bo
  * UpdateVideoQuality
  */
 export const projectV1ProjectServiceUpdateVideoQuality = <ThrowOnError extends boolean = false>(options: Options<ProjectV1ProjectServiceUpdateVideoQualityData, ThrowOnError>) => (options.client ?? client).patch<ProjectV1ProjectServiceUpdateVideoQualityResponses, ProjectV1ProjectServiceUpdateVideoQualityErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/organizations/{org_id}/projects/v1/{project_id}/video-quality',
     ...options,
     headers: {
@@ -1440,12 +1872,17 @@ export const projectV1ProjectServiceUpdateVideoQuality = <ThrowOnError extends b
 /**
  * ListChatMessages
  */
-export const supportV1SupportChatServiceListChatMessages = <ThrowOnError extends boolean = false>(options?: Options<SupportV1SupportChatServiceListChatMessagesData, ThrowOnError>) => (options?.client ?? client).get<SupportV1SupportChatServiceListChatMessagesResponses, SupportV1SupportChatServiceListChatMessagesErrors, ThrowOnError>({ url: '/support/v1/chat/messages', ...options });
+export const supportV1SupportChatServiceListChatMessages = <ThrowOnError extends boolean = false>(options?: Options<SupportV1SupportChatServiceListChatMessagesData, ThrowOnError>) => (options?.client ?? client).get<SupportV1SupportChatServiceListChatMessagesResponses, SupportV1SupportChatServiceListChatMessagesErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/support/v1/chat/messages',
+    ...options
+});
 
 /**
  * SendChatMessage
  */
 export const supportV1SupportChatServiceSendChatMessage = <ThrowOnError extends boolean = false>(options: Options<SupportV1SupportChatServiceSendChatMessageData, ThrowOnError>) => (options.client ?? client).post<SupportV1SupportChatServiceSendChatMessageResponses, SupportV1SupportChatServiceSendChatMessageErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/support/v1/chat/messages',
     ...options,
     headers: {
@@ -1457,22 +1894,35 @@ export const supportV1SupportChatServiceSendChatMessage = <ThrowOnError extends 
 /**
  * ListCategories
  */
-export const supportV1SupportTicketServiceListCategories = <ThrowOnError extends boolean = false>(options?: Options<SupportV1SupportTicketServiceListCategoriesData, ThrowOnError>) => (options?.client ?? client).get<SupportV1SupportTicketServiceListCategoriesResponses, SupportV1SupportTicketServiceListCategoriesErrors, ThrowOnError>({ url: '/support/v1/categories', ...options });
+export const supportV1SupportTicketServiceListCategories = <ThrowOnError extends boolean = false>(options?: Options<SupportV1SupportTicketServiceListCategoriesData, ThrowOnError>) => (options?.client ?? client).get<SupportV1SupportTicketServiceListCategoriesResponses, SupportV1SupportTicketServiceListCategoriesErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/support/v1/categories',
+    ...options
+});
 
 /**
  * ListTopics
  */
-export const supportV1SupportTicketServiceListTopics2 = <ThrowOnError extends boolean = false>(options: Options<SupportV1SupportTicketServiceListTopics2Data, ThrowOnError>) => (options.client ?? client).get<SupportV1SupportTicketServiceListTopics2Responses, SupportV1SupportTicketServiceListTopics2Errors, ThrowOnError>({ url: '/support/v1/categories/{category_id}/topics', ...options });
+export const supportV1SupportTicketServiceListTopics2 = <ThrowOnError extends boolean = false>(options: Options<SupportV1SupportTicketServiceListTopics2Data, ThrowOnError>) => (options.client ?? client).get<SupportV1SupportTicketServiceListTopics2Responses, SupportV1SupportTicketServiceListTopics2Errors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/support/v1/categories/{category_id}/topics',
+    ...options
+});
 
 /**
  * ListTickets
  */
-export const supportV1SupportTicketServiceListTickets = <ThrowOnError extends boolean = false>(options?: Options<SupportV1SupportTicketServiceListTicketsData, ThrowOnError>) => (options?.client ?? client).get<SupportV1SupportTicketServiceListTicketsResponses, SupportV1SupportTicketServiceListTicketsErrors, ThrowOnError>({ url: '/support/v1/tickets', ...options });
+export const supportV1SupportTicketServiceListTickets = <ThrowOnError extends boolean = false>(options?: Options<SupportV1SupportTicketServiceListTicketsData, ThrowOnError>) => (options?.client ?? client).get<SupportV1SupportTicketServiceListTicketsResponses, SupportV1SupportTicketServiceListTicketsErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/support/v1/tickets',
+    ...options
+});
 
 /**
  * CreateTicket
  */
 export const supportV1SupportTicketServiceCreateTicket = <ThrowOnError extends boolean = false>(options: Options<SupportV1SupportTicketServiceCreateTicketData, ThrowOnError>) => (options.client ?? client).post<SupportV1SupportTicketServiceCreateTicketResponses, SupportV1SupportTicketServiceCreateTicketErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/support/v1/tickets',
     ...options,
     headers: {
@@ -1484,17 +1934,26 @@ export const supportV1SupportTicketServiceCreateTicket = <ThrowOnError extends b
 /**
  * GetTicket
  */
-export const supportV1SupportTicketServiceGetTicket = <ThrowOnError extends boolean = false>(options: Options<SupportV1SupportTicketServiceGetTicketData, ThrowOnError>) => (options.client ?? client).get<SupportV1SupportTicketServiceGetTicketResponses, SupportV1SupportTicketServiceGetTicketErrors, ThrowOnError>({ url: '/support/v1/tickets/{ticket_id}', ...options });
+export const supportV1SupportTicketServiceGetTicket = <ThrowOnError extends boolean = false>(options: Options<SupportV1SupportTicketServiceGetTicketData, ThrowOnError>) => (options.client ?? client).get<SupportV1SupportTicketServiceGetTicketResponses, SupportV1SupportTicketServiceGetTicketErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/support/v1/tickets/{ticket_id}',
+    ...options
+});
 
 /**
  * CloseTicket
  */
-export const supportV1SupportTicketServiceCloseTicket = <ThrowOnError extends boolean = false>(options: Options<SupportV1SupportTicketServiceCloseTicketData, ThrowOnError>) => (options.client ?? client).post<SupportV1SupportTicketServiceCloseTicketResponses, SupportV1SupportTicketServiceCloseTicketErrors, ThrowOnError>({ url: '/support/v1/tickets/{ticket_id}/close', ...options });
+export const supportV1SupportTicketServiceCloseTicket = <ThrowOnError extends boolean = false>(options: Options<SupportV1SupportTicketServiceCloseTicketData, ThrowOnError>) => (options.client ?? client).post<SupportV1SupportTicketServiceCloseTicketResponses, SupportV1SupportTicketServiceCloseTicketErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/support/v1/tickets/{ticket_id}/close',
+    ...options
+});
 
 /**
  * AddTicketMessage
  */
 export const supportV1SupportTicketServiceAddTicketMessage = <ThrowOnError extends boolean = false>(options: Options<SupportV1SupportTicketServiceAddTicketMessageData, ThrowOnError>) => (options.client ?? client).post<SupportV1SupportTicketServiceAddTicketMessageResponses, SupportV1SupportTicketServiceAddTicketMessageErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/support/v1/tickets/{ticket_id}/messages',
     ...options,
     headers: {
@@ -1506,22 +1965,35 @@ export const supportV1SupportTicketServiceAddTicketMessage = <ThrowOnError exten
 /**
  * ListTopics
  */
-export const supportV1SupportTicketServiceListTopics = <ThrowOnError extends boolean = false>(options?: Options<SupportV1SupportTicketServiceListTopicsData, ThrowOnError>) => (options?.client ?? client).get<SupportV1SupportTicketServiceListTopicsResponses, SupportV1SupportTicketServiceListTopicsErrors, ThrowOnError>({ url: '/support/v1/topics', ...options });
+export const supportV1SupportTicketServiceListTopics = <ThrowOnError extends boolean = false>(options?: Options<SupportV1SupportTicketServiceListTopicsData, ThrowOnError>) => (options?.client ?? client).get<SupportV1SupportTicketServiceListTopicsResponses, SupportV1SupportTicketServiceListTopicsErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/support/v1/topics',
+    ...options
+});
 
 /**
  * DeleteAllAudioTracks
  */
-export const videosV1AudioTrackServiceDeleteAllAudioTracks = <ThrowOnError extends boolean = false>(options: Options<VideosV1AudioTrackServiceDeleteAllAudioTracksData, ThrowOnError>) => (options.client ?? client).delete<VideosV1AudioTrackServiceDeleteAllAudioTracksResponses, VideosV1AudioTrackServiceDeleteAllAudioTracksErrors, ThrowOnError>({ url: '/media/v1/projects/{project_id}/videos/{video_id}/audio-tracks', ...options });
+export const videosV1AudioTrackServiceDeleteAllAudioTracks = <ThrowOnError extends boolean = false>(options: Options<VideosV1AudioTrackServiceDeleteAllAudioTracksData, ThrowOnError>) => (options.client ?? client).delete<VideosV1AudioTrackServiceDeleteAllAudioTracksResponses, VideosV1AudioTrackServiceDeleteAllAudioTracksErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/media/v1/projects/{project_id}/videos/{video_id}/audio-tracks',
+    ...options
+});
 
 /**
  * DeleteAudioTracksByLanguage
  */
-export const videosV1AudioTrackServiceDeleteAudioTracksByLanguage = <ThrowOnError extends boolean = false>(options: Options<VideosV1AudioTrackServiceDeleteAudioTracksByLanguageData, ThrowOnError>) => (options.client ?? client).delete<VideosV1AudioTrackServiceDeleteAudioTracksByLanguageResponses, VideosV1AudioTrackServiceDeleteAudioTracksByLanguageErrors, ThrowOnError>({ url: '/media/v1/projects/{project_id}/videos/{video_id}/audio-tracks/language/{language_code}', ...options });
+export const videosV1AudioTrackServiceDeleteAudioTracksByLanguage = <ThrowOnError extends boolean = false>(options: Options<VideosV1AudioTrackServiceDeleteAudioTracksByLanguageData, ThrowOnError>) => (options.client ?? client).delete<VideosV1AudioTrackServiceDeleteAudioTracksByLanguageResponses, VideosV1AudioTrackServiceDeleteAudioTracksByLanguageErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/media/v1/projects/{project_id}/videos/{video_id}/audio-tracks/language/{language_code}',
+    ...options
+});
 
 /**
  * CreateAudioTrackUpload
  */
 export const videosV1AudioTrackServiceCreateAudioTrackUpload = <ThrowOnError extends boolean = false>(options: Options<VideosV1AudioTrackServiceCreateAudioTrackUploadData, ThrowOnError>) => (options.client ?? client).post<VideosV1AudioTrackServiceCreateAudioTrackUploadResponses, VideosV1AudioTrackServiceCreateAudioTrackUploadErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/media/v1/projects/{project_id}/videos/{video_id}/audio-tracks/upload',
     ...options,
     headers: {
@@ -1533,7 +2005,11 @@ export const videosV1AudioTrackServiceCreateAudioTrackUpload = <ThrowOnError ext
 /**
  * DeleteAudioTrack
  */
-export const videosV1AudioTrackServiceDeleteAudioTrack = <ThrowOnError extends boolean = false>(options: Options<VideosV1AudioTrackServiceDeleteAudioTrackData, ThrowOnError>) => (options.client ?? client).delete<VideosV1AudioTrackServiceDeleteAudioTrackResponses, VideosV1AudioTrackServiceDeleteAudioTrackErrors, ThrowOnError>({ url: '/media/v1/projects/{project_id}/videos/{video_id}/audio-tracks/{track_id}', ...options });
+export const videosV1AudioTrackServiceDeleteAudioTrack = <ThrowOnError extends boolean = false>(options: Options<VideosV1AudioTrackServiceDeleteAudioTrackData, ThrowOnError>) => (options.client ?? client).delete<VideosV1AudioTrackServiceDeleteAudioTrackResponses, VideosV1AudioTrackServiceDeleteAudioTrackErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/media/v1/projects/{project_id}/videos/{video_id}/audio-tracks/{track_id}',
+    ...options
+});
 
 /**
  * ListAudioTracks
@@ -1543,17 +2019,26 @@ export const videosV1AudioTrackServiceListAudioTracks = <ThrowOnError extends bo
 /**
  * UpdateVideoChapters
  */
-export const videosV1ChapterServiceUpdateVideoChapters2 = <ThrowOnError extends boolean = false>(options: Options<VideosV1ChapterServiceUpdateVideoChapters2Data, ThrowOnError>) => (options.client ?? client).delete<VideosV1ChapterServiceUpdateVideoChapters2Responses, VideosV1ChapterServiceUpdateVideoChapters2Errors, ThrowOnError>({ url: '/media/v1/projects/{project_id}/videos/{video_id}/chapters', ...options });
+export const videosV1ChapterServiceUpdateVideoChapters2 = <ThrowOnError extends boolean = false>(options: Options<VideosV1ChapterServiceUpdateVideoChapters2Data, ThrowOnError>) => (options.client ?? client).delete<VideosV1ChapterServiceUpdateVideoChapters2Responses, VideosV1ChapterServiceUpdateVideoChapters2Errors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/media/v1/projects/{project_id}/videos/{video_id}/chapters',
+    ...options
+});
 
 /**
  * GetVideoChapters
  */
-export const videosV1ChapterServiceGetVideoChapters = <ThrowOnError extends boolean = false>(options: Options<VideosV1ChapterServiceGetVideoChaptersData, ThrowOnError>) => (options.client ?? client).get<VideosV1ChapterServiceGetVideoChaptersResponses, VideosV1ChapterServiceGetVideoChaptersErrors, ThrowOnError>({ url: '/media/v1/projects/{project_id}/videos/{video_id}/chapters', ...options });
+export const videosV1ChapterServiceGetVideoChapters = <ThrowOnError extends boolean = false>(options: Options<VideosV1ChapterServiceGetVideoChaptersData, ThrowOnError>) => (options.client ?? client).get<VideosV1ChapterServiceGetVideoChaptersResponses, VideosV1ChapterServiceGetVideoChaptersErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/media/v1/projects/{project_id}/videos/{video_id}/chapters',
+    ...options
+});
 
 /**
  * UpdateVideoChapters
  */
 export const videosV1ChapterServiceUpdateVideoChapters = <ThrowOnError extends boolean = false>(options: Options<VideosV1ChapterServiceUpdateVideoChaptersData, ThrowOnError>) => (options.client ?? client).put<VideosV1ChapterServiceUpdateVideoChaptersResponses, VideosV1ChapterServiceUpdateVideoChaptersErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/media/v1/projects/{project_id}/videos/{video_id}/chapters',
     ...options,
     headers: {
@@ -1565,7 +2050,11 @@ export const videosV1ChapterServiceUpdateVideoChapters = <ThrowOnError extends b
 /**
  * DeleteVideoChapter
  */
-export const videosV1ChapterServiceDeleteVideoChapter = <ThrowOnError extends boolean = false>(options: Options<VideosV1ChapterServiceDeleteVideoChapterData, ThrowOnError>) => (options.client ?? client).delete<VideosV1ChapterServiceDeleteVideoChapterResponses, VideosV1ChapterServiceDeleteVideoChapterErrors, ThrowOnError>({ url: '/media/v1/projects/{project_id}/videos/{video_id}/chapters/{start_time_sec}', ...options });
+export const videosV1ChapterServiceDeleteVideoChapter = <ThrowOnError extends boolean = false>(options: Options<VideosV1ChapterServiceDeleteVideoChapterData, ThrowOnError>) => (options.client ?? client).delete<VideosV1ChapterServiceDeleteVideoChapterResponses, VideosV1ChapterServiceDeleteVideoChapterErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/media/v1/projects/{project_id}/videos/{video_id}/chapters/{start_time_sec}',
+    ...options
+});
 
 /**
  * ListLanguages
@@ -1575,17 +2064,26 @@ export const videosV1LanguageServiceListLanguages = <ThrowOnError extends boolea
 /**
  * DeleteAllSubtitles
  */
-export const videosV1SubtitleServiceDeleteAllSubtitles = <ThrowOnError extends boolean = false>(options: Options<VideosV1SubtitleServiceDeleteAllSubtitlesData, ThrowOnError>) => (options.client ?? client).delete<VideosV1SubtitleServiceDeleteAllSubtitlesResponses, VideosV1SubtitleServiceDeleteAllSubtitlesErrors, ThrowOnError>({ url: '/media/v1/projects/{project_id}/videos/{video_id}/subtitles', ...options });
+export const videosV1SubtitleServiceDeleteAllSubtitles = <ThrowOnError extends boolean = false>(options: Options<VideosV1SubtitleServiceDeleteAllSubtitlesData, ThrowOnError>) => (options.client ?? client).delete<VideosV1SubtitleServiceDeleteAllSubtitlesResponses, VideosV1SubtitleServiceDeleteAllSubtitlesErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/media/v1/projects/{project_id}/videos/{video_id}/subtitles',
+    ...options
+});
 
 /**
  * DeleteSubtitlesByLanguage
  */
-export const videosV1SubtitleServiceDeleteSubtitlesByLanguage = <ThrowOnError extends boolean = false>(options: Options<VideosV1SubtitleServiceDeleteSubtitlesByLanguageData, ThrowOnError>) => (options.client ?? client).delete<VideosV1SubtitleServiceDeleteSubtitlesByLanguageResponses, VideosV1SubtitleServiceDeleteSubtitlesByLanguageErrors, ThrowOnError>({ url: '/media/v1/projects/{project_id}/videos/{video_id}/subtitles/language/{language_code}', ...options });
+export const videosV1SubtitleServiceDeleteSubtitlesByLanguage = <ThrowOnError extends boolean = false>(options: Options<VideosV1SubtitleServiceDeleteSubtitlesByLanguageData, ThrowOnError>) => (options.client ?? client).delete<VideosV1SubtitleServiceDeleteSubtitlesByLanguageResponses, VideosV1SubtitleServiceDeleteSubtitlesByLanguageErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/media/v1/projects/{project_id}/videos/{video_id}/subtitles/language/{language_code}',
+    ...options
+});
 
 /**
  * CreateSubtitleUpload
  */
 export const videosV1SubtitleServiceCreateSubtitleUpload = <ThrowOnError extends boolean = false>(options: Options<VideosV1SubtitleServiceCreateSubtitleUploadData, ThrowOnError>) => (options.client ?? client).post<VideosV1SubtitleServiceCreateSubtitleUploadResponses, VideosV1SubtitleServiceCreateSubtitleUploadErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/media/v1/projects/{project_id}/videos/{video_id}/subtitles/upload',
     ...options,
     headers: {
@@ -1597,7 +2095,11 @@ export const videosV1SubtitleServiceCreateSubtitleUpload = <ThrowOnError extends
 /**
  * DeleteSubtitle
  */
-export const videosV1SubtitleServiceDeleteSubtitle = <ThrowOnError extends boolean = false>(options: Options<VideosV1SubtitleServiceDeleteSubtitleData, ThrowOnError>) => (options.client ?? client).delete<VideosV1SubtitleServiceDeleteSubtitleResponses, VideosV1SubtitleServiceDeleteSubtitleErrors, ThrowOnError>({ url: '/media/v1/projects/{project_id}/videos/{video_id}/subtitles/{subtitle_id}', ...options });
+export const videosV1SubtitleServiceDeleteSubtitle = <ThrowOnError extends boolean = false>(options: Options<VideosV1SubtitleServiceDeleteSubtitleData, ThrowOnError>) => (options.client ?? client).delete<VideosV1SubtitleServiceDeleteSubtitleResponses, VideosV1SubtitleServiceDeleteSubtitleErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/media/v1/projects/{project_id}/videos/{video_id}/subtitles/{subtitle_id}',
+    ...options
+});
 
 /**
  * ListSubtitles
@@ -1607,12 +2109,17 @@ export const videosV1SubtitleServiceListSubtitles = <ThrowOnError extends boolea
 /**
  * ListVideos
  */
-export const videosV1VideoServiceListVideos = <ThrowOnError extends boolean = false>(options: Options<VideosV1VideoServiceListVideosData, ThrowOnError>) => (options.client ?? client).get<VideosV1VideoServiceListVideosResponses, VideosV1VideoServiceListVideosErrors, ThrowOnError>({ url: '/media/v1/projects/{project_id}/videos', ...options });
+export const videosV1VideoServiceListVideos = <ThrowOnError extends boolean = false>(options: Options<VideosV1VideoServiceListVideosData, ThrowOnError>) => (options.client ?? client).get<VideosV1VideoServiceListVideosResponses, VideosV1VideoServiceListVideosErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/media/v1/projects/{project_id}/videos',
+    ...options
+});
 
 /**
  * CreateVideoUpload
  */
 export const videosV1VideoServiceCreateVideoUpload = <ThrowOnError extends boolean = false>(options: Options<VideosV1VideoServiceCreateVideoUploadData, ThrowOnError>) => (options.client ?? client).post<VideosV1VideoServiceCreateVideoUploadResponses, VideosV1VideoServiceCreateVideoUploadErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/media/v1/projects/{project_id}/videos/upload',
     ...options,
     headers: {
@@ -1624,12 +2131,17 @@ export const videosV1VideoServiceCreateVideoUpload = <ThrowOnError extends boole
 /**
  * DeleteVideo
  */
-export const videosV1VideoServiceDeleteVideo = <ThrowOnError extends boolean = false>(options: Options<VideosV1VideoServiceDeleteVideoData, ThrowOnError>) => (options.client ?? client).delete<VideosV1VideoServiceDeleteVideoResponses, VideosV1VideoServiceDeleteVideoErrors, ThrowOnError>({ url: '/media/v1/projects/{project_id}/videos/{video_id}', ...options });
+export const videosV1VideoServiceDeleteVideo = <ThrowOnError extends boolean = false>(options: Options<VideosV1VideoServiceDeleteVideoData, ThrowOnError>) => (options.client ?? client).delete<VideosV1VideoServiceDeleteVideoResponses, VideosV1VideoServiceDeleteVideoErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/media/v1/projects/{project_id}/videos/{video_id}',
+    ...options
+});
 
 /**
  * UpdateVideoVisibility
  */
 export const videosV1VideoServiceUpdateVideoVisibility = <ThrowOnError extends boolean = false>(options: Options<VideosV1VideoServiceUpdateVideoVisibilityData, ThrowOnError>) => (options.client ?? client).patch<VideosV1VideoServiceUpdateVideoVisibilityResponses, VideosV1VideoServiceUpdateVideoVisibilityErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/media/v1/projects/{project_id}/videos/{video_id}/visibility',
     ...options,
     headers: {
@@ -1646,7 +2158,11 @@ export const videosV1VideoServiceGetVideo = <ThrowOnError extends boolean = fals
 /**
  * ListEndpoints
  */
-export const webhooksV1WebhookServiceListEndpoints = <ThrowOnError extends boolean = false>(options: Options<WebhooksV1WebhookServiceListEndpointsData, ThrowOnError>) => (options.client ?? client).get<WebhooksV1WebhookServiceListEndpointsResponses, WebhooksV1WebhookServiceListEndpointsErrors, ThrowOnError>({ url: '/webhooks/v1/projects/{project_id}/endpoints', ...options });
+export const webhooksV1WebhookServiceListEndpoints = <ThrowOnError extends boolean = false>(options: Options<WebhooksV1WebhookServiceListEndpointsData, ThrowOnError>) => (options.client ?? client).get<WebhooksV1WebhookServiceListEndpointsResponses, WebhooksV1WebhookServiceListEndpointsErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/webhooks/v1/projects/{project_id}/endpoints',
+    ...options
+});
 
 /**
  * CreateEndpoint
@@ -1655,6 +2171,7 @@ export const webhooksV1WebhookServiceListEndpoints = <ThrowOnError extends boole
  * secret exactly once. Store it; only a rotation returns a secret again.
  */
 export const webhooksV1WebhookServiceCreateEndpoint = <ThrowOnError extends boolean = false>(options: Options<WebhooksV1WebhookServiceCreateEndpointData, ThrowOnError>) => (options.client ?? client).post<WebhooksV1WebhookServiceCreateEndpointResponses, WebhooksV1WebhookServiceCreateEndpointErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/webhooks/v1/projects/{project_id}/endpoints',
     ...options,
     headers: {
@@ -1666,17 +2183,26 @@ export const webhooksV1WebhookServiceCreateEndpoint = <ThrowOnError extends bool
 /**
  * DeleteEndpoint
  */
-export const webhooksV1WebhookServiceDeleteEndpoint = <ThrowOnError extends boolean = false>(options: Options<WebhooksV1WebhookServiceDeleteEndpointData, ThrowOnError>) => (options.client ?? client).delete<WebhooksV1WebhookServiceDeleteEndpointResponses, WebhooksV1WebhookServiceDeleteEndpointErrors, ThrowOnError>({ url: '/webhooks/v1/projects/{project_id}/endpoints/{endpoint_id}', ...options });
+export const webhooksV1WebhookServiceDeleteEndpoint = <ThrowOnError extends boolean = false>(options: Options<WebhooksV1WebhookServiceDeleteEndpointData, ThrowOnError>) => (options.client ?? client).delete<WebhooksV1WebhookServiceDeleteEndpointResponses, WebhooksV1WebhookServiceDeleteEndpointErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/webhooks/v1/projects/{project_id}/endpoints/{endpoint_id}',
+    ...options
+});
 
 /**
  * GetEndpoint
  */
-export const webhooksV1WebhookServiceGetEndpoint = <ThrowOnError extends boolean = false>(options: Options<WebhooksV1WebhookServiceGetEndpointData, ThrowOnError>) => (options.client ?? client).get<WebhooksV1WebhookServiceGetEndpointResponses, WebhooksV1WebhookServiceGetEndpointErrors, ThrowOnError>({ url: '/webhooks/v1/projects/{project_id}/endpoints/{endpoint_id}', ...options });
+export const webhooksV1WebhookServiceGetEndpoint = <ThrowOnError extends boolean = false>(options: Options<WebhooksV1WebhookServiceGetEndpointData, ThrowOnError>) => (options.client ?? client).get<WebhooksV1WebhookServiceGetEndpointResponses, WebhooksV1WebhookServiceGetEndpointErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/webhooks/v1/projects/{project_id}/endpoints/{endpoint_id}',
+    ...options
+});
 
 /**
  * UpdateEndpoint
  */
 export const webhooksV1WebhookServiceUpdateEndpoint = <ThrowOnError extends boolean = false>(options: Options<WebhooksV1WebhookServiceUpdateEndpointData, ThrowOnError>) => (options.client ?? client).patch<WebhooksV1WebhookServiceUpdateEndpointResponses, WebhooksV1WebhookServiceUpdateEndpointErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/webhooks/v1/projects/{project_id}/endpoints/{endpoint_id}',
     ...options,
     headers: {
@@ -1691,7 +2217,11 @@ export const webhooksV1WebhookServiceUpdateEndpoint = <ThrowOnError extends bool
  * ListEndpointAttempts returns the delivery history for one endpoint,
  * newest first.
  */
-export const webhooksV1WebhookServiceListEndpointAttempts = <ThrowOnError extends boolean = false>(options: Options<WebhooksV1WebhookServiceListEndpointAttemptsData, ThrowOnError>) => (options.client ?? client).get<WebhooksV1WebhookServiceListEndpointAttemptsResponses, WebhooksV1WebhookServiceListEndpointAttemptsErrors, ThrowOnError>({ url: '/webhooks/v1/projects/{project_id}/endpoints/{endpoint_id}/attempts', ...options });
+export const webhooksV1WebhookServiceListEndpointAttempts = <ThrowOnError extends boolean = false>(options: Options<WebhooksV1WebhookServiceListEndpointAttemptsData, ThrowOnError>) => (options.client ?? client).get<WebhooksV1WebhookServiceListEndpointAttemptsResponses, WebhooksV1WebhookServiceListEndpointAttemptsErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/webhooks/v1/projects/{project_id}/endpoints/{endpoint_id}/attempts',
+    ...options
+});
 
 /**
  * ReplayEvent
@@ -1699,7 +2229,11 @@ export const webhooksV1WebhookServiceListEndpointAttempts = <ThrowOnError extend
  * ReplayEvent re-delivers one event to one endpoint with the same
  * webhook-id so consumers dedupe it against the original delivery.
  */
-export const webhooksV1WebhookServiceReplayEvent = <ThrowOnError extends boolean = false>(options: Options<WebhooksV1WebhookServiceReplayEventData, ThrowOnError>) => (options.client ?? client).post<WebhooksV1WebhookServiceReplayEventResponses, WebhooksV1WebhookServiceReplayEventErrors, ThrowOnError>({ url: '/webhooks/v1/projects/{project_id}/endpoints/{endpoint_id}/events/{event_id}/replay', ...options });
+export const webhooksV1WebhookServiceReplayEvent = <ThrowOnError extends boolean = false>(options: Options<WebhooksV1WebhookServiceReplayEventData, ThrowOnError>) => (options.client ?? client).post<WebhooksV1WebhookServiceReplayEventResponses, WebhooksV1WebhookServiceReplayEventErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/webhooks/v1/projects/{project_id}/endpoints/{endpoint_id}/events/{event_id}/replay',
+    ...options
+});
 
 /**
  * RotateEndpointSecret
@@ -1707,16 +2241,28 @@ export const webhooksV1WebhookServiceReplayEvent = <ThrowOnError extends boolean
  * RotateEndpointSecret installs a fresh signing secret. For 24h deliveries
  * are signed with both the old and the new secret so consumers can migrate.
  */
-export const webhooksV1WebhookServiceRotateEndpointSecret = <ThrowOnError extends boolean = false>(options: Options<WebhooksV1WebhookServiceRotateEndpointSecretData, ThrowOnError>) => (options.client ?? client).post<WebhooksV1WebhookServiceRotateEndpointSecretResponses, WebhooksV1WebhookServiceRotateEndpointSecretErrors, ThrowOnError>({ url: '/webhooks/v1/projects/{project_id}/endpoints/{endpoint_id}/rotate-secret', ...options });
+export const webhooksV1WebhookServiceRotateEndpointSecret = <ThrowOnError extends boolean = false>(options: Options<WebhooksV1WebhookServiceRotateEndpointSecretData, ThrowOnError>) => (options.client ?? client).post<WebhooksV1WebhookServiceRotateEndpointSecretResponses, WebhooksV1WebhookServiceRotateEndpointSecretErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/webhooks/v1/projects/{project_id}/endpoints/{endpoint_id}/rotate-secret',
+    ...options
+});
 
 /**
  * SendTestEvent
  *
  * SendTestEvent delivers one synthetic webhook.test event to the endpoint.
  */
-export const webhooksV1WebhookServiceSendTestEvent = <ThrowOnError extends boolean = false>(options: Options<WebhooksV1WebhookServiceSendTestEventData, ThrowOnError>) => (options.client ?? client).post<WebhooksV1WebhookServiceSendTestEventResponses, WebhooksV1WebhookServiceSendTestEventErrors, ThrowOnError>({ url: '/webhooks/v1/projects/{project_id}/endpoints/{endpoint_id}/test', ...options });
+export const webhooksV1WebhookServiceSendTestEvent = <ThrowOnError extends boolean = false>(options: Options<WebhooksV1WebhookServiceSendTestEventData, ThrowOnError>) => (options.client ?? client).post<WebhooksV1WebhookServiceSendTestEventResponses, WebhooksV1WebhookServiceSendTestEventErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/webhooks/v1/projects/{project_id}/endpoints/{endpoint_id}/test',
+    ...options
+});
 
 /**
  * ListEvents
  */
-export const webhooksV1WebhookServiceListEvents = <ThrowOnError extends boolean = false>(options: Options<WebhooksV1WebhookServiceListEventsData, ThrowOnError>) => (options.client ?? client).get<WebhooksV1WebhookServiceListEventsResponses, WebhooksV1WebhookServiceListEventsErrors, ThrowOnError>({ url: '/webhooks/v1/projects/{project_id}/events', ...options });
+export const webhooksV1WebhookServiceListEvents = <ThrowOnError extends boolean = false>(options: Options<WebhooksV1WebhookServiceListEventsData, ThrowOnError>) => (options.client ?? client).get<WebhooksV1WebhookServiceListEventsResponses, WebhooksV1WebhookServiceListEventsErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/webhooks/v1/projects/{project_id}/events',
+    ...options
+});
