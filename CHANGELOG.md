@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.45.0](https://github.com/rixlhq/rixl-js/compare/v0.44.0...v0.45.0) (2026-11-22)
+
+
+### Features
+
+* **sdk:** regenerate based on latest OpenAPI spec ([#157](https://github.com/rixlhq/rixl-js/issues/157)) ([b4875bc](https://github.com/rixlhq/rixl-js/commit/b4875bc9b5205a48a7408ddbd77709b5afabbf98))
+* **sdk:** regenerate based on latest OpenAPI spec ([#159](https://github.com/rixlhq/rixl-js/issues/159)) ([cb615bf](https://github.com/rixlhq/rixl-js/commit/cb615bff0e2ddda035c3041413f4247bedae2e49))
+* **sdk:** regenerate based on latest OpenAPI spec ([#160](https://github.com/rixlhq/rixl-js/issues/160)) ([413c5b0](https://github.com/rixlhq/rixl-js/commit/413c5b079127e08ca37a054ccd5a7cc7314198ca))
+* **sdk:** regenerate based on latest OpenAPI spec ([#161](https://github.com/rixlhq/rixl-js/issues/161)) ([0ad2483](https://github.com/rixlhq/rixl-js/commit/0ad2483f894cf0a8dae5a25fbb669206c0228e46))
+
+## [0.44.0](https://github.com/rixlhq/rixl-js/compare/v0.43.0...v0.44.0) (2026-11-16)
+
+
+### Features
+
+* **auth:** add GitHub personal OAuth ([4cdcdb6](https://github.com/rixlhq/rixl-js/commit/4cdcdb6cb17e0aa62176458ce19036dbf137b09e))
+* **auth:** add GitHub personal OAuth ([664627a](https://github.com/rixlhq/rixl-js/commit/664627a5a711a7e9e4ae940ebe34c35cd2c544cf))
+
+
+### Bug Fixes
+
+* **diagnostics:** print object and array JWT claims as JSON ([c2da0de](https://github.com/rixlhq/rixl-js/commit/c2da0de44e1e33d028443f2bc557586defe6e430))
+* **domain:** return null from getDomainStatus when the org has no domain ([c0209e2](https://github.com/rixlhq/rixl-js/commit/c0209e25c341d9247071db682ac3c1757e6b55c2))
+* **social:** let connectSocial callers see a failed login ([b4777b2](https://github.com/rixlhq/rixl-js/commit/b4777b2be826b28a2b5b1ef6f40cbc408220080e))
+
 ## [0.43.0](https://github.com/rixlhq/rixl-js/compare/v0.42.2...v0.43.0) (2026-11-12)
 
 
