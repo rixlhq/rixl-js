@@ -8,4 +8,4 @@
 - Tests describe behaviour ("getDomainStatus returns null when the org has no domain"), not implementation.
 - Run `vp test` after every green and refactor step.
 - After the unit cycle, add fast-check property tests where the input space is wide.
-- Commit after each completed cycle (`.agents/rules/commits.md`). Never commit a failing test to `main`.
+- Hand over a commit message after each completed cycle (`.agents/rules/commits.md`). Never commit a failing test to `main`.
