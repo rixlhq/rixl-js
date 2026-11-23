@@ -5,9 +5,9 @@ A commit records claims: the message and the code. Only commit what has been che
 ## Order
 
 1. Finish one logical change.
-2. Run the checks for what you touched: `vp check` and `vp test`; `vp run ci` before you push.
+2. Run the checks for what you touched: `vp check` and `vp test`; `vp run ci` before you hand over the commit message.
 3. Run the `code-simplifier` skill on the changed code, then rerun the checks.
-4. Commit.
+4. Run the Level 3 procedure on the uncommitted diff (`AGENTS.md`, "Working rules for every agent", rule 2), then hand the commit message to the owner, who commits (`AGENTS.md`, "Working rules for every agent").
 
 ## Hooks
 
@@ -26,4 +26,4 @@ Never skip a hook (`--no-verify`, `-n`, `LEFTHOOK=0`, `core.hooksPath`). If a ho
 - A breaking change to the public API says so (`feat(auth)!:` or a `BREAKING CHANGE:` footer).
 - One logical change per commit. Body says why, not what. State only claims you checked.
 - Never edit `CHANGELOG.md` or `.release-please-manifest.json`; Release Please owns them. Never commit `dist/` or `coverage/`.
-- `main` has no branch protection and pushes to it publish. Everything goes through a pull request, and never merge one while CI is red.
+- `main` has no branch protection and pushes to it publish. Everything goes through a pull request, which the owner opens, and never merge one while CI is red.

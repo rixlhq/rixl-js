@@ -53,3 +53,6 @@ playwright-report
 playwright/.cache
 test-results
 .vitest/
+
+# Review files quote private sources (agent-review skill)
+reviews/
