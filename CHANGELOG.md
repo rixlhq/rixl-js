@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.45.1](https://github.com/rixlhq/rixl-js/compare/v0.45.0...v0.45.1) (2026-11-23)
+
+
+### Bug Fixes
+
+* **deps:** align vite alias and override with vite-plus 1.6.0 ([a6ac225](https://github.com/rixlhq/rixl-js/commit/a6ac225aeb39424d4ca2fc5c2ec99cc538cd8dae))
+* **deps:** align vite alias and override with vite-plus 1.6.0 ([ed34654](https://github.com/rixlhq/rixl-js/commit/ed34654689025c1fd8642ac78e43c6ca24bd805a))
+
 ## [0.45.0](https://github.com/rixlhq/rixl-js/compare/v0.44.0...v0.45.0) (2026-11-22)
 
 
