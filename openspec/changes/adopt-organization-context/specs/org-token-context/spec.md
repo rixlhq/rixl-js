@@ -22,7 +22,7 @@ The SDK SHALL hold the selected org, the access token and its expiry per tab. Th
 
 ### Requirement: Refresh names the org
 
-Every refresh SHALL send the tab's org as `org_id`. A tab with no selected org SHALL use the org of the token sign-in returned. Refresh SHALL stay serialized across tabs, and a tab SHALL adopt a newer refresh token another tab stored, without adopting that tab's access token.
+Every refresh SHALL send the tab's org as `org_id`. A tab that has never selected an org SHALL use the org of the token sign-in returned. Refresh SHALL stay serialized across tabs, and a tab SHALL adopt a newer refresh token another tab stored, without adopting that tab's access token.
 
 #### Scenario: Refresh after another tab rotated
 
@@ -40,7 +40,7 @@ Every refresh SHALL send the tab's org as `org_id`. A tab with no selected org S
 
 ### Requirement: An unavailable org rejects with its reason
 
-A refresh refused with `MEMBERSHIP_SUSPENDED`, `ORG_DELETED` or `NOT_A_MEMBER` SHALL reject with `OrgAccessError` carrying `reason` and `orgId`. It SHALL keep the refresh token, the tab's previous org and its access token. It SHALL NOT sign the user out or select another org.
+A refresh refused with `MEMBERSHIP_SUSPENDED`, `ORG_DELETED` or `NOT_A_MEMBER` SHALL reject with `OrgAccessError` carrying `reason` and `orgId`. It SHALL keep the refresh token. A failed `selectOrganization` SHALL also keep the tab's previous org and its access token. It SHALL NOT sign the user out or select another org.
 
 #### Scenario: Selecting an org that removed the user
 
@@ -56,6 +56,25 @@ A refresh refused with `MEMBERSHIP_SUSPENDED`, `ORG_DELETED` or `NOT_A_MEMBER` S
 
 - **WHEN** refresh fails because the refresh token is invalid, expired or already used
 - **THEN** the SDK clears tokens as before and tells other tabs
+
+### Requirement: A refused stored org is cleared
+
+When a refresh into the tab's own org, such as the stored org after a reload, is refused with `NOT_A_MEMBER` or `ORG_DELETED`, the SDK SHALL clear the tab's stored org and keep the refresh token. `getToken()` SHALL then reject with that `OrgAccessError` until `selectOrganization` succeeds, and the SDK SHALL NOT fall back to another org. A failed `selectOrganization` SHALL NOT clear the tab's org.
+
+#### Scenario: Reload after removal
+
+- **WHEN** a tab whose stored org B removed the user reloads and calls `getToken()`
+- **THEN** it rejects with `OrgAccessError` reason `NOT_A_MEMBER`, the stored org is cleared, the user stays signed in and the caller must select an org
+
+#### Scenario: Reload after deletion
+
+- **WHEN** a tab whose stored org B was deleted reloads and calls `getToken()`
+- **THEN** it rejects with `OrgAccessError` reason `ORG_DELETED`, the stored org is cleared and `selectOrganization` with another org succeeds
+
+#### Scenario: A refused live switch keeps the org
+
+- **WHEN** a tab on org A calls `selectOrganization("B")` and is refused with `NOT_A_MEMBER`
+- **THEN** the tab's org stays A and its stored org is not cleared
 
 ### Requirement: Sign-in exposes the last org as a hint
 

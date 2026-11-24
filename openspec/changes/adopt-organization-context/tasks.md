@@ -10,6 +10,7 @@
 - [ ] 2.2 Send `org_id` on every refresh and rename `adoptStoredSession` to `adoptStoredRefreshToken`, which adopts only the refresh token. Test: same file, "Refresh after another tab rotated".
 - [ ] 2.3 Add `selectOrganization(orgId)` and remove `updateActiveMembership`. Test: "Switching org".
 - [ ] 2.4 Add `OrgAccessError` and exclude org reasons from `isRejectedRefresh`. Test: "Selecting an org that removed the user", "The tab's org is deleted" and "A rejected refresh token still signs out".
+- [ ] 2.4a Clear the tab's stored org when a refresh into it is refused with `NOT_A_MEMBER` or `ORG_DELETED`, make `getToken()` reject with that `OrgAccessError` until `selectOrganization` succeeds, and leave a refused `selectOrganization` untouched. Test: "Reload after removal", "Reload after deletion" and "A refused live switch keeps the org".
 - [ ] 2.5 Expose `lastActiveOrgId` from the sign-in response. Test: "Sign-in on a new device".
 - [ ] 2.6 Remove `User.org_id`, add `orgContext {orgId, role}`, and scope permissions to the tab's org. Test: "Another tab changes org".
 - [ ] 2.7 Replace `updateOrgName` and `updateOrgUsername` with `getOrganization`, `listOrganizations` and `updateOrganization` (field mask over name, slug, image). Add wrappers for the invitation and lifecycle operations the dashboard change uses. Test each wrapper's request shape and error mapping in `src/__tests__/organization/*.test.ts`.
