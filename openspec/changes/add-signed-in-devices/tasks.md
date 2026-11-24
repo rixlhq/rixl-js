@@ -10,7 +10,7 @@
 
 ## 2. Sign-in functions
 
-- [ ] 2.1 Move the prepared parser from `src/auth/devices/user-agent.ts` to `src/auth/sign-ins/user-agent.ts` and its tests from `src/__tests__/devices/` to `src/__tests__/sign-ins/`. Verify the 41 parser tests still pass with `vp test --run src/__tests__/sign-ins/user-agent.test.ts`.
+- [x] 2.1 Move the prepared parser from `src/auth/devices/user-agent.ts` to `src/auth/sign-ins/user-agent.ts` and its tests from `src/__tests__/devices/` to `src/__tests__/sign-ins/`. Verify the 41 parser tests still pass with `vp test --run src/__tests__/sign-ins/user-agent.test.ts`.
   - Measured earlier: 41 parser tests pass, covering Chrome, Safari, Firefox, Edge, Opera and Samsung Internet, device and OS tokens, and empty or unknown input. Tablet detection uses the reported user agent. Desktop-mode iPad Safari reports macOS and desktop.
   - Measured earlier: with a temporary export of the parser from `src/index.ts`, `vp pack`, `vp run budget` and `vp run examples:check` pass at 32.23 kB Brotli against a 32.9 kB limit. Repeat with the functions below in place (task 3.1).
 - [ ] 2.2 Add `src/auth/sign-ins/index.ts` with `listSignIns`, `revokeSignIn`, `revokeOtherSignIns`, `logoutAll` and the `SignIn` type, following `src/auth/passkey.ts` (`apiCall`, `throwOnError: true`). Export them from `src/auth/index.ts` and `src/index.ts`. Verify `src/__tests__/sign-ins/sign-ins.test.ts`, with one test named after each spec scenario.
