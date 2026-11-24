@@ -21,7 +21,6 @@
 ## 4. Naming
 
 - [ ] 4.1 Rename `session_id` to `challenge_id` in `src/auth/passkey.ts`, `src/auth/auth/login.ts`, `src/auth/auth/types.ts` and `src/auth/validation/auth.ts`, and update `src/__tests__/auth/login.test.ts` and `src/__tests__/auth/passkey-credential.test.ts`. Test: "Two-factor login".
-- [ ] 4.2 Rename the internal names in `specs/auth-naming/spec.md`: `session-channel.ts` becomes `logout-channel.ts` with channel `${GLOBAL_PREFIX}_logout` (update `src/__tests__/auth/logout.test.ts`), `ensureSessionSync` becomes `ensureLogoutSync`, and the messages read "Sign-in expired - please log in again" and "Login challenge not found". Update comments in `src/auth/api/refresh-tokens.ts`, `src/auth/api/sdk-client.ts`, `src/auth/authConfig.ts`, `src/auth/auth/logout.ts`, `src/auth/permissionStore.ts`, `src/auth/social/socialState.ts` and `src/platform/platformAuthStore.ts`, and the wording in `openspec/config.yaml` and `AGENTS.md`. Verify with the "Source check" scenario's command.
 
 ## 5. Integration
 

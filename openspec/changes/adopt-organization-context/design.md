@@ -63,7 +63,7 @@
 
 ### No "session" in SDK names
 
-- **Chosen:** Rename the passkey and TOTP login `session_id` to `challenge_id`, and the internal names listed in `specs/auth-naming/spec.md`. Browser and protocol names stay.
+- **Chosen:** Rename the passkey and TOTP login `session_id` to `challenge_id`, which follows the regenerated API. The SDK-internal names move to their own change, `remove-session-names` on `feat/rename-session-names`, so this branch carries only the org rework. Browser and protocol names stay.
 - **Alternatives considered:** Renaming only the public API lost because internal names keep the wrong model alive in code review and docs.
 - **Dropped:** None.
 - **Evidence:** auth-api `rename-sessions-to-sign-ins`. `git grep -ni session -- src ':!src/generated'` on `main` at `49067d4`.

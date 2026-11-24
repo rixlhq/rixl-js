@@ -21,7 +21,7 @@ The SDK today refreshes without an org (`src/auth/api/refresh-tokens.ts`), keeps
 - **Sign-in hint.** The sign-in response's `last_active_org_id` is exposed as a hint. The SDK doesn't act on it.
 - **Claims.** `User` loses `org_id`. A per-tab `orgContext` holds `orgId` and `role` (display only). No `pms` handling.
 - **Regenerated client.** Org resources, membership routes under `/auth/v1/organizations/{org_id}`, invitations, lifecycle and sign-in routes. Wrappers for `updateOrgName` and `updateOrgUsername` are removed in favour of `updateOrganization` with a field mask.
-- **No "session" names.** `challenge_id` replaces `session_id` in the passkey and TOTP login functions and types. SDK-internal names and messages that say "session" are renamed (`specs/auth-naming`).
+- **No "session" names.** `challenge_id` replaces `session_id` in the passkey and TOTP login functions and types. The SDK's other "session" names are renamed on their own branch, `feat/rename-session-names` (change `remove-session-names`).
 - **No legacy handling.** There is no fallback org and no support for the removed switch.
 
 ## Capabilities
