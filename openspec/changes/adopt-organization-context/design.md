@@ -35,7 +35,7 @@
 
 ### An org refusal is a typed error, not a sign-out
 
-- **Chosen:** A 403 from refresh whose reason is `MEMBERSHIP_SUSPENDED`, `ORG_DELETED` or `NOT_A_MEMBER` becomes `OrgAccessError` (`reason`, `orgId`, extends `ApiError`). It keeps every token and the tab's previous org. `isRejectedRefresh` excludes it, and only a refresh rejected without an org reason clears tokens.
+- **Chosen:** A 403 from refresh whose reason is `MEMBERSHIP_SUSPENDED`, `ORG_DELETED` or `NOT_A_MEMBER` becomes `OrgAccessError` (`reason`, `orgId`, extends `ApiError`). It keeps every token. A refused `selectOrganization` keeps the tab's previous org; a refused refresh into the tab's own stored org clears it, so the consumer must select one. `isRejectedRefresh` excludes it, and only a refresh rejected without an org reason clears tokens.
 - **Alternatives considered:** Retrying into the personal org lost because auth removed that fallback on purpose: the consumer decides what to show. Signing out lost because the refresh token stays valid.
 - **Dropped:** None.
 - **Evidence:** auth-api `token-org-context/spec.md`, "A refresh into an org the user can't act in fails". `src/auth/authStore.ts`, `isRejectedRefresh`.
