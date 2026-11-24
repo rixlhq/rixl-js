@@ -32,7 +32,7 @@ export const hasPermission = (required: string): boolean => matches(permissions.
 /**
  * Empties the permission set and marks it unresolved.
  *
- * Called on sign-out so no grant outlives the session, and before an
+ * Called on sign-out so no grant outlives the sign-in, and before an
  * organization switch so the previous organization's grants cannot be read as
  * the new one's while the fresh answer is in flight.
  *

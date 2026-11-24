@@ -39,10 +39,10 @@ describe("verifyPasskeyForLogin", () => {
   afterEach(() => cleanupAuthMocks(mocks));
 
   it("sends the credential as a base64-encoded JSON string", async () => {
-    await verifyPasskeyForLogin("session-1", fakeAssertionCredential());
+    await verifyPasskeyForLogin("challenge-1", fakeAssertionCredential());
 
     const body = mockVerifyPasskey.mock.calls[0][0].body;
-    expect(body.session_id).toBe("session-1");
+    expect(body.session_id).toBe("challenge-1");
     expect(typeof body.credential).toBe("string");
 
     const decoded = JSON.parse(atob(body.credential));

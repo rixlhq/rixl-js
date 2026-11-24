@@ -3,7 +3,7 @@ import {STATE_STORAGE_KEY_PREFIX} from "./constants";
 const storagePath = (provider: string) => STATE_STORAGE_KEY_PREFIX + provider;
 
 /**
- * Retrieves and validates the OAuth state from session storage
+ * Retrieves and validates the OAuth state from sessionStorage
  * @param provider The provider identifier
  * @param state The state value to validate
  * @returns True if the state is valid, false otherwise

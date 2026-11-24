@@ -36,10 +36,10 @@ function toApiError(error: unknown, response?: Response, request?: Request): Err
 type TokenResolver = () => Promise<string | undefined>;
 
 // Shared across copies of this package so a duplicate copy cannot end up with a
-// second set of interceptors or fall back to session tokens while the copy the
+// second set of interceptors or fall back to end-user tokens while the copy the
 // consumer configured is using a platform/API-key credential.
 //
-// `tokenResolver` defaults to the end-user session token. `connect()` swaps it
+// `tokenResolver` defaults to the end-user access token. `connect()` swaps it
 // out via setTokenResolver() when configured with an apiKey or a bare token
 // instead, so there is always exactly one credential source feeding the one
 // interceptor below, regardless of which mode is active.
@@ -120,7 +120,7 @@ export function configureSdkClient(): void {
       }
       const token = await state.tokenResolver();
       // Sending the request bare would come back as a gateway 401 indistinguishable
-      // from an invalid token, hiding the real cause (no session, or a limited-access
+      // from an invalid token, hiding the real cause (not signed in, or a limited-access
       // flow that withholds full-scope tokens). Fail here instead, with the same
       // status so downstream error maps keyed on 401 still apply.
       if (!token) {

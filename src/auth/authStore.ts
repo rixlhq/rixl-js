@@ -15,7 +15,7 @@ import {ApiError} from "./api/types";
 import {GLOBAL_PREFIX, HTTP_STATUS} from "./constants";
 import {onLogoutElsewhere} from "./logout-channel";
 
-// Helper to ensure multi-tab session synchronization is attached once per realm
+// Helper to ensure multi-tab sign-out synchronization is attached once per realm
 const ensureLogoutSync = (): void => {
   shared("logoutSyncInitialized", () => {
     onLogoutElsewhere(() => removeTokens());
@@ -28,7 +28,7 @@ const ensureLogoutSync = (): void => {
 // then silently diverge on the first refresh or logout.
 //
 // Seeded from the cookie only. An OAuth callback in the URL is not evidence of a
-// session — the exchange can still fail — so consumers must await initClient()
+// sign-in — the exchange can still fail — so consumers must await initClient()
 // before reading this on a callback load rather than trusting an optimistic true.
 export const isLogged: WritableAtom<boolean> = shared("isLogged", () => {
   ensureLogoutSync();
@@ -126,11 +126,11 @@ const refreshAccessToken = async (refresh: string): Promise<void> => {
 const hasValidAccessToken = (): boolean => !!accessToken.get() && !isTokenExpired(expireAt.get());
 
 /**
- * Takes up the session another tab stored after rotating the refresh token.
+ * Takes up the tokens another tab stored after rotating the refresh token.
  * Each tab holds the tokens it read at load, and the gateway accepts a refresh
  * token only once, so presenting the stale copy would be rejected and the
  * resulting logout would clear the cookies every tab shares.
- * @returns Whether a newer session was adopted
+ * @returns Whether a newer set of tokens was adopted
  */
 const adoptStoredTokens = (): boolean => {
   const stored = readStoreCookies();
@@ -201,10 +201,10 @@ const ensureValidAccessToken = async (): Promise<void> => {
 };
 
 /**
- * Whether the gateway refused the refresh token itself, which ends the session.
+ * Whether the gateway refused the refresh token itself, which ends the sign-in.
  * It answers 400 for an expired, invalid or already-used token and 401 for an
  * inactive account. A network failure, 429 or 5xx means the token could not be
- * checked, so the session is kept for the next getToken() to retry.
+ * checked, so the sign-in is kept for the next getToken() to retry.
  */
 const isRejectedRefresh = (error: unknown): boolean =>
   error instanceof ApiError &&

@@ -1,7 +1,7 @@
 /**
  * Platform Auth Store Tests
  * Verifies API-key exchange, refresh-on-expiry, and failure clearing —
- * kept isolated from the end-user session atoms in authStore.ts.
+ * kept isolated from the end-user token atoms in authStore.ts.
  */
 
 import {describe, it, expect, beforeEach, vi} from "vite-plus/test";
