@@ -158,7 +158,7 @@ describe("Social Connections Module", () => {
     });
   });
 
-  it("links a GitHub authorization code with the authenticated RIXL session", async () => {
+  it("links a GitHub authorization code with the authenticated Rixl session", async () => {
     mockPostAuthV1ProvidersConnect.mockResolvedValue({data: {access_token: "next", refresh_token: "rotated", expires_in: 3600}});
 
     await connectSocialInternal("github", {
