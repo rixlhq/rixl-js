@@ -1,5 +1,6 @@
 import {describe, it, expect, beforeEach, afterEach, vi} from "vite-plus/test";
 import {initiateEmailChange, verifyEmailWithCode, getEmailVerificationStatus, addEmail} from "@/auth/email";
+import {ApiError} from "../../auth/api/types";
 import {setupAuthTest, cleanupAuthMocks} from "../utils/auth-test-helpers";
 import {createMockJWT} from "../utils/test-helpers";
 import {clearLimitedAccessState, setLimitedAccessState} from "@/authStore";
@@ -225,6 +226,12 @@ describe("Email Functions", () => {
       });
 
       await expect(addEmail("existing@example.com")).rejects.toThrow();
+    });
+
+    it("tells the user their sign-in expired on a 401", async () => {
+      mockPostAuthV1UsersCurrentEmails.mockRejectedValue(new ApiError("Unauthorized", 401));
+
+      await expect(addEmail("test@example.com")).rejects.toThrow("Sign-in expired - please log in again");
     });
 
     it("should throw error for rate limit exceeded", async () => {

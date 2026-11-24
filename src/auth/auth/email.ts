@@ -63,7 +63,7 @@ export const addEmail = async (email: string): Promise<void | VerificationSentRe
     },
     {
       [HTTP_STATUS.BAD_REQUEST]: () => new Error("Invalid email address"),
-      [HTTP_STATUS.UNAUTHORIZED]: () => new Error("Session expired - please login again"),
+      [HTTP_STATUS.UNAUTHORIZED]: () => new Error("Sign-in expired - please log in again"),
       [HTTP_STATUS.CONFLICT]: () => new Error("Email address is already in use"),
       [HTTP_STATUS.TOO_MANY_REQUESTS]: () => new Error("Too many requests - please try again later"),
     }
