@@ -10,7 +10,7 @@
 ## 2. Compatibility paths
 
 - [x] 2.1 Delete the positional overload of `verifyEmailWithCode` and `isLegacyVerifyEmailArgs` (`src/auth/auth/email.ts:80-95`). Test that the object form verifies. Mark the commit `feat(auth)!`.
-- [ ] 2.2 Delete the raw-body branch in `handleLoginError` (`src/auth/auth/login.ts:100-104`). Update tests that pass raw bodies to pass `ApiError`.
+- [x] 2.2 Delete the raw-body branch in `handleLoginError` (`src/auth/auth/login.ts:100-104`). Update tests that pass raw bodies to pass `ApiError`.
 
 ## 3. Guard
 
