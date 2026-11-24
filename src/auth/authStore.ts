@@ -16,8 +16,8 @@ import {GLOBAL_PREFIX, HTTP_STATUS} from "./constants";
 import {onLogoutElsewhere} from "./logout-channel";
 
 // Helper to ensure multi-tab session synchronization is attached once per realm
-const ensureSessionSync = (): void => {
-  shared("sessionSyncInitialized", () => {
+const ensureLogoutSync = (): void => {
+  shared("logoutSyncInitialized", () => {
     onLogoutElsewhere(() => removeTokens());
     return true;
   });
@@ -31,19 +31,19 @@ const ensureSessionSync = (): void => {
 // session — the exchange can still fail — so consumers must await initClient()
 // before reading this on a callback load rather than trusting an optimistic true.
 export const isLogged: WritableAtom<boolean> = shared("isLogged", () => {
-  ensureSessionSync();
+  ensureLogoutSync();
   const store = atom(initVals["isLogged"] === "true");
   store.subscribe((value) => setStoreCookie("isLogged", value));
   return store;
 });
 export const accessToken: WritableAtom<string | undefined> = shared("accessToken", () => {
-  ensureSessionSync();
+  ensureLogoutSync();
   const store = atom(initVals["accessToken"]);
   store.subscribe((value) => setStoreCookie("accessToken", value));
   return store;
 });
 export const refreshToken: WritableAtom<string | undefined> = shared("refreshToken", () => {
-  ensureSessionSync();
+  ensureLogoutSync();
   const store = atom(initVals["refreshToken"]);
   store.subscribe((value) => setStoreCookie("refreshToken", value));
   return store;
@@ -132,7 +132,7 @@ const hasValidAccessToken = (): boolean => !!accessToken.get() && !isTokenExpire
  * resulting logout would clear the cookies every tab shares.
  * @returns Whether a newer session was adopted
  */
-const adoptStoredSession = (): boolean => {
+const adoptStoredTokens = (): boolean => {
   const stored = readStoreCookies();
   const storedRefresh = stored["refreshToken"];
   if (!storedRefresh || storedRefresh === refreshToken.get()) return false;
@@ -182,7 +182,7 @@ const ensureValidAccessToken = async (): Promise<void> => {
 
   await acrossTabs(async () => {
     // The tab that held the lock before this one may have just refreshed.
-    adoptStoredSession();
+    adoptStoredTokens();
     if (hasValidAccessToken()) return;
 
     const refresh = refreshToken.get();
@@ -193,7 +193,7 @@ const ensureValidAccessToken = async (): Promise<void> => {
     } catch (refreshError) {
       console.error("Token refresh failed in getToken:", refreshError);
       // Without a lock, another tab can rotate the token while this request is in flight.
-      if (adoptStoredSession()) return;
+      if (adoptStoredTokens()) return;
       if (isRejectedRefresh(refreshError)) removeTokens();
       throw refreshError;
     }
@@ -225,7 +225,7 @@ export const getToken = async (): Promise<string | undefined> => {
       // Users in limited-access flows should not receive full-scope tokens for protected calls
       if (requiresAction.get()) return undefined;
 
-      adoptStoredSession();
+      adoptStoredTokens();
       if (!refreshToken.get()) return undefined;
 
       await ensureValidAccessToken();
