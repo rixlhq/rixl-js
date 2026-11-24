@@ -12,7 +12,11 @@
 - [x] 2.1 Delete the positional overload of `verifyEmailWithCode` and `isLegacyVerifyEmailArgs` (`src/auth/auth/email.ts:80-95`). Test that the object form verifies. Mark the commit `feat(auth)!`.
 - [x] 2.2 Delete the raw-body branch in `handleLoginError` (`src/auth/auth/login.ts:100-104`). Update tests that pass raw bodies to pass `ApiError`.
 
-## 3. Guard
+## 3. Verification
 
-- [ ] 3.1 Add `scripts/check-no-session.sh` and `scripts/session-allowlist.txt` as in design.md. Add `"check:terminology": "sh scripts/check-no-session.sh"` to `package.json`, call it first in `ci`, and add a lefthook pre-commit command. Verify it passes on the tree, and fails on a planted `// session` comment in `src/`.
-- [ ] 3.2 Run `vp check`, `vp test --run`, `vp pack`, `vp run examples:check` and `vp run ci`, and record the results here.
+- [x] 3.1 Ship without a wording guard: the owner decided on 2026-11-25 that the script and its CI job must not exist (design.md, "No automated wording check").
+- [x] 3.2 Run `vp check`, `vp test --run`, `vp pack`, `vp run examples:check` and `vp run ci`, and record the results here.
+  - Measured on 2026-11-25 after rebasing onto `main` at `e964d50`:
+  - `vp check`: no warnings, lint errors or type errors in 93 files.
+  - `vp test --run`: 887 tests in 82 files passed.
+  - `vp run ci`: exit 0; size 31.49 kB Brotli against the 32.9 kB limit.

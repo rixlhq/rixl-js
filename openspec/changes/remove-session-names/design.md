@@ -20,12 +20,11 @@ See proposal.md. The SDK coordinates logout across tabs with a BroadcastChannel 
 - **Dropped:** none.
 - **Evidence:** `src/auth/authStore.ts:16-46,129-228`.
 
-### Guard
+### No automated wording check
 
-- **Chosen:** `scripts/check-no-session.sh` greps `src` (minus `src/generated`), `examples`, `README.md`, `openspec/config.yaml` and `openspec/changes` (minus `archive` and this change) for `session` not preceded by a letter, or `[[:alnum:]]Session`, and fails on any hit not covered by `scripts/session-allowlist.txt` (`sessionStorage`, `session_state`). It runs in lefthook pre-commit and as `vp run check:terminology` inside `vp run ci`.
-- **Alternatives considered:** an oxlint rule, rejected because comments, Markdown and YAML must be covered too.
-- **Dropped:** none.
-- **Evidence:** auth-api `scripts/check-no-session.sh`.
+- **Chosen:** the rename ships without a script or CI job that searches for "session".
+- **Alternatives considered:** a `scripts/check-no-session.sh` guard in lefthook and `vp run ci`, modeled on auth-api's. The owner rejected it on 2026-11-25, and auth-api removed its own (`8705ee8a`).
+- **Dropped:** the guard and its allowlist.
 
 ### Remove the two compatibility paths
 
@@ -33,6 +32,16 @@ See proposal.md. The SDK coordinates logout across tabs with a BroadcastChannel 
 - **Alternatives considered:** a deprecation release, rejected: pre-production, and the one caller already uses the object form.
 - **Dropped:** none.
 - **Evidence:** `src/auth/auth/email.ts:80-95`, `src/auth/auth/login.ts:100-104`, dashboard `src/hooks/useEmailVerification.ts:48`.
+
+### Open changes also said "session"
+
+- **Chosen:** reworded three lines in `add-github-personal-oauth` and `add-permission-resolution`, so open changes use the current names.
+- **Evidence:** the grep in proposal.md over `openspec/changes`.
+
+### Raw-body branch had a second arm
+
+- **Chosen:** `handleLoginError` also drops the arm that wrapped a non-`ApiError` body into a new `ApiError`; it only served the raw-body path, and a non-`ApiError` now rethrows unchanged.
+- **Evidence:** `src/auth/auth/login.ts`.
 
 ## Risks / Trade-offs
 
