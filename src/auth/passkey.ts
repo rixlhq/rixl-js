@@ -211,7 +211,7 @@ export const verifyPasskeyForLogin = async (session_id: string, credential: Publ
     {
       [HTTP_STATUS.BAD_REQUEST]: () => new Error("Invalid passkey credential"),
       [HTTP_STATUS.UNAUTHORIZED]: () => new Error("Passkey verification failed"),
-      [HTTP_STATUS.NOT_FOUND]: () => new Error("Session not found"),
+      [HTTP_STATUS.NOT_FOUND]: () => new Error("Login challenge not found"),
     }
   );
 };

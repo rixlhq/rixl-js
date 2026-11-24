@@ -1,4 +1,5 @@
 import {describe, it, expect, beforeEach, afterEach, vi} from "vite-plus/test";
+import {ApiError} from "../../auth/api/types";
 import {setupAuthTest, cleanupAuthMocks} from "../utils/auth-test-helpers";
 
 const mockVerifyPasskey = vi.fn();
@@ -48,5 +49,11 @@ describe("verifyPasskeyForLogin", () => {
     expect(decoded.id).toBe("cred-id");
     expect(decoded.type).toBe("public-key");
     expect(typeof decoded.response.signature).toBe("string");
+  });
+
+  it("names the missing login challenge on a 404", async () => {
+    mockVerifyPasskey.mockRejectedValue(new ApiError("Not found", 404));
+
+    await expect(verifyPasskeyForLogin("challenge-1", fakeAssertionCredential())).rejects.toThrow("Login challenge not found");
   });
 });
