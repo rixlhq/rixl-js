@@ -2,7 +2,7 @@
  * connect({apiKey}) Tests
  * Verifies apiKey mode exchanges for a real Bearer token (never sends a raw
  * X-API-Key header) and that public routes still get no Authorization header,
- * matching the same interceptor behavior as user-session (`auth`) mode.
+ * matching the same interceptor behavior as end-user (`auth`) mode.
  */
 
 import {describe, it, expect, beforeEach, vi} from "vite-plus/test";

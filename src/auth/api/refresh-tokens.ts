@@ -10,10 +10,10 @@ export interface RefreshTokenOptions {
 }
 
 /**
- * Exchange a provider credential for a Rixl session, or refresh an existing
- * Rixl session with a Bearer refresh token.
+ * Exchange a provider credential for a Rixl sign-in, or refresh an existing
+ * Rixl sign-in with a Bearer refresh token.
  *
- * Both go to `/auth/v1/token`, which needs no session: `token_type` is the
+ * Both go to `/auth/v1/token`, which needs no sign-in: `token_type` is the
  * `AuthProvider` value and `refresh_token` carries the stored refresh token or
  * the provider's token or authorization code. `/auth/v1/providers/connect`
  * links a provider to an already signed-in user, so it cannot sign anyone in.

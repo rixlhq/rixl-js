@@ -276,7 +276,7 @@ describe("sign-out", () => {
 
     const stale = resolvePermissions();
 
-    // `removeTokens` clears the set; the response for the ended session lands after.
+    // `removeTokens` clears the set; the response for the ended sign-in lands after.
     clearPermissions();
     release(userInfo({permissions: ["media:images:read"]}));
     await stale;
@@ -285,7 +285,7 @@ describe("sign-out", () => {
     expect(permissionsResolved.get()).toBe(false);
   });
 
-  it("re-requests after a sign-out rather than joining the ended session's request", async () => {
+  it("re-requests after a sign-out rather than joining the ended sign-in's request", async () => {
     let release: (v: UserInfo) => void = () => undefined;
     const spy = vi
       .spyOn(userModule, "getUserInfo")

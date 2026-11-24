@@ -49,7 +49,7 @@ describe("Login Functions", () => {
       mockPostAuthV1Login.mockResolvedValue({
         data: {
           status: "2fa_required",
-          session_id: "session-123",
+          session_id: "challenge-123",
           authentication: ["totp"],
         },
       });
@@ -57,7 +57,7 @@ describe("Login Functions", () => {
       const result = await loginWithEmail("test@example.com", "Password123");
 
       expect(result).toEqual({
-        session_id: "session-123",
+        session_id: "challenge-123",
         email: "test@example.com",
         authentication: ["totp"],
         passkey_options: undefined,
@@ -69,7 +69,7 @@ describe("Login Functions", () => {
       mockPostAuthV1Login.mockResolvedValue({
         data: {
           status: "2fa_required",
-          session_id: "session-456",
+          session_id: "challenge-456",
           authentication: ["passkey"],
           passkey_options: "eyJwdWJsaWNLZXkiOnt9fQ==",
         },
@@ -78,7 +78,7 @@ describe("Login Functions", () => {
       const result = await loginWithEmail("test@example.com", "Password123");
 
       expect(result).toEqual({
-        session_id: "session-456",
+        session_id: "challenge-456",
         email: "test@example.com",
         authentication: ["passkey"],
         passkey_options: "eyJwdWJsaWNLZXkiOnt9fQ==",
@@ -193,10 +193,10 @@ describe("Login Functions", () => {
         },
       });
 
-      await verifyTOTPForLogin("123456", "session-123");
+      await verifyTOTPForLogin("123456", "challenge-123");
 
       expect(mockPostAuthV1VerifyTotp).toHaveBeenCalledWith({
-        body: {code: "123456", session_id: "session-123"},
+        body: {code: "123456", session_id: "challenge-123"},
         throwOnError: true,
       });
       expect(mocks.setTokensSpy).toHaveBeenCalledWith(mockToken, "refresh-123", 3600);
@@ -212,26 +212,26 @@ describe("Login Functions", () => {
         },
       });
 
-      await verifyTOTPForLogin("BACKUP-CODE-ABC", "session-123");
+      await verifyTOTPForLogin("BACKUP-CODE-ABC", "challenge-123");
 
       expect(mockPostAuthV1VerifyTotp).toHaveBeenCalledWith({
-        body: {code: "BACKUP-CODE-ABC", session_id: "session-123"},
+        body: {code: "BACKUP-CODE-ABC", session_id: "challenge-123"},
         throwOnError: true,
       });
       expect(mocks.setTokensSpy).toHaveBeenCalledWith(mockToken, "refresh-123", 3600);
     });
 
     it("should throw error for empty code", async () => {
-      await expect(verifyTOTPForLogin("", "session-123")).rejects.toThrow();
+      await expect(verifyTOTPForLogin("", "challenge-123")).rejects.toThrow();
     });
 
-    it("should throw error for session not found", async () => {
+    it("should throw error for login challenge not found", async () => {
       mockPostAuthV1VerifyTotp.mockRejectedValue({
         error: "not_found",
         code: 404,
       });
 
-      await expect(verifyTOTPForLogin("123456", "invalid-session")).rejects.toThrow();
+      await expect(verifyTOTPForLogin("123456", "invalid-challenge")).rejects.toThrow();
     });
   });
 });

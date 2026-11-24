@@ -4,7 +4,7 @@ import {isTokenExpired} from "../auth/utils/jwt";
 import {shared} from "../shared-runtime";
 
 // Platform/API-key credential state — deliberately separate from `authStore.ts`'s
-// end-user session atoms (isLogged, accessToken, user). An API key represents a
+// end-user token atoms (isLogged, accessToken, user). An API key represents a
 // developer/server credential, not a logged-in user, and must never be able to
 // flip isLogged or feed decodeAndSetUser.
 export const platformAccessToken: WritableAtom<string | undefined> = shared("platformAccessToken", () => atom(undefined));

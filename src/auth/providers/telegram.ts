@@ -51,8 +51,8 @@ export async function updateTelegramAuthUrl(): Promise<void> {
     if (telegramConfig.get() === config) telegramAuthUrl.set(url);
   } catch (error) {
     // The S256 challenge needs crypto.subtle, which browsers only expose on secure
-    // (https or localhost) pages, and session storage to keep the verifier.
-    console.error("Telegram sign-in is unavailable: the PKCE challenge needs a secure (https) page with session storage.", error);
+    // (https or localhost) pages, and sessionStorage to keep the verifier.
+    console.error("Telegram sign-in is unavailable: the PKCE challenge needs a secure (https) page with sessionStorage.", error);
   }
 }
 

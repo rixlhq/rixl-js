@@ -227,7 +227,7 @@ describe("Init - Provider Detection and Social Flow", () => {
       expect(connectSpy).toHaveBeenCalledWith(providersModule.AuthProvider.GOOGLE, {token: "social-token-123"});
     });
 
-    it("signs in instead of linking when a link flag outlived the session that set it", async () => {
+    it("signs in instead of linking when a link flag outlived the sign-in that set it", async () => {
       vi.spyOn(providersModule, "detectProvider").mockReturnValue(providersModule.AuthProvider.GOOGLE);
       vi.spyOn(providersModule, "getProviderCredential").mockReturnValue({token: "google-token"});
       sessionStorage.setItem("__rixl_auth_social_connect_google", "true");

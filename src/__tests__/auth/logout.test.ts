@@ -79,7 +79,7 @@ describe("logout", () => {
     otherTab.close();
   });
 
-  it("still logs out and tells the other tabs when session storage is blocked", async () => {
+  it("still logs out and tells the other tabs when sessionStorage is blocked", async () => {
     mockPostAuthV1Logout.mockResolvedValue({data: {}});
     const otherTab = new BroadcastChannel("__rixl_auth_logout");
     const received = new Promise((resolve) => otherTab.addEventListener("message", (event) => resolve(event.data), {once: true}));

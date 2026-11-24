@@ -9,8 +9,8 @@ const base64Url = (bytes: Uint8Array): string =>
     .replace(/=+$/, "");
 
 /**
- * Gets or generates the PKCE code verifier for a provider. It lives in session
- * storage so the callback page can send it with the authorization code.
+ * Gets or generates the PKCE code verifier for a provider. It lives in sessionStorage
+ * so the callback page can send it with the authorization code.
  */
 export function getPkceVerifier(provider: string): string {
   const stored = sessionStorage.getItem(storagePath(provider));

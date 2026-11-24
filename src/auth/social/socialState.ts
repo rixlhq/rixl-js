@@ -27,7 +27,7 @@ export function clearSocialConnectAttempt(provider: string): void {
   sessionStorage.removeItem(socialStoragePath(provider));
 }
 
-/** Clears every provider's pending connection flag, so none outlives the session it was set in. */
+/** Clears every provider's pending connection flag, so none outlives the sign-in it was set in. */
 export function clearSocialConnectAttempts(): void {
   try {
     const keys = Array.from({length: sessionStorage.length}, (_, i) => sessionStorage.key(i));

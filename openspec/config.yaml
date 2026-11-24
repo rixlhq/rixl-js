@@ -4,7 +4,7 @@ context: |
   @rixl/sdk: the TypeScript SDK for the Rixl API, published to npm and used by
   dashboard, internal-dashboard, blog-posts and customer apps.
   src/generated/ is generated from rixlhq/openapi and never edited by hand;
-  src/auth/ is the hand-written auth layer (providers, passkeys, PKCE, sessions).
+  src/auth/ is the hand-written auth layer (providers, passkeys, PKCE, sign-ins).
   Toolchain: Vite+ (vp check, vp test, vp pack). Rules: .agents/rules/.
   Removing or changing anything src/index.ts exports is a breaking change.
   Conventional commits; Release Please versions and publishes.

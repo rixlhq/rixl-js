@@ -109,7 +109,7 @@ describe("AuthStore - Token Refresh", () => {
       expect(refreshToken.get()).toBe("refresh-123");
     });
 
-    it.each([400, 401, 403])("ends the session when the gateway rejects the refresh token with %i", async (status) => {
+    it.each([400, 401, 403])("ends the sign-in when the gateway rejects the refresh token with %i", async (status) => {
       accessToken.set(createMockJWT());
       refreshToken.set("refresh-123");
       expireAt.set(Date.now() - 1000);
@@ -121,7 +121,7 @@ describe("AuthStore - Token Refresh", () => {
       expect(refreshToken.get()).toBe("");
     });
 
-    it.each([429, 502, 503])("keeps the session when the refresh fails with %i", async (status) => {
+    it.each([429, 502, 503])("keeps the sign-in when the refresh fails with %i", async (status) => {
       accessToken.set(createMockJWT());
       refreshToken.set("refresh-123");
       expireAt.set(Date.now() - 1000);
@@ -132,7 +132,7 @@ describe("AuthStore - Token Refresh", () => {
       expect(refreshToken.get()).toBe("refresh-123");
     });
 
-    it("keeps the session when the refresh never reaches the gateway", async () => {
+    it("keeps the sign-in when the refresh never reaches the gateway", async () => {
       accessToken.set(createMockJWT());
       refreshToken.set("refresh-123");
       expireAt.set(Date.now() - 1000);
@@ -143,7 +143,7 @@ describe("AuthStore - Token Refresh", () => {
       expect(refreshToken.get()).toBe("refresh-123");
     });
 
-    it("retries a kept session on the next getToken()", async () => {
+    it("retries a kept sign-in on the next getToken()", async () => {
       accessToken.set(createMockJWT());
       refreshToken.set("refresh-123");
       expireAt.set(Date.now() - 1000);
@@ -247,7 +247,7 @@ describe("AuthStore - Token Refresh", () => {
     });
   });
 
-  describe("sessions shared across tabs", () => {
+  describe("sign-ins shared across tabs", () => {
     const expireStale = () => {
       accessToken.set(createMockJWT());
       refreshToken.set("stale-refresh");
@@ -272,7 +272,7 @@ describe("AuthStore - Token Refresh", () => {
       expect(refreshToken.get()).toBe("rotated-refresh");
     });
 
-    it("refreshes the adopted session when its access token has expired too", async () => {
+    it("refreshes the adopted tokens when its access token has expired too", async () => {
       expireStale();
       mockReadStoreCookies.mockReturnValue({accessToken: createMockJWT(), refreshToken: "rotated-refresh", expireAt: "1"});
       mockRefreshTokens.mockResolvedValue({access_token: createMockJWT(), refresh_token: "new-refresh", expires_in: 3600});
@@ -282,7 +282,7 @@ describe("AuthStore - Token Refresh", () => {
       expect(mockRefreshTokens).toHaveBeenCalledWith(providers.AuthProvider.BEARER, {token: "rotated-refresh"});
     });
 
-    it("keeps the session another tab rotated while this tab's refresh was in flight", async () => {
+    it("keeps the tokens another tab rotated while this tab's refresh was in flight", async () => {
       expireStale();
       const rotated = {accessToken: createMockJWT(), refreshToken: "rotated-refresh", expireAt: String(Date.now() + 3_600_000)};
       mockReadStoreCookies.mockReturnValue({});
@@ -295,7 +295,7 @@ describe("AuthStore - Token Refresh", () => {
       expect(refreshToken.get()).toBe("rotated-refresh");
     });
 
-    it("keeps the in-memory session when the cookies cannot be read", async () => {
+    it("keeps the in-memory tokens when the cookies cannot be read", async () => {
       accessToken.set(createMockJWT());
       refreshToken.set("refresh-123");
       expireAt.set(Date.now() + 3_600_000);
@@ -352,7 +352,7 @@ describe("AuthStore - Token Refresh", () => {
     it.each([
       ["another user", {id: "user-2", org_id: "org-1"}],
       ["another organization", {id: "user-1", org_id: "org-2"}],
-    ])("drops resolved permissions when the adopted session belongs to %s", async (_label, claims) => {
+    ])("drops resolved permissions when the adopted tokens belong to %s", async (_label, claims) => {
       accessToken.set(createMockJWT({id: "user-1", org_id: "org-1"}));
       refreshToken.set("stale-refresh");
       expireAt.set(Date.now() - 1000);
@@ -370,7 +370,7 @@ describe("AuthStore - Token Refresh", () => {
       expect(permissionsResolved.get()).toBe(false);
     });
 
-    it("keeps resolved permissions when the adopted session is the same user and organization", async () => {
+    it("keeps resolved permissions when the adopted tokens are the same user and organization", async () => {
       accessToken.set(createMockJWT({id: "user-1", org_id: "org-1"}));
       refreshToken.set("stale-refresh");
       expireAt.set(Date.now() - 1000);
