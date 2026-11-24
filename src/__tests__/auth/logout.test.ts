@@ -60,7 +60,7 @@ describe("logout", () => {
 
   it("tells the other tabs to log out", async () => {
     mockPostAuthV1Logout.mockResolvedValue({data: {}});
-    const otherTab = new BroadcastChannel("__rixl_auth_session");
+    const otherTab = new BroadcastChannel("__rixl_auth_logout");
     const received = new Promise((resolve) => otherTab.addEventListener("message", (event) => resolve(event.data), {once: true}));
 
     await logout();
@@ -70,7 +70,7 @@ describe("logout", () => {
   });
 
   it("logs this tab out when another tab logs out", async () => {
-    const otherTab = new BroadcastChannel("__rixl_auth_session");
+    const otherTab = new BroadcastChannel("__rixl_auth_logout");
 
     otherTab.postMessage("logout");
     await vi.waitFor(() => expect(isLogged.get()).toBe(false));
@@ -81,7 +81,7 @@ describe("logout", () => {
 
   it("still logs out and tells the other tabs when session storage is blocked", async () => {
     mockPostAuthV1Logout.mockResolvedValue({data: {}});
-    const otherTab = new BroadcastChannel("__rixl_auth_session");
+    const otherTab = new BroadcastChannel("__rixl_auth_logout");
     const received = new Promise((resolve) => otherTab.addEventListener("message", (event) => resolve(event.data), {once: true}));
     const blocked = vi.spyOn(window, "sessionStorage", "get").mockImplementation(() => {
       throw new DOMException("The operation is insecure.", "SecurityError");

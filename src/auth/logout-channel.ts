@@ -7,8 +7,8 @@ const LOGOUT = "logout";
 // handled once per tab. A channel never receives its own messages. Browser only:
 // Node also has BroadcastChannel, and an open one keeps an SSR or build process
 // from ever exiting.
-const channel = shared("sessionChannel", () =>
-  typeof window === "undefined" || typeof BroadcastChannel === "undefined" ? null : new BroadcastChannel(`${GLOBAL_PREFIX}_session`)
+const channel = shared("logoutChannel", () =>
+  typeof window === "undefined" || typeof BroadcastChannel === "undefined" ? null : new BroadcastChannel(`${GLOBAL_PREFIX}_logout`)
 );
 
 /** Tells the other tabs on this origin that the user logged out. */

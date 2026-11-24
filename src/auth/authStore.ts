@@ -13,7 +13,7 @@ import type {RequiresAction} from "./types";
 import {shared} from "../shared-runtime";
 import {ApiError} from "./api/types";
 import {GLOBAL_PREFIX, HTTP_STATUS} from "./constants";
-import {onLogoutElsewhere} from "./session-channel";
+import {onLogoutElsewhere} from "./logout-channel";
 
 // Helper to ensure multi-tab session synchronization is attached once per realm
 const ensureSessionSync = (): void => {
