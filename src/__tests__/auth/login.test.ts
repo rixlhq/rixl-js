@@ -1,5 +1,6 @@
 import {describe, it, expect, beforeEach, afterEach, vi} from "vite-plus/test";
 import {loginWithEmail, verifyTOTPForLogin} from "@/auth";
+import {ApiError} from "../../auth/api/types";
 import {createMockJWT} from "../utils/test-helpers";
 import {setupAuthTest, cleanupAuthMocks} from "../utils/auth-test-helpers";
 
@@ -87,21 +88,16 @@ describe("Login Functions", () => {
     });
 
     it("should handle incorrect credentials error", async () => {
-      mockPostAuthV1Login.mockRejectedValue({
-        error: "unauthorized",
-        code: 401,
-      });
+      mockPostAuthV1Login.mockRejectedValue(new ApiError("Unauthorized", 401, "/auth/v1/login", {error: "unauthorized"}));
 
-      await expect(loginWithEmail("test@example.com", "ValidPass123")).rejects.toThrow();
+      await expect(loginWithEmail("test@example.com", "ValidPass123")).rejects.toThrow("Incorrect email or password");
     });
 
     it("should handle bad request error", async () => {
-      mockPostAuthV1Login.mockRejectedValue({
-        error: "bad_request",
-        code: 400,
-      });
+      const error = new ApiError("Bad request", 400, "/auth/v1/login", {error: "bad_request"});
+      mockPostAuthV1Login.mockRejectedValue(error);
 
-      await expect(loginWithEmail("test@example.com", "ValidPass123")).rejects.toThrow();
+      await expect(loginWithEmail("test@example.com", "ValidPass123")).rejects.toBe(error);
     });
 
     it("should validate email format", async () => {
@@ -165,11 +161,12 @@ describe("Login Functions", () => {
     });
 
     it("should return LoginErrorResponse for provider conflict", async () => {
-      mockPostAuthV1Login.mockRejectedValue({
-        error: "provider_conflict",
-        details: "This email is already registered with Google",
-        code: 409,
-      });
+      mockPostAuthV1Login.mockRejectedValue(
+        new ApiError("Conflict", 409, "/auth/v1/login", {
+          error: "provider_conflict",
+          details: "This email is already registered with Google",
+        })
+      );
 
       const result = await loginWithEmail("test@example.com", "Password123");
 
@@ -179,6 +176,13 @@ describe("Login Functions", () => {
         email: "test@example.com",
       });
       expect(mocks.setTokensSpy).not.toHaveBeenCalled();
+    });
+
+    it("rethrows a raw error body that is not an ApiError", async () => {
+      const raw = {error: "provider_conflict", details: "This email is already registered with Google"};
+      mockPostAuthV1Login.mockRejectedValue(raw);
+
+      await expect(loginWithEmail("test@example.com", "Password123")).rejects.toBe(raw);
     });
   });
 

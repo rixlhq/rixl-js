@@ -94,14 +94,12 @@ function handleLoginResponse(data: AuthV1LoginResponse, email: string): void | T
 interface ApiErrorBody {
   error?: string;
   details?: string;
-  code?: number;
 }
 
 function handleLoginError(error: unknown, email: string): TwoFactorResponse | LoginErrorResponse | never {
-  // The client error interceptor wraps thrown bodies into ApiError; tests and
-  // legacy paths may still surface the raw body directly.
-  const body = error instanceof ApiError ? error.data : error;
-  if (isApiErrorBody(body)) {
+  // The client error interceptor wraps every thrown body into an ApiError.
+  if (error instanceof ApiError && isApiErrorBody(error.data)) {
+    const body = error.data;
     if (body.error === "email_not_verified") {
       return {
         error_code: "email_not_verified",
@@ -116,10 +114,6 @@ function handleLoginError(error: unknown, email: string): TwoFactorResponse | Lo
         email,
       };
     }
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    throw new ApiError(body.error || "Login failed", body.code || 500, "/auth/v1/login", body);
   }
   throw error;
 }
