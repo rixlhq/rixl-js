@@ -12,7 +12,7 @@ There is also no permissions store. The SDK exposes atoms for `isLogged`, `user`
 - **Add a `permissions` store** (`src/auth/permissionStore.ts`): a `shared()` nanostore atom holding the current identity's effective permission set, following the `userStore` pattern. Empty until resolved, so an unresolved set never reads as permissive.
 - **Add `resolvePermissions()`** (`src/auth/permissions/resolve.ts`): calls `getUserInfo()` and replaces the held set. Kept in its own module because `getUserInfo`'s import graph reaches back into `authStore`, and importing it from the store module would create an initialization cycle.
 - **Add `hasPermission(required)`**: matches a required permission against the held set, honoring the verb hierarchy. Reconciled against the live registry, which grants only `read` and `write`: `write` satisfies a `read` check, and any verb not listed fails closed.
-- **Add `clearPermissions()`**, called from `removeTokens()` so a signed-out session cannot retain a stale set.
+- **Add `clearPermissions()`**, called from `removeTokens()` so a signed-out user cannot retain a stale set.
 - **Export** the permission surface from `src/index.ts`.
 
 Out of scope: any UI gating (that lives in the dashboard's `add-permission-gating`), and role/policy composition — see Assumptions.
