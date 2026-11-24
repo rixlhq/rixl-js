@@ -87,8 +87,8 @@ export const connectSocialInternal = async (provider: string, credential: Provid
     async () => {
       const {token, ...codeExchange} = credentialFields(credential);
       const requestBody = validateInput(ConnectProviderSchema, {provider, token});
-      const sessionToken = await getToken();
-      const headers: Record<string, string> = sessionToken ? {Authorization: `Bearer ${sessionToken}`} : {};
+      const accessToken = await getToken();
+      const headers: Record<string, string> = accessToken ? {Authorization: `Bearer ${accessToken}`} : {};
       const body: AuthV1ConnectProviderRequest = {
         provider: toProtoProvider(normalizeProviderType(requestBody.provider)),
         token: requestBody.token,
