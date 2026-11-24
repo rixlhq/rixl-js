@@ -77,28 +77,9 @@ export interface VerifyEmailWithCodeParams {
   new_email: string;
 }
 
-const normalizeVerifyEmailArgs = (
-  args: [VerifyEmailWithCodeParams] | [string, EmailVerificationType, string, string]
-): VerifyEmailWithCodeParams => {
-  if (isLegacyVerifyEmailArgs(args)) {
-    const [code, type, verification_id, new_email] = args;
-    return {code, type, verification_id, new_email};
-  }
-
-  return args[0];
-};
-
-const isLegacyVerifyEmailArgs = (
-  args: [VerifyEmailWithCodeParams] | [string, EmailVerificationType, string, string]
-): args is [string, EmailVerificationType, string, string] => typeof args[0] === "string";
-
-export const verifyEmailWithCode = async (
-  ...args: [VerifyEmailWithCodeParams] | [string, EmailVerificationType, string, string]
-): Promise<void | VerifyEmailResponse> => {
+export const verifyEmailWithCode = async (payload: VerifyEmailWithCodeParams): Promise<void | VerifyEmailResponse> => {
   return apiCall(
     async () => {
-      const payload = normalizeVerifyEmailArgs(args);
-
       validateInput(verifyEmailChangeRequestSchema, payload);
       const {data} = await authV1EmailServiceVerifyEmail({
         body: {code: payload.code, verification_id: payload.verification_id},
