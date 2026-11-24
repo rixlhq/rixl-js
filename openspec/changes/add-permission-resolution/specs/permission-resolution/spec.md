@@ -36,7 +36,7 @@ The SDK SHALL expose a `permissions` store holding the current identity's effect
 
 #### Scenario: Permissions are cleared on sign-out
 
-- **WHEN** tokens are removed from the session
+- **WHEN** tokens are removed on sign-out
 - **THEN** the permission store is emptied so no stale grant survives sign-out
 
 ### Requirement: Permissions resolve from user info
