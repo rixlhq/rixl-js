@@ -15,15 +15,6 @@ First-party SDK code, comments, messages, shared-runtime keys, channel names, te
 - **WHEN** one tab calls `logout()`
 - **THEN** other tabs on the same SDK version receive it on `${GLOBAL_PREFIX}_logout`, and nothing is posted to or read from `${GLOBAL_PREFIX}_session`
 
-### Requirement: A guard keeps session out
-
-`scripts/check-no-session.sh` SHALL run in lefthook pre-commit and in `vp run ci`, and SHALL fail on a first-party "session" outside the allowlist.
-
-#### Scenario: Planted identifier
-
-- **WHEN** a change adds `const sessionUser = ...` under `src/auth/`
-- **THEN** the pre-commit hook and `vp run ci` fail
-
 ### Requirement: One form per API
 
 `verifyEmailWithCode` SHALL accept only its params object. Login error handling SHALL read only the SDK's `ApiError`.
