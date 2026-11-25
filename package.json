@@ -40,6 +40,7 @@
     "check": "vp check",
     "lint": "vp lint",
     "lint:suppressions": "! grep -rnE '(eslint|oxlint)-disable' src examples vite.config.ts --include='*.ts' --exclude-dir=generated | grep -v ' -- '",
+    "lint:toolchain-pins": "node scripts/check-toolchain-pins.mjs",
     "knip": "knip --no-progress",
     "fmt": "vp fmt",
     "test": "vp test",
@@ -48,7 +49,7 @@
     "test:mutation": "stryker run",
     "budget": "size-limit",
     "publint": "publint --strict",
-    "ci": "vp check && vp run lint:suppressions && vp run knip && vp run examples:check && vp test --coverage --run && vp pack && vp run budget && vp run publint",
+    "ci": "node scripts/check-toolchain-pins.mjs && vp check && vp run lint:suppressions && vp run knip && vp run examples:check && vp test --coverage --run && vp pack && vp run budget && vp run publint",
     "typecheck": "tsc --noEmit",
     "examples:check": "tsc --noEmit -p examples/tsconfig.json",
     "prepublishOnly": "vp run build",
@@ -77,14 +78,16 @@
     "size-limit": "^14.3.0",
     "typescript": "^7.0.2",
     "typescript-compat": "npm:typescript@6.0.3",
-    "vite": "npm:@voidzero-dev/vite-plus-core@1.6.0",
-    "vite-plus": "1.6.0"
+    "vite": "npm:@voidzero-dev/vite-plus-core@8.3.8000",
+    "vite-plus": "1.7.0",
+    "vitest": "5.1.0"
   },
   "overrides": {
     "@hey-api/openapi-ts": {
       "typescript": "6.0.3"
     },
-    "vite": "npm:@voidzero-dev/vite-plus-core@1.6.0"
+    "vite": "npm:@voidzero-dev/vite-plus-core@8.3.8000",
+    "vitest": "5.1.0"
   },
   "devEngines": {
     "packageManager": {

@@ -83,6 +83,31 @@ vp run ci                 # The gate the release job runs
 
 Use `vp` for everything; don't call `bun`, `npm` or `npx` directly.
 
+## Bumping Vite+
+
+`vite-plus`, the `vite` npm: alias, `vitest` and the `@vitest/*` pins are one
+atomic set (the `vite` alias and `vitest` are mirrored in `devDependencies`
+AND `overrides`; `vite-plus` and `@vitest/*` are devDependencies-only). They
+only move together:
+
+```bash
+vp update vite-plus --latest
+vp migrate --no-interactive --no-agent --no-editor --no-hooks
+vp install
+```
+
+Never bump one member by itself — a split set makes Vite/vitest-invoking
+commands (`pack`, `test`, `dev`, `build`) fail with "Expected
+@voidzero-dev/vite-plus-core@X, but found Y". Dependabot ignores the set
+(`dependabot.yaml`) for exactly that reason; `toolchain.yml` opens the bump
+PR weekly instead, for manual merge once the gate is green.
+`lint:toolchain-pins` (part of `ci`, derived from the installed vite-plus's
+`toolchain.json`) fails the gate on a split set and on a managed pin with no
+ignore entry — so when `vp migrate` starts pinning a package it didn't
+before, the toolchain PR itself goes red until you extend the ignore list.
+Dependabot security-update PRs are suppressed too, but the _alerts_ still
+fire — dispatch `toolchain.yml` manually when one lands.
+
 ## Repository layout
 
 - `src/index.ts` — the public API; everything consumers import

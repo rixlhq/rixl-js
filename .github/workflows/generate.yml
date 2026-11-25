@@ -19,6 +19,10 @@ jobs:
       - uses: actions/checkout@v7
         with:
           token: ${{ secrets.BUILD_GITHUB_TOKEN }}
+          # Don't leave the write token readable in .git/config while
+          # freshly-generated code runs; create-pull-request takes the
+          # token via its own input.
+          persist-credentials: false
       - uses: voidzero-dev/setup-vp@v1.22.0
         with:
           cache: "true"
@@ -26,9 +30,8 @@ jobs:
       - run: vp run generate
       - run: vp check --fix
 
-      # Opens a PR instead of pushing directly to main: the branch ruleset
-      # rejects direct pushes, and a PR gets the required `build-release`
-      # check before it can merge. BUILD_GITHUB_TOKEN instead of
+      # Opens a PR instead of pushing directly to main — everything goes
+      # through reviewable history. BUILD_GITHUB_TOKEN instead of
       # GITHUB_TOKEN — events from the default token never start workflow
       # runs, so the PR would sit at "Expected: waiting for status".
       - name: Create PR with regenerated SDK
@@ -42,5 +45,7 @@ jobs:
             Regenerated `src/` against the latest OpenAPI spec.
 
             Auto-merge is armed via the `autorelease: pending` label
-            (see `automerge.yml`); the PR lands once required checks pass.
+            (see `automerge.yml`); no required checks are configured on
+            main, so it merges as soon as the PR is mergeable — the
+            `build-release` gate runs on the resulting push to main.
           labels: "autorelease: pending"
