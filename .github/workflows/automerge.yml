@@ -10,7 +10,9 @@ permissions:
 
 jobs:
   automerge:
-    if: "contains(github.event.pull_request.labels.*.name, 'autorelease: pending')"
+    # Never automerge the toolchain PR: with no required checks it would land
+    # within seconds of labelling, before the gate it could break.
+    if: "contains(github.event.pull_request.labels.*.name, 'autorelease: pending') && github.head_ref != 'bot/vite-plus-toolchain'"
     runs-on: ubuntu-latest
     # Single `gh pr merge` call; observed max 0.2 min. Anything near this
     # cap is a stuck API call, not slow work.

@@ -4,6 +4,42 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    # Vite+ owns these versions as one atomic set: `vite-plus`, the `vite`
+    # npm: alias, `vitest` and the `@vitest/*` pins are rewritten together by
+    # `vp migrate` (the alias and `vitest` in devDependencies AND overrides;
+    # the rest in devDependencies). A partial bump — which is all dependabot
+    # can express — splits the set and makes Vite/vitest-invoking commands
+    # fail ("Expected @voidzero-dev/vite-plus-core@X, but found Y").
+    # `.github/workflows/toolchain.yml` bumps the set weekly. The remaining
+    # entries cover the toolchain subtree migrate can promote into the
+    # manifest; extend them when migrate adds a pin. Ignoring also suppresses
+    # dependabot's security-update PRs for these packages — toolchain
+    # security bumps arrive via the weekly PR, or sooner via
+    # `workflow_dispatch` on toolchain.yml.
+    ignore:
+      - dependency-name: "vite-plus"
+      - dependency-name: "vite"
+      - dependency-name: "vitest"
+      - dependency-name: "@vitest/*"
+      - dependency-name: "@voidzero-dev/*"
+      - dependency-name: "oxlint"
+      - dependency-name: "oxlint-tsgolint"
+      - dependency-name: "oxfmt"
+      - dependency-name: "tsrs"
+      - dependency-name: "@oxlint/*"
+      - dependency-name: "@oxfmt/*"
+      - dependency-name: "@oxc-project/*"
+      # Bundled/compiled today, but vp migrate can promote them to manifest
+      # pins in a future release — ignore now so that pin can't be bumped alone.
+      - dependency-name: "tsdown"
+      - dependency-name: "rolldown"
+      - dependency-name: "@rolldown/*"
+      - dependency-name: "oxc-resolver"
+      - dependency-name: "oxc-parser"
+      - dependency-name: "oxc-node"
+      - dependency-name: "oxnode"
+      - dependency-name: "oxc"
+      - dependency-name: "vite-task"
     groups:
       dependencies:
         patterns:

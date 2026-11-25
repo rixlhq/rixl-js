@@ -1,0 +1,96 @@
+name: Vite+ toolchain
+
+on:
+  schedule:
+    - cron: "30 6 * * 1" # Mondays 06:30 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: toolchain-bump
+  cancel-in-progress: false
+
+jobs:
+  bump-toolchain:
+    runs-on: ubuntu-latest
+    # Bump + install + PR open is a few minutes; the cap only trips if an
+    # install or registry fetch hangs.
+    timeout-minutes: 10
+    steps:
+      # persist-credentials: false — this job then runs the newest vite-plus
+      # release, so BUILD_GITHUB_TOKEN must not sit readable in .git/config.
+      # create-pull-request takes the token via its own input.
+      - uses: actions/checkout@v7
+        with:
+          token: ${{ secrets.BUILD_GITHUB_TOKEN }}
+          persist-credentials: false
+      - uses: voidzero-dev/setup-vp@v1.22.0
+        with:
+          cache: "true"
+          run-install: "true"
+
+      # The managed set — vite-plus, the vite npm: alias, vitest and the
+      # @vitest/* pins in devDependencies and overrides — only moves
+      # atomically: `vp update` lifts vite-plus, `vp migrate` rewrites every
+      # coupled pin, `vp install` lands it. Dependabot can't express that
+      # (it would need to edit overrides), so dependabot.yaml ignores the
+      # set and this job owns it.
+      - name: Bump Vite+ toolchain
+        run: |
+          vp update vite-plus --latest
+          vp migrate --no-interactive --no-agent --no-editor --no-hooks
+          vp install
+
+      # BUILD_GITHUB_TOKEN so the PR triggers the build-release gate, same
+      # as generate.yml. Deliberately NO `autorelease: pending` label: with
+      # no required checks, automerge merges within seconds of PR creation,
+      # before `vp run ci` finishes — and a broken toolchain is the one
+      # change that can take down the gate itself. Merge it by hand once
+      # the gate is green. The bot/* branch name keeps the rolling PR off
+      # any human-authored chore branch.
+      - name: Create PR with the toolchain bump
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.BUILD_GITHUB_TOKEN }}
+          commit-message: "chore(deps): bump the Vite+ toolchain"
+          branch: bot/vite-plus-toolchain
+          labels: dependencies
+          title: "chore(deps): bump the Vite+ toolchain"
+          body: |
+            Weekly Vite+ toolchain bump: `vp update vite-plus --latest`,
+            `vp migrate`, `vp install`. Moves `vite-plus`, the `vite`
+            npm: alias, `vitest` and the `@vitest/*` pins together — the set
+            dependabot.yaml ignores because it can't update them atomically.
+
+            `vp migrate` can also rewrite imports/config beyond the pins;
+            the `vp run ci` gate judges that. Merge manually once the gate
+            is green — this PR is intentionally not auto-merged.
+
+  # If the bump job ever fails (a bad vite-plus release, an expired
+  # BUILD_GITHUB_TOKEN, a push rejection), the only other signal is a red
+  # Actions run nobody watches — while the whole managed set silently rots.
+  notify:
+    needs: bump-toolchain
+    # `result` covers failure AND cancelled — a timeout-killed job reports
+    # "cancelled", which `failure()` alone would miss.
+    if: ${{ always() && needs.bump-toolchain.result != 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: 📣 Open a failure issue
+        run: |
+          gh label create toolchain-bump --color d93f0b --description "Vite+ toolchain bump failures" --force
+          previous=$(gh issue list --label toolchain-bump --state open --json number --jq '.[].number')
+          url=$(gh issue create --label toolchain-bump \
+            --title "Vite+ toolchain bump failed $(date -u +%Y-%m-%d)" \
+            --body "The weekly toolchain job failed: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}. Until it is fixed, the Vite+-managed set (vite-plus, the vite alias, vitest, the @vitest/* pins) does not update — dependabot ignores it by design. Re-run this workflow manually once fixed.")
+          for number in $previous; do
+            gh issue close "$number" --comment "Superseded by $url"
+          done
