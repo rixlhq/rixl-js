@@ -8,7 +8,7 @@
   - The document has no email-invitation (`InvitationService`) or organization lifecycle operations: auth-api `rixl/remove-legacy` has neither proto yet (task 2.8).
 - [x] 1.2 After the gateway change merges and `rixlhq/openapi` has copied it, run `vp run generate` against the committed generator source and record the openapi commit here. Include auth-api #249 and #253 wire changes once the gateway publishes them and replace the direct email-change call with the generated operation.
   - Measured on 2026-11-25 against `rixlhq/openapi` `d62ac55b901ed19900179ab9a3f259d465e6e390` (gateway `c0a8891`, auth-api `92d208bd`). `verifyEmailChange` calls `authV1EmailServiceVerifyEmailChange`. The document drops `EmailStatusResponse.verified` (auth-api stores an email only once verified) and `OrgMember.invitation_expires_at`, so the wrappers drop them too.
-  - The member list and domain routes still name their org `user.org_id`. `rixlhq/auth-api#258` (open) renames the parameter to `org_id` without changing the URLs. Once it is published, the drift check fails until those wrappers are regenerated and renamed.
+  - `rixlhq/auth-api#258` renamed the org parameter of the member list, domain, policy and notification routes from `user.org_id` to `org_id` without changing the URLs. Measured on 2026-11-25 against `rixlhq/openapi` `dc93fd7aa98710870673de82093fe18720e3436e`: the regenerated client has the same 228 operations, and `listOrganizationMembers` and two domain wrappers take the new name.
 
 ## 2. Org token context
 

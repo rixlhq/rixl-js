@@ -175,7 +175,7 @@ describe("Membership List Module", () => {
       const result = await listOrganizationMembers("org123");
 
       expect(mockListOrganizationMembers).toHaveBeenCalledWith({
-        path: {"user.org_id": "org123"},
+        path: {org_id: "org123"},
         query: undefined,
         throwOnError: true,
       });
@@ -201,7 +201,7 @@ describe("Membership List Module", () => {
       await listOrganizationMembers("org456", paginationParams);
 
       expect(mockListOrganizationMembers).toHaveBeenCalledWith({
-        path: {"user.org_id": "org456"},
+        path: {org_id: "org456"},
         query: paginationParams,
         throwOnError: true,
       });

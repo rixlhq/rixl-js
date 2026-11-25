@@ -35,7 +35,7 @@ export const listOrganizationMembers = async (orgId: string, paginationParams?: 
   return apiCall(
     async () => {
       const {data} = await authV1MembershipServiceListOrganizationMembers({
-        path: {"user.org_id": orgId},
+        path: {org_id: orgId},
         query: paginationParams,
         throwOnError: true,
       });
