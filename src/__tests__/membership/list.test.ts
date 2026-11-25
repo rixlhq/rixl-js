@@ -1,5 +1,5 @@
 import {describe, it, expect, beforeEach, afterEach, vi} from "vite-plus/test";
-import {listActiveMemberships, listPendingMemberships, listOrganizationMembers, MembershipRole, MembershipState} from "@/membership";
+import {listActiveMemberships, listOrganizationMembers, MembershipRole, MembershipState} from "@/membership";
 import {setupAuthTest, cleanupAuthMocks} from "../utils/auth-test-helpers";
 
 const mockListMemberships = vi.fn();
@@ -108,55 +108,6 @@ describe("Membership List Module", () => {
       const result = await listActiveMemberships();
 
       expect(result[0].role).toBe(MembershipRole.MEMBER);
-    });
-  });
-
-  describe("listPendingMemberships", () => {
-    const wireInvitation = {
-      id: "inv1",
-      org: {id: "org123", name: "Test Org", slug: "testorg", image_id: "img1", personal: false, internal: false},
-      role: "MEMBERSHIP_ROLE_ADMIN",
-      state: "INVITATION_STATE_PENDING",
-      created_at: "2026-11-25T10:00:00Z",
-      expires_at: "2026-12-02T10:00:00Z",
-    };
-
-    it("shapes the user's invitations as pending memberships", async () => {
-      mockListMyInvitations.mockResolvedValue({data: {invitations: [wireInvitation]}});
-
-      const result = await listPendingMemberships();
-
-      expect(mockListMyInvitations).toHaveBeenCalledWith({query: undefined, throwOnError: true});
-      expect(result).toEqual([
-        {
-          id: "inv1",
-          org_id: "org123",
-          role: MembershipRole.ADMIN,
-          state: MembershipState.PENDING,
-          organization: {...wireInvitation.org, created_at: undefined},
-          created_at: "2026-11-25T10:00:00Z",
-          invitation_expires_at: "2026-12-02T10:00:00Z",
-        },
-      ]);
-    });
-
-    it("maps null embedded messages and timestamps to the public defaults", async () => {
-      mockListMyInvitations.mockResolvedValue({data: {invitations: [{...wireInvitation, org: null, created_at: null, expires_at: null}]}});
-
-      const [pending] = await listPendingMemberships();
-
-      expect(pending).toMatchObject({
-        org_id: "",
-        organization: {id: "", name: "", created_at: undefined},
-        created_at: undefined,
-        invitation_expires_at: undefined,
-      });
-    });
-
-    it("returns empty array when there are no invitations", async () => {
-      mockListMyInvitations.mockResolvedValue({data: {}});
-
-      expect(await listPendingMemberships()).toEqual([]);
     });
   });
 

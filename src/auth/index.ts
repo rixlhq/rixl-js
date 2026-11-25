@@ -34,7 +34,6 @@ export {type GoogleProviderConfig, type AppleProviderConfig, type TelegramProvid
 export {
   leaveOrganization,
   listActiveMemberships,
-  listPendingMemberships,
   listOrganizationMembers,
   inviteMember,
   updateMemberRole,
@@ -51,7 +50,6 @@ export {
   revokeInvitation,
   type Member,
   type Membership,
-  type MembershipApplication,
   type InviteMemberRequest,
   type UpdateMemberRoleRequest,
   type Invitation,

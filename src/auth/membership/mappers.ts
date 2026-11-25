@@ -19,7 +19,6 @@ import {
   type InvitationState,
   type Membership,
   type Member,
-  type MembershipApplication,
 } from "./types";
 
 const ROLE_FROM_PROTO: Record<AuthV1MembershipRole, MembershipRole> = {
@@ -114,18 +113,6 @@ export function toInvitationLookup(data: AuthV1LookupInvitationResponse): Invita
     inviter_display_name: data.inviter_display_name ?? "",
     email: data.email ?? "",
     expires_at: data.expires_at ?? undefined,
-  };
-}
-
-export function toMembershipApplication(invitation: Invitation): MembershipApplication {
-  return {
-    id: invitation.id,
-    org_id: invitation.organization.id,
-    role: invitation.role,
-    state: MembershipState.PENDING,
-    organization: invitation.organization,
-    created_at: invitation.created_at,
-    invitation_expires_at: invitation.expires_at,
   };
 }
 
