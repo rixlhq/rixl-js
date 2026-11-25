@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.48.0](https://github.com/rixlhq/rixl-js/compare/v0.47.0...v0.48.0) (2026-11-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* **sdk:** inviteMember is createInvitation and resendMemberInvite is resendInvitation, and both resolve with the invitation. publicRespondToInvitation and respondToMyInvitation become acceptInvitation({token}) or acceptInvitation({invitation_id}); decline with authV1InvitationServiceDeclineInvitation. Revoke with authV1InvitationServiceRevokeInvitation. Invitation functions no longer check input or replace error messages. MembershipState is now ACTIVE or SUSPENDED. removeDomain, deleteMember, deletePasskey, renamePasskey, deleteUserOTP, subscribeToBlog and unsubscribeFromBlog are removed; call the generated operations. loginWithEmail no longer returns LoginErrorResponse, which loses email. DomainStatus.EXPIRED, WireErrorBody.details and code, and the AddDomainRequest, UpdateSuggestJoinRequest, LoginOTPVerifyRequest, OAuth2ErrorResponse, InviteMemberRequest and UpdateMemberRoleRequest types are removed.
+* **membership:** drop listPendingMemberships compat shim
+
+### Code Refactoring
+
+* **membership:** drop listPendingMemberships compat shim ([7cd30bf](https://github.com/rixlhq/rixl-js/commit/7cd30bf14c5e5f7500458640796da700a56ae845))
+* **sdk:** remove legacy and forwarding functions ([2f820eb](https://github.com/rixlhq/rixl-js/commit/2f820ebc82c827b12fb65ab137baf8d0f2096ed6))
+
 ## [0.47.0](https://github.com/rixlhq/rixl-js/compare/v0.46.0...v0.47.0) (2026-11-25)
 
 
