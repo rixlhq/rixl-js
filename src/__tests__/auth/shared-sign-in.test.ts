@@ -56,15 +56,15 @@ afterEach(() => {
 });
 
 describe("A refresh token without an org to refresh into", () => {
-  /** The cookies a browser signed in before the org split holds. */
-  const storePreCutoverCookies = () => {
-    for (const [name, value] of Object.entries({refreshToken: "pre-cutover", accessToken: "old-access", expireAt: "1", isLogged: "true"})) {
+  /** A stored sign-in with no org to refresh into. */
+  const storeCookiesWithoutOrg = () => {
+    for (const [name, value] of Object.entries({refreshToken: "no-org", accessToken: "old-access", expireAt: "1", isLogged: "true"})) {
       document.cookie = `__rixl_auth_${name}=${value}; path=/`;
     }
   };
 
-  it("ends signed out with cookies from before the cutover, without a request", async () => {
-    storePreCutoverCookies();
+  it("ends signed out with cookies that name no org, without a request", async () => {
+    storeCookiesWithoutOrg();
     const otherTabs = listenForLogout();
     const tab = await openTab();
 
@@ -78,7 +78,7 @@ describe("A refresh token without an org to refresh into", () => {
   });
 
   it("makes selectOrganization() reject as signed out", async () => {
-    storePreCutoverCookies();
+    storeCookiesWithoutOrg();
     const tab = await openTab();
 
     await expect(tab.use().selectOrganization("org-a")).rejects.toMatchObject({status: 401});

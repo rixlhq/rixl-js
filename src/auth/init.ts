@@ -133,33 +133,22 @@ const applyTokenExchangeResult = (result: TokenResponse | LimitedScopeTokenRespo
   persistSignInTokens(result as TokenResponse);
 };
 
-const setAuthErrorAndClear = (error_code: LoginErrorCode, message: string, email: string): true => {
+const setAuthErrorAndClear = (error_code: LoginErrorCode, message: string): true => {
   clearLimitedAccessState();
-  authError.set({error_code, message, email});
+  authError.set({error_code, message});
   return true;
 };
 
-const extractAuthErrorInfo = (error: ApiError): {error: string; description: string; email: string} => {
-  const data = error.data as {error?: string; error_description?: string; email?: string} | undefined;
-  return {
-    error: data?.error ?? "",
-    description: data?.error_description ?? error.message ?? "",
-    email: data?.email ?? "",
-  };
-};
-
 const handleInitPageApiError = (error: ApiError): void => {
-  const info = extractAuthErrorInfo(error);
-
+  // The client wraps the gateway's own message into the error.
   if (error.status === HTTP_STATUS.CONFLICT) {
-    setAuthErrorAndClear("provider_conflict", info.description, info.email);
+    setAuthErrorAndClear("provider_conflict", error.message);
     return;
   }
 
-  // Everything else used to rethrow, which reached no UI: the login page just
-  // reappeared with nothing on it. Record the gateway's own message so the page
-  // can show why, and so the failure is state rather than a lost exception.
-  setAuthErrorAndClear("provider_exchange_failed", info.error || info.description, info.email);
+  // A rethrow would reach no UI. Record the gateway's own message, so the login
+  // page can show why and the failure is state rather than a lost exception.
+  setAuthErrorAndClear("provider_exchange_failed", error.message);
 };
 
 const initPage = async () => {

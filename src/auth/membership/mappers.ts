@@ -29,8 +29,9 @@ const ROLE_FROM_PROTO: Record<AuthV1MembershipRole, MembershipRole> = {
 };
 
 const STATE_FROM_PROTO: Record<AuthV1MembershipState, MembershipState> = {
-  MEMBERSHIP_STATE_UNSPECIFIED: MembershipState.PENDING,
-  MEMBERSHIP_STATE_ACTIVE: MembershipState.ACCEPTED,
+  // An unnamed state grants nothing.
+  MEMBERSHIP_STATE_UNSPECIFIED: MembershipState.SUSPENDED,
+  MEMBERSHIP_STATE_ACTIVE: MembershipState.ACTIVE,
   MEMBERSHIP_STATE_SUSPENDED: MembershipState.SUSPENDED,
 };
 
@@ -79,7 +80,7 @@ export function toMembership(m: AuthV1Membership): Membership {
 const toInvitationState = (state?: AuthV1InvitationState): InvitationState =>
   INVITATION_STATE_FROM_PROTO[state ?? "INVITATION_STATE_UNSPECIFIED"];
 
-function toInvitation(i: AuthV1Invitation): Invitation {
+export function toInvitation(i: AuthV1Invitation): Invitation {
   return {
     id: i.id ?? "",
     organization: toOrganization(i.org),

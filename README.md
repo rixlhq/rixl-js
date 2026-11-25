@@ -205,7 +205,7 @@ async function openOrganization(orgId: string) {
 
 - Sign-in issues a token for the user's personal org. Capture the in-memory `lastActiveOrgId` hint from the sign-in response before any reload, or keep your own org preference. A refresh updates the server’s last active org. To use the saved org, select it explicitly. `personalOrgId` is the personal org.
 - A tab's org, permissions and user belong to one sign-in. When another tab signs in, as the same user or another, this tab drops them and moves to the new sign-in's personal org on its next call.
-- A stored sign-in the SDK can't refresh, such as one from before organizations, is signed out.
+- A stored sign-in the SDK can't refresh, because it has no org to name, is signed out.
 - When auth-api refuses the refresh token (revoked, expired or an inactive account), the call rejects with a 401 `ApiError`, including `connect()`. The SDK removes the stored sign-in, so the next page load starts with `isLogged` false.
 - Each tab has its own org and access token, and keeps its org across a reload. Tabs share the refresh token and the `signIn`, `personalOrgId`, `isLogged` and temporary `refusedSignIn` cookies, as well as `limitedAccessToken` and `requiresAction` during a limited-access flow. A tab that never selected an org uses the personal org.
 - `orgContext.get()?.role` is for display. Authorize with permissions (`resolvePermissions`, `hasPermission`).
@@ -227,14 +227,24 @@ async function openOrganization(orgId: string) {
 
 An invitation goes to an email address. It isn't a membership, and doesn't appear in the member list, until its recipient accepts it.
 
-| Who                                | Functions                                                                                                                                                    | Needs                                      |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------ |
-| The org                            | `inviteMember(orgId, email, role)`, `listOrganizationInvitations(orgId)`, `resendMemberInvite(orgId, invitationId)`, `revokeInvitation(orgId, invitationId)` | A token for that org                       |
-| The recipient, from the email link | `lookupInvitation(token)`                                                                                                                                    | Nothing                                    |
-| The recipient, from the email link | `publicRespondToInvitation(token, "accept" \| "decline")`                                                                                                    | A sign-in with the invited, verified email |
-| The recipient, in the app          | `listMyInvitations()`, `respondToMyInvitation(invitationId, "accept" \| "decline")`                                                                          | A sign-in                                  |
+| Who                                              | Functions                                                                                                                                                          | Needs                                      |
+| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------ |
+| The org                                          | `createInvitation(orgId, email, role)`, `listOrganizationInvitations(orgId)`, `resendInvitation(orgId, invitationId)`, `authV1InvitationServiceRevokeInvitation()` | A token for that org                       |
+| The recipient, from the email link               | `lookupInvitation(token)`                                                                                                                                          | Nothing                                    |
+| The recipient, from the email link or in the app | `acceptInvitation({token})` or `acceptInvitation({invitation_id})`, `authV1InvitationServiceDeclineInvitation()`                                                   | A sign-in with the invited, verified email |
+| The recipient, in the app                        | `listMyInvitations()`                                                                                                                                              | A sign-in                                  |
 
-`listPendingMemberships()` returns one page of `listMyInvitations()` shaped as pending memberships. A refusal rejects with an `ApiError`; where auth-api names a reason, such as `INVITATION_PENDING`, `INVITATION_EXPIRED`, `INVITATION_EMAIL_MISMATCH` or `EMAIL_NOT_VERIFIED`, it is on `error.data.reason`.
+A refusal rejects with an `ApiError`; where auth-api names a reason, such as `INVITATION_PENDING`, `INVITATION_EXPIRED`, `INVITATION_EMAIL_MISMATCH` or `EMAIL_NOT_VERIFIED`, it is on `error.data.reason`.
+
+## Generated operations
+
+Every API operation is exported under its generated name. The SDK writes a function of its own only where it keeps sign-in state or reshapes a result. For anything else, call the generated one after `connect()`; it gets the same base URL, access token and error handling. Pass `throwOnError: true`:
+
+```ts
+import {authV1InvitationServiceRevokeInvitation} from "@rixl/sdk";
+
+await authV1InvitationServiceRevokeInvitation({path: {org_id: orgId, invitation_id: invitationId}, throwOnError: true});
+```
 
 ## Compatibility
 

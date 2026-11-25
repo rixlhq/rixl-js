@@ -247,11 +247,7 @@ describe("Managing membership", () => {
     const sdk = await onOrgB();
     refusedPaths.set("/auth/v1/organizations/org-c/members/current", "generic");
     refusedPaths.set("/auth/v1/organizations/org-c/members/user-2", "generic");
-    for (const action of [
-      () => sdk.leaveOrganization("org-c"),
-      () => sdk.deleteMember("org-c", "user-2"),
-      () => sdk.updateMemberRole("org-c", "user-2", "member"),
-    ]) {
+    for (const action of [() => sdk.leaveOrganization("org-c"), () => sdk.updateMemberRole("org-c", "user-2", "member")]) {
       await expect(action()).rejects.toMatchObject({name: "ApiError", status: 403, message: "forbidden"});
     }
     expect(sdk.orgContext.get()?.orgId).toBe("org-b");
@@ -385,7 +381,11 @@ describe("An org reason from an account-scoped route", () => {
     const token = await sdk.getToken();
     refusedPaths.set(`/auth/v1/invitations/${state.toLowerCase()}`, "ORG_DELETED");
 
-    const error = await thrownBy(sdk.publicRespondToInvitation("invite-token", sdk.MembershipState[state]));
+    const answer =
+      state === "ACCEPT"
+        ? () => sdk.acceptInvitation({token: "invite-token"})
+        : () => sdk.authV1InvitationServiceDeclineInvitation({body: {token: "invite-token"}, throwOnError: true});
+    const error = await thrownBy(answer());
 
     expect(error).toMatchObject({name: "ApiError", status: 403, data: {reason: "ORG_DELETED"}});
     await expectTabUnchanged(sdk, token);

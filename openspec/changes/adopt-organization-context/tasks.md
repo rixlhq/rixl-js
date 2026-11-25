@@ -22,7 +22,7 @@
 - [x] 2.7 Replace `updateOrgName` and `updateOrgUsername` with `getOrganization`, `listOrganizations` and `updateOrganization` (field mask over name, slug, image). Test each wrapper's request shape and error mapping in `src/__tests__/organization/*.test.ts`.
   - Measured with the gateway's own mux (`routes.NewServeMux`, `rixl/remove-legacy` at `345c524`) in front of a stub gRPC service: `update_mask: "image_id"` is refused with 400 (`google.protobuf.FieldMask.paths contains invalid path: "image_id"`), and `"name,imageId"` reaches the service as `["name", "image_id"]`. The wrapper sends `imageId`.
 - [x] 2.8 Add wrappers for the invitation operations the dashboard change uses, with their tests (design.md, "Invitations are addressed to an email"). Tests: `src/__tests__/membership/invite.test.ts` and `list.test.ts`.
-  - `listPendingMemberships` reads `GET /auth/v1/users/current/invitations`; auth-api removed `GET /auth/v1/membership-applications`. The account-scoped route list follows gateway `c0a8891`: `invitations/accept`, `invitations/decline` and `POST organizations`. Tests in `api/request-refusal.test.ts`.
+  - auth-api removed `GET /auth/v1/membership-applications`. The account-scoped route list follows gateway `c0a8891`: `invitations/accept`, `invitations/decline` and `POST organizations`. Tests in `api/request-refusal.test.ts`.
   - The gateway forwards an `ErrorInfo` reason but not its metadata, so a 409 `INVITATION_PENDING` doesn't name the pending invitation and a 429 limit carries no `retry_after` in the body (read from gateway `internal/routes/errors.go`; not run against a gateway).
   - Not run against a deployed environment: the tests use mocked generated calls and mocked HTTP responses.
 - [x] 2.9 Mirror the gateway's public routes: `rixlhq/gateway` `e7dd721` narrows the anonymous prefix `/auth/v1/invitations/` to `/auth/v1/invitations/lookup`, so accepting and declining by token need an access token. `publicRespondToInvitation` sent none and would get 401. Test: `src/__tests__/api/sdk-client-public-routes.test.ts`.
@@ -120,3 +120,13 @@ Open objections, checked and left to their owners:
 - [x] 11.4 Align signup wrapper requests and response types with auth-api #249 (`5437f541`, `proto/auth/v1/token.proto`). Tests for verification ID, registration response and invalid credentials in `auth/register.test.ts` and `auth/login.test.ts`.
 - [x] 11.5 (N3, N4, h2 F1) Expose `orgSelectionRequired`, preserve it across reload, and clear a refusal when voluntary leave finishes. Tests in `api/request-refusal.test.ts`.
 - [x] 11.6 Start the SDK once in the README flow and demonstrate org selection and sign-out in example 11. Verified with `vp run examples:check` and an isolated startup probe that failed on `b9d7943` and passed after the fix.
+
+## 12. Remove legacy and forwarding code
+
+- [x] 12.1 Remove the names and shapes kept for the old dashboard, and replace the invitation functions (design.md, "Invitations are addressed to an email"). Reduce `MembershipState` to `ACTIVE` and `SUSPENDED`; an unnamed state reads as suspended. Tests: `membership/invite.test.ts` and `membership/list.test.ts`.
+- [x] 12.2 Remove `removeDomain`, `deleteMember`, `deletePasskey`, `renamePasskey`, `deleteUserOTP`, `subscribeToBlog`, `unsubscribeFromBlog` and the exported types no function takes or returns, and `DomainStatus.EXPIRED`.
+- [x] 12.3 Stop reading the old gateway error body (`details`, `code`, `error_description`, `email`, `error: "provider_conflict"`). The gateway sends `{error, reason}`. `loginWithEmail` no longer returns `LoginErrorResponse`, which has no `email`. Tests: `auth/login.test.ts` and `init/init-oauth.test.ts`.
+- [ ] 12.4 Fix the contract, then drop the remaining input checks and replacement messages. Read on 2026-11-25 at auth-api `3442f0e4`, gateway `083fed8` and openapi `dc93fd7`:
+  - Input rules don't reach the document. auth-api writes them as `grpc.gateway.protoc_gen_openapiv2` field options, and the gateway builds the document with `protoc-gen-connect-openapi`, which publishes none of them: `RegisterRequest.password` and `UpdateUsernameRequest.username` have no length. api and analytics use `buf.validate` and `gnostic.openapi.v3`.
+  - All 87 `/auth/` operations declare `google.rpc.Status` as their error body. The gateway sends `{error, reason}`, so the generated error types are wrong.
+  - A provider conflict is `ALREADY_EXISTS` with no `ErrorInfo`, so the gateway answers 409 `conflict` with no reason and the explanation is lost.

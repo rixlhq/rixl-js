@@ -1,14 +1,5 @@
 import {describe, it, expect, beforeEach, afterEach, vi} from "vite-plus/test";
-import {
-  updateFullName,
-  updateUsername,
-  getUserInfo,
-  getOTPStatus,
-  setupUserOTP,
-  verifyUserOTP,
-  deleteUserOTP,
-  regenerateBackupCodes,
-} from "../auth/user";
+import {updateFullName, updateUsername, getUserInfo, getOTPStatus, setupUserOTP, verifyUserOTP, regenerateBackupCodes} from "../auth/user";
 import * as signInCookies from "../auth/sign-in-cookies";
 import {createMockJWT} from "./utils/test-helpers";
 import {setupAuthTest, cleanupAuthMocks} from "./utils/auth-test-helpers";
@@ -327,29 +318,6 @@ describe("User Management", () => {
 
     it("should reject non-numeric codes", async () => {
       await expect(verifyUserOTP("abcdef")).rejects.toThrow();
-    });
-  });
-
-  describe("deleteUserOTP", () => {
-    it("should delete OTP successfully", async () => {
-      mockDeleteAuthV1UsersCurrentTotpDelete.mockResolvedValue({
-        data: {message: "OTP deleted"},
-      });
-
-      await expect(deleteUserOTP()).resolves.toBeUndefined();
-
-      expect(mockDeleteAuthV1UsersCurrentTotpDelete).toHaveBeenCalledWith({
-        throwOnError: true,
-      });
-    });
-
-    it("should throw error for unauthorized", async () => {
-      mockDeleteAuthV1UsersCurrentTotpDelete.mockRejectedValue({
-        error: "unauthorized",
-        code: 401,
-      });
-
-      await expect(deleteUserOTP()).rejects.toThrow();
     });
   });
 

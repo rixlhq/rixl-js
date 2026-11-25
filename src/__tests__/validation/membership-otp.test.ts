@@ -1,29 +1,12 @@
 /**
  * Membership and OTP validation tests
- * Tests: InviteMemberSchema, UpdateMemberRoleSchema, VerifyOTPCodeSchema, ConnectProviderSchema
+ * Tests: UpdateMemberRoleSchema, VerifyOTPCodeSchema, ConnectProviderSchema
  */
 
 import {describe, it} from "vite-plus/test";
 import {VerifyOTPCodeSchema, ConnectProviderSchema} from "../../auth/validation/auth";
-import {InviteMemberSchema, UpdateMemberRoleSchema} from "../../auth/validation/membership";
+import {UpdateMemberRoleSchema} from "../../auth/validation/membership";
 import {testValidInputs, testInvalidInputs} from "../utils/validation-test-helpers";
-
-describe("InviteMemberSchema", () => {
-  it("should accept valid invite configurations", () => {
-    testValidInputs(InviteMemberSchema, [
-      {email: "new@example.com", role: "member"},
-      {email: "admin@example.com", role: "admin"},
-    ]);
-  });
-
-  it("should reject invalid inputs", () => {
-    testInvalidInputs(InviteMemberSchema, [
-      {email: "new@example.com", role: "invalid"}, // invalid role
-      {email: "new@example.com", role: "owner"}, // owner not assignable
-      {email: "newmember", role: "member"}, // a username isn't an email
-    ]);
-  });
-});
 
 describe("UpdateMemberRoleSchema", () => {
   it("should accept valid role", () => {

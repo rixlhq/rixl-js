@@ -1,8 +1,4 @@
-import {
-  authV1BlogServiceGetBlogSubscription,
-  authV1BlogServiceSubscribeBlog,
-  authV1BlogServiceUnsubscribeBlog,
-} from "../../generated/sdk.gen";
+import {authV1BlogServiceGetBlogSubscription} from "../../generated/sdk.gen";
 import {apiCall} from "../api/utils";
 import {HTTP_STATUS} from "../constants";
 
@@ -27,32 +23,4 @@ export const getBlogSubscriptionStatus = async (): Promise<BlogSubscriptionStatu
       subscribed_at: data.subscribed_at,
     };
   }, BLOG_SUBSCRIPTION_ERRORS);
-};
-
-export const subscribeToBlog = async (): Promise<void> => {
-  return apiCall(
-    async () => {
-      await authV1BlogServiceSubscribeBlog({
-        throwOnError: true,
-      });
-    },
-    {
-      ...BLOG_SUBSCRIPTION_ERRORS,
-      [HTTP_STATUS.INTERNAL_SERVER_ERROR]: () => new Error("Failed to subscribe to blog updates"),
-    }
-  );
-};
-
-export const unsubscribeFromBlog = async (): Promise<void> => {
-  return apiCall(
-    async () => {
-      await authV1BlogServiceUnsubscribeBlog({
-        throwOnError: true,
-      });
-    },
-    {
-      ...BLOG_SUBSCRIPTION_ERRORS,
-      [HTTP_STATUS.INTERNAL_SERVER_ERROR]: () => new Error("Failed to unsubscribe from blog updates"),
-    }
-  );
 };

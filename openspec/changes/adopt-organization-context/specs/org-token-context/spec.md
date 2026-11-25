@@ -140,11 +140,11 @@ Public signup verification SHALL commit a new sign-in only while its initiating 
 
 ### Requirement: Invitations use auth-api's invitation routes
 
-The SDK SHALL create, list, resend and revoke an org's invitations under that org, and SHALL list, accept and decline the signed-in user's invitations on the account routes, naming the invitation by emailed token or by ID in the request body. Looking up a token SHALL need no sign-in. A refusal SHALL reach the caller as an `ApiError` that keeps the gateway's `reason`.
+The SDK's functions SHALL create, list and resend an org's invitations under that org, and SHALL list and accept the signed-in user's invitations on the account routes, naming an accepted invitation by emailed token or by ID in the request body. Revoking and declining use the generated operations. Looking up a token SHALL need no sign-in. A refusal SHALL reach the caller as an `ApiError` that keeps the gateway's `reason`.
 
 #### Scenario: Accepting from an email link
 
-- **WHEN** a signed-in user calls `publicRespondToInvitation(token, "accept")`
+- **WHEN** a signed-in user calls `acceptInvitation({token})`
 - **THEN** the SDK posts the token to `/auth/v1/invitations/accept`, resolves with the membership and leaves the tab on its org
 
 #### Scenario: Opening a link while signed out
@@ -154,7 +154,7 @@ The SDK SHALL create, list, resend and revoke an org's invitations under that or
 
 #### Scenario: A second invitation to the same address
 
-- **WHEN** `inviteMember` is answered 409 with reason `INVITATION_PENDING`
+- **WHEN** `createInvitation` is answered 409 with reason `INVITATION_PENDING`
 - **THEN** it rejects with that `ApiError`, reason included
 
 ### Requirement: Voluntary leave clears the tab's selected org

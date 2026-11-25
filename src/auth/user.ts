@@ -5,7 +5,6 @@ import {
   authV1OtpServiceGetOtpStatus,
   authV1OtpServiceSetupOtp,
   authV1OtpServiceVerifyOtp,
-  authV1OtpServiceDeleteOtp,
   authV1OtpServiceRegenerateBackupCodes,
 } from "../generated/sdk.gen";
 import type {AuthV1Policy, AuthV1UserInfo} from "../generated/types.gen";
@@ -177,19 +176,6 @@ export const verifyUserOTP = async (code: string): Promise<void> => {
     },
     {
       [HTTP_STATUS.BAD_REQUEST]: () => new Error("Invalid request format"),
-      [HTTP_STATUS.UNAUTHORIZED]: () => new Error("Token is missing or invalid; user is not authenticated."),
-    }
-  );
-};
-
-export const deleteUserOTP = async (): Promise<void> => {
-  return apiCall(
-    async () => {
-      await authV1OtpServiceDeleteOtp({
-        throwOnError: true,
-      });
-    },
-    {
       [HTTP_STATUS.UNAUTHORIZED]: () => new Error("Token is missing or invalid; user is not authenticated."),
     }
   );
