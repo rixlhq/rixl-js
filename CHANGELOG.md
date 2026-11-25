@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.47.0](https://github.com/rixlhq/rixl-js/compare/v0.46.0...v0.47.0) (2026-11-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* **sdk:** generated domain, member list, policy and notification preference functions take path.org_id instead of path["user.org_id"]. Their request types drop the user, user_id, user.org_id and user.user_id fields, and the request bodies name the org as org_id. The hand-written functions keep their signatures.
+
+### Bug Fixes
+
+* **sdk:** name the org with org_id after auth-api flattened it ([018e2b5](https://github.com/rixlhq/rixl-js/commit/018e2b560d3ce93b1d3b7db7ec586256e2456cfe))
+
 ## [0.46.0](https://github.com/rixlhq/rixl-js/compare/v0.45.1...v0.46.0) (2026-11-25)
 
 
