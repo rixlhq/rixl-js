@@ -226,7 +226,6 @@ describe("Email Functions", () => {
     it("should get email verification status successfully", async () => {
       mockGetAuthV1UsersCurrentEmailsStatus.mockResolvedValue({
         data: {
-          verified: true,
           email: "test@example.com",
           has_email: true,
         },
@@ -237,7 +236,7 @@ describe("Email Functions", () => {
       expect(mockGetAuthV1UsersCurrentEmailsStatus).toHaveBeenCalledWith({
         throwOnError: true,
       });
-      expect(result).toEqual({verified: true, email: "test@example.com", has_email: true});
+      expect(result).toEqual({email: "test@example.com", has_email: true});
     });
 
     it("should throw error for unauthorized user", async () => {

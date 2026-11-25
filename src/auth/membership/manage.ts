@@ -3,7 +3,6 @@ import {
   authV1MembershipServiceRemoveMember,
   authV1MembershipServiceLeaveOrganization,
 } from "../../generated/sdk.gen";
-import type {AuthV1MembershipRole} from "../../generated/types.gen";
 import {apiCall} from "../api/utils";
 import {signInMarkerOf} from "../sign-in-cookies";
 import {decodeOrgClaims} from "../utils/jwt";
@@ -11,12 +10,8 @@ import {leaveTabOrg} from "../tab-org";
 import {HTTP_STATUS} from "../constants";
 import type {AssignableRole} from "./types";
 import {validateInput} from "../validation/base";
+import {ROLE_TO_PROTO} from "./mappers";
 import {UpdateMemberRoleSchema} from "../validation/membership";
-
-const ROLE_TO_PROTO: Record<AssignableRole, AuthV1MembershipRole> = {
-  admin: "MEMBERSHIP_ROLE_ADMIN",
-  member: "MEMBERSHIP_ROLE_MEMBER",
-};
 
 export const updateMemberRole = async (orgId: string, userId: string, role: AssignableRole): Promise<void> => {
   return apiCall(

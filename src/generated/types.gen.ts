@@ -2235,44 +2235,18 @@ export type ApikeysV1ValidateApiKeyResponse = {
 
 /**
  * AcceptInvitationRequest
+ *
+ * At most one of `token`, `invitation_id` may be set.
  */
 export type AuthV1AcceptInvitationRequest = {
     /**
      * token
      */
     token?: string;
-};
-
-/**
- * AcceptInvitationResponse
- */
-export type AuthV1AcceptInvitationResponse = {
     /**
-     * org_id
+     * invitation_id
      */
-    org_id?: string;
-    /**
-     * role
-     */
-    role?: AuthV1MembershipRole;
-    /**
-     * organization
-     */
-    organization?: AuthV1Organization;
-};
-
-/**
- * ActorOrgRequest
- */
-export type AuthV1ActorOrgRequest = {
-    /**
-     * actor_id
-     */
-    actor_id?: string;
-    /**
-     * org_id
-     */
-    org_id?: string;
+    invitation_id?: string;
 };
 
 /**
@@ -2288,6 +2262,49 @@ export type AuthV1AddEmailRequest = {
      */
     email?: string;
 };
+
+/**
+ * ApplyOrgLifecycleRequest
+ */
+export type AuthV1ApplyOrgLifecycleRequest = {
+    /**
+     * org_id
+     */
+    org_id?: string;
+    /**
+     * state
+     */
+    state?: AuthV1OrganizationState;
+    /**
+     * lifecycle_version
+     */
+    lifecycle_version?: string;
+    /**
+     * purge_after
+     */
+    purge_after?: GoogleProtobufTimestamp;
+    /**
+     * reservation_id
+     *
+     * Set for api when the transition was prepared by billing.
+     */
+    reservation_id?: string;
+};
+
+/**
+ * ApplyOrgLifecycleResponse
+ */
+export type AuthV1ApplyOrgLifecycleResponse = {
+    /**
+     * status
+     */
+    status?: AuthV1ApplyOrgLifecycleResponseStatus;
+};
+
+/**
+ * Status
+ */
+export type AuthV1ApplyOrgLifecycleResponseStatus = 'STATUS_UNSPECIFIED' | 'STATUS_APPLIED' | 'STATUS_IGNORED_STALE' | 'STATUS_IN_PROGRESS' | 'STATUS_DONE';
 
 /**
  * AttachPolicyRequest
@@ -2338,20 +2355,6 @@ export type AuthV1BlogSubscriptionResponse = {
      * subscribed_at
      */
     subscribed_at?: GoogleProtobufTimestamp;
-};
-
-/**
- * CancelInvitationRequest
- */
-export type AuthV1CancelInvitationRequest = {
-    /**
-     * user
-     */
-    user?: AuthV1ActorOrgRequest;
-    /**
-     * user_id
-     */
-    user_id?: string;
 };
 
 /**
@@ -2433,6 +2436,30 @@ export type AuthV1ConnectedProvider = {
 };
 
 /**
+ * ConvertToTeamOrganizationRequest
+ */
+export type AuthV1ConvertToTeamOrganizationRequest = {
+    /**
+     * org_id
+     */
+    org_id?: string;
+};
+
+/**
+ * ConvertToTeamOrganizationResponse
+ */
+export type AuthV1ConvertToTeamOrganizationResponse = {
+    /**
+     * organization
+     */
+    organization?: AuthV1Organization;
+    /**
+     * personal_organization
+     */
+    personal_organization?: AuthV1Organization;
+};
+
+/**
  * CreateAvatarUploadResponse
  */
 export type AuthV1CreateAvatarUploadResponse = {
@@ -2465,6 +2492,46 @@ export type AuthV1CreateDomainRequest = {
 };
 
 /**
+ * CreateInvitationRequest
+ */
+export type AuthV1CreateInvitationRequest = {
+    /**
+     * org_id
+     */
+    org_id?: string;
+    /**
+     * email
+     */
+    email?: string;
+    /**
+     * role
+     */
+    role?: AuthV1MembershipRole;
+    /**
+     * request_id
+     *
+     * Optional UUID that makes retries of the same create safe.
+     */
+    request_id?: string;
+};
+
+/**
+ * CreateOrganizationRequest
+ */
+export type AuthV1CreateOrganizationRequest = {
+    /**
+     * organization
+     */
+    organization?: AuthV1Organization;
+    /**
+     * request_id
+     *
+     * Optional UUID. Retries replay the original response while the org exists.
+     */
+    request_id?: string;
+};
+
+/**
  * CreatePolicyRequest
  */
 export type AuthV1CreatePolicyRequest = {
@@ -2488,12 +2555,18 @@ export type AuthV1CreatePolicyRequest = {
 
 /**
  * DeclineInvitationRequest
+ *
+ * At most one of `token`, `invitation_id` may be set.
  */
 export type AuthV1DeclineInvitationRequest = {
     /**
      * token
      */
     token?: string;
+    /**
+     * invitation_id
+     */
+    invitation_id?: string;
 };
 
 /**
@@ -2592,10 +2665,6 @@ export type AuthV1EmailStatusResponse = {
      * email
      */
     email?: string;
-    /**
-     * verified
-     */
-    verified?: boolean;
 };
 
 /**
@@ -2611,6 +2680,58 @@ export type AuthV1GetOrganizationRequest = {
      * org_id
      */
     org_id?: string;
+};
+
+/**
+ * GetOrganizationStateRequest
+ */
+export type AuthV1GetOrganizationStateRequest = {
+    /**
+     * org_id
+     */
+    org_id?: string;
+};
+
+/**
+ * GetOrganizationStateResponse
+ */
+export type AuthV1GetOrganizationStateResponse = {
+    /**
+     * state
+     */
+    state?: AuthV1OrganizationState;
+    /**
+     * lifecycle_version
+     */
+    lifecycle_version?: string;
+};
+
+/**
+ * GetUserDeletionPreviewRequest
+ */
+export type AuthV1GetUserDeletionPreviewRequest = {
+    /**
+     * page_size
+     */
+    page_size?: number;
+    /**
+     * page_token
+     */
+    page_token?: string;
+};
+
+/**
+ * GetUserDeletionPreviewResponse
+ */
+export type AuthV1GetUserDeletionPreviewResponse = {
+    /**
+     * entries
+     */
+    entries?: Array<AuthV1UserDeletionPlanEntry>;
+    /**
+     * next_page_token
+     */
+    next_page_token?: string;
 };
 
 /**
@@ -2674,22 +2795,79 @@ export type AuthV1InitiateEmailChangeRequest = {
 };
 
 /**
- * InviteMemberRequest
+ * Invitation
  */
-export type AuthV1InviteMemberRequest = {
+export type AuthV1Invitation = {
     /**
-     * user
+     * id
      */
-    user?: AuthV1ActorOrgRequest;
+    id?: string;
     /**
-     * username
+     * org
      */
-    username?: string;
+    org?: AuthV1Organization;
+    /**
+     * email
+     */
+    email?: string;
     /**
      * role
+     *
+     * Never OWNER.
      */
     role?: AuthV1MembershipRole;
+    /**
+     * state
+     *
+     * The effective state: a pending invitation past its expiry reads as expired.
+     */
+    state?: AuthV1InvitationState;
+    /**
+     * invited_by
+     *
+     * Unset once the inviter's account is deleted.
+     */
+    invited_by?: AuthV1InvitationInviter;
+    /**
+     * created_at
+     */
+    created_at?: GoogleProtobufTimestamp;
+    /**
+     * last_sent_at
+     */
+    last_sent_at?: GoogleProtobufTimestamp;
+    /**
+     * resend_available_at
+     *
+     * Set while a daily sending limit would delay a resend by the caller.
+     */
+    resend_available_at?: GoogleProtobufTimestamp;
+    /**
+     * expires_at
+     */
+    expires_at?: GoogleProtobufTimestamp;
 };
+
+/**
+ * InvitationInviter
+ */
+export type AuthV1InvitationInviter = {
+    /**
+     * id
+     *
+     * Empty in the invitee's own list.
+     */
+    id?: string;
+    /**
+     * display_name
+     */
+    display_name?: string;
+};
+
+/**
+ * InvitationState
+ */
+export type AuthV1InvitationState = 'INVITATION_STATE_UNSPECIFIED' | 'INVITATION_STATE_PENDING' | 'INVITATION_STATE_ACCEPTED' | 'INVITATION_STATE_DECLINED' | 'INVITATION_STATE_REVOKED' | 'INVITATION_STATE_EXPIRED';
 
 /**
  * JoinSuggestedOrganizationRequest
@@ -2772,34 +2950,6 @@ export type AuthV1ListIdentityPoliciesResponse = {
 };
 
 /**
- * ListMembershipApplicationsRequest
- */
-export type AuthV1ListMembershipApplicationsRequest = {
-    /**
-     * limit
-     */
-    limit?: number;
-    /**
-     * offset
-     */
-    offset?: number;
-    /**
-     * state
-     */
-    state?: AuthV1MembershipApplicationState;
-};
-
-/**
- * ListMembershipApplicationsResponse
- */
-export type AuthV1ListMembershipApplicationsResponse = {
-    /**
-     * applications
-     */
-    applications?: Array<AuthV1MembershipApplication>;
-};
-
-/**
  * ListMembershipsRequest
  */
 export type AuthV1ListMembershipsRequest = {
@@ -2825,6 +2975,34 @@ export type AuthV1ListMembershipsResponse = {
      * memberships
      */
     memberships?: Array<AuthV1Membership>;
+};
+
+/**
+ * ListMyInvitationsRequest
+ */
+export type AuthV1ListMyInvitationsRequest = {
+    /**
+     * page_size
+     */
+    page_size?: number;
+    /**
+     * page_token
+     */
+    page_token?: string;
+};
+
+/**
+ * ListMyInvitationsResponse
+ */
+export type AuthV1ListMyInvitationsResponse = {
+    /**
+     * invitations
+     */
+    invitations?: Array<AuthV1Invitation>;
+    /**
+     * next_page_token
+     */
+    next_page_token?: string;
 };
 
 /**
@@ -2888,6 +3066,44 @@ export type AuthV1ListOrganizationAuditEventsResponse = {
 };
 
 /**
+ * ListOrganizationInvitationsRequest
+ */
+export type AuthV1ListOrganizationInvitationsRequest = {
+    /**
+     * org_id
+     */
+    org_id?: string;
+    /**
+     * state
+     *
+     * Defaults to pending.
+     */
+    state?: AuthV1InvitationState;
+    /**
+     * page_size
+     */
+    page_size?: number;
+    /**
+     * page_token
+     */
+    page_token?: string;
+};
+
+/**
+ * ListOrganizationInvitationsResponse
+ */
+export type AuthV1ListOrganizationInvitationsResponse = {
+    /**
+     * invitations
+     */
+    invitations?: Array<AuthV1Invitation>;
+    /**
+     * next_page_token
+     */
+    next_page_token?: string;
+};
+
+/**
  * ListOrganizationsRequest
  */
 export type AuthV1ListOrganizationsRequest = {
@@ -2902,7 +3118,7 @@ export type AuthV1ListOrganizationsRequest = {
     /**
      * show_deleted
      *
-     * Includes deleted organizations visible to their owners once lifecycle adds deletion.
+     * Includes deleted organizations visible to their retained active owners.
      */
     show_deleted?: boolean;
 };
@@ -3065,7 +3281,7 @@ export type AuthV1LoginResponse = {
     /**
      * status
      *
-     * "ok" | "2fa_required" | "email_not_verified"
+     * "ok" | "2fa_required"
      */
     status?: string;
     /**
@@ -3147,6 +3363,52 @@ export type AuthV1LogoutRequest = {
 };
 
 /**
+ * LookupInvitationRequest
+ */
+export type AuthV1LookupInvitationRequest = {
+    /**
+     * token
+     */
+    token?: string;
+};
+
+/**
+ * LookupInvitationResponse
+ *
+ * A closed invitation reports only its state.
+ */
+export type AuthV1LookupInvitationResponse = {
+    /**
+     * state
+     */
+    state?: AuthV1InvitationState;
+    /**
+     * org_name
+     */
+    org_name?: string;
+    /**
+     * org_image_id
+     */
+    org_image_id?: string;
+    /**
+     * role
+     */
+    role?: AuthV1MembershipRole;
+    /**
+     * inviter_display_name
+     */
+    inviter_display_name?: string;
+    /**
+     * email
+     */
+    email?: string;
+    /**
+     * expires_at
+     */
+    expires_at?: GoogleProtobufTimestamp;
+};
+
+/**
  * MemberPoliciesResponse
  */
 export type AuthV1MemberPoliciesResponse = {
@@ -3193,53 +3455,6 @@ export type AuthV1Membership = {
      */
     organization?: AuthV1Organization;
 };
-
-/**
- * MembershipApplication
- */
-export type AuthV1MembershipApplication = {
-    /**
-     * id
-     */
-    id?: string;
-    /**
-     * user_id
-     */
-    user_id?: string;
-    /**
-     * org_id
-     */
-    org_id?: string;
-    /**
-     * role
-     */
-    role?: AuthV1MembershipRole;
-    /**
-     * state
-     */
-    state?: AuthV1MembershipApplicationState;
-    /**
-     * created_at
-     */
-    created_at?: GoogleProtobufTimestamp;
-    /**
-     * decided_at
-     */
-    decided_at?: GoogleProtobufTimestamp;
-    /**
-     * invitation_expires_at
-     */
-    invitation_expires_at?: GoogleProtobufTimestamp;
-    /**
-     * organization
-     */
-    organization?: AuthV1Organization;
-};
-
-/**
- * MembershipApplicationState
- */
-export type AuthV1MembershipApplicationState = 'MEMBERSHIP_APPLICATION_STATE_UNSPECIFIED' | 'MEMBERSHIP_APPLICATION_STATE_PENDING' | 'MEMBERSHIP_APPLICATION_STATE_APPROVED' | 'MEMBERSHIP_APPLICATION_STATE_DECLINED' | 'MEMBERSHIP_APPLICATION_STATE_CANCELLED';
 
 /**
  * MembershipMutation
@@ -3377,10 +3592,6 @@ export type AuthV1OrgMember = {
      */
     last_name?: string;
     /**
-     * invitation_expires_at
-     */
-    invitation_expires_at?: GoogleProtobufTimestamp;
-    /**
      * joined_at
      */
     joined_at?: GoogleProtobufTimestamp;
@@ -3418,6 +3629,18 @@ export type AuthV1Organization = {
      * created_at
      */
     created_at?: GoogleProtobufTimestamp;
+    /**
+     * state
+     */
+    state?: AuthV1OrganizationState;
+    /**
+     * delete_time
+     */
+    delete_time?: GoogleProtobufTimestamp;
+    /**
+     * purge_time
+     */
+    purge_time?: GoogleProtobufTimestamp;
 };
 
 /**
@@ -3479,6 +3702,11 @@ export type AuthV1OrganizationMembership = {
      */
     state?: AuthV1MembershipState;
 };
+
+/**
+ * OrganizationState
+ */
+export type AuthV1OrganizationState = 'ORGANIZATION_STATE_UNSPECIFIED' | 'ORGANIZATION_STATE_ACTIVE' | 'ORGANIZATION_STATE_DELETED' | 'ORGANIZATION_STATE_PURGING';
 
 /**
  * Passkey
@@ -3848,10 +4076,6 @@ export type AuthV1RegisterResponse = {
      */
     message?: string;
     /**
-     * user_id
-     */
-    user_id?: string;
-    /**
      * email_verification_sent
      */
     email_verification_sent?: boolean;
@@ -3944,13 +4168,13 @@ export type AuthV1ReplaceIdentityPoliciesResponse = {
  */
 export type AuthV1ResendInvitationRequest = {
     /**
-     * user
+     * org_id
      */
-    user?: AuthV1ActorOrgRequest;
+    org_id?: string;
     /**
-     * user_id
+     * invitation_id
      */
-    user_id?: string;
+    invitation_id?: string;
 };
 
 /**
@@ -3961,6 +4185,13 @@ export type AuthV1ResendVerificationRequest = {
      * email
      */
     email?: string;
+    /**
+     * verification_id
+     *
+     * verification_id names the pending sign-up to resend, as returned by
+     * Register. A pending sign-up is never looked up by email alone.
+     */
+    verification_id?: string;
 };
 
 /**
@@ -4034,20 +4265,6 @@ export type AuthV1ResolveIdentityPermissionsResponse = {
 };
 
 /**
- * RespondToMembershipApplicationRequest
- */
-export type AuthV1RespondToMembershipApplicationRequest = {
-    /**
-     * org_id
-     */
-    org_id?: string;
-    /**
-     * state
-     */
-    state?: AuthV1MembershipApplicationState;
-};
-
-/**
  * RetentionPoint
  *
  * Share of a registration cohort that logged in at least `days` after signup.
@@ -4069,6 +4286,20 @@ export type AuthV1RetentionPoint = {
      * rate
      */
     rate?: number | 'NaN' | 'Infinity' | '-Infinity';
+};
+
+/**
+ * RevokeInvitationRequest
+ */
+export type AuthV1RevokeInvitationRequest = {
+    /**
+     * org_id
+     */
+    org_id?: string;
+    /**
+     * invitation_id
+     */
+    invitation_id?: string;
 };
 
 /**
@@ -4338,6 +4569,26 @@ export type AuthV1TokenResponse = {
 };
 
 /**
+ * TransferOwnershipRequest
+ */
+export type AuthV1TransferOwnershipRequest = {
+    /**
+     * org_id
+     */
+    org_id?: string;
+    /**
+     * user_id
+     */
+    user_id?: string;
+    /**
+     * demote_to
+     *
+     * Omit to keep the current owner as a co-owner.
+     */
+    demote_to?: AuthV1MembershipRole;
+};
+
+/**
  * UnsubscribeBlogByEmailRequest
  */
 export type AuthV1UnsubscribeBlogByEmailRequest = {
@@ -4375,24 +4626,6 @@ export type AuthV1UpdateMemberRequest = {
      * update_mask
      */
     update_mask?: GoogleProtobufFieldMask;
-};
-
-/**
- * UpdateMembershipStateRequest
- */
-export type AuthV1UpdateMembershipStateRequest = {
-    /**
-     * user
-     */
-    user?: AuthV1UserOrgRequest;
-    /**
-     * state
-     */
-    state?: AuthV1MembershipApplicationState;
-    /**
-     * user_id
-     */
-    user_id?: string;
 };
 
 /**
@@ -4534,6 +4767,39 @@ export type AuthV1UpdateUsernameResponse = {
      */
     username?: string;
 };
+
+/**
+ * UserDeletionPlanEntry
+ */
+export type AuthV1UserDeletionPlanEntry = {
+    /**
+     * kind
+     */
+    kind?: AuthV1UserDeletionPlanEntryKind;
+    /**
+     * org_id
+     */
+    org_id?: string;
+    /**
+     * org_name
+     */
+    org_name?: string;
+    /**
+     * affected_user_id
+     *
+     * Set when another member will lose access to the personal org.
+     */
+    affected_user_id?: string;
+    /**
+     * affected_username
+     */
+    affected_username?: string;
+};
+
+/**
+ * Kind
+ */
+export type AuthV1UserDeletionPlanEntryKind = 'KIND_UNSPECIFIED' | 'KIND_DELETE_ORGANIZATION' | 'KIND_LEAVE_ORGANIZATION' | 'KIND_SOLE_OWNER_BLOCKER' | 'KIND_INTERNAL_ORG_BLOCKER' | 'KIND_PERSONAL_ORG_MEMBER';
 
 /**
  * UserInfo
@@ -4702,6 +4968,20 @@ export type AuthV1VerifiedDomain = {
      * verified_at
      */
     verified_at?: GoogleProtobufTimestamp;
+};
+
+/**
+ * VerifyEmailChangeRequest
+ */
+export type AuthV1VerifyEmailChangeRequest = {
+    /**
+     * verification_id
+     */
+    verification_id?: string;
+    /**
+     * code
+     */
+    code?: string;
 };
 
 /**
@@ -9467,6 +9747,10 @@ export type Error = {
      * Human-readable message. Not stable; branch on the HTTP status.
      */
     error: string;
+    /**
+     * Machine-readable reason for some 4xx errors, such as `ORG_DELETED`, `MEMBERSHIP_SUSPENDED`, `NOT_A_MEMBER` or `STEP_UP_REQUIRED`. Absent when there is none, and always absent on 5xx.
+     */
+    reason?: string;
 };
 
 /**
@@ -11214,113 +11498,145 @@ export type AuthV1DomainServiceJoinSuggestedOrganizationResponses = {
 
 export type AuthV1DomainServiceJoinSuggestedOrganizationResponse = AuthV1DomainServiceJoinSuggestedOrganizationResponses[keyof AuthV1DomainServiceJoinSuggestedOrganizationResponses];
 
-export type AuthV1MembershipServiceAcceptInvitationData = {
-    body?: never;
-    path: {
-        /**
-         * token
-         */
-        token: string;
-    };
+export type AuthV1InvitationServiceAcceptInvitationData = {
+    body: AuthV1AcceptInvitationRequest;
+    path?: never;
     query?: never;
-    url: '/auth/v1/invitations/{token}/accept';
+    url: '/auth/v1/invitations/accept';
 };
 
-export type AuthV1MembershipServiceAcceptInvitationErrors = {
+export type AuthV1InvitationServiceAcceptInvitationErrors = {
     /**
      * An unexpected error response.
      */
     default: GoogleRpcStatus;
 };
 
-export type AuthV1MembershipServiceAcceptInvitationError = AuthV1MembershipServiceAcceptInvitationErrors[keyof AuthV1MembershipServiceAcceptInvitationErrors];
+export type AuthV1InvitationServiceAcceptInvitationError = AuthV1InvitationServiceAcceptInvitationErrors[keyof AuthV1InvitationServiceAcceptInvitationErrors];
 
-export type AuthV1MembershipServiceAcceptInvitationResponses = {
+export type AuthV1InvitationServiceAcceptInvitationResponses = {
     /**
      * Success
      */
-    200: AuthV1AcceptInvitationResponse;
+    200: AuthV1Membership;
 };
 
-export type AuthV1MembershipServiceAcceptInvitationResponse = AuthV1MembershipServiceAcceptInvitationResponses[keyof AuthV1MembershipServiceAcceptInvitationResponses];
+export type AuthV1InvitationServiceAcceptInvitationResponse = AuthV1InvitationServiceAcceptInvitationResponses[keyof AuthV1InvitationServiceAcceptInvitationResponses];
 
-export type AuthV1MembershipServiceDeclineInvitationData = {
-    body?: never;
-    path: {
-        /**
-         * token
-         */
-        token: string;
-    };
+export type AuthV1InvitationServiceDeclineInvitationData = {
+    body: AuthV1DeclineInvitationRequest;
+    path?: never;
     query?: never;
-    url: '/auth/v1/invitations/{token}/decline';
+    url: '/auth/v1/invitations/decline';
 };
 
-export type AuthV1MembershipServiceDeclineInvitationErrors = {
+export type AuthV1InvitationServiceDeclineInvitationErrors = {
     /**
      * An unexpected error response.
      */
     default: GoogleRpcStatus;
 };
 
-export type AuthV1MembershipServiceDeclineInvitationError = AuthV1MembershipServiceDeclineInvitationErrors[keyof AuthV1MembershipServiceDeclineInvitationErrors];
+export type AuthV1InvitationServiceDeclineInvitationError = AuthV1InvitationServiceDeclineInvitationErrors[keyof AuthV1InvitationServiceDeclineInvitationErrors];
 
-export type AuthV1MembershipServiceDeclineInvitationResponses = {
+export type AuthV1InvitationServiceDeclineInvitationResponses = {
     /**
      * Success
      */
     200: GoogleProtobufEmpty;
 };
 
-export type AuthV1MembershipServiceDeclineInvitationResponse = AuthV1MembershipServiceDeclineInvitationResponses[keyof AuthV1MembershipServiceDeclineInvitationResponses];
+export type AuthV1InvitationServiceDeclineInvitationResponse = AuthV1InvitationServiceDeclineInvitationResponses[keyof AuthV1InvitationServiceDeclineInvitationResponses];
 
-export type AuthV1MembershipServiceListMembershipApplicationsData = {
-    body?: never;
+export type AuthV1InvitationServiceLookupInvitationData = {
+    body: AuthV1LookupInvitationRequest;
     path?: never;
-    query?: {
-        /**
-         * limit
-         */
-        limit?: number;
-        /**
-         * offset
-         */
-        offset?: number;
-        /**
-         * state
-         */
-        state?: AuthV1MembershipApplicationState;
-    };
-    url: '/auth/v1/membership-applications';
+    query?: never;
+    url: '/auth/v1/invitations/lookup';
 };
 
-export type AuthV1MembershipServiceListMembershipApplicationsErrors = {
+export type AuthV1InvitationServiceLookupInvitationErrors = {
     /**
      * An unexpected error response.
      */
     default: GoogleRpcStatus;
 };
 
-export type AuthV1MembershipServiceListMembershipApplicationsError = AuthV1MembershipServiceListMembershipApplicationsErrors[keyof AuthV1MembershipServiceListMembershipApplicationsErrors];
+export type AuthV1InvitationServiceLookupInvitationError = AuthV1InvitationServiceLookupInvitationErrors[keyof AuthV1InvitationServiceLookupInvitationErrors];
 
-export type AuthV1MembershipServiceListMembershipApplicationsResponses = {
+export type AuthV1InvitationServiceLookupInvitationResponses = {
     /**
      * Success
      */
-    200: AuthV1ListMembershipApplicationsResponse;
+    200: AuthV1LookupInvitationResponse;
 };
 
-export type AuthV1MembershipServiceListMembershipApplicationsResponse = AuthV1MembershipServiceListMembershipApplicationsResponses[keyof AuthV1MembershipServiceListMembershipApplicationsResponses];
+export type AuthV1InvitationServiceLookupInvitationResponse = AuthV1InvitationServiceLookupInvitationResponses[keyof AuthV1InvitationServiceLookupInvitationResponses];
 
-export type AuthV1MembershipServiceRespondToMembershipApplicationData = {
+export type AuthV1InvitationServiceListOrganizationInvitationsData = {
+    body?: never;
+    path: {
+        /**
+         * org_id
+         */
+        org_id: string;
+    };
+    query?: {
+        /**
+         * state
+         *
+         * Defaults to pending.
+         */
+        state?: AuthV1InvitationState;
+        /**
+         * page_size
+         */
+        page_size?: number;
+        /**
+         * page_token
+         */
+        page_token?: string;
+    };
+    url: '/auth/v1/organizations/{org_id}/invitations';
+};
+
+export type AuthV1InvitationServiceListOrganizationInvitationsErrors = {
     /**
-     * RespondToMembershipApplicationRequest
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1InvitationServiceListOrganizationInvitationsError = AuthV1InvitationServiceListOrganizationInvitationsErrors[keyof AuthV1InvitationServiceListOrganizationInvitationsErrors];
+
+export type AuthV1InvitationServiceListOrganizationInvitationsResponses = {
+    /**
+     * Success
+     */
+    200: AuthV1ListOrganizationInvitationsResponse;
+};
+
+export type AuthV1InvitationServiceListOrganizationInvitationsResponse = AuthV1InvitationServiceListOrganizationInvitationsResponses[keyof AuthV1InvitationServiceListOrganizationInvitationsResponses];
+
+export type AuthV1InvitationServiceCreateInvitationData = {
+    /**
+     * CreateInvitationRequest
      */
     body: {
         /**
-         * state
+         * email
          */
-        state?: AuthV1MembershipApplicationState;
+        email?: string;
+        /**
+         * role
+         */
+        role?: AuthV1MembershipRole;
+        /**
+         * request_id
+         *
+         * Optional UUID that makes retries of the same create safe.
+         */
+        request_id?: string;
     };
     path: {
         /**
@@ -11329,26 +11645,128 @@ export type AuthV1MembershipServiceRespondToMembershipApplicationData = {
         org_id: string;
     };
     query?: never;
-    url: '/auth/v1/membership-applications/{org_id}/state';
+    url: '/auth/v1/organizations/{org_id}/invitations';
 };
 
-export type AuthV1MembershipServiceRespondToMembershipApplicationErrors = {
+export type AuthV1InvitationServiceCreateInvitationErrors = {
     /**
      * An unexpected error response.
      */
     default: GoogleRpcStatus;
 };
 
-export type AuthV1MembershipServiceRespondToMembershipApplicationError = AuthV1MembershipServiceRespondToMembershipApplicationErrors[keyof AuthV1MembershipServiceRespondToMembershipApplicationErrors];
+export type AuthV1InvitationServiceCreateInvitationError = AuthV1InvitationServiceCreateInvitationErrors[keyof AuthV1InvitationServiceCreateInvitationErrors];
 
-export type AuthV1MembershipServiceRespondToMembershipApplicationResponses = {
+export type AuthV1InvitationServiceCreateInvitationResponses = {
     /**
      * Success
      */
-    200: AuthV1MembershipMutation;
+    200: AuthV1Invitation;
 };
 
-export type AuthV1MembershipServiceRespondToMembershipApplicationResponse = AuthV1MembershipServiceRespondToMembershipApplicationResponses[keyof AuthV1MembershipServiceRespondToMembershipApplicationResponses];
+export type AuthV1InvitationServiceCreateInvitationResponse = AuthV1InvitationServiceCreateInvitationResponses[keyof AuthV1InvitationServiceCreateInvitationResponses];
+
+export type AuthV1InvitationServiceRevokeInvitationData = {
+    body?: never;
+    path: {
+        /**
+         * org_id
+         */
+        org_id: string;
+        /**
+         * invitation_id
+         */
+        invitation_id: string;
+    };
+    query?: never;
+    url: '/auth/v1/organizations/{org_id}/invitations/{invitation_id}';
+};
+
+export type AuthV1InvitationServiceRevokeInvitationErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1InvitationServiceRevokeInvitationError = AuthV1InvitationServiceRevokeInvitationErrors[keyof AuthV1InvitationServiceRevokeInvitationErrors];
+
+export type AuthV1InvitationServiceRevokeInvitationResponses = {
+    /**
+     * Success
+     */
+    200: GoogleProtobufEmpty;
+};
+
+export type AuthV1InvitationServiceRevokeInvitationResponse = AuthV1InvitationServiceRevokeInvitationResponses[keyof AuthV1InvitationServiceRevokeInvitationResponses];
+
+export type AuthV1InvitationServiceResendInvitationData = {
+    body?: never;
+    path: {
+        /**
+         * org_id
+         */
+        org_id: string;
+        /**
+         * invitation_id
+         */
+        invitation_id: string;
+    };
+    query?: never;
+    url: '/auth/v1/organizations/{org_id}/invitations/{invitation_id}/resend';
+};
+
+export type AuthV1InvitationServiceResendInvitationErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1InvitationServiceResendInvitationError = AuthV1InvitationServiceResendInvitationErrors[keyof AuthV1InvitationServiceResendInvitationErrors];
+
+export type AuthV1InvitationServiceResendInvitationResponses = {
+    /**
+     * Success
+     */
+    200: AuthV1Invitation;
+};
+
+export type AuthV1InvitationServiceResendInvitationResponse = AuthV1InvitationServiceResendInvitationResponses[keyof AuthV1InvitationServiceResendInvitationResponses];
+
+export type AuthV1InvitationServiceListMyInvitationsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * page_size
+         */
+        page_size?: number;
+        /**
+         * page_token
+         */
+        page_token?: string;
+    };
+    url: '/auth/v1/users/current/invitations';
+};
+
+export type AuthV1InvitationServiceListMyInvitationsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1InvitationServiceListMyInvitationsError = AuthV1InvitationServiceListMyInvitationsErrors[keyof AuthV1InvitationServiceListMyInvitationsErrors];
+
+export type AuthV1InvitationServiceListMyInvitationsResponses = {
+    /**
+     * Success
+     */
+    200: AuthV1ListMyInvitationsResponse;
+};
+
+export type AuthV1InvitationServiceListMyInvitationsResponse = AuthV1InvitationServiceListMyInvitationsResponses[keyof AuthV1InvitationServiceListMyInvitationsResponses];
 
 export type AuthV1MembershipServiceLeaveOrganizationData = {
     body?: never;
@@ -11499,143 +11917,6 @@ export type AuthV1MembershipServiceUpdateMemberResponses = {
 
 export type AuthV1MembershipServiceUpdateMemberResponse = AuthV1MembershipServiceUpdateMemberResponses[keyof AuthV1MembershipServiceUpdateMemberResponses];
 
-export type AuthV1MembershipServiceInviteMemberData = {
-    /**
-     * InviteMemberRequest
-     */
-    body: {
-        /**
-         * ActorOrgRequest
-         */
-        user?: {
-            /**
-             * actor_id
-             */
-            actor_id?: string;
-        };
-        /**
-         * username
-         */
-        username?: string;
-        /**
-         * role
-         */
-        role?: AuthV1MembershipRole;
-    };
-    path: {
-        /**
-         * org_id
-         */
-        'user.org_id': string;
-    };
-    query?: never;
-    url: '/auth/v1/organizations/{user.org_id}/invite';
-};
-
-export type AuthV1MembershipServiceInviteMemberErrors = {
-    /**
-     * An unexpected error response.
-     */
-    default: GoogleRpcStatus;
-};
-
-export type AuthV1MembershipServiceInviteMemberError = AuthV1MembershipServiceInviteMemberErrors[keyof AuthV1MembershipServiceInviteMemberErrors];
-
-export type AuthV1MembershipServiceInviteMemberResponses = {
-    /**
-     * Success
-     */
-    200: AuthV1MembershipApplication;
-};
-
-export type AuthV1MembershipServiceInviteMemberResponse = AuthV1MembershipServiceInviteMemberResponses[keyof AuthV1MembershipServiceInviteMemberResponses];
-
-export type AuthV1MembershipServiceResendInvitationData = {
-    /**
-     * ResendInvitationRequest
-     */
-    body: {
-        /**
-         * ActorOrgRequest
-         */
-        user?: {
-            /**
-             * actor_id
-             */
-            actor_id?: string;
-        };
-        /**
-         * user_id
-         */
-        user_id?: string;
-    };
-    path: {
-        /**
-         * org_id
-         */
-        'user.org_id': string;
-    };
-    query?: never;
-    url: '/auth/v1/organizations/{user.org_id}/invite/resend';
-};
-
-export type AuthV1MembershipServiceResendInvitationErrors = {
-    /**
-     * An unexpected error response.
-     */
-    default: GoogleRpcStatus;
-};
-
-export type AuthV1MembershipServiceResendInvitationError = AuthV1MembershipServiceResendInvitationErrors[keyof AuthV1MembershipServiceResendInvitationErrors];
-
-export type AuthV1MembershipServiceResendInvitationResponses = {
-    /**
-     * Success
-     */
-    200: GoogleProtobufEmpty;
-};
-
-export type AuthV1MembershipServiceResendInvitationResponse = AuthV1MembershipServiceResendInvitationResponses[keyof AuthV1MembershipServiceResendInvitationResponses];
-
-export type AuthV1MembershipServiceCancelInvitationData = {
-    body?: never;
-    path: {
-        /**
-         * org_id
-         */
-        'user.org_id': string;
-        /**
-         * user_id
-         */
-        user_id: string;
-    };
-    query?: {
-        /**
-         * actor_id
-         */
-        'user.actor_id'?: string;
-    };
-    url: '/auth/v1/organizations/{user.org_id}/invite/{user_id}';
-};
-
-export type AuthV1MembershipServiceCancelInvitationErrors = {
-    /**
-     * An unexpected error response.
-     */
-    default: GoogleRpcStatus;
-};
-
-export type AuthV1MembershipServiceCancelInvitationError = AuthV1MembershipServiceCancelInvitationErrors[keyof AuthV1MembershipServiceCancelInvitationErrors];
-
-export type AuthV1MembershipServiceCancelInvitationResponses = {
-    /**
-     * Success
-     */
-    200: GoogleProtobufEmpty;
-};
-
-export type AuthV1MembershipServiceCancelInvitationResponse = AuthV1MembershipServiceCancelInvitationResponses[keyof AuthV1MembershipServiceCancelInvitationResponses];
-
 export type AuthV1MembershipServiceListOrganizationMembersData = {
     body?: never;
     path: {
@@ -11678,57 +11959,6 @@ export type AuthV1MembershipServiceListOrganizationMembersResponses = {
 };
 
 export type AuthV1MembershipServiceListOrganizationMembersResponse = AuthV1MembershipServiceListOrganizationMembersResponses[keyof AuthV1MembershipServiceListOrganizationMembersResponses];
-
-export type AuthV1MembershipServiceUpdateMembershipStateData = {
-    /**
-     * UpdateMembershipStateRequest
-     */
-    body: {
-        /**
-         * UserOrgRequest
-         */
-        user?: {
-            /**
-             * user_id
-             */
-            user_id?: string;
-        };
-        /**
-         * state
-         */
-        state?: AuthV1MembershipApplicationState;
-    };
-    path: {
-        /**
-         * org_id
-         */
-        'user.org_id': string;
-        /**
-         * user_id
-         */
-        user_id: string;
-    };
-    query?: never;
-    url: '/auth/v1/organizations/{user.org_id}/membership-applications/{user_id}';
-};
-
-export type AuthV1MembershipServiceUpdateMembershipStateErrors = {
-    /**
-     * An unexpected error response.
-     */
-    default: GoogleRpcStatus;
-};
-
-export type AuthV1MembershipServiceUpdateMembershipStateError = AuthV1MembershipServiceUpdateMembershipStateErrors[keyof AuthV1MembershipServiceUpdateMembershipStateErrors];
-
-export type AuthV1MembershipServiceUpdateMembershipStateResponses = {
-    /**
-     * Success
-     */
-    200: AuthV1MembershipMutation;
-};
-
-export type AuthV1MembershipServiceUpdateMembershipStateResponse = AuthV1MembershipServiceUpdateMembershipStateResponses[keyof AuthV1MembershipServiceUpdateMembershipStateResponses];
 
 export type AuthV1MembershipServiceListMembershipsData = {
     body?: never;
@@ -11869,7 +12099,7 @@ export type AuthV1OrganizationServiceListOrganizationsData = {
         /**
          * show_deleted
          *
-         * Includes deleted organizations visible to their owners once lifecycle adds deletion.
+         * Includes deleted organizations visible to their retained active owners.
          */
         show_deleted?: boolean;
     };
@@ -11893,6 +12123,31 @@ export type AuthV1OrganizationServiceListOrganizationsResponses = {
 };
 
 export type AuthV1OrganizationServiceListOrganizationsResponse = AuthV1OrganizationServiceListOrganizationsResponses[keyof AuthV1OrganizationServiceListOrganizationsResponses];
+
+export type AuthV1OrganizationServiceCreateOrganizationData = {
+    body: AuthV1CreateOrganizationRequest;
+    path?: never;
+    query?: never;
+    url: '/auth/v1/organizations';
+};
+
+export type AuthV1OrganizationServiceCreateOrganizationErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1OrganizationServiceCreateOrganizationError = AuthV1OrganizationServiceCreateOrganizationErrors[keyof AuthV1OrganizationServiceCreateOrganizationErrors];
+
+export type AuthV1OrganizationServiceCreateOrganizationResponses = {
+    /**
+     * Success
+     */
+    200: AuthV1Organization;
+};
+
+export type AuthV1OrganizationServiceCreateOrganizationResponse = AuthV1OrganizationServiceCreateOrganizationResponses[keyof AuthV1OrganizationServiceCreateOrganizationResponses];
 
 export type AuthV1OrganizationServiceGetOrganizationData = {
     body?: never;
@@ -12036,6 +12291,80 @@ export type AuthV1OrganizationServiceCreateOrganizationAvatarUploadResponses = {
 };
 
 export type AuthV1OrganizationServiceCreateOrganizationAvatarUploadResponse = AuthV1OrganizationServiceCreateOrganizationAvatarUploadResponses[keyof AuthV1OrganizationServiceCreateOrganizationAvatarUploadResponses];
+
+export type AuthV1OrganizationServiceConvertToTeamOrganizationData = {
+    body?: never;
+    path: {
+        /**
+         * org_id
+         */
+        org_id: string;
+    };
+    query?: never;
+    url: '/auth/v1/organizations/{org_id}/convert-to-team';
+};
+
+export type AuthV1OrganizationServiceConvertToTeamOrganizationErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1OrganizationServiceConvertToTeamOrganizationError = AuthV1OrganizationServiceConvertToTeamOrganizationErrors[keyof AuthV1OrganizationServiceConvertToTeamOrganizationErrors];
+
+export type AuthV1OrganizationServiceConvertToTeamOrganizationResponses = {
+    /**
+     * Success
+     */
+    200: AuthV1ConvertToTeamOrganizationResponse;
+};
+
+export type AuthV1OrganizationServiceConvertToTeamOrganizationResponse = AuthV1OrganizationServiceConvertToTeamOrganizationResponses[keyof AuthV1OrganizationServiceConvertToTeamOrganizationResponses];
+
+export type AuthV1OrganizationServiceTransferOwnershipData = {
+    /**
+     * TransferOwnershipRequest
+     */
+    body: {
+        /**
+         * user_id
+         */
+        user_id?: string;
+        /**
+         * demote_to
+         *
+         * Omit to keep the current owner as a co-owner.
+         */
+        demote_to?: AuthV1MembershipRole;
+    };
+    path: {
+        /**
+         * org_id
+         */
+        org_id: string;
+    };
+    query?: never;
+    url: '/auth/v1/organizations/{org_id}/transfer-ownership';
+};
+
+export type AuthV1OrganizationServiceTransferOwnershipErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1OrganizationServiceTransferOwnershipError = AuthV1OrganizationServiceTransferOwnershipErrors[keyof AuthV1OrganizationServiceTransferOwnershipErrors];
+
+export type AuthV1OrganizationServiceTransferOwnershipResponses = {
+    /**
+     * Success
+     */
+    200: AuthV1Organization;
+};
+
+export type AuthV1OrganizationServiceTransferOwnershipResponse = AuthV1OrganizationServiceTransferOwnershipResponses[keyof AuthV1OrganizationServiceTransferOwnershipResponses];
 
 export type AuthV1OtpServiceRegenerateBackupCodesData = {
     body?: never;
@@ -13360,6 +13689,31 @@ export type AuthV1EmailServiceGetUserEmailStatusResponses = {
 
 export type AuthV1EmailServiceGetUserEmailStatusResponse = AuthV1EmailServiceGetUserEmailStatusResponses[keyof AuthV1EmailServiceGetUserEmailStatusResponses];
 
+export type AuthV1EmailServiceVerifyEmailChangeData = {
+    body: AuthV1VerifyEmailChangeRequest;
+    path?: never;
+    query?: never;
+    url: '/auth/v1/users/current/emails/verify';
+};
+
+export type AuthV1EmailServiceVerifyEmailChangeErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1EmailServiceVerifyEmailChangeError = AuthV1EmailServiceVerifyEmailChangeErrors[keyof AuthV1EmailServiceVerifyEmailChangeErrors];
+
+export type AuthV1EmailServiceVerifyEmailChangeResponses = {
+    /**
+     * Success
+     */
+    200: AuthV1VerifyEmailResponse;
+};
+
+export type AuthV1EmailServiceVerifyEmailChangeResponse = AuthV1EmailServiceVerifyEmailChangeResponses[keyof AuthV1EmailServiceVerifyEmailChangeResponses];
+
 export type AuthV1UserServiceGetUserInfoData = {
     body?: never;
     path?: never;
@@ -13474,6 +13828,40 @@ export type AuthV1UserServiceCreateAvatarUploadResponses = {
 };
 
 export type AuthV1UserServiceCreateAvatarUploadResponse = AuthV1UserServiceCreateAvatarUploadResponses[keyof AuthV1UserServiceCreateAvatarUploadResponses];
+
+export type AuthV1UserServiceGetUserDeletionPreviewData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * page_size
+         */
+        page_size?: number;
+        /**
+         * page_token
+         */
+        page_token?: string;
+    };
+    url: '/auth/v1/users/current/deletion-preview';
+};
+
+export type AuthV1UserServiceGetUserDeletionPreviewErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1UserServiceGetUserDeletionPreviewError = AuthV1UserServiceGetUserDeletionPreviewErrors[keyof AuthV1UserServiceGetUserDeletionPreviewErrors];
+
+export type AuthV1UserServiceGetUserDeletionPreviewResponses = {
+    /**
+     * Success
+     */
+    200: AuthV1GetUserDeletionPreviewResponse;
+};
+
+export type AuthV1UserServiceGetUserDeletionPreviewResponse = AuthV1UserServiceGetUserDeletionPreviewResponses[keyof AuthV1UserServiceGetUserDeletionPreviewResponses];
 
 export type AuthV1UserServiceUpdateNameData = {
     body: AuthV1UpdateNameRequest;

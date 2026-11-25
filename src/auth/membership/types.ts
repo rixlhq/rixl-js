@@ -35,25 +35,68 @@ export interface Member extends Common {
   username: string;
   first_name: string;
   last_name: string;
+}
+
+/** A pending invitation to the signed-in user, in the shape of a pending membership. */
+export interface MembershipApplication {
+  /** The invitation ID, which respondToMyInvitation() takes. */
+  id: string;
+  org_id: string;
+  role: MembershipRole;
+  state: MembershipState;
+  organization: Organization;
+  created_at?: string;
   invitation_expires_at?: string;
 }
 
-export interface MembershipApplication extends Common {
+export type InvitationState = "pending" | "accepted" | "declined" | "revoked" | "expired";
+
+export interface Invitation {
+  id: string;
   organization: Organization;
+  email: string;
+  role: MembershipRole;
+  /** A pending invitation past its expiry reads as expired. */
+  state: InvitationState;
+  /** Unset once the inviter's account is deleted. `id` is empty in the recipient's own list. */
+  invited_by?: {id: string; display_name: string};
   created_at?: string;
-  decided_at?: string;
-  invitation_expires_at?: string;
+  last_sent_at?: string;
+  /** Set while a daily sending limit would delay a resend by the caller. */
+  resend_available_at?: string;
+  expires_at?: string;
+}
+
+export interface InvitationList {
+  invitations: Invitation[];
+  /** Empty on the last page. */
+  next_page_token: string;
+}
+
+/** What an emailed link is for. A closed invitation reports only its state, so the rest is empty. */
+export interface InvitationLookup {
+  state: InvitationState;
+  org_name: string;
+  org_image_id: string;
+  role?: MembershipRole;
+  inviter_display_name: string;
+  email: string;
+  expires_at?: string;
+}
+
+export interface InvitationPageParams {
+  page_size?: number;
+  page_token?: string;
+}
+
+export interface ListInvitationsParams extends InvitationPageParams {
+  state?: InvitationState;
 }
 
 // Invite member request
 export interface InviteMemberRequest {
-  username: string;
+  email: string;
   role: AssignableRole;
-}
-
-// Resend Invite member request
-export interface ResendInviteMemberRequest {
-  user_id: string;
 }
 
 // Update member role request

@@ -44,12 +44,22 @@ export {
   MembershipState,
   resendMemberInvite,
   publicRespondToInvitation,
+  respondToMyInvitation,
+  listMyInvitations,
+  listOrganizationInvitations,
+  lookupInvitation,
+  revokeInvitation,
   type Member,
   type Membership,
   type MembershipApplication,
   type InviteMemberRequest,
   type UpdateMemberRoleRequest,
-  type ResendInviteMemberRequest,
+  type Invitation,
+  type InvitationList,
+  type InvitationLookup,
+  type InvitationPageParams,
+  type InvitationState,
+  type ListInvitationsParams,
 } from "./membership";
 
 export {

@@ -215,13 +215,26 @@ async function openOrganization(orgId: string) {
 - Subscribe to the read-only `orgRefusal` store for refusals of this tab's org. It exposes `{reason, orgId}` while the tab is signed in and awaiting a usable access token. It becomes undefined on sign-out, including after a final refresh 401. Meanwhile `orgContext` is undefined, because the tab has no token. Suspension clears this tab's permissions; the tab keeps the org, which `orgRefusal.orgId` names, and refreshes into it again.
 - A refused tab has no usable token, so `listOrganizations()` rejects too. To show an org picker, call `selectOrganization(personalOrgId.get()!)` first.
 - `logout()` clears browser state and tells matching tabs before returning its promise. It then makes one revocation request with the saved credentials. `const {revoked} = await logout()` reports only whether auth-api acknowledged it within five seconds. Sign-in-wide revocation of rotated credentials requires auth-api support for the access token’s `sign_in_id` (OpenSpec task 10.2). The browser stays signed out even if `revoked` is false.
-- `listPendingMemberships()` can display pending invitations. In-app responses await the account-scoped invitation routes in OpenSpec task 2.8.
+- Accepting an invitation doesn’t move the tab: call `selectOrganization(membership.org_id)` to switch.
 - To leave an org, call `selectOrganization(orgId)`, then `leaveOrganization(orgId)`, then select another org such as `personalOrgId.get()!`. A successful leave clears that tab’s org, access token and permissions. The tab stays signed in. While `orgSelectionRequired` is true, including after a reload, `getToken()` resolves undefined and authenticated requests need a new org selection. Offer the personal org or another known org, then load the picker.
 - Verify a pending signup with `verifyEmailWithCode({verification_id, code})`. Resending needs the email and the signup’s verification ID. Password login before verification reports invalid credentials.
 - Verify an account email change with `verifyEmailChange(verificationId, code)`. The SDK uses the caller’s full or limited-access credentials and keeps the same sign-in and org.
 - A request that names an org, such as `getOrganization` or `updateOrganization`, needs a token for that org: select it first.
 
 [examples/11-organizations.ts](examples/11-organizations.ts) shows the whole flow: switching with a permissions retry, a screen for a suspended or lost org, a paged org picker, and reading and renaming an org.
+
+### Invitations
+
+An invitation goes to an email address. It isn't a membership, and doesn't appear in the member list, until its recipient accepts it.
+
+| Who                                | Functions                                                                                                                                                    | Needs                                      |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------ |
+| The org                            | `inviteMember(orgId, email, role)`, `listOrganizationInvitations(orgId)`, `resendMemberInvite(orgId, invitationId)`, `revokeInvitation(orgId, invitationId)` | A token for that org                       |
+| The recipient, from the email link | `lookupInvitation(token)`                                                                                                                                    | Nothing                                    |
+| The recipient, from the email link | `publicRespondToInvitation(token, "accept" \| "decline")`                                                                                                    | A sign-in with the invited, verified email |
+| The recipient, in the app          | `listMyInvitations()`, `respondToMyInvitation(invitationId, "accept" \| "decline")`                                                                          | A sign-in                                  |
+
+`listPendingMemberships()` returns one page of `listMyInvitations()` shaped as pending memberships. A refusal rejects with an `ApiError`; where auth-api names a reason, such as `INVITATION_PENDING`, `INVITATION_EXPIRED`, `INVITATION_EMAIL_MISMATCH` or `EMAIL_NOT_VERIFIED`, it is on `error.data.reason`.
 
 ## Compatibility
 

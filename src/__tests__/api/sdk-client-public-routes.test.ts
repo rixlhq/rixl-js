@@ -39,7 +39,7 @@ const runRequestInterceptors = async (method: string, url: string): Promise<Requ
 };
 
 it("mirrors the gateway's public route inventory exactly", () => {
-  // gateway 345c524, internal/routes/routes.go, publicRoutes.
+  // gateway c0a8891, internal/routes/routes.go, publicRoutes.
   const gatewayRoutes = Array.from(
     gatewayPublicRoutes.matchAll(/\{http\.Method(\w+), "([^"]+)", (true|false)\}/g),
     ([, method, path, prefix]) => ({
@@ -112,7 +112,7 @@ describe("SDK client request interceptor", () => {
     }
   );
 
-  it.each(["POST /auth/v1/invitations/abc-123/accept", "POST /auth/v1/invitations/abc-123/decline"])(
+  it.each(["POST /auth/v1/invitations/accept", "POST /auth/v1/invitations/decline"])(
     "attaches Authorization to %s, which the gateway no longer serves anonymously",
     async (spec) => {
       const [method, path] = spec.split(" ");

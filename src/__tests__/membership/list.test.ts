@@ -3,12 +3,12 @@ import {listActiveMemberships, listPendingMemberships, listOrganizationMembers, 
 import {setupAuthTest, cleanupAuthMocks} from "../utils/auth-test-helpers";
 
 const mockListMemberships = vi.fn();
-const mockListMembershipApplications = vi.fn();
+const mockListMyInvitations = vi.fn();
 const mockListOrganizationMembers = vi.fn();
 
 vi.mock("../../generated/sdk.gen", () => ({
   authV1MembershipServiceListMemberships: (...args: unknown[]) => mockListMemberships(...args),
-  authV1MembershipServiceListMembershipApplications: (...args: unknown[]) => mockListMembershipApplications(...args),
+  authV1InvitationServiceListMyInvitations: (...args: unknown[]) => mockListMyInvitations(...args),
   authV1MembershipServiceListOrganizationMembers: (...args: unknown[]) => mockListOrganizationMembers(...args),
 }));
 
@@ -43,7 +43,7 @@ describe("Membership List Module", () => {
   beforeEach(() => {
     mocks = setupAuthTest();
     mockListMemberships.mockReset();
-    mockListMembershipApplications.mockReset();
+    mockListMyInvitations.mockReset();
     mockListOrganizationMembers.mockReset();
   });
 
@@ -112,36 +112,49 @@ describe("Membership List Module", () => {
   });
 
   describe("listPendingMemberships", () => {
-    it("queries the pending state and maps the result", async () => {
-      mockListMembershipApplications.mockResolvedValue({
-        data: {applications: [wireMembership({state: "MEMBERSHIP_APPLICATION_STATE_PENDING"})]},
-      });
+    const wireInvitation = {
+      id: "inv1",
+      org: {id: "org123", name: "Test Org", slug: "testorg", image_id: "img1", personal: false, internal: false},
+      role: "MEMBERSHIP_ROLE_ADMIN",
+      state: "INVITATION_STATE_PENDING",
+      created_at: "2026-11-25T10:00:00Z",
+      expires_at: "2026-12-02T10:00:00Z",
+    };
+
+    it("shapes the user's invitations as pending memberships", async () => {
+      mockListMyInvitations.mockResolvedValue({data: {invitations: [wireInvitation]}});
 
       const result = await listPendingMemberships();
 
-      expect(mockListMembershipApplications).toHaveBeenCalledWith({
-        query: {state: "MEMBERSHIP_APPLICATION_STATE_PENDING", limit: 25},
-        throwOnError: true,
-      });
-      expect(result[0].state).toBe(MembershipState.PENDING);
+      expect(mockListMyInvitations).toHaveBeenCalledWith({query: undefined, throwOnError: true});
+      expect(result).toEqual([
+        {
+          id: "inv1",
+          org_id: "org123",
+          role: MembershipRole.ADMIN,
+          state: MembershipState.PENDING,
+          organization: {...wireInvitation.org, created_at: undefined},
+          created_at: "2026-11-25T10:00:00Z",
+          invitation_expires_at: "2026-12-02T10:00:00Z",
+        },
+      ]);
     });
 
     it("maps null embedded messages and timestamps to the public defaults", async () => {
-      mockListMembershipApplications.mockResolvedValue({
-        data: {applications: [wireMembership({organization: null, created_at: null, decided_at: null, invitation_expires_at: null})]},
-      });
+      mockListMyInvitations.mockResolvedValue({data: {invitations: [{...wireInvitation, org: null, created_at: null, expires_at: null}]}});
 
-      const [application] = await listPendingMemberships();
-      expect(application).toMatchObject({
+      const [pending] = await listPendingMemberships();
+
+      expect(pending).toMatchObject({
+        org_id: "",
         organization: {id: "", name: "", created_at: undefined},
         created_at: undefined,
-        decided_at: undefined,
         invitation_expires_at: undefined,
       });
     });
 
-    it("returns empty array when no pending memberships", async () => {
-      mockListMembershipApplications.mockResolvedValue({data: {applications: []}});
+    it("returns empty array when there are no invitations", async () => {
+      mockListMyInvitations.mockResolvedValue({data: {}});
 
       expect(await listPendingMemberships()).toEqual([]);
     });
@@ -177,7 +190,6 @@ describe("Membership List Module", () => {
           username: "john_doe",
           first_name: "John",
           last_name: "Doe",
-          invitation_expires_at: undefined,
         },
       ]);
     });
