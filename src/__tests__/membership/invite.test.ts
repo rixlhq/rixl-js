@@ -1,26 +1,25 @@
 import {describe, it, expect, beforeEach, vi} from "vite-plus/test";
 import {MembershipRole, MembershipState} from "@/membership";
 import * as initialization from "../../auth/initialization";
+import {ApiError} from "../../auth/api/types";
 
 const mockInviteMember = vi.fn();
 const mockResendInvitation = vi.fn();
 const mockAcceptInvitation = vi.fn();
 const mockDeclineInvitation = vi.fn();
-const mockRespondToApplication = vi.fn();
 
 vi.mock("../../generated/sdk.gen", () => ({
   authV1MembershipServiceInviteMember: (...args: unknown[]) => mockInviteMember(...args),
   authV1MembershipServiceResendInvitation: (...args: unknown[]) => mockResendInvitation(...args),
   authV1MembershipServiceAcceptInvitation: (...args: unknown[]) => mockAcceptInvitation(...args),
   authV1MembershipServiceDeclineInvitation: (...args: unknown[]) => mockDeclineInvitation(...args),
-  authV1MembershipServiceRespondToMembershipApplication: (...args: unknown[]) => mockRespondToApplication(...args),
 }));
 
 vi.mock("../../auth/authStore", () => ({
   getToken: vi.fn().mockResolvedValue("mock-token"),
 }));
 
-import {inviteMember, resendMemberInvite, respondToInvitation, publicRespondToInvitation} from "@/membership";
+import {inviteMember, resendMemberInvite, publicRespondToInvitation} from "@/membership";
 
 describe("Membership Invite Module", () => {
   beforeEach(() => {
@@ -30,7 +29,6 @@ describe("Membership Invite Module", () => {
     mockResendInvitation.mockReset();
     mockAcceptInvitation.mockReset();
     mockDeclineInvitation.mockReset();
-    mockRespondToApplication.mockReset();
   });
 
   describe("inviteMember", () => {
@@ -127,42 +125,15 @@ describe("Membership Invite Module", () => {
     });
   });
 
-  describe("respondToInvitation", () => {
-    it("should accept invitation successfully", async () => {
-      mockRespondToApplication.mockResolvedValue({data: {}});
+  // A conflict has several causes, and only the gateway's message says which.
+  it.each([
+    ["inviteMember", mockInviteMember, () => inviteMember("org123", "newuser", MembershipRole.MEMBER)],
+    ["resendMemberInvite", mockResendInvitation, () => resendMemberInvite("org123", "user456")],
+  ])("%s keeps the gateway's message for a conflict", async (_name, request, call) => {
+    const conflict = new ApiError("the invitation was already accepted", 409, "/auth/v1/organizations/org123/members");
+    request.mockRejectedValue(conflict);
 
-      await respondToInvitation("org123", MembershipState.ACCEPTED);
-
-      expect(mockRespondToApplication).toHaveBeenCalledWith({
-        path: {org_id: "org123"},
-        body: {state: "MEMBERSHIP_APPLICATION_STATE_APPROVED"},
-        throwOnError: true,
-      });
-    });
-
-    it("should decline invitation successfully", async () => {
-      mockRespondToApplication.mockResolvedValue({data: {}});
-
-      await respondToInvitation("org123", MembershipState.DECLINED);
-
-      expect(mockRespondToApplication).toHaveBeenCalledWith({
-        path: {org_id: "org123"},
-        body: {state: "MEMBERSHIP_APPLICATION_STATE_DECLINED"},
-        throwOnError: true,
-      });
-    });
-
-    it("should handle unauthorized error", async () => {
-      mockRespondToApplication.mockRejectedValue({error: "unauthorized", code: 401});
-
-      await expect(respondToInvitation("org123", MembershipState.ACCEPTED)).rejects.toThrow();
-    });
-
-    it("should handle invite not found error", async () => {
-      mockRespondToApplication.mockRejectedValue({error: "not_found", code: 404});
-
-      await expect(respondToInvitation("org123", MembershipState.ACCEPTED)).rejects.toThrow();
-    });
+    await expect(call()).rejects.toBe(conflict);
   });
 
   describe("publicRespondToInvitation", () => {

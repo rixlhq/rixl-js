@@ -1,0 +1,51 @@
+var publicRoutes = []struct {
+	method string
+	path   string
+	prefix bool
+}{
+	// Auth flows (credentials in request)
+	{http.MethodPost, "/auth/v1/token", false},
+	{http.MethodPost, "/auth/v1/service-token", false},
+	{http.MethodPost, "/auth/v1/register", false},
+	{http.MethodPost, "/auth/v1/login", false},
+	{http.MethodPost, "/auth/v1/email/verify", false},
+	{http.MethodPost, "/auth/v1/email/verify/resend", false},
+	{http.MethodPost, "/auth/v1/password/reset", false},
+	{http.MethodPost, "/auth/v1/password/reset/confirm", false},
+	{http.MethodPost, "/auth/v1/verify-totp", false},
+	{http.MethodPost, "/auth/v1/verify-passkey", false},
+	{http.MethodPost, "/auth/v1/invitations/lookup", false},
+	{http.MethodPost, "/auth/v1/passkey/login/begin", false},
+	{http.MethodPost, "/auth/v1/passkey/login/finish", false},
+	{http.MethodPost, "/auth/v1/logout", false},
+	{http.MethodPost, "/auth/v1/blog/unsubscribe/email", false},
+
+	// Internal service flow
+	{http.MethodPost, "/auth/v1/blog/broadcast", false},
+
+	// Media (read-only public access)
+	{http.MethodGet, "/media/v1/videos/", true},
+	// Playback for private-bucket assets; authorized by the token in the path.
+	{http.MethodGet, "/media/v1/stream/", true},
+	{http.MethodGet, "/media/v1/images/", true},
+	{http.MethodGet, "/media/v1/languages", false},
+
+	// Posts (public feeds)
+	{http.MethodGet, "/posts/v1/feeds/", true},
+
+	// Stripe webhook (verified by signature, not gateway auth)
+	{http.MethodPost, "/billing/webhooks/stripe", false},
+	{http.MethodPost, "/billing/webhooks/stripe/sandbox", false},
+
+	// ClickUp webhook (verified by signature, not gateway auth)
+	{http.MethodPost, "/support/webhooks/clickup", false},
+
+	{http.MethodPost, "/webhooks/storage", false},
+
+	// Platform auth
+	{http.MethodPost, "/platform/auth/v1/token", false},
+	{http.MethodPost, "/platform/auth/v1/refresh", false},
+
+	// Client auth
+	{http.MethodPost, "/platform/clientauth/v1/token", false},
+}

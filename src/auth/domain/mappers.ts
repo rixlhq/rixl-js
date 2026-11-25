@@ -1,16 +1,12 @@
-import type {AuthV1DomainResponse, AuthV1AutoJoinSetting} from "../../generated/types.gen";
-import {DomainStatus, type DomainResponse, type AutoJoinSetting} from "./types";
+import type {AuthV1DomainResponse, AuthV1SuggestJoinSetting} from "../../generated/types.gen";
+import {DomainStatus, type DomainResponse, type SuggestJoinSetting} from "./types";
 
-// DomainStatus is a nested oneOf (pending | verified) plus a shared auto_join
-// flag; flatten it into the library's DomainResponse. When the gateway omits
-// `status` entirely we leave the flattened `status` field undefined instead
-// of defaulting to PENDING — the two states carry very different meanings
-// and PENDING would incorrectly imply a verification is in flight.
-type WireDomainStatus = NonNullable<AuthV1DomainResponse["status"]>;
-
-const verifiedOf = (status?: WireDomainStatus) => (status && "verified" in status ? status.verified : undefined);
-const pendingOf = (status?: WireDomainStatus) => (status && "pending" in status ? status.pending : undefined);
-
+// DomainStatus holds at most one of pending and verified, plus a shared
+// suggest_join flag; flatten it into the library's DomainResponse. When the
+// gateway omits `status` entirely we leave the flattened `status` field
+// undefined instead of defaulting to PENDING — the two states carry very
+// different meanings and PENDING would incorrectly imply a verification is in
+// flight.
 function flattenStatus(verified: unknown, pending: unknown): DomainStatus | undefined {
   if (verified) return DomainStatus.VERIFIED;
   if (pending) return DomainStatus.PENDING;
@@ -19,8 +15,8 @@ function flattenStatus(verified: unknown, pending: unknown): DomainStatus | unde
 
 export function toDomainResponse(data: AuthV1DomainResponse): DomainResponse {
   const status = data.status;
-  const verified = verifiedOf(status);
-  const pending = pendingOf(status);
+  const verified = status?.verified;
+  const pending = status?.pending;
   const flattenedStatus = flattenStatus(verified, pending);
   return {
     present: data.present,
@@ -30,11 +26,11 @@ export function toDomainResponse(data: AuthV1DomainResponse): DomainResponse {
     verification_token: pending?.verification_token,
     expires_at: pending?.expires_at,
     verified_at: verified?.verified_at,
-    auto_join: status?.auto_join,
+    suggest_join: status?.suggest_join,
   };
 }
 
-export function toAutoJoinSetting(data: AuthV1AutoJoinSetting): AutoJoinSetting {
+export function toSuggestJoinSetting(data: AuthV1SuggestJoinSetting): SuggestJoinSetting {
   return {
     enabled: data.enabled ?? false,
     present: data.present,

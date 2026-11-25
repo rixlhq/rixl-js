@@ -4,12 +4,12 @@ import {
   authV1ProvidersServiceDisconnectProvider,
 } from "../../generated/sdk.gen";
 import type {AuthV1ConnectProviderRequest, AuthV1ExternalAccountProvider} from "../../generated/types.gen";
-import {getToken, login} from "../authStore";
+import {login} from "../authStore";
 import {AuthProvider} from "../providers/types";
 import {credentialFields, type ProviderCredential} from "../providers/credential";
 import {setSocialConnectAttempt} from "./socialState";
 import {apiCall} from "../api/utils";
-import {persistTokens} from "../api/tokens";
+import {reissueTokens} from "../api/tokens";
 import {HTTP_STATUS} from "../constants";
 import {validateInput} from "../validation/base";
 import {ConnectProviderSchema} from "../validation/auth";
@@ -87,8 +87,6 @@ export const connectSocialInternal = async (provider: string, credential: Provid
     async () => {
       const {token, ...codeExchange} = credentialFields(credential);
       const requestBody = validateInput(ConnectProviderSchema, {provider, token});
-      const accessToken = await getToken();
-      const headers: Record<string, string> = accessToken ? {Authorization: `Bearer ${accessToken}`} : {};
       const body: AuthV1ConnectProviderRequest = {
         provider: toProtoProvider(normalizeProviderType(requestBody.provider)),
         token: requestBody.token,
@@ -96,12 +94,10 @@ export const connectSocialInternal = async (provider: string, credential: Provid
         origin: window.location.origin,
         ...codeExchange,
       };
-      const {data} = await authV1ProvidersServiceConnectProvider({
-        body,
-        headers,
-        throwOnError: true,
-      });
-      persistTokens(data);
+      await reissueTokens(
+        (headers) => authV1ProvidersServiceConnectProvider({body, headers, throwOnError: true}),
+        ({data}) => data
+      );
     },
     {
       [HTTP_STATUS.UNAUTHORIZED]: () => new Error("User is not authorized to connect provider!"),

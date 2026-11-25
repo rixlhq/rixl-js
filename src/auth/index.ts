@@ -9,9 +9,16 @@ export {
   limitedAccessToken,
   setLimitedAccessState,
   clearLimitedAccessState,
+  selectOrganization,
 } from "./authStore";
 
-export {logout} from "./auth/logout";
+export {personalOrgId} from "./sign-in-cookies";
+
+export {orgContext, orgRefusal, orgSelectionRequired, lastActiveOrgId, type OrgContext} from "./tab-org";
+export {OrgAccessError, type OrgAccessReason, type OrgRefusal} from "./api/org-access-error";
+export {ApiError, type ApiErrorContext, type WireErrorBody} from "./api/types";
+
+export {logout, type LogoutResult} from "./auth/logout";
 
 export {user} from "./userStore";
 
@@ -28,7 +35,6 @@ export {
   leaveOrganization,
   listActiveMemberships,
   listPendingMemberships,
-  updateActiveMembership,
   listOrganizationMembers,
   inviteMember,
   updateMemberRole,
@@ -36,7 +42,6 @@ export {
   MembershipRole,
   type AssignableRole,
   MembershipState,
-  respondToInvitation,
   resendMemberInvite,
   publicRespondToInvitation,
   type Member,
@@ -61,7 +66,16 @@ export {
   type BackupCodes,
   type UserInfo,
 } from "./user";
-export {updateOrgName, updateOrgUsername} from "./organization";
+export {
+  getOrganization,
+  listOrganizations,
+  updateOrganization,
+  type Organization,
+  type OrganizationMembership,
+  type OrganizationList,
+  type ListOrganizationsParams,
+  type OrganizationUpdate,
+} from "./organization";
 
 export {listSocials, connectSocial, disconnectSocial, type ConnectedProvider, type ProviderType} from "./social/socialConnections";
 
@@ -73,10 +87,13 @@ export {
   initiateEmailChange,
   addEmail,
   verifyEmailWithCode,
+  verifyEmailChange,
   getEmailVerificationStatus,
   sendPasswordResetEmail,
   confirmPasswordReset,
   type VerifyStatusResponse,
+  type VerifyEmailResponse,
+  type VerifyEmailWithCodeParams,
   type RegistrationResponse,
   type VerificationSentResponse,
   type LoginOTPVerifyRequest,
@@ -92,13 +109,13 @@ export {
   getDomainStatus,
   initiateDomainVerification,
   checkDomainVerification,
-  updateAutoJoin,
+  updateSuggestJoin,
   removeDomain,
   DomainStatus,
   type DomainResponse,
   type AddDomainRequest,
-  type UpdateAutoJoinRequest,
-  type AutoJoinSetting,
+  type UpdateSuggestJoinRequest,
+  type SuggestJoinSetting,
 } from "./domain";
 
 export {getBlogSubscriptionStatus, subscribeToBlog, unsubscribeFromBlog, type BlogSubscriptionStatus} from "./blog";

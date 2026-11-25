@@ -2252,13 +2252,13 @@ export type AuthV1AcceptInvitationResponse = {
      */
     org_id?: string;
     /**
-     * org_name
-     */
-    org_name?: string;
-    /**
      * role
      */
     role?: AuthV1MembershipRole;
+    /**
+     * organization
+     */
+    organization?: AuthV1Organization;
 };
 
 /**
@@ -2317,20 +2317,6 @@ export type AuthV1AttachPolicyRequest = {
 export type AuthV1AuthMethod = 'AUTH_METHOD_UNSPECIFIED' | 'AUTH_METHOD_PASSKEY' | 'AUTH_METHOD_TOTP';
 
 /**
- * AutoJoinSetting
- */
-export type AuthV1AutoJoinSetting = {
-    /**
-     * present
-     */
-    present?: boolean;
-    /**
-     * enabled
-     */
-    enabled?: boolean;
-};
-
-/**
  * BackupCodesResponse
  */
 export type AuthV1BackupCodesResponse = {
@@ -2366,20 +2352,6 @@ export type AuthV1CancelInvitationRequest = {
      * user_id
      */
     user_id?: string;
-};
-
-/**
- * CheckIsAdminResponse
- */
-export type AuthV1CheckIsAdminResponse = {
-    /**
-     * is_admin
-     */
-    is_admin?: boolean;
-    /**
-     * organization_email
-     */
-    organization_email?: string;
 };
 
 /**
@@ -2595,9 +2567,9 @@ export type AuthV1DomainResponse = {
  */
 export type AuthV1DomainStatus = {
     /**
-     * auto_join
+     * suggest_join
      */
-    auto_join?: boolean;
+    suggest_join?: boolean;
     /**
      * verified
      */
@@ -2632,13 +2604,13 @@ export type AuthV1EmailStatusResponse = {
 export type AuthV1ExternalAccountProvider = 'EXTERNAL_ACCOUNT_PROVIDER_UNSPECIFIED' | 'EXTERNAL_ACCOUNT_PROVIDER_GOOGLE' | 'EXTERNAL_ACCOUNT_PROVIDER_APPLE' | 'EXTERNAL_ACCOUNT_PROVIDER_MICROSOFT' | 'EXTERNAL_ACCOUNT_PROVIDER_FACEBOOK' | 'EXTERNAL_ACCOUNT_PROVIDER_TELEGRAM' | 'EXTERNAL_ACCOUNT_PROVIDER_GITHUB';
 
 /**
- * GetInternalMembershipInfoResponse
+ * GetOrganizationRequest
  */
-export type AuthV1GetInternalMembershipInfoResponse = {
+export type AuthV1GetOrganizationRequest = {
     /**
-     * email
+     * org_id
      */
-    email?: string;
+    org_id?: string;
 };
 
 /**
@@ -2720,6 +2692,16 @@ export type AuthV1InviteMemberRequest = {
 };
 
 /**
+ * JoinSuggestedOrganizationRequest
+ */
+export type AuthV1JoinSuggestedOrganizationRequest = {
+    /**
+     * org_id
+     */
+    org_id?: string;
+};
+
+/**
  * ListAttachmentsResponse
  */
 export type AuthV1ListAttachmentsResponse = {
@@ -2727,6 +2709,34 @@ export type AuthV1ListAttachmentsResponse = {
      * attachments
      */
     attachments?: Array<AuthV1PolicyAttachment>;
+};
+
+/**
+ * ListDomainJoinSuggestionsRequest
+ */
+export type AuthV1ListDomainJoinSuggestionsRequest = {
+    /**
+     * page_size
+     */
+    page_size?: number;
+    /**
+     * page_token
+     */
+    page_token?: string;
+};
+
+/**
+ * ListDomainJoinSuggestionsResponse
+ */
+export type AuthV1ListDomainJoinSuggestionsResponse = {
+    /**
+     * organizations
+     */
+    organizations?: Array<AuthV1Organization>;
+    /**
+     * next_page_token
+     */
+    next_page_token?: string;
 };
 
 /**
@@ -2766,10 +2776,6 @@ export type AuthV1ListIdentityPoliciesResponse = {
  */
 export type AuthV1ListMembershipApplicationsRequest = {
     /**
-     * user
-     */
-    user?: AuthV1UserRequest;
-    /**
      * limit
      */
     limit?: number;
@@ -2797,10 +2803,6 @@ export type AuthV1ListMembershipApplicationsResponse = {
  * ListMembershipsRequest
  */
 export type AuthV1ListMembershipsRequest = {
-    /**
-     * user
-     */
-    user?: AuthV1UserRequest;
     /**
      * limit
      */
@@ -2851,6 +2853,72 @@ export type AuthV1ListOrgMembersResponse = {
      * members
      */
     members?: Array<AuthV1OrgMember>;
+};
+
+/**
+ * ListOrganizationAuditEventsRequest
+ */
+export type AuthV1ListOrganizationAuditEventsRequest = {
+    /**
+     * org_id
+     */
+    org_id?: string;
+    /**
+     * page_size
+     */
+    page_size?: number;
+    /**
+     * page_token
+     */
+    page_token?: string;
+};
+
+/**
+ * ListOrganizationAuditEventsResponse
+ */
+export type AuthV1ListOrganizationAuditEventsResponse = {
+    /**
+     * events
+     */
+    events?: Array<AuthV1OrganizationAuditEvent>;
+    /**
+     * next_page_token
+     */
+    next_page_token?: string;
+};
+
+/**
+ * ListOrganizationsRequest
+ */
+export type AuthV1ListOrganizationsRequest = {
+    /**
+     * page_size
+     */
+    page_size?: number;
+    /**
+     * page_token
+     */
+    page_token?: string;
+    /**
+     * show_deleted
+     *
+     * Includes deleted organizations visible to their owners once lifecycle adds deletion.
+     */
+    show_deleted?: boolean;
+};
+
+/**
+ * ListOrganizationsResponse
+ */
+export type AuthV1ListOrganizationsResponse = {
+    /**
+     * organizations
+     */
+    organizations?: Array<AuthV1OrganizationMembership>;
+    /**
+     * next_page_token
+     */
+    next_page_token?: string;
 };
 
 /**
@@ -2946,6 +3014,23 @@ export type AuthV1ListProvidersResponse = {
 };
 
 /**
+ * ListSignInsRequest
+ */
+export type AuthV1ListSignInsRequest = {
+    [key: string]: never;
+};
+
+/**
+ * ListSignInsResponse
+ */
+export type AuthV1ListSignInsResponse = {
+    /**
+     * sign_ins
+     */
+    sign_ins?: Array<AuthV1SignIn>;
+};
+
+/**
  * ListUserPoliciesRequest
  */
 export type AuthV1ListUserPoliciesRequest = {
@@ -2984,9 +3069,9 @@ export type AuthV1LoginResponse = {
      */
     status?: string;
     /**
-     * session_id
+     * challenge_id
      */
-    session_id?: string;
+    challenge_id?: string;
     /**
      * email
      */
@@ -3026,6 +3111,25 @@ export type AuthV1LoginResponse = {
      * present only when "passkey" is one of the authentication methods.
      */
     passkey_options?: string;
+    /**
+     * org_id
+     */
+    org_id?: string;
+    /**
+     * role
+     */
+    role?: string;
+    /**
+     * last_active_org_id
+     */
+    last_active_org_id?: string;
+};
+
+/**
+ * LogoutAllRequest
+ */
+export type AuthV1LogoutAllRequest = {
+    [key: string]: never;
 };
 
 /**
@@ -3081,21 +3185,13 @@ export type AuthV1Membership = {
      */
     state?: AuthV1MembershipState;
     /**
-     * organization_username
-     */
-    organization_username?: string;
-    /**
-     * organization_first_name
-     */
-    organization_first_name?: string;
-    /**
-     * organization_last_name
-     */
-    organization_last_name?: string;
-    /**
      * joined_at
      */
     joined_at?: GoogleProtobufTimestamp;
+    /**
+     * organization
+     */
+    organization?: AuthV1Organization;
 };
 
 /**
@@ -3123,18 +3219,6 @@ export type AuthV1MembershipApplication = {
      */
     state?: AuthV1MembershipApplicationState;
     /**
-     * organization_username
-     */
-    organization_username?: string;
-    /**
-     * organization_first_name
-     */
-    organization_first_name?: string;
-    /**
-     * organization_last_name
-     */
-    organization_last_name?: string;
-    /**
      * created_at
      */
     created_at?: GoogleProtobufTimestamp;
@@ -3146,6 +3230,10 @@ export type AuthV1MembershipApplication = {
      * invitation_expires_at
      */
     invitation_expires_at?: GoogleProtobufTimestamp;
+    /**
+     * organization
+     */
+    organization?: AuthV1Organization;
 };
 
 /**
@@ -3174,13 +3262,13 @@ export type AuthV1MembershipMutation = {
      */
     state?: AuthV1MembershipState;
     /**
-     * org_name
-     */
-    org_name?: string;
-    /**
      * joined_at
      */
     joined_at?: GoogleProtobufTimestamp;
+    /**
+     * organization
+     */
+    organization?: AuthV1Organization;
 };
 
 /**
@@ -3191,7 +3279,48 @@ export type AuthV1MembershipRole = 'MEMBERSHIP_ROLE_UNSPECIFIED' | 'MEMBERSHIP_R
 /**
  * MembershipState
  */
-export type AuthV1MembershipState = 'MEMBERSHIP_STATE_UNSPECIFIED' | 'MEMBERSHIP_STATE_ACTIVE' | 'MEMBERSHIP_STATE_SUSPENDED' | 'MEMBERSHIP_STATE_LEFT' | 'MEMBERSHIP_STATE_REMOVED';
+export type AuthV1MembershipState = 'MEMBERSHIP_STATE_UNSPECIFIED' | 'MEMBERSHIP_STATE_ACTIVE' | 'MEMBERSHIP_STATE_SUSPENDED';
+
+/**
+ * NotificationCategory
+ */
+export type AuthV1NotificationCategory = 'NOTIFICATION_CATEGORY_UNSPECIFIED' | 'NOTIFICATION_CATEGORY_USAGE' | 'NOTIFICATION_CATEGORY_PAYMENT';
+
+/**
+ * NotificationPreference
+ */
+export type AuthV1NotificationPreference = {
+    /**
+     * category
+     */
+    category?: AuthV1NotificationCategory;
+    /**
+     * email_enabled
+     */
+    email_enabled?: boolean;
+    /**
+     * locked
+     *
+     * locked is true when the caller's role cannot disable the category.
+     */
+    locked?: boolean;
+    /**
+     * always_sent
+     *
+     * always_sent lists the notices in this category the caller receives even with email disabled.
+     */
+    always_sent?: Array<string>;
+};
+
+/**
+ * NotificationPreferences
+ */
+export type AuthV1NotificationPreferences = {
+    /**
+     * preferences
+     */
+    preferences?: Array<AuthV1NotificationPreference>;
+};
 
 /**
  * OTPStatusResponse
@@ -3258,6 +3387,100 @@ export type AuthV1OrgMember = {
 };
 
 /**
+ * Organization
+ */
+export type AuthV1Organization = {
+    /**
+     * id
+     */
+    id?: string;
+    /**
+     * name
+     */
+    name?: string;
+    /**
+     * slug
+     */
+    slug?: string;
+    /**
+     * image_id
+     */
+    image_id?: string;
+    /**
+     * personal
+     */
+    personal?: boolean;
+    /**
+     * internal
+     */
+    internal?: boolean;
+    /**
+     * created_at
+     */
+    created_at?: GoogleProtobufTimestamp;
+};
+
+/**
+ * OrganizationAuditEvent
+ */
+export type AuthV1OrganizationAuditEvent = {
+    /**
+     * id
+     */
+    id?: string;
+    /**
+     * org_id
+     */
+    org_id?: string;
+    /**
+     * occurred_at
+     */
+    occurred_at?: GoogleProtobufTimestamp;
+    /**
+     * actor_type
+     */
+    actor_type?: string;
+    /**
+     * actor_id
+     */
+    actor_id?: string;
+    /**
+     * action
+     */
+    action?: string;
+    /**
+     * target_type
+     */
+    target_type?: string;
+    /**
+     * target_id
+     */
+    target_id?: string;
+    /**
+     * metadata
+     */
+    metadata?: GoogleProtobufStruct;
+};
+
+/**
+ * OrganizationMembership
+ */
+export type AuthV1OrganizationMembership = {
+    /**
+     * organization
+     */
+    organization?: AuthV1Organization;
+    /**
+     * role
+     */
+    role?: AuthV1MembershipRole;
+    /**
+     * state
+     */
+    state?: AuthV1MembershipState;
+};
+
+/**
  * Passkey
  */
 export type AuthV1Passkey = {
@@ -3300,9 +3523,9 @@ export type AuthV1Passkey = {
  */
 export type AuthV1PasskeyBeginResponse = {
     /**
-     * session_id
+     * challenge_id
      */
-    session_id?: string;
+    challenge_id?: string;
     /**
      * options
      */
@@ -3324,9 +3547,9 @@ export type AuthV1PasskeyLoginBeginRequest = {
  */
 export type AuthV1PasskeyLoginFinishRequest = {
     /**
-     * session_id
+     * challenge_id
      */
-    session_id?: string;
+    challenge_id?: string;
     /**
      * credential
      */
@@ -3352,9 +3575,9 @@ export type AuthV1PasskeyRegisterFinishRequest = {
      */
     user_id?: string;
     /**
-     * session_id
+     * challenge_id
      */
-    session_id?: string;
+    challenge_id?: string;
     /**
      * name
      */
@@ -3394,27 +3617,13 @@ export type AuthV1PendingDomain = {
 };
 
 /**
- * PermissionOffset
- */
-export type AuthV1PermissionOffset = {
-    /**
-     * name
-     */
-    name?: string;
-    /**
-     * offset
-     */
-    offset?: number;
-};
-
-/**
  * PermissionRegistryResponse
  */
 export type AuthV1PermissionRegistryResponse = {
     /**
      * permissions
      */
-    permissions?: Array<AuthV1PermissionOffset>;
+    permissions?: Array<AuthV1RegisteredPermission>;
     /**
      * total
      */
@@ -3505,35 +3714,63 @@ export type AuthV1PolicyRequest = {
 };
 
 /**
- * PurgeIdentityPoliciesRequest
+ * RecentUser
  */
-export type AuthV1PurgeIdentityPoliciesRequest = {
+export type AuthV1RecentUser = {
     /**
-     * user
+     * id
      */
-    user?: AuthV1UserOrgRequest;
+    id?: string;
     /**
-     * identity_type
+     * email
      */
-    identity_type?: AuthV1PolicyIdentityType;
+    email?: string;
     /**
-     * identity_id
+     * username
      */
-    identity_id?: string;
+    username?: string;
+    /**
+     * first_name
+     */
+    first_name?: string;
+    /**
+     * last_name
+     */
+    last_name?: string;
+    /**
+     * email_verified
+     */
+    email_verified?: boolean;
+    /**
+     * created_at
+     */
+    created_at?: GoogleProtobufTimestamp;
+    /**
+     * last_login_at
+     */
+    last_login_at?: GoogleProtobufTimestamp;
 };
 
 /**
- * ReactivateMemberRequest
+ * RecentUsersRequest
  */
-export type AuthV1ReactivateMemberRequest = {
+export type AuthV1RecentUsersRequest = {
     /**
-     * user
+     * limit
+     *
+     * Maximum users to return; clamped server-side.
      */
-    user?: AuthV1ActorOrgRequest;
+    limit?: number;
+};
+
+/**
+ * RecentUsersResponse
+ */
+export type AuthV1RecentUsersResponse = {
     /**
-     * user_id
+     * users
      */
-    user_id?: string;
+    users?: Array<AuthV1RecentUser>;
 };
 
 /**
@@ -3564,6 +3801,10 @@ export type AuthV1RefreshTokenRequest = {
      * redirect_uri
      */
     redirect_uri?: string;
+    /**
+     * org_id
+     */
+    org_id?: string;
 };
 
 /**
@@ -3621,17 +3862,27 @@ export type AuthV1RegisterResponse = {
 };
 
 /**
+ * RegisteredPermission
+ */
+export type AuthV1RegisteredPermission = {
+    /**
+     * name
+     */
+    name?: string;
+};
+
+/**
  * RemoveMemberRequest
  */
 export type AuthV1RemoveMemberRequest = {
     /**
-     * user
-     */
-    user?: AuthV1ActorOrgRequest;
-    /**
      * user_id
      */
     user_id?: string;
+    /**
+     * org_id
+     */
+    org_id?: string;
 };
 
 /**
@@ -3767,6 +4018,16 @@ export type AuthV1ResolveIdentityPermissionsRequest = {
  */
 export type AuthV1ResolveIdentityPermissionsResponse = {
     /**
+     * active
+     */
+    active?: boolean;
+    /**
+     * inactive_reason
+     *
+     * Empty when active. Otherwise MEMBERSHIP_SUSPENDED, ORG_DELETED or NOT_A_MEMBER.
+     */
+    inactive_reason?: string;
+    /**
      * permissions
      */
     permissions?: Array<string>;
@@ -3784,6 +4045,47 @@ export type AuthV1RespondToMembershipApplicationRequest = {
      * state
      */
     state?: AuthV1MembershipApplicationState;
+};
+
+/**
+ * RetentionPoint
+ *
+ * Share of a registration cohort that logged in at least `days` after signup.
+ */
+export type AuthV1RetentionPoint = {
+    /**
+     * days
+     */
+    days?: number;
+    /**
+     * cohort
+     */
+    cohort?: string;
+    /**
+     * retained
+     */
+    retained?: string;
+    /**
+     * rate
+     */
+    rate?: number | 'NaN' | 'Infinity' | '-Infinity';
+};
+
+/**
+ * RevokeOtherSignInsRequest
+ */
+export type AuthV1RevokeOtherSignInsRequest = {
+    [key: string]: never;
+};
+
+/**
+ * RevokeSignInRequest
+ */
+export type AuthV1RevokeSignInRequest = {
+    /**
+     * sign_in_id
+     */
+    sign_in_id?: string;
 };
 
 /**
@@ -3839,6 +4141,44 @@ export type AuthV1SendBlogBroadcastResponse = {
 };
 
 /**
+ * SendOrganizationNoticeRequest
+ */
+export type AuthV1SendOrganizationNoticeRequest = {
+    /**
+     * org_id
+     */
+    org_id?: string;
+    /**
+     * category
+     */
+    category?: AuthV1NotificationCategory;
+    /**
+     * template
+     */
+    template?: string;
+    /**
+     * data
+     */
+    data?: {
+        [key: string]: string;
+    };
+    /**
+     * idempotency_key
+     */
+    idempotency_key?: string;
+};
+
+/**
+ * SendOrganizationNoticeResponse
+ */
+export type AuthV1SendOrganizationNoticeResponse = {
+    /**
+     * recipients
+     */
+    recipients?: number;
+};
+
+/**
  * SendPasswordResetRequest
  */
 export type AuthV1SendPasswordResetRequest = {
@@ -3849,9 +4189,9 @@ export type AuthV1SendPasswordResetRequest = {
 };
 
 /**
- * SetAutoJoinRequest
+ * SetSuggestJoinRequest
  */
-export type AuthV1SetAutoJoinRequest = {
+export type AuthV1SetSuggestJoinRequest = {
     /**
      * user
      */
@@ -3881,17 +4221,78 @@ export type AuthV1SetupOtpResponse = {
 };
 
 /**
- * SuspendMemberRequest
+ * SignIn
  */
-export type AuthV1SuspendMemberRequest = {
+export type AuthV1SignIn = {
     /**
-     * user
+     * id
      */
-    user?: AuthV1ActorOrgRequest;
+    id?: string;
     /**
-     * user_id
+     * created_at
      */
-    user_id?: string;
+    created_at?: GoogleProtobufTimestamp;
+    /**
+     * last_used_at
+     */
+    last_used_at?: GoogleProtobufTimestamp;
+    /**
+     * expires_at
+     */
+    expires_at?: GoogleProtobufTimestamp;
+    /**
+     * auth_method
+     *
+     * auth_method is how the sign-in was started: "password", "passkey",
+     * "passkey_2fa", "totp", or "provider:<name>".
+     */
+    auth_method?: string;
+    /**
+     * user_agent
+     */
+    user_agent?: string;
+    /**
+     * ip
+     */
+    ip?: string;
+    /**
+     * country
+     */
+    country?: string;
+    /**
+     * current
+     *
+     * current marks the sign-in of the access token making the request.
+     */
+    current?: boolean;
+};
+
+/**
+ * SignupDay
+ */
+export type AuthV1SignupDay = {
+    /**
+     * day
+     */
+    day?: GoogleProtobufTimestamp;
+    /**
+     * count
+     */
+    count?: string;
+};
+
+/**
+ * SuggestJoinSetting
+ */
+export type AuthV1SuggestJoinSetting = {
+    /**
+     * present
+     */
+    present?: boolean;
+    /**
+     * enabled
+     */
+    enabled?: boolean;
 };
 
 /**
@@ -3918,6 +4319,22 @@ export type AuthV1TokenResponse = {
      * requires_action
      */
     requires_action?: string;
+    /**
+     * org_id
+     */
+    org_id?: string;
+    /**
+     * role
+     */
+    role?: string;
+    /**
+     * last_active_org_id
+     */
+    last_active_org_id?: string;
+    /**
+     * domain_join_suggestions
+     */
+    domain_join_suggestions?: Array<AuthV1Organization>;
 };
 
 /**
@@ -3935,31 +4352,13 @@ export type AuthV1UnsubscribeBlogByEmailRequest = {
 };
 
 /**
- * UpdateActiveMembershipRequest
+ * UpdateMemberRequest
  */
-export type AuthV1UpdateActiveMembershipRequest = {
-    /**
-     * user
-     */
-    user?: AuthV1UserOrgRequest;
-    /**
-     * membership_id
-     */
-    membership_id?: string;
+export type AuthV1UpdateMemberRequest = {
     /**
      * org_id
      */
     org_id?: string;
-};
-
-/**
- * UpdateMemberRoleRequest
- */
-export type AuthV1UpdateMemberRoleRequest = {
-    /**
-     * user
-     */
-    user?: AuthV1ActorOrgRequest;
     /**
      * user_id
      */
@@ -3968,6 +4367,14 @@ export type AuthV1UpdateMemberRoleRequest = {
      * role
      */
     role?: AuthV1MembershipRole;
+    /**
+     * state
+     */
+    state?: AuthV1MembershipState;
+    /**
+     * update_mask
+     */
+    update_mask?: GoogleProtobufFieldMask;
 };
 
 /**
@@ -4017,55 +4424,41 @@ export type AuthV1UpdateNameResponse = {
 };
 
 /**
- * UpdateOrgNameRequest
+ * UpdateNotificationPreferenceRequest
  */
-export type AuthV1UpdateOrgNameRequest = {
+export type AuthV1UpdateNotificationPreferenceRequest = {
     /**
      * user
      */
-    user?: AuthV1ActorOrgRequest;
+    user?: AuthV1UserOrgRequest;
     /**
-     * full_name
+     * category
      */
-    full_name?: string;
+    category?: AuthV1NotificationCategory;
+    /**
+     * email_enabled
+     */
+    email_enabled?: boolean;
 };
 
 /**
- * UpdateOrgNameResponse
+ * UpdateOrganizationRequest
  */
-export type AuthV1UpdateOrgNameResponse = {
+export type AuthV1UpdateOrganizationRequest = {
     /**
-     * first_name
+     * org_id
      */
-    first_name?: string;
+    org_id?: string;
     /**
-     * last_name
+     * organization
      */
-    last_name?: string;
-};
-
-/**
- * UpdateOrgUsernameRequest
- */
-export type AuthV1UpdateOrgUsernameRequest = {
+    organization?: AuthV1Organization;
     /**
-     * user
+     * update_mask
+     *
+     * Supported paths are name, slug and image_id.
      */
-    user?: AuthV1ActorOrgRequest;
-    /**
-     * username
-     */
-    username?: string;
-};
-
-/**
- * UpdateOrgUsernameResponse
- */
-export type AuthV1UpdateOrgUsernameResponse = {
-    /**
-     * username
-     */
-    username?: string;
+    update_mask?: GoogleProtobufFieldMask;
 };
 
 /**
@@ -4187,9 +4580,9 @@ export type AuthV1UserInfo = {
      */
     country_code?: string;
     /**
-     * active_org_id
+     * last_active_org_id
      */
-    active_org_id?: string;
+    last_active_org_id?: string;
     /**
      * policies
      */
@@ -4222,6 +4615,61 @@ export type AuthV1UserRequest = {
      * user_id
      */
     user_id?: string;
+};
+
+/**
+ * UserStatsRequest
+ */
+export type AuthV1UserStatsRequest = {
+    [key: string]: never;
+};
+
+/**
+ * UserStatsResponse
+ *
+ * Aggregate user metrics for the platform.
+ */
+export type AuthV1UserStatsResponse = {
+    /**
+     * total_users
+     */
+    total_users?: string;
+    /**
+     * total_orgs
+     */
+    total_orgs?: string;
+    /**
+     * registered_today
+     */
+    registered_today?: string;
+    /**
+     * registered_7d
+     */
+    registered_7d?: string;
+    /**
+     * registered_30d
+     */
+    registered_30d?: string;
+    /**
+     * active_24h
+     */
+    active_24h?: string;
+    /**
+     * active_7d
+     */
+    active_7d?: string;
+    /**
+     * active_30d
+     */
+    active_30d?: string;
+    /**
+     * signups
+     */
+    signups?: Array<AuthV1SignupDay>;
+    /**
+     * retention
+     */
+    retention?: Array<AuthV1RetentionPoint>;
 };
 
 /**
@@ -4311,9 +4759,9 @@ export type AuthV1VerifyOtpRequest = {
  */
 export type AuthV1VerifyPasskeyForLoginRequest = {
     /**
-     * session_id
+     * challenge_id
      */
-    session_id?: string;
+    challenge_id?: string;
     /**
      * credential
      */
@@ -4325,9 +4773,9 @@ export type AuthV1VerifyPasskeyForLoginRequest = {
  */
 export type AuthV1VerifyTotpForLoginRequest = {
     /**
-     * session_id
+     * challenge_id
      */
-    session_id?: string;
+    challenge_id?: string;
     /**
      * code
      */
@@ -6205,6 +6653,11 @@ export type GoogleProtobufDuration = string;
 export type GoogleProtobufEmpty = {
     [key: string]: unknown;
 };
+
+/**
+ * Comma-separated field paths in lowerCamelCase (for example, `user.displayName,photo`).
+ */
+export type GoogleProtobufFieldMask = string;
 
 /**
  * A JSON array whose elements may be any JSON value.
@@ -10482,7 +10935,7 @@ export type AuthV1DomainServiceRemoveDomainData = {
          */
         user_id?: string;
     };
-    url: '/auth/v1/memberships/{org_id}/domain';
+    url: '/auth/v1/organizations/{org_id}/domain';
 };
 
 export type AuthV1DomainServiceRemoveDomainErrors = {
@@ -10517,7 +10970,7 @@ export type AuthV1DomainServiceGetDomainStatusData = {
          */
         user_id?: string;
     };
-    url: '/auth/v1/memberships/{org_id}/domain';
+    url: '/auth/v1/organizations/{org_id}/domain';
 };
 
 export type AuthV1DomainServiceGetDomainStatusErrors = {
@@ -10538,7 +10991,7 @@ export type AuthV1DomainServiceGetDomainStatusResponses = {
 
 export type AuthV1DomainServiceGetDomainStatusResponse = AuthV1DomainServiceGetDomainStatusResponses[keyof AuthV1DomainServiceGetDomainStatusResponses];
 
-export type AuthV1DomainServiceGetDomainAutoJoinData = {
+export type AuthV1DomainServiceGetDomainSuggestJoinData = {
     body?: never;
     path: {
         /**
@@ -10552,26 +11005,26 @@ export type AuthV1DomainServiceGetDomainAutoJoinData = {
          */
         user_id?: string;
     };
-    url: '/auth/v1/memberships/{org_id}/domain/auto-join';
+    url: '/auth/v1/organizations/{org_id}/domain/suggest-join';
 };
 
-export type AuthV1DomainServiceGetDomainAutoJoinErrors = {
+export type AuthV1DomainServiceGetDomainSuggestJoinErrors = {
     /**
      * An unexpected error response.
      */
     default: GoogleRpcStatus;
 };
 
-export type AuthV1DomainServiceGetDomainAutoJoinError = AuthV1DomainServiceGetDomainAutoJoinErrors[keyof AuthV1DomainServiceGetDomainAutoJoinErrors];
+export type AuthV1DomainServiceGetDomainSuggestJoinError = AuthV1DomainServiceGetDomainSuggestJoinErrors[keyof AuthV1DomainServiceGetDomainSuggestJoinErrors];
 
-export type AuthV1DomainServiceGetDomainAutoJoinResponses = {
+export type AuthV1DomainServiceGetDomainSuggestJoinResponses = {
     /**
      * Success
      */
-    200: AuthV1AutoJoinSetting;
+    200: AuthV1SuggestJoinSetting;
 };
 
-export type AuthV1DomainServiceGetDomainAutoJoinResponse = AuthV1DomainServiceGetDomainAutoJoinResponses[keyof AuthV1DomainServiceGetDomainAutoJoinResponses];
+export type AuthV1DomainServiceGetDomainSuggestJoinResponse = AuthV1DomainServiceGetDomainSuggestJoinResponses[keyof AuthV1DomainServiceGetDomainSuggestJoinResponses];
 
 export type AuthV1DomainServiceCheckDomainVerificationData = {
     body?: never;
@@ -10587,7 +11040,7 @@ export type AuthV1DomainServiceCheckDomainVerificationData = {
          */
         user_id?: string;
     };
-    url: '/auth/v1/memberships/{org_id}/domain/verify';
+    url: '/auth/v1/organizations/{org_id}/domain/verify';
 };
 
 export type AuthV1DomainServiceCheckDomainVerificationErrors = {
@@ -10634,7 +11087,7 @@ export type AuthV1DomainServiceCreateDomainVerificationData = {
         'user.org_id': string;
     };
     query?: never;
-    url: '/auth/v1/memberships/{user.org_id}/domain';
+    url: '/auth/v1/organizations/{user.org_id}/domain';
 };
 
 export type AuthV1DomainServiceCreateDomainVerificationErrors = {
@@ -10655,9 +11108,9 @@ export type AuthV1DomainServiceCreateDomainVerificationResponses = {
 
 export type AuthV1DomainServiceCreateDomainVerificationResponse = AuthV1DomainServiceCreateDomainVerificationResponses[keyof AuthV1DomainServiceCreateDomainVerificationResponses];
 
-export type AuthV1DomainServiceSetDomainAutoJoinData = {
+export type AuthV1DomainServiceSetDomainSuggestJoinData = {
     /**
-     * SetAutoJoinRequest
+     * SetSuggestJoinRequest
      */
     body: {
         /**
@@ -10681,26 +11134,85 @@ export type AuthV1DomainServiceSetDomainAutoJoinData = {
         'user.org_id': string;
     };
     query?: never;
-    url: '/auth/v1/memberships/{user.org_id}/domain/auto-join';
+    url: '/auth/v1/organizations/{user.org_id}/domain/suggest-join';
 };
 
-export type AuthV1DomainServiceSetDomainAutoJoinErrors = {
+export type AuthV1DomainServiceSetDomainSuggestJoinErrors = {
     /**
      * An unexpected error response.
      */
     default: GoogleRpcStatus;
 };
 
-export type AuthV1DomainServiceSetDomainAutoJoinError = AuthV1DomainServiceSetDomainAutoJoinErrors[keyof AuthV1DomainServiceSetDomainAutoJoinErrors];
+export type AuthV1DomainServiceSetDomainSuggestJoinError = AuthV1DomainServiceSetDomainSuggestJoinErrors[keyof AuthV1DomainServiceSetDomainSuggestJoinErrors];
 
-export type AuthV1DomainServiceSetDomainAutoJoinResponses = {
+export type AuthV1DomainServiceSetDomainSuggestJoinResponses = {
     /**
      * Success
      */
-    200: AuthV1AutoJoinSetting;
+    200: AuthV1SuggestJoinSetting;
 };
 
-export type AuthV1DomainServiceSetDomainAutoJoinResponse = AuthV1DomainServiceSetDomainAutoJoinResponses[keyof AuthV1DomainServiceSetDomainAutoJoinResponses];
+export type AuthV1DomainServiceSetDomainSuggestJoinResponse = AuthV1DomainServiceSetDomainSuggestJoinResponses[keyof AuthV1DomainServiceSetDomainSuggestJoinResponses];
+
+export type AuthV1DomainServiceListDomainJoinSuggestionsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * page_size
+         */
+        page_size?: number;
+        /**
+         * page_token
+         */
+        page_token?: string;
+    };
+    url: '/auth/v1/users/current/domain-join-suggestions';
+};
+
+export type AuthV1DomainServiceListDomainJoinSuggestionsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1DomainServiceListDomainJoinSuggestionsError = AuthV1DomainServiceListDomainJoinSuggestionsErrors[keyof AuthV1DomainServiceListDomainJoinSuggestionsErrors];
+
+export type AuthV1DomainServiceListDomainJoinSuggestionsResponses = {
+    /**
+     * Success
+     */
+    200: AuthV1ListDomainJoinSuggestionsResponse;
+};
+
+export type AuthV1DomainServiceListDomainJoinSuggestionsResponse = AuthV1DomainServiceListDomainJoinSuggestionsResponses[keyof AuthV1DomainServiceListDomainJoinSuggestionsResponses];
+
+export type AuthV1DomainServiceJoinSuggestedOrganizationData = {
+    body: AuthV1JoinSuggestedOrganizationRequest;
+    path?: never;
+    query?: never;
+    url: '/auth/v1/users/current/domain-join-suggestions/join';
+};
+
+export type AuthV1DomainServiceJoinSuggestedOrganizationErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1DomainServiceJoinSuggestedOrganizationError = AuthV1DomainServiceJoinSuggestedOrganizationErrors[keyof AuthV1DomainServiceJoinSuggestedOrganizationErrors];
+
+export type AuthV1DomainServiceJoinSuggestedOrganizationResponses = {
+    /**
+     * Success
+     */
+    200: GoogleProtobufEmpty;
+};
+
+export type AuthV1DomainServiceJoinSuggestedOrganizationResponse = AuthV1DomainServiceJoinSuggestedOrganizationResponses[keyof AuthV1DomainServiceJoinSuggestedOrganizationResponses];
 
 export type AuthV1MembershipServiceAcceptInvitationData = {
     body?: never;
@@ -10766,10 +11278,6 @@ export type AuthV1MembershipServiceListMembershipApplicationsData = {
     body?: never;
     path?: never;
     query?: {
-        /**
-         * user_id
-         */
-        'user.user_id'?: string;
         /**
          * limit
          */
@@ -10842,143 +11350,6 @@ export type AuthV1MembershipServiceRespondToMembershipApplicationResponses = {
 
 export type AuthV1MembershipServiceRespondToMembershipApplicationResponse = AuthV1MembershipServiceRespondToMembershipApplicationResponses[keyof AuthV1MembershipServiceRespondToMembershipApplicationResponses];
 
-export type AuthV1MembershipServiceListMembershipsData = {
-    body?: never;
-    path?: never;
-    query?: {
-        /**
-         * user_id
-         */
-        'user.user_id'?: string;
-        /**
-         * limit
-         */
-        limit?: number;
-        /**
-         * offset
-         */
-        offset?: number;
-        /**
-         * state
-         */
-        state?: AuthV1MembershipState;
-    };
-    url: '/auth/v1/memberships';
-};
-
-export type AuthV1MembershipServiceListMembershipsErrors = {
-    /**
-     * An unexpected error response.
-     */
-    default: GoogleRpcStatus;
-};
-
-export type AuthV1MembershipServiceListMembershipsError = AuthV1MembershipServiceListMembershipsErrors[keyof AuthV1MembershipServiceListMembershipsErrors];
-
-export type AuthV1MembershipServiceListMembershipsResponses = {
-    /**
-     * Success
-     */
-    200: AuthV1ListMembershipsResponse;
-};
-
-export type AuthV1MembershipServiceListMembershipsResponse = AuthV1MembershipServiceListMembershipsResponses[keyof AuthV1MembershipServiceListMembershipsResponses];
-
-export type AuthV1MembershipServiceUpdateActiveMembershipData = {
-    body: AuthV1UpdateActiveMembershipRequest;
-    path?: never;
-    query?: never;
-    url: '/auth/v1/memberships/active';
-};
-
-export type AuthV1MembershipServiceUpdateActiveMembershipErrors = {
-    /**
-     * An unexpected error response.
-     */
-    default: GoogleRpcStatus;
-};
-
-export type AuthV1MembershipServiceUpdateActiveMembershipError = AuthV1MembershipServiceUpdateActiveMembershipErrors[keyof AuthV1MembershipServiceUpdateActiveMembershipErrors];
-
-export type AuthV1MembershipServiceUpdateActiveMembershipResponses = {
-    /**
-     * Success
-     */
-    200: AuthV1MembershipMutation;
-};
-
-export type AuthV1MembershipServiceUpdateActiveMembershipResponse = AuthV1MembershipServiceUpdateActiveMembershipResponses[keyof AuthV1MembershipServiceUpdateActiveMembershipResponses];
-
-export type AuthV1MembershipServiceCheckMembershipData = {
-    body?: never;
-    path: {
-        /**
-         * org_id
-         */
-        org_id: string;
-    };
-    query?: {
-        /**
-         * user_id
-         */
-        user_id?: string;
-    };
-    url: '/auth/v1/memberships/{org_id}/check';
-};
-
-export type AuthV1MembershipServiceCheckMembershipErrors = {
-    /**
-     * An unexpected error response.
-     */
-    default: GoogleRpcStatus;
-};
-
-export type AuthV1MembershipServiceCheckMembershipError = AuthV1MembershipServiceCheckMembershipErrors[keyof AuthV1MembershipServiceCheckMembershipErrors];
-
-export type AuthV1MembershipServiceCheckMembershipResponses = {
-    /**
-     * Success
-     */
-    200: AuthV1CheckMembershipResponse;
-};
-
-export type AuthV1MembershipServiceCheckMembershipResponse = AuthV1MembershipServiceCheckMembershipResponses[keyof AuthV1MembershipServiceCheckMembershipResponses];
-
-export type AuthV1MembershipServiceGetInternalMembershipInfoData = {
-    body?: never;
-    path: {
-        /**
-         * org_id
-         */
-        org_id: string;
-    };
-    query?: {
-        /**
-         * user_id
-         */
-        user_id?: string;
-    };
-    url: '/auth/v1/memberships/{org_id}/info';
-};
-
-export type AuthV1MembershipServiceGetInternalMembershipInfoErrors = {
-    /**
-     * An unexpected error response.
-     */
-    default: GoogleRpcStatus;
-};
-
-export type AuthV1MembershipServiceGetInternalMembershipInfoError = AuthV1MembershipServiceGetInternalMembershipInfoErrors[keyof AuthV1MembershipServiceGetInternalMembershipInfoErrors];
-
-export type AuthV1MembershipServiceGetInternalMembershipInfoResponses = {
-    /**
-     * Success
-     */
-    200: AuthV1GetInternalMembershipInfoResponse;
-};
-
-export type AuthV1MembershipServiceGetInternalMembershipInfoResponse = AuthV1MembershipServiceGetInternalMembershipInfoResponses[keyof AuthV1MembershipServiceGetInternalMembershipInfoResponses];
-
 export type AuthV1MembershipServiceLeaveOrganizationData = {
     body?: never;
     path: {
@@ -10993,7 +11364,7 @@ export type AuthV1MembershipServiceLeaveOrganizationData = {
          */
         user_id?: string;
     };
-    url: '/auth/v1/memberships/{org_id}/leave';
+    url: '/auth/v1/organizations/{org_id}/members/current';
 };
 
 export type AuthV1MembershipServiceLeaveOrganizationErrors = {
@@ -11013,6 +11384,120 @@ export type AuthV1MembershipServiceLeaveOrganizationResponses = {
 };
 
 export type AuthV1MembershipServiceLeaveOrganizationResponse = AuthV1MembershipServiceLeaveOrganizationResponses[keyof AuthV1MembershipServiceLeaveOrganizationResponses];
+
+export type AuthV1MembershipServiceCheckCurrentMembershipData = {
+    body?: never;
+    path: {
+        /**
+         * org_id
+         */
+        org_id: string;
+    };
+    query?: never;
+    url: '/auth/v1/organizations/{org_id}/members/current/check';
+};
+
+export type AuthV1MembershipServiceCheckCurrentMembershipErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1MembershipServiceCheckCurrentMembershipError = AuthV1MembershipServiceCheckCurrentMembershipErrors[keyof AuthV1MembershipServiceCheckCurrentMembershipErrors];
+
+export type AuthV1MembershipServiceCheckCurrentMembershipResponses = {
+    /**
+     * Success
+     */
+    200: AuthV1CheckMembershipResponse;
+};
+
+export type AuthV1MembershipServiceCheckCurrentMembershipResponse = AuthV1MembershipServiceCheckCurrentMembershipResponses[keyof AuthV1MembershipServiceCheckCurrentMembershipResponses];
+
+export type AuthV1MembershipServiceRemoveMemberData = {
+    body?: never;
+    path: {
+        /**
+         * org_id
+         */
+        org_id: string;
+        /**
+         * user_id
+         */
+        user_id: string;
+    };
+    query?: never;
+    url: '/auth/v1/organizations/{org_id}/members/{user_id}';
+};
+
+export type AuthV1MembershipServiceRemoveMemberErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1MembershipServiceRemoveMemberError = AuthV1MembershipServiceRemoveMemberErrors[keyof AuthV1MembershipServiceRemoveMemberErrors];
+
+export type AuthV1MembershipServiceRemoveMemberResponses = {
+    /**
+     * Success
+     */
+    200: GoogleProtobufEmpty;
+};
+
+export type AuthV1MembershipServiceRemoveMemberResponse = AuthV1MembershipServiceRemoveMemberResponses[keyof AuthV1MembershipServiceRemoveMemberResponses];
+
+export type AuthV1MembershipServiceUpdateMemberData = {
+    /**
+     * UpdateMemberRequest
+     */
+    body: {
+        /**
+         * role
+         */
+        role?: AuthV1MembershipRole;
+        /**
+         * state
+         */
+        state?: AuthV1MembershipState;
+        /**
+         * update_mask
+         */
+        update_mask?: GoogleProtobufFieldMask;
+    };
+    path: {
+        /**
+         * org_id
+         */
+        org_id: string;
+        /**
+         * user_id
+         */
+        user_id: string;
+    };
+    query?: never;
+    url: '/auth/v1/organizations/{org_id}/members/{user_id}';
+};
+
+export type AuthV1MembershipServiceUpdateMemberErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1MembershipServiceUpdateMemberError = AuthV1MembershipServiceUpdateMemberErrors[keyof AuthV1MembershipServiceUpdateMemberErrors];
+
+export type AuthV1MembershipServiceUpdateMemberResponses = {
+    /**
+     * Success
+     */
+    200: AuthV1MembershipMutation;
+};
+
+export type AuthV1MembershipServiceUpdateMemberResponse = AuthV1MembershipServiceUpdateMemberResponses[keyof AuthV1MembershipServiceUpdateMemberResponses];
 
 export type AuthV1MembershipServiceInviteMemberData = {
     /**
@@ -11044,7 +11529,7 @@ export type AuthV1MembershipServiceInviteMemberData = {
         'user.org_id': string;
     };
     query?: never;
-    url: '/auth/v1/memberships/{user.org_id}/invite';
+    url: '/auth/v1/organizations/{user.org_id}/invite';
 };
 
 export type AuthV1MembershipServiceInviteMemberErrors = {
@@ -11091,7 +11576,7 @@ export type AuthV1MembershipServiceResendInvitationData = {
         'user.org_id': string;
     };
     query?: never;
-    url: '/auth/v1/memberships/{user.org_id}/invite/resend';
+    url: '/auth/v1/organizations/{user.org_id}/invite/resend';
 };
 
 export type AuthV1MembershipServiceResendInvitationErrors = {
@@ -11130,7 +11615,7 @@ export type AuthV1MembershipServiceCancelInvitationData = {
          */
         'user.actor_id'?: string;
     };
-    url: '/auth/v1/memberships/{user.org_id}/invite/{user_id}';
+    url: '/auth/v1/organizations/{user.org_id}/invite/{user_id}';
 };
 
 export type AuthV1MembershipServiceCancelInvitationErrors = {
@@ -11173,7 +11658,7 @@ export type AuthV1MembershipServiceListOrganizationMembersData = {
          */
         offset?: number;
     };
-    url: '/auth/v1/memberships/{user.org_id}/members';
+    url: '/auth/v1/organizations/{user.org_id}/members';
 };
 
 export type AuthV1MembershipServiceListOrganizationMembersErrors = {
@@ -11194,221 +11679,6 @@ export type AuthV1MembershipServiceListOrganizationMembersResponses = {
 
 export type AuthV1MembershipServiceListOrganizationMembersResponse = AuthV1MembershipServiceListOrganizationMembersResponses[keyof AuthV1MembershipServiceListOrganizationMembersResponses];
 
-export type AuthV1MembershipServiceRemoveMemberData = {
-    body?: never;
-    path: {
-        /**
-         * org_id
-         */
-        'user.org_id': string;
-        /**
-         * user_id
-         */
-        user_id: string;
-    };
-    query?: {
-        /**
-         * actor_id
-         */
-        'user.actor_id'?: string;
-    };
-    url: '/auth/v1/memberships/{user.org_id}/members/{user_id}';
-};
-
-export type AuthV1MembershipServiceRemoveMemberErrors = {
-    /**
-     * An unexpected error response.
-     */
-    default: GoogleRpcStatus;
-};
-
-export type AuthV1MembershipServiceRemoveMemberError = AuthV1MembershipServiceRemoveMemberErrors[keyof AuthV1MembershipServiceRemoveMemberErrors];
-
-export type AuthV1MembershipServiceRemoveMemberResponses = {
-    /**
-     * Success
-     */
-    200: GoogleProtobufEmpty;
-};
-
-export type AuthV1MembershipServiceRemoveMemberResponse = AuthV1MembershipServiceRemoveMemberResponses[keyof AuthV1MembershipServiceRemoveMemberResponses];
-
-export type AuthV1MembershipServiceReactivateMemberData = {
-    body?: never;
-    path: {
-        /**
-         * org_id
-         */
-        'user.org_id': string;
-        /**
-         * user_id
-         */
-        user_id: string;
-    };
-    query?: {
-        /**
-         * actor_id
-         */
-        'user.actor_id'?: string;
-    };
-    url: '/auth/v1/memberships/{user.org_id}/members/{user_id}/reactivate';
-};
-
-export type AuthV1MembershipServiceReactivateMemberErrors = {
-    /**
-     * An unexpected error response.
-     */
-    default: GoogleRpcStatus;
-};
-
-export type AuthV1MembershipServiceReactivateMemberError = AuthV1MembershipServiceReactivateMemberErrors[keyof AuthV1MembershipServiceReactivateMemberErrors];
-
-export type AuthV1MembershipServiceReactivateMemberResponses = {
-    /**
-     * Success
-     */
-    200: AuthV1MembershipMutation;
-};
-
-export type AuthV1MembershipServiceReactivateMemberResponse = AuthV1MembershipServiceReactivateMemberResponses[keyof AuthV1MembershipServiceReactivateMemberResponses];
-
-export type AuthV1MembershipServiceUpdateMemberRoleData = {
-    /**
-     * UpdateMemberRoleRequest
-     */
-    body: {
-        /**
-         * ActorOrgRequest
-         */
-        user?: {
-            /**
-             * actor_id
-             */
-            actor_id?: string;
-        };
-        /**
-         * role
-         */
-        role?: AuthV1MembershipRole;
-    };
-    path: {
-        /**
-         * org_id
-         */
-        'user.org_id': string;
-        /**
-         * user_id
-         */
-        user_id: string;
-    };
-    query?: never;
-    url: '/auth/v1/memberships/{user.org_id}/members/{user_id}/role';
-};
-
-export type AuthV1MembershipServiceUpdateMemberRoleErrors = {
-    /**
-     * An unexpected error response.
-     */
-    default: GoogleRpcStatus;
-};
-
-export type AuthV1MembershipServiceUpdateMemberRoleError = AuthV1MembershipServiceUpdateMemberRoleErrors[keyof AuthV1MembershipServiceUpdateMemberRoleErrors];
-
-export type AuthV1MembershipServiceUpdateMemberRoleResponses = {
-    /**
-     * Success
-     */
-    200: AuthV1MembershipMutation;
-};
-
-export type AuthV1MembershipServiceUpdateMemberRoleResponse = AuthV1MembershipServiceUpdateMemberRoleResponses[keyof AuthV1MembershipServiceUpdateMemberRoleResponses];
-
-export type AuthV1MembershipServiceSuspendMemberData = {
-    body?: never;
-    path: {
-        /**
-         * org_id
-         */
-        'user.org_id': string;
-        /**
-         * user_id
-         */
-        user_id: string;
-    };
-    query?: {
-        /**
-         * actor_id
-         */
-        'user.actor_id'?: string;
-    };
-    url: '/auth/v1/memberships/{user.org_id}/members/{user_id}/suspend';
-};
-
-export type AuthV1MembershipServiceSuspendMemberErrors = {
-    /**
-     * An unexpected error response.
-     */
-    default: GoogleRpcStatus;
-};
-
-export type AuthV1MembershipServiceSuspendMemberError = AuthV1MembershipServiceSuspendMemberErrors[keyof AuthV1MembershipServiceSuspendMemberErrors];
-
-export type AuthV1MembershipServiceSuspendMemberResponses = {
-    /**
-     * Success
-     */
-    200: AuthV1MembershipMutation;
-};
-
-export type AuthV1MembershipServiceSuspendMemberResponse = AuthV1MembershipServiceSuspendMemberResponses[keyof AuthV1MembershipServiceSuspendMemberResponses];
-
-export type AuthV1MembershipServiceUpdateOrgNameData = {
-    /**
-     * UpdateOrgNameRequest
-     */
-    body: {
-        /**
-         * ActorOrgRequest
-         */
-        user?: {
-            /**
-             * actor_id
-             */
-            actor_id?: string;
-        };
-        /**
-         * full_name
-         */
-        full_name?: string;
-    };
-    path: {
-        /**
-         * org_id
-         */
-        'user.org_id': string;
-    };
-    query?: never;
-    url: '/auth/v1/memberships/{user.org_id}/name';
-};
-
-export type AuthV1MembershipServiceUpdateOrgNameErrors = {
-    /**
-     * An unexpected error response.
-     */
-    default: GoogleRpcStatus;
-};
-
-export type AuthV1MembershipServiceUpdateOrgNameError = AuthV1MembershipServiceUpdateOrgNameErrors[keyof AuthV1MembershipServiceUpdateOrgNameErrors];
-
-export type AuthV1MembershipServiceUpdateOrgNameResponses = {
-    /**
-     * Success
-     */
-    200: AuthV1UpdateOrgNameResponse;
-};
-
-export type AuthV1MembershipServiceUpdateOrgNameResponse = AuthV1MembershipServiceUpdateOrgNameResponses[keyof AuthV1MembershipServiceUpdateOrgNameResponses];
-
 export type AuthV1MembershipServiceUpdateMembershipStateData = {
     /**
      * UpdateMembershipStateRequest
@@ -11427,19 +11697,19 @@ export type AuthV1MembershipServiceUpdateMembershipStateData = {
          * state
          */
         state?: AuthV1MembershipApplicationState;
-        /**
-         * user_id
-         */
-        user_id?: string;
     };
     path: {
         /**
          * org_id
          */
         'user.org_id': string;
+        /**
+         * user_id
+         */
+        user_id: string;
     };
     query?: never;
-    url: '/auth/v1/memberships/{user.org_id}/state';
+    url: '/auth/v1/organizations/{user.org_id}/membership-applications/{user_id}';
 };
 
 export type AuthV1MembershipServiceUpdateMembershipStateErrors = {
@@ -11460,24 +11730,101 @@ export type AuthV1MembershipServiceUpdateMembershipStateResponses = {
 
 export type AuthV1MembershipServiceUpdateMembershipStateResponse = AuthV1MembershipServiceUpdateMembershipStateResponses[keyof AuthV1MembershipServiceUpdateMembershipStateResponses];
 
-export type AuthV1MembershipServiceUpdateOrgUsernameData = {
+export type AuthV1MembershipServiceListMembershipsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * limit
+         */
+        limit?: number;
+        /**
+         * offset
+         */
+        offset?: number;
+        /**
+         * state
+         */
+        state?: AuthV1MembershipState;
+    };
+    url: '/auth/v1/users/current/memberships';
+};
+
+export type AuthV1MembershipServiceListMembershipsErrors = {
     /**
-     * UpdateOrgUsernameRequest
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1MembershipServiceListMembershipsError = AuthV1MembershipServiceListMembershipsErrors[keyof AuthV1MembershipServiceListMembershipsErrors];
+
+export type AuthV1MembershipServiceListMembershipsResponses = {
+    /**
+     * Success
+     */
+    200: AuthV1ListMembershipsResponse;
+};
+
+export type AuthV1MembershipServiceListMembershipsResponse = AuthV1MembershipServiceListMembershipsResponses[keyof AuthV1MembershipServiceListMembershipsResponses];
+
+export type AuthV1NotificationPreferenceServiceGetNotificationPreferencesData = {
+    body?: never;
+    path: {
+        /**
+         * org_id
+         */
+        org_id: string;
+    };
+    query?: {
+        /**
+         * user_id
+         */
+        user_id?: string;
+    };
+    url: '/auth/v1/notifications/{org_id}/preferences';
+};
+
+export type AuthV1NotificationPreferenceServiceGetNotificationPreferencesErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1NotificationPreferenceServiceGetNotificationPreferencesError = AuthV1NotificationPreferenceServiceGetNotificationPreferencesErrors[keyof AuthV1NotificationPreferenceServiceGetNotificationPreferencesErrors];
+
+export type AuthV1NotificationPreferenceServiceGetNotificationPreferencesResponses = {
+    /**
+     * Success
+     */
+    200: AuthV1NotificationPreferences;
+};
+
+export type AuthV1NotificationPreferenceServiceGetNotificationPreferencesResponse = AuthV1NotificationPreferenceServiceGetNotificationPreferencesResponses[keyof AuthV1NotificationPreferenceServiceGetNotificationPreferencesResponses];
+
+export type AuthV1NotificationPreferenceServiceUpdateNotificationPreferenceData = {
+    /**
+     * UpdateNotificationPreferenceRequest
      */
     body: {
         /**
-         * ActorOrgRequest
+         * UserOrgRequest
          */
         user?: {
             /**
-             * actor_id
+             * user_id
              */
-            actor_id?: string;
+            user_id?: string;
         };
         /**
-         * username
+         * category
          */
-        username?: string;
+        category?: AuthV1NotificationCategory;
+        /**
+         * email_enabled
+         */
+        email_enabled?: boolean;
     };
     path: {
         /**
@@ -11486,26 +11833,209 @@ export type AuthV1MembershipServiceUpdateOrgUsernameData = {
         'user.org_id': string;
     };
     query?: never;
-    url: '/auth/v1/memberships/{user.org_id}/username';
+    url: '/auth/v1/notifications/{user.org_id}/preferences';
 };
 
-export type AuthV1MembershipServiceUpdateOrgUsernameErrors = {
+export type AuthV1NotificationPreferenceServiceUpdateNotificationPreferenceErrors = {
     /**
      * An unexpected error response.
      */
     default: GoogleRpcStatus;
 };
 
-export type AuthV1MembershipServiceUpdateOrgUsernameError = AuthV1MembershipServiceUpdateOrgUsernameErrors[keyof AuthV1MembershipServiceUpdateOrgUsernameErrors];
+export type AuthV1NotificationPreferenceServiceUpdateNotificationPreferenceError = AuthV1NotificationPreferenceServiceUpdateNotificationPreferenceErrors[keyof AuthV1NotificationPreferenceServiceUpdateNotificationPreferenceErrors];
 
-export type AuthV1MembershipServiceUpdateOrgUsernameResponses = {
+export type AuthV1NotificationPreferenceServiceUpdateNotificationPreferenceResponses = {
     /**
      * Success
      */
-    200: AuthV1UpdateOrgUsernameResponse;
+    200: AuthV1NotificationPreference;
 };
 
-export type AuthV1MembershipServiceUpdateOrgUsernameResponse = AuthV1MembershipServiceUpdateOrgUsernameResponses[keyof AuthV1MembershipServiceUpdateOrgUsernameResponses];
+export type AuthV1NotificationPreferenceServiceUpdateNotificationPreferenceResponse = AuthV1NotificationPreferenceServiceUpdateNotificationPreferenceResponses[keyof AuthV1NotificationPreferenceServiceUpdateNotificationPreferenceResponses];
+
+export type AuthV1OrganizationServiceListOrganizationsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * page_size
+         */
+        page_size?: number;
+        /**
+         * page_token
+         */
+        page_token?: string;
+        /**
+         * show_deleted
+         *
+         * Includes deleted organizations visible to their owners once lifecycle adds deletion.
+         */
+        show_deleted?: boolean;
+    };
+    url: '/auth/v1/organizations';
+};
+
+export type AuthV1OrganizationServiceListOrganizationsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1OrganizationServiceListOrganizationsError = AuthV1OrganizationServiceListOrganizationsErrors[keyof AuthV1OrganizationServiceListOrganizationsErrors];
+
+export type AuthV1OrganizationServiceListOrganizationsResponses = {
+    /**
+     * Success
+     */
+    200: AuthV1ListOrganizationsResponse;
+};
+
+export type AuthV1OrganizationServiceListOrganizationsResponse = AuthV1OrganizationServiceListOrganizationsResponses[keyof AuthV1OrganizationServiceListOrganizationsResponses];
+
+export type AuthV1OrganizationServiceGetOrganizationData = {
+    body?: never;
+    path: {
+        /**
+         * org_id
+         */
+        org_id: string;
+    };
+    query?: never;
+    url: '/auth/v1/organizations/{org_id}';
+};
+
+export type AuthV1OrganizationServiceGetOrganizationErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1OrganizationServiceGetOrganizationError = AuthV1OrganizationServiceGetOrganizationErrors[keyof AuthV1OrganizationServiceGetOrganizationErrors];
+
+export type AuthV1OrganizationServiceGetOrganizationResponses = {
+    /**
+     * Success
+     */
+    200: AuthV1Organization;
+};
+
+export type AuthV1OrganizationServiceGetOrganizationResponse = AuthV1OrganizationServiceGetOrganizationResponses[keyof AuthV1OrganizationServiceGetOrganizationResponses];
+
+export type AuthV1OrganizationServiceUpdateOrganizationData = {
+    /**
+     * UpdateOrganizationRequest
+     */
+    body: {
+        /**
+         * organization
+         */
+        organization?: AuthV1Organization;
+        /**
+         * update_mask
+         *
+         * Supported paths are name, slug and image_id.
+         */
+        update_mask?: GoogleProtobufFieldMask;
+    };
+    path: {
+        /**
+         * org_id
+         */
+        org_id: string;
+    };
+    query?: never;
+    url: '/auth/v1/organizations/{org_id}';
+};
+
+export type AuthV1OrganizationServiceUpdateOrganizationErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1OrganizationServiceUpdateOrganizationError = AuthV1OrganizationServiceUpdateOrganizationErrors[keyof AuthV1OrganizationServiceUpdateOrganizationErrors];
+
+export type AuthV1OrganizationServiceUpdateOrganizationResponses = {
+    /**
+     * Success
+     */
+    200: AuthV1Organization;
+};
+
+export type AuthV1OrganizationServiceUpdateOrganizationResponse = AuthV1OrganizationServiceUpdateOrganizationResponses[keyof AuthV1OrganizationServiceUpdateOrganizationResponses];
+
+export type AuthV1OrganizationServiceListOrganizationAuditEventsData = {
+    body?: never;
+    path: {
+        /**
+         * org_id
+         */
+        org_id: string;
+    };
+    query?: {
+        /**
+         * page_size
+         */
+        page_size?: number;
+        /**
+         * page_token
+         */
+        page_token?: string;
+    };
+    url: '/auth/v1/organizations/{org_id}/audit-events';
+};
+
+export type AuthV1OrganizationServiceListOrganizationAuditEventsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1OrganizationServiceListOrganizationAuditEventsError = AuthV1OrganizationServiceListOrganizationAuditEventsErrors[keyof AuthV1OrganizationServiceListOrganizationAuditEventsErrors];
+
+export type AuthV1OrganizationServiceListOrganizationAuditEventsResponses = {
+    /**
+     * Success
+     */
+    200: AuthV1ListOrganizationAuditEventsResponse;
+};
+
+export type AuthV1OrganizationServiceListOrganizationAuditEventsResponse = AuthV1OrganizationServiceListOrganizationAuditEventsResponses[keyof AuthV1OrganizationServiceListOrganizationAuditEventsResponses];
+
+export type AuthV1OrganizationServiceCreateOrganizationAvatarUploadData = {
+    body?: never;
+    path: {
+        /**
+         * org_id
+         */
+        org_id: string;
+    };
+    query?: never;
+    url: '/auth/v1/organizations/{org_id}/avatar/upload';
+};
+
+export type AuthV1OrganizationServiceCreateOrganizationAvatarUploadErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1OrganizationServiceCreateOrganizationAvatarUploadError = AuthV1OrganizationServiceCreateOrganizationAvatarUploadErrors[keyof AuthV1OrganizationServiceCreateOrganizationAvatarUploadErrors];
+
+export type AuthV1OrganizationServiceCreateOrganizationAvatarUploadResponses = {
+    /**
+     * Success
+     */
+    200: AuthV1CreateAvatarUploadResponse;
+};
+
+export type AuthV1OrganizationServiceCreateOrganizationAvatarUploadResponse = AuthV1OrganizationServiceCreateOrganizationAvatarUploadResponses[keyof AuthV1OrganizationServiceCreateOrganizationAvatarUploadResponses];
 
 export type AuthV1OtpServiceRegenerateBackupCodesData = {
     body?: never;
@@ -11923,7 +12453,7 @@ export type AuthV1PolicyServiceListPoliciesData = {
          */
         user_id?: string;
     };
-    url: '/auth/v1/memberships/{org_id}/policies';
+    url: '/auth/v1/organizations/{org_id}/policies';
 };
 
 export type AuthV1PolicyServiceListPoliciesErrors = {
@@ -11962,7 +12492,7 @@ export type AuthV1PolicyServiceListUserPoliciesData = {
          */
         'user.user_id'?: string;
     };
-    url: '/auth/v1/memberships/{user.org_id}/members/{member_id}/policies';
+    url: '/auth/v1/organizations/{user.org_id}/members/{member_id}/policies';
 };
 
 export type AuthV1PolicyServiceListUserPoliciesErrors = {
@@ -12017,7 +12547,7 @@ export type AuthV1PolicyServiceCreatePolicyData = {
         'user.org_id': string;
     };
     query?: never;
-    url: '/auth/v1/memberships/{user.org_id}/policies';
+    url: '/auth/v1/organizations/{user.org_id}/policies';
 };
 
 export type AuthV1PolicyServiceCreatePolicyErrors = {
@@ -12056,7 +12586,7 @@ export type AuthV1PolicyServiceDetachPolicyData = {
          */
         'user.user_id'?: string;
     };
-    url: '/auth/v1/memberships/{user.org_id}/policies/attachments/{attachment_id}';
+    url: '/auth/v1/organizations/{user.org_id}/policies/attachments/{attachment_id}';
 };
 
 export type AuthV1PolicyServiceDetachPolicyErrors = {
@@ -12103,7 +12633,7 @@ export type AuthV1PolicyServiceListPermissionRegistryData = {
          */
         offset?: number;
     };
-    url: '/auth/v1/memberships/{user.org_id}/policies/permissions';
+    url: '/auth/v1/organizations/{user.org_id}/policies/permissions';
 };
 
 export type AuthV1PolicyServiceListPermissionRegistryErrors = {
@@ -12142,7 +12672,7 @@ export type AuthV1PolicyServiceDeletePolicyData = {
          */
         'user.user_id'?: string;
     };
-    url: '/auth/v1/memberships/{user.org_id}/policies/{policy_id}';
+    url: '/auth/v1/organizations/{user.org_id}/policies/{policy_id}';
 };
 
 export type AuthV1PolicyServiceDeletePolicyErrors = {
@@ -12181,7 +12711,7 @@ export type AuthV1PolicyServiceGetPolicyData = {
          */
         'user.user_id'?: string;
     };
-    url: '/auth/v1/memberships/{user.org_id}/policies/{policy_id}';
+    url: '/auth/v1/organizations/{user.org_id}/policies/{policy_id}';
 };
 
 export type AuthV1PolicyServiceGetPolicyErrors = {
@@ -12240,7 +12770,7 @@ export type AuthV1PolicyServiceUpdatePolicyData = {
         policy_id: string;
     };
     query?: never;
-    url: '/auth/v1/memberships/{user.org_id}/policies/{policy_id}';
+    url: '/auth/v1/organizations/{user.org_id}/policies/{policy_id}';
 };
 
 export type AuthV1PolicyServiceUpdatePolicyErrors = {
@@ -12279,7 +12809,7 @@ export type AuthV1PolicyServiceListPolicyAttachmentsData = {
          */
         'user.user_id'?: string;
     };
-    url: '/auth/v1/memberships/{user.org_id}/policies/{policy_id}/attachments';
+    url: '/auth/v1/organizations/{user.org_id}/policies/{policy_id}/attachments';
 };
 
 export type AuthV1PolicyServiceListPolicyAttachmentsErrors = {
@@ -12334,7 +12864,7 @@ export type AuthV1PolicyServiceAttachPolicyData = {
         policy_id: string;
     };
     query?: never;
-    url: '/auth/v1/memberships/{user.org_id}/policies/{policy_id}/attachments';
+    url: '/auth/v1/organizations/{user.org_id}/policies/{policy_id}/attachments';
 };
 
 export type AuthV1PolicyServiceAttachPolicyErrors = {
@@ -12545,6 +13075,31 @@ export type AuthV1TokenServiceLogoutResponses = {
 
 export type AuthV1TokenServiceLogoutResponse = AuthV1TokenServiceLogoutResponses[keyof AuthV1TokenServiceLogoutResponses];
 
+export type AuthV1TokenServiceLogoutAllData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/auth/v1/logout/all';
+};
+
+export type AuthV1TokenServiceLogoutAllErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1TokenServiceLogoutAllError = AuthV1TokenServiceLogoutAllErrors[keyof AuthV1TokenServiceLogoutAllErrors];
+
+export type AuthV1TokenServiceLogoutAllResponses = {
+    /**
+     * Success
+     */
+    200: GoogleProtobufEmpty;
+};
+
+export type AuthV1TokenServiceLogoutAllResponse = AuthV1TokenServiceLogoutAllResponses[keyof AuthV1TokenServiceLogoutAllResponses];
+
 export type AuthV1EmailServiceSendPasswordResetData = {
     body: AuthV1SendPasswordResetRequest;
     path?: never;
@@ -12619,6 +13174,86 @@ export type AuthV1EmailServiceRegisterResponses = {
 };
 
 export type AuthV1EmailServiceRegisterResponse = AuthV1EmailServiceRegisterResponses[keyof AuthV1EmailServiceRegisterResponses];
+
+export type AuthV1TokenServiceListSignInsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/auth/v1/sign-ins';
+};
+
+export type AuthV1TokenServiceListSignInsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1TokenServiceListSignInsError = AuthV1TokenServiceListSignInsErrors[keyof AuthV1TokenServiceListSignInsErrors];
+
+export type AuthV1TokenServiceListSignInsResponses = {
+    /**
+     * Success
+     */
+    200: AuthV1ListSignInsResponse;
+};
+
+export type AuthV1TokenServiceListSignInsResponse = AuthV1TokenServiceListSignInsResponses[keyof AuthV1TokenServiceListSignInsResponses];
+
+export type AuthV1TokenServiceRevokeOtherSignInsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/auth/v1/sign-ins/revoke-others';
+};
+
+export type AuthV1TokenServiceRevokeOtherSignInsErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1TokenServiceRevokeOtherSignInsError = AuthV1TokenServiceRevokeOtherSignInsErrors[keyof AuthV1TokenServiceRevokeOtherSignInsErrors];
+
+export type AuthV1TokenServiceRevokeOtherSignInsResponses = {
+    /**
+     * Success
+     */
+    200: GoogleProtobufEmpty;
+};
+
+export type AuthV1TokenServiceRevokeOtherSignInsResponse = AuthV1TokenServiceRevokeOtherSignInsResponses[keyof AuthV1TokenServiceRevokeOtherSignInsResponses];
+
+export type AuthV1TokenServiceRevokeSignInData = {
+    body?: never;
+    path: {
+        /**
+         * sign_in_id
+         */
+        sign_in_id: string;
+    };
+    query?: never;
+    url: '/auth/v1/sign-ins/{sign_in_id}';
+};
+
+export type AuthV1TokenServiceRevokeSignInErrors = {
+    /**
+     * An unexpected error response.
+     */
+    default: GoogleRpcStatus;
+};
+
+export type AuthV1TokenServiceRevokeSignInError = AuthV1TokenServiceRevokeSignInErrors[keyof AuthV1TokenServiceRevokeSignInErrors];
+
+export type AuthV1TokenServiceRevokeSignInResponses = {
+    /**
+     * Success
+     */
+    200: GoogleProtobufEmpty;
+};
+
+export type AuthV1TokenServiceRevokeSignInResponse = AuthV1TokenServiceRevokeSignInResponses[keyof AuthV1TokenServiceRevokeSignInResponses];
 
 export type AuthV1TokenServiceRefreshTokenData = {
     body: AuthV1RefreshTokenRequest;

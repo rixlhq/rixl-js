@@ -29,6 +29,7 @@ describe("Registration Functions", () => {
         data: {
           verification_id: "verify-123",
           message: "Registration successful",
+          user_id: "unused-wire-field",
         },
       });
 
@@ -144,10 +145,10 @@ describe("Registration Functions", () => {
         },
       });
 
-      const result = await resendEmailVerificationCode("test@example.com");
+      const result = await resendEmailVerificationCode("test@example.com", "verify-456");
 
       expect(mockPostAuthV1EmailVerifyResend).toHaveBeenCalledWith({
-        body: {email: "test@example.com"},
+        body: {email: "test@example.com", verification_id: "verify-456"},
         throwOnError: true,
       });
       expect(result).toEqual({
@@ -162,7 +163,7 @@ describe("Registration Functions", () => {
         code: 404,
       });
 
-      await expect(resendEmailVerificationCode("notfound@example.com")).rejects.toThrow();
+      await expect(resendEmailVerificationCode("notfound@example.com", "verify-456")).rejects.toThrow();
     });
 
     it("should throw error for rate limit exceeded", async () => {
@@ -171,11 +172,16 @@ describe("Registration Functions", () => {
         code: 429,
       });
 
-      await expect(resendEmailVerificationCode("test@example.com")).rejects.toThrow();
+      await expect(resendEmailVerificationCode("test@example.com", "verify-456")).rejects.toThrow();
+    });
+
+    it("requires the pending signup's verification ID", async () => {
+      await expect(resendEmailVerificationCode("test@example.com", "")).rejects.toThrow();
+      expect(mockPostAuthV1EmailVerifyResend).not.toHaveBeenCalled();
     });
 
     it("should validate email format", async () => {
-      await expect(resendEmailVerificationCode("invalid-email")).rejects.toThrow();
+      await expect(resendEmailVerificationCode("invalid-email", "verify-456")).rejects.toThrow();
     });
   });
 });

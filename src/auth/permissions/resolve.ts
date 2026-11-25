@@ -1,4 +1,5 @@
 import {getUserInfo} from "../user";
+import {adoptStoredRefreshToken} from "../stored-sign-in";
 import {permissions, permissionsResolved} from "../permissionStore";
 import {permissionEpoch, retirePermissionEpoch} from "./epoch";
 
@@ -25,9 +26,9 @@ export const invalidatePermissions = (): void => {
  * Loads the effective permissions for the signed-in user.
  *
  * `GET /auth/v1/userinfo` is the authoritative source: it returns the
- * permissions and the policies granting them, scoped to the user's active
- * organization. Call this after sign-in and again whenever the active
- * organization changes, since the response is scoped to it.
+ * permissions and the policies granting them, scoped to the org of this tab's
+ * access token. Call this after sign-in and again after selectOrganization(),
+ * which empties the set.
  *
  * Always issues a fresh request — it is the caller's way of saying the answer
  * may have changed. On failure the error propagates and the held set is left
@@ -36,6 +37,9 @@ export const invalidatePermissions = (): void => {
  * than keeps stale grants.
  */
 export const resolvePermissions = async (): Promise<void> => {
+  // Before the scope is read: found later, by the request's own token lookup,
+  // another tab's sign-in would retire the scope and drop the answer for it.
+  adoptStoredRefreshToken();
   const started = permissionEpoch();
   const info = await getUserInfo();
 
@@ -48,7 +52,7 @@ export const resolvePermissions = async (): Promise<void> => {
 };
 
 /**
- * Resolves permissions unless they already have been for the active
+ * Resolves permissions unless they already have been for the tab's
  * organization.
  *
  * Route guards need an answer before deciding whether to redirect, but must not
@@ -57,6 +61,8 @@ export const resolvePermissions = async (): Promise<void> => {
  * current answer will do.
  */
 export const ensurePermissions = async (): Promise<void> => {
+  // Empties the set if another tab has signed in since it was resolved.
+  adoptStoredRefreshToken();
   if (permissionsResolved.get()) return;
 
   // A request issued under a retired scope will discard its own answer, so

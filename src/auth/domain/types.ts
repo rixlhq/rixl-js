@@ -18,18 +18,18 @@ export interface DomainResponse {
   verification_token?: string;
   expires_at?: string;
   verified_at?: string;
-  auto_join?: boolean;
+  suggest_join?: boolean;
 }
 
 export interface AddDomainRequest {
   domain: string;
 }
 
-export interface UpdateAutoJoinRequest {
+export interface UpdateSuggestJoinRequest {
   enabled: boolean;
 }
 
-export interface AutoJoinSetting {
+export interface SuggestJoinSetting {
   enabled: boolean;
   present?: boolean;
 }

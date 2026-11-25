@@ -19,13 +19,34 @@ export const decodeToken = (token: string): User | undefined => {
       username: decodedUser.username as string,
       image_url: decodedUser.image_url as string,
       language_code: decodedUser.language_code as string,
-      org_id: decodedUser.org_id as string,
     };
   } catch (error) {
     // Only log in non-test environments to reduce test noise
     if (process.env.NODE_ENV !== "test") {
       console.warn("Failed to decode JWT token. Error: ", error);
     }
+    return undefined;
+  }
+};
+
+export interface OrgClaims {
+  userId: string;
+  signInId: string;
+  orgId: string;
+  role: string;
+}
+
+/** The claims that say which org an access token is for. */
+export const decodeOrgClaims = (token: string): OrgClaims | undefined => {
+  try {
+    const {
+      id,
+      sign_in_id: signInId,
+      org_id: orgId,
+      role,
+    } = decodeJwt<Record<"id" | "sign_in_id" | "org_id" | "role", string | undefined>>(token);
+    return orgId ? {userId: id ?? "", signInId: signInId ?? "", orgId, role: role ?? ""} : undefined;
+  } catch {
     return undefined;
   }
 };

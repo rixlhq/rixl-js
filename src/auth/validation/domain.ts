@@ -9,8 +9,8 @@ export const AddDomainSchema = v.object({
 });
 
 /**
- * Update auto-join setting schema
+ * Update join suggestion setting schema
  */
-export const UpdateAutoJoinSchema = v.object({
-  enabled: v.boolean("Auto-join setting must be a boolean"),
+export const UpdateSuggestJoinSchema = v.object({
+  enabled: v.boolean("Join suggestion setting must be a boolean"),
 });

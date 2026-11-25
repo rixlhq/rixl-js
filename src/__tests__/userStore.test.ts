@@ -114,7 +114,6 @@ describe("UserStore", () => {
         username: "johndoe",
         image_url: "https://example.com/img.jpg",
         language_code: "fr",
-        org_id: "org456",
         email: "olalekan.akande@rixl.com",
       });
 
@@ -124,7 +123,6 @@ describe("UserStore", () => {
       expect(retrieved).toEqual(mockUser);
       expect(retrieved?.id).toBe("id123");
       expect(retrieved?.language_code).toBe("fr");
-      expect(retrieved?.org_id).toBe("org456");
     });
 
     it("should handle localStorage with 'undefined' string value", () => {

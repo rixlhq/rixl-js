@@ -4,7 +4,7 @@ import {
   EmailAuthRequestSchema,
   ResetPasswordRequestSchema,
   LoginOTPVerifyRequestSchema,
-  verifyEmailChangeRequestSchema,
+  VerifyEmailCodeSchema,
   ConnectProviderSchema,
   VerifyOTPCodeSchema,
 } from "../../auth/validation/auth";
@@ -32,7 +32,7 @@ describe("Auth Validation Schemas", () => {
 
   describe("LoginOTPVerifyRequestSchema", () => {
     it("should validate valid OTP code and challenge ID", () => {
-      const data = {code: "123456", session_id: "challenge-abc-123"};
+      const data = {code: "123456", challenge_id: "challenge-abc-123"};
       const result = validateInput(LoginOTPVerifyRequestSchema, data);
       expect(result).toEqual(data);
     });
@@ -52,14 +52,13 @@ describe("Auth Validation Schemas", () => {
     });
   });
 
-  describe("verifyEmailChangeRequestSchema", () => {
+  describe("VerifyEmailCodeSchema", () => {
     it("should validate email verification request", () => {
       const data = {
         code: "123456",
-        type: "verification" as const,
         verification_id: "verify-123",
       };
-      const result = validateInput(verifyEmailChangeRequestSchema, data);
+      const result = validateInput(VerifyEmailCodeSchema, data);
       expect(result.code).toBe("123456");
     });
   });

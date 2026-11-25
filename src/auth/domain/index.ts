@@ -2,16 +2,16 @@ import {
   authV1DomainServiceGetDomainStatus,
   authV1DomainServiceCreateDomainVerification,
   authV1DomainServiceCheckDomainVerification,
-  authV1DomainServiceSetDomainAutoJoin,
+  authV1DomainServiceSetDomainSuggestJoin,
   authV1DomainServiceRemoveDomain,
 } from "../../generated/sdk.gen";
 import {apiCall} from "../api/utils";
 import {ApiError} from "../api/types";
 import {HTTP_STATUS} from "../constants";
 import {validateInput} from "../validation/base";
-import {AddDomainSchema, UpdateAutoJoinSchema} from "../validation/domain";
-import {toDomainResponse, toAutoJoinSetting} from "./mappers";
-import type {DomainResponse, AutoJoinSetting} from "./types";
+import {AddDomainSchema, UpdateSuggestJoinSchema} from "../validation/domain";
+import {toDomainResponse, toSuggestJoinSetting} from "./mappers";
+import type {DomainResponse, SuggestJoinSetting} from "./types";
 
 export * from "./types";
 
@@ -71,19 +71,20 @@ export const checkDomainVerification = async (orgId: string): Promise<DomainResp
   );
 };
 
-export const updateAutoJoin = async (orgId: string, enabled: boolean): Promise<AutoJoinSetting> => {
+/** Sets whether users with an email on the verified domain are offered to join the org. */
+export const updateSuggestJoin = async (orgId: string, enabled: boolean): Promise<SuggestJoinSetting> => {
   return apiCall(
     async () => {
-      const requestBody = validateInput(UpdateAutoJoinSchema, {enabled});
-      const {data} = await authV1DomainServiceSetDomainAutoJoin({
+      const requestBody = validateInput(UpdateSuggestJoinSchema, {enabled});
+      const {data} = await authV1DomainServiceSetDomainSuggestJoin({
         path: {"user.org_id": orgId},
         body: requestBody,
         throwOnError: true,
       });
-      return toAutoJoinSetting(data);
+      return toSuggestJoinSetting(data);
     },
     {
-      [HTTP_STATUS.UNAUTHORIZED]: () => new Error("Not authorized to update auto-join settings"),
+      [HTTP_STATUS.UNAUTHORIZED]: () => new Error("Not authorized to update join suggestion settings"),
     }
   );
 };

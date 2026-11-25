@@ -4,7 +4,7 @@ import {matches} from "./permissions/matcher";
 import {retirePermissionEpoch} from "./permissions/epoch";
 
 /**
- * The current identity's effective permissions in their active organization.
+ * The current identity's effective permissions in this tab's organization.
  *
  * Populated by `resolvePermissions`. Empty until then, so every check denies —
  * an unresolved set must never read as permissive.
@@ -16,7 +16,7 @@ import {retirePermissionEpoch} from "./permissions/epoch";
 export const permissions: WritableAtom<ReadonlySet<string>> = shared("permissions", () => atom<ReadonlySet<string>>(new Set()));
 
 /**
- * Whether the set has been resolved at least once for the active organization.
+ * Whether the set has been resolved at least once for the tab's organization.
  *
  * An empty set is ambiguous on its own: it means both "not loaded yet" and
  * "this user holds nothing". Hiding a control cannot tell them apart and should

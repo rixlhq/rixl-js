@@ -1,4 +1,5 @@
-import {getToken, authError, refreshToken, setTokens, setLimitedAccessState, clearLimitedAccessState} from "./authStore";
+import {getToken, authError, refreshToken, setLimitedAccessState, clearLimitedAccessState} from "./authStore";
+import {persistSignInTokens} from "./api/tokens";
 import {ApiError} from "./api/types";
 import {HTTP_STATUS} from "./constants";
 import type {TokenResponse, LimitedScopeTokenResponse, RequiresAction} from "./types";
@@ -129,8 +130,7 @@ const applyTokenExchangeResult = (result: TokenResponse | LimitedScopeTokenRespo
     return;
   }
 
-  const fullResult = result as TokenResponse;
-  setTokens(fullResult.access_token, fullResult.refresh_token, fullResult.expires_in);
+  persistSignInTokens(result as TokenResponse);
 };
 
 const setAuthErrorAndClear = (error_code: LoginErrorCode, message: string, email: string): true => {
@@ -150,11 +150,6 @@ const extractAuthErrorInfo = (error: ApiError): {error: string; description: str
 
 const handleInitPageApiError = (error: ApiError): void => {
   const info = extractAuthErrorInfo(error);
-
-  if (error.status === HTTP_STATUS.BAD_REQUEST && info.error === "invalid_grant") {
-    setAuthErrorAndClear("email_not_verified", info.description, info.email);
-    return;
-  }
 
   if (error.status === HTTP_STATUS.CONFLICT) {
     setAuthErrorAndClear("provider_conflict", info.description, info.email);

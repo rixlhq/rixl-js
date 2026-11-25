@@ -9,14 +9,14 @@ import {
   authV1PasskeyServiceVerifyPasskeyForLogin,
 } from "../generated/sdk.gen";
 import {apiCall} from "./api/utils";
-import {persistTokens} from "./api/tokens";
+import {persistSignInTokens} from "./api/tokens";
 import {HTTP_STATUS} from "./constants";
 import {decodeCreationOptions, decodeRequestOptions, serializeLoginCredential, serializeRegistrationCredential} from "./passkey-codec";
 
 export {decodeRequestOptions} from "./passkey-codec";
 
 export interface PasskeyBeginLogin {
-  session_id: string;
+  challenge_id: string;
   options: PublicKeyCredentialRequestOptions;
 }
 
@@ -24,7 +24,7 @@ export interface PasskeyBeginLogin {
  * Thrown by {@link beginPasskeyLogin} when the server responds successfully
  * but with no credential options — typically because the account has no
  * passkeys enrolled. The OpenAPI schema does not formally model this state
- * (both `session_id` and `options` are optional on `PasskeyBeginResponse`),
+ * (both `challenge_id` and `options` are optional on `PasskeyBeginResponse`),
  * so callers should distinguish it via `instanceof` rather than error text.
  */
 export class PasskeyUnavailableError extends Error {
@@ -35,7 +35,7 @@ export class PasskeyUnavailableError extends Error {
 }
 
 export interface PasskeyBeginRegistration {
-  session_id: string;
+  challenge_id: string;
   options: PublicKeyCredentialCreationOptions;
 }
 
@@ -55,17 +55,17 @@ export interface Passkey {
   transports: string[];
 }
 
-export const finishPasskeyLogin = async (session_id: string, credential: PublicKeyCredential): Promise<void> => {
+export const finishPasskeyLogin = async (challengeId: string, credential: PublicKeyCredential): Promise<void> => {
   return apiCall(
     async () => {
       const serialized = serializeLoginCredential(credential);
 
       const {data} = await authV1PasskeyServicePasskeyLoginFinish({
-        body: {session_id, credential: serialized},
+        body: {challenge_id: challengeId, credential: serialized},
         throwOnError: true,
       });
 
-      if (!persistTokens(data)) {
+      if (!persistSignInTokens(data)) {
         throw new Error("Passkey authentication failed: incomplete token response");
       }
     },
@@ -83,13 +83,13 @@ export const beginPasskeyLogin = async (): Promise<PasskeyBeginLogin> => {
       throwOnError: true,
     });
 
-    const sessionId = data.session_id;
-    if (!sessionId || !data.options) {
+    const challengeId = data.challenge_id;
+    if (!challengeId || !data.options) {
       throw new PasskeyUnavailableError();
     }
 
     const options = decodeRequestOptions(data.options);
-    return {session_id: sessionId, options};
+    return {challenge_id: challengeId, options};
   }, {});
 };
 
@@ -101,13 +101,13 @@ export const beginPasskeyRegistration = async (): Promise<PasskeyBeginRegistrati
         throwOnError: true,
       });
 
-      const sessionId = data.session_id;
-      if (!sessionId || !data.options) {
+      const challengeId = data.challenge_id;
+      if (!challengeId || !data.options) {
         throw new Error("Invalid response from server");
       }
 
       const options = decodeCreationOptions(data.options);
-      return {session_id: sessionId, options};
+      return {challenge_id: challengeId, options};
     },
     {
       [HTTP_STATUS.UNAUTHORIZED]: () => new Error("Token is missing or invalid; user is not authenticated."),
@@ -116,7 +116,7 @@ export const beginPasskeyRegistration = async (): Promise<PasskeyBeginRegistrati
 };
 
 export const finishPasskeyRegistration = async (
-  session_id: string,
+  challengeId: string,
   name: string,
   credential: PublicKeyCredential
 ): Promise<PasskeyRegistrationResult> => {
@@ -125,7 +125,7 @@ export const finishPasskeyRegistration = async (
       const serialized = serializeRegistrationCredential(credential);
 
       const {data} = await authV1PasskeyServicePasskeyRegisterFinish({
-        body: {session_id, name, credential: serialized},
+        body: {challenge_id: challengeId, name, credential: serialized},
         throwOnError: true,
       });
 
@@ -194,17 +194,17 @@ export const listPasskeys = async (): Promise<Passkey[]> => {
   );
 };
 
-export const verifyPasskeyForLogin = async (session_id: string, credential: PublicKeyCredential): Promise<void> => {
+export const verifyPasskeyForLogin = async (challengeId: string, credential: PublicKeyCredential): Promise<void> => {
   return apiCall(
     async () => {
       const serialized = serializeLoginCredential(credential);
 
       const {data} = await authV1PasskeyServiceVerifyPasskeyForLogin({
-        body: {session_id, credential: serialized},
+        body: {challenge_id: challengeId, credential: serialized},
         throwOnError: true,
       });
 
-      if (!persistTokens(data)) {
+      if (!persistSignInTokens(data)) {
         throw new Error("Passkey verification failed: incomplete token response");
       }
     },

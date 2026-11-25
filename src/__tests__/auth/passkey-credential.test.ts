@@ -42,7 +42,7 @@ describe("verifyPasskeyForLogin", () => {
     await verifyPasskeyForLogin("challenge-1", fakeAssertionCredential());
 
     const body = mockVerifyPasskey.mock.calls[0][0].body;
-    expect(body.session_id).toBe("challenge-1");
+    expect(body.challenge_id).toBe("challenge-1");
     expect(typeof body.credential).toBe("string");
 
     const decoded = JSON.parse(atob(body.credential));

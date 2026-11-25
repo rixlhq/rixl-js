@@ -86,12 +86,7 @@ describe("Email Functions", () => {
         },
       });
 
-      const result = await verifyEmailWithCode({
-        code: "123456",
-        type: "email_change",
-        verification_id: "verify-123",
-        new_email: "test@example.com",
-      });
+      const result = await verifyEmailWithCode({code: "123456", verification_id: "verify-123"});
 
       expect(mockPostAuthV1EmailVerify).toHaveBeenCalledWith({
         body: {code: "123456", verification_id: "verify-123"},
@@ -120,7 +115,7 @@ describe("Email Functions", () => {
         },
       });
 
-      await verifyEmailWithCode({code: "123456", type: "verification", verification_id: "verify-123", new_email: "test@example.com"});
+      await verifyEmailWithCode({code: "123456", verification_id: "verify-123"});
 
       expect(mocks.setTokensSpy).toHaveBeenCalledWith(mockToken, "refresh-123", 3600);
     });
@@ -134,7 +129,7 @@ describe("Email Functions", () => {
         },
       });
 
-      await verifyEmailWithCode({code: "123456", type: "email_change", verification_id: "verify-123", new_email: "test@example.com"});
+      await verifyEmailWithCode({code: "123456", verification_id: "verify-123"});
 
       expect(mocks.setTokensSpy).not.toHaveBeenCalled();
     });
@@ -145,38 +140,7 @@ describe("Email Functions", () => {
         code: 400,
       });
 
-      await expect(
-        verifyEmailWithCode({code: "000000", type: "email_change", verification_id: "verify-123", new_email: "test@example.com"})
-      ).rejects.toThrow();
-    });
-
-    it("rejects positional arguments", async () => {
-      // @ts-expect-error -- the positional overload was removed; only the params object type-checks
-      await expect(verifyEmailWithCode("123456", "email_change", "verify-123", "test@example.com")).rejects.toThrow();
-
-      expect(mockPostAuthV1EmailVerify).not.toHaveBeenCalled();
-    });
-
-    it("verifies with the params object", async () => {
-      mockPostAuthV1EmailVerify.mockResolvedValue({
-        data: {
-          email: "test@example.com",
-          message: "Email verified",
-          verified: true,
-        },
-      });
-
-      await verifyEmailWithCode({
-        code: "123456",
-        type: "email_change",
-        verification_id: "verify-123",
-        new_email: "test@example.com",
-      });
-
-      expect(mockPostAuthV1EmailVerify).toHaveBeenCalledWith({
-        body: {code: "123456", verification_id: "verify-123"},
-        throwOnError: true,
-      });
+      await expect(verifyEmailWithCode({code: "000000", verification_id: "verify-123"})).rejects.toThrow();
     });
   });
 

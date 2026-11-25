@@ -142,7 +142,7 @@ describe("AuthStore - Token Management", () => {
 
     it("should store error when set", () => {
       const error = {
-        error_code: "email_not_verified" as const,
+        error_code: "provider_exchange_failed" as const,
         message: "Email not verified",
         email: "test@example.com",
       };
@@ -168,7 +168,7 @@ describe("AuthStore - Token Management", () => {
   describe("clearAuthError", () => {
     it("should clear auth error", () => {
       authError.set({
-        error_code: "email_not_verified",
+        error_code: "provider_exchange_failed",
         message: "Email not verified",
         email: "test@example.com",
       });

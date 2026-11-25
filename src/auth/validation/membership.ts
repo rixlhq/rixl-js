@@ -1,13 +1,6 @@
 import * as v from "valibot";
 import {UsernameSchema} from "./base";
 
-/**
- * Membership state schemas
- */
-export const AcceptDeclineMembershipSchema = v.object({
-  state: v.union([v.literal("accepted"), v.literal("declined")]),
-});
-
 export const PublicInviteResponseSchema = v.object({
   state: v.union([v.literal("accept"), v.literal("decline")]),
 });

@@ -21,7 +21,7 @@ export const ResetPasswordRequestSchema = v.object({
 
 export const LoginOTPVerifyRequestSchema = v.object({
   code: v.pipe(v.string("TOTP or backup code must be text"), v.minLength(1, "TOTP or backup code is required")),
-  session_id: v.pipe(v.string("Session ID must be text"), v.minLength(1, "Session ID is required")),
+  challenge_id: v.pipe(v.string("Challenge ID must be text"), v.minLength(1, "Challenge ID is required")),
 });
 
 export const ResendEmailRequestSchema = v.object({
@@ -32,16 +32,21 @@ export const ChangeEmailRequestSchema = v.object({
   new_email: EmailSchema,
 });
 
-export const verifyEmailChangeRequestSchema = v.object({
+const VerificationIdSchema = v.pipe(v.string("Verification ID must be text"), v.minLength(1, "Verification ID is required"));
+
+export const ResendVerificationRequestSchema = v.object({
+  email: EmailSchema,
+  verification_id: VerificationIdSchema,
+});
+
+export const VerifyEmailCodeSchema = v.object({
   code: v.pipe(
     v.string("OTP code must be text"),
     v.minLength(6, "OTP code must be at least 6 characters"),
     v.maxLength(8, "OTP code must be at most 8 characters"),
     v.regex(/^\d+$/, "OTP code must contain only numbers")
   ),
-  new_email: v.optional(EmailSchema),
-  type: v.union([v.literal("verification"), v.literal("email_change")]),
-  verification_id: v.string("Verification ID is required"),
+  verification_id: VerificationIdSchema,
 });
 
 /**

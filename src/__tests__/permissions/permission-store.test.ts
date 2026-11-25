@@ -14,7 +14,7 @@ const userInfo = (overrides: Partial<UserInfo> = {}): UserInfo => ({
   image_url: "",
   language_code: "en",
   country_code: "US",
-  active_org_id: "org-1",
+  last_active_org_id: "org-1",
   policies: [],
   permissions: [],
   ...overrides,

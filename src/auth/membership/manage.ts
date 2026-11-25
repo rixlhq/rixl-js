@@ -1,12 +1,13 @@
 import {
-  authV1MembershipServiceUpdateActiveMembership,
-  authV1MembershipServiceUpdateMemberRole,
+  authV1MembershipServiceUpdateMember,
   authV1MembershipServiceRemoveMember,
   authV1MembershipServiceLeaveOrganization,
 } from "../../generated/sdk.gen";
 import type {AuthV1MembershipRole} from "../../generated/types.gen";
-import {accessToken, expireAt, getToken} from "../authStore";
 import {apiCall} from "../api/utils";
+import {signInMarkerOf} from "../sign-in-cookies";
+import {decodeOrgClaims} from "../utils/jwt";
+import {leaveTabOrg} from "../tab-org";
 import {HTTP_STATUS} from "../constants";
 import type {AssignableRole} from "./types";
 import {validateInput} from "../validation/base";
@@ -17,46 +18,19 @@ const ROLE_TO_PROTO: Record<AssignableRole, AuthV1MembershipRole> = {
   member: "MEMBERSHIP_ROLE_MEMBER",
 };
 
-/**
- * Switches the caller's active organization.
- *
- * Identified by org id, not by `Membership.id`, which is a `user_id:org_id`
- * concatenation that no endpoint accepts. The target org goes in the top-level
- * `org_id`: the backend reads `user.org_id` as the caller's current org, so a
- * target sent there is ignored and the call fails with "org_id is required".
- * The backend fills `user.user_id` from the bearer token.
- */
-export const updateActiveMembership = async (orgId: string): Promise<void> => {
-  return apiCall(
-    async () => {
-      await authV1MembershipServiceUpdateActiveMembership({
-        body: {org_id: orgId},
-        throwOnError: true,
-      });
-      accessToken.set(undefined);
-      expireAt.set(0);
-      await getToken();
-    },
-    {
-      [HTTP_STATUS.UNAUTHORIZED]: () => new Error("User is not authorized to update active membership!"),
-    }
-  );
-};
-
 export const updateMemberRole = async (orgId: string, userId: string, role: AssignableRole): Promise<void> => {
   return apiCall(
     async () => {
       const validated = validateInput(UpdateMemberRoleSchema, {role});
-      await authV1MembershipServiceUpdateMemberRole({
-        path: {"user.org_id": orgId, user_id: userId},
-        body: {role: ROLE_TO_PROTO[validated.role]},
+      await authV1MembershipServiceUpdateMember({
+        path: {org_id: orgId, user_id: userId},
+        body: {role: ROLE_TO_PROTO[validated.role], update_mask: "role"},
         throwOnError: true,
       });
     },
     {
       [HTTP_STATUS.UNAUTHORIZED]: () => new Error("User is not authorized to update member roles!"),
       [HTTP_STATUS.NOT_FOUND]: () => new Error("Member not found!"),
-      [HTTP_STATUS.FORBIDDEN]: () => new Error("Cannot change role of organization owner!"),
     }
   );
 };
@@ -65,14 +39,13 @@ export const deleteMember = async (orgId: string, userId: string): Promise<void>
   return apiCall(
     async () => {
       await authV1MembershipServiceRemoveMember({
-        path: {"user.org_id": orgId, user_id: userId},
+        path: {org_id: orgId, user_id: userId},
         throwOnError: true,
       });
     },
     {
       [HTTP_STATUS.UNAUTHORIZED]: () => new Error("User is not authorized to delete members!"),
       [HTTP_STATUS.NOT_FOUND]: () => new Error("Member not found!"),
-      [HTTP_STATUS.FORBIDDEN]: () => new Error("Cannot remove organization owner!"),
     }
   );
 };
@@ -80,14 +53,18 @@ export const deleteMember = async (orgId: string, userId: string): Promise<void>
 export const leaveOrganization = async (orgId: string): Promise<void> => {
   return apiCall(
     async () => {
-      await authV1MembershipServiceLeaveOrganization({
+      const {request} = await authV1MembershipServiceLeaveOrganization({
         path: {org_id: orgId},
+        responseStyle: "fields",
         throwOnError: true,
       });
+
+      const bearer = request?.headers.get("Authorization")?.replace(/^Bearer /, "");
+      const claims = bearer && decodeOrgClaims(bearer);
+      if (claims && claims.orgId === orgId) leaveTabOrg(orgId, signInMarkerOf(claims));
     },
     {
       [HTTP_STATUS.UNAUTHORIZED]: () => new Error("User is not authorized to leave an organization!"),
-      [HTTP_STATUS.FORBIDDEN]: () => new Error("Cannot leave organization as you are the last member!"),
       [HTTP_STATUS.NOT_FOUND]: () => new Error("Organization not found!"),
     }
   );

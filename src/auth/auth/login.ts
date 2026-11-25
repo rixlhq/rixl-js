@@ -3,7 +3,7 @@ import {EmailAuthRequestSchema, LoginOTPVerifyRequestSchema} from "../validation
 import {validateInput} from "../validation/base";
 import {ApiError} from "../api/error-handlers";
 import {apiCall} from "../api/utils";
-import {persistTokens} from "../api/tokens";
+import {persistSignInTokens} from "../api/tokens";
 import {HTTP_STATUS} from "../constants";
 import type {LoginErrorResponse, TwoFactorAuthMethod, TwoFactorResponse} from "./types";
 import type {AuthV1LoginResponse} from "../../generated/types.gen";
@@ -51,16 +51,16 @@ export const loginWithEmail = async (email: string, password: string): Promise<v
   );
 };
 
-export const verifyTOTPForLogin = async (code: string, session_id: string): Promise<void> => {
+export const verifyTOTPForLogin = async (code: string, challengeId: string): Promise<void> => {
   return apiCall(
     async () => {
-      const validatedInput = validateInput(LoginOTPVerifyRequestSchema, {code, session_id});
+      const validatedInput = validateInput(LoginOTPVerifyRequestSchema, {code, challenge_id: challengeId});
       const {data} = await authV1OtpServiceVerifyTotpForLogin({
         body: validatedInput,
         throwOnError: true,
       });
 
-      persistTokens(data);
+      persistSignInTokens(data);
     },
     {
       [HTTP_STATUS.UNAUTHORIZED]: () => new Error("Invalid or expired TOTP code"),
@@ -71,20 +71,14 @@ export const verifyTOTPForLogin = async (code: string, session_id: string): Prom
 function handleLoginResponse(data: AuthV1LoginResponse, email: string): void | TwoFactorResponse | LoginErrorResponse {
   switch (data.status) {
     case "ok":
-      persistTokens(data);
+      persistSignInTokens(data);
       return;
     case "2fa_required":
       return {
-        session_id: data.session_id!,
+        challenge_id: data.challenge_id!,
         email: email,
         authentication: toTwoFactorAuthMethods(data.authentication),
         passkey_options: data.passkey_options,
-      };
-    case "email_not_verified":
-      return {
-        error_code: "email_not_verified",
-        message: "Email not verified",
-        email: data.email || email,
       };
     default:
       return;
@@ -100,13 +94,6 @@ function handleLoginError(error: unknown, email: string): TwoFactorResponse | Lo
   // The client error interceptor wraps every thrown body into an ApiError.
   if (error instanceof ApiError && isApiErrorBody(error.data)) {
     const body = error.data;
-    if (body.error === "email_not_verified") {
-      return {
-        error_code: "email_not_verified",
-        message: body.details || "Email not verified",
-        email,
-      };
-    }
     if (body.error === "provider_conflict") {
       return {
         error_code: "provider_conflict",

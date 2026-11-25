@@ -164,6 +164,65 @@ console.log(`Video ${init.data?.video_id} uploaded.`);
 
 More runnable scripts live in [examples/](examples/README.md).
 
+## Organizations
+
+In a browser app, an access token is for exactly one organization. An org ID is never a user ID.
+
+```ts
+import {ApiError, OrgAccessError, connect, orgContext, resolvePermissions, selectOrganization} from "@rixl/sdk";
+
+// Run once at startup, before wiring up the organization picker.
+try {
+  await connect({baseUrl: "https://api.rixl.com", auth: {}});
+} catch (error) {
+  if (error instanceof ApiError && error.status === 401) {
+    // Show sign-in.
+  } else if (!(error instanceof OrgAccessError)) {
+    throw error;
+  }
+}
+
+async function openOrganization(orgId: string) {
+  try {
+    await selectOrganization(orgId);
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 401) return "signed-out";
+    if (!(error instanceof OrgAccessError)) throw error;
+    console.warn(error.orgId, error.reason);
+    return "not-switched";
+  }
+
+  // Render the new org now. Permission loading can be retried separately.
+  console.log(orgContext.get());
+  try {
+    await resolvePermissions();
+    return "ready";
+  } catch {
+    return "permissions-pending";
+  }
+}
+```
+
+- Sign-in issues a token for the user's personal org. Capture the in-memory `lastActiveOrgId` hint from the sign-in response before any reload, or keep your own org preference. A refresh updates the server’s last active org. To use the saved org, select it explicitly. `personalOrgId` is the personal org.
+- A tab's org, permissions and user belong to one sign-in. When another tab signs in, as the same user or another, this tab drops them and moves to the new sign-in's personal org on its next call.
+- A stored sign-in the SDK can't refresh, such as one from before organizations, is signed out.
+- When auth-api refuses the refresh token (revoked, expired or an inactive account), the call rejects with a 401 `ApiError`, including `connect()`. The SDK removes the stored sign-in, so the next page load starts with `isLogged` false.
+- Each tab has its own org and access token, and keeps its org across a reload. Tabs share the refresh token and the `signIn`, `personalOrgId`, `isLogged` and temporary `refusedSignIn` cookies, as well as `limitedAccessToken` and `requiresAction` during a limited-access flow. A tab that never selected an org uses the personal org.
+- `orgContext.get()?.role` is for display. Authorize with permissions (`resolvePermissions`, `hasPermission`).
+- A refresh into an org the user can't act in rejects with `OrgAccessError`; `reason` is `MEMBERSHIP_SUSPENDED`, `ORG_DELETED` or `NOT_A_MEMBER`. The user stays signed in.
+- A request that needs the tab's org can reject with it too. When the gateway refuses the tab's own token with one of these reasons, the SDK stops using that token and treats the tab's org as after a refused refresh. Other API failures reject with `ApiError` (`status`, and the error body in `data`). So does a reason from a route that acts on your account, such as listing organizations or answering an invitation: it isn't about the tab's org, and the tab doesn't change.
+- When `getToken()` is refused for the tab's own org with `NOT_A_MEMBER` or `ORG_DELETED`, the tab drops that org and keeps rejecting, also after a reload, until `selectOrganization` succeeds. The SDK never picks another org. `connect()` with `auth` ends with `getToken()`, so it rejects the same way: catch it. A suspended tab keeps its org and can refresh into it once the membership is restored. Call `resolvePermissions()` again after recovery.
+- Subscribe to the read-only `orgRefusal` store for refusals of this tab's org. It exposes `{reason, orgId}` while the tab is signed in and awaiting a usable access token. It becomes undefined on sign-out, including after a final refresh 401. Meanwhile `orgContext` is undefined, because the tab has no token. Suspension clears this tab's permissions; the tab keeps the org, which `orgRefusal.orgId` names, and refreshes into it again.
+- A refused tab has no usable token, so `listOrganizations()` rejects too. To show an org picker, call `selectOrganization(personalOrgId.get()!)` first.
+- `logout()` clears browser state and tells matching tabs before returning its promise. It then makes one revocation request with the saved credentials. `const {revoked} = await logout()` reports only whether auth-api acknowledged it within five seconds. Sign-in-wide revocation of rotated credentials requires auth-api support for the access token’s `sign_in_id` (OpenSpec task 10.2). The browser stays signed out even if `revoked` is false.
+- `listPendingMemberships()` can display pending invitations. In-app responses await the account-scoped invitation routes in OpenSpec task 2.8.
+- To leave an org, call `selectOrganization(orgId)`, then `leaveOrganization(orgId)`, then select another org such as `personalOrgId.get()!`. A successful leave clears that tab’s org, access token and permissions. The tab stays signed in. While `orgSelectionRequired` is true, including after a reload, `getToken()` resolves undefined and authenticated requests need a new org selection. Offer the personal org or another known org, then load the picker.
+- Verify a pending signup with `verifyEmailWithCode({verification_id, code})`. Resending needs the email and the signup’s verification ID. Password login before verification reports invalid credentials.
+- Verify an account email change with `verifyEmailChange(verificationId, code)`. The SDK uses the caller’s full or limited-access credentials and keeps the same sign-in and org.
+- A request that names an org, such as `getOrganization` or `updateOrganization`, needs a token for that org: select it first.
+
+[examples/11-organizations.ts](examples/11-organizations.ts) shows the whole flow: switching with a permissions retry, a screen for a suspended or lost org, a paged org picker, and reading and renaming an org.
+
 ## Compatibility
 
 `@rixl/sdk` is the supported Rixl SDK. It targets Rixl API **v1** and is generated from [rixlhq/openapi](https://github.com/rixlhq/openapi). While the package is 0.x, a minor release may contain breaking changes; check the [CHANGELOG](CHANGELOG.md) before upgrading.

@@ -7,9 +7,10 @@
 
 import {describe, it, expect, beforeEach, vi} from "vite-plus/test";
 import {client} from "../../generated/client.gen";
-import {configureSdkClient} from "../../auth/api/sdk-client";
+import {configureSdkClient, publicRoutes} from "../../auth/api/sdk-client";
 import {ApiError} from "../../auth/api/types";
 import {getToken} from "../../auth/authStore";
+import gatewayPublicRoutes from "./fixtures/gateway-public-routes.txt?raw";
 import {apiURL} from "../../auth/api-url";
 
 vi.mock("../../auth/api-url", () => ({
@@ -37,6 +38,21 @@ const runRequestInterceptors = async (method: string, url: string): Promise<Requ
   return request;
 };
 
+it("mirrors the gateway's public route inventory exactly", () => {
+  // gateway 345c524, internal/routes/routes.go, publicRoutes.
+  const gatewayRoutes = Array.from(
+    gatewayPublicRoutes.matchAll(/\{http\.Method(\w+), "([^"]+)", (true|false)\}/g),
+    ([, method, path, prefix]) => ({
+      method: method!.toUpperCase(),
+      path,
+      prefix: prefix === "true",
+    })
+  );
+
+  expect(gatewayRoutes.length).toBeGreaterThan(0);
+  expect(publicRoutes.map((route) => ({...route, prefix: route.prefix ?? false}))).toEqual(gatewayRoutes);
+});
+
 describe("SDK client request interceptor", () => {
   beforeAll(() => {
     configureSdkClient();
@@ -62,11 +78,12 @@ describe("SDK client request interceptor", () => {
     "POST /auth/v1/passkey/login/begin",
     "POST /auth/v1/passkey/login/finish",
     "POST /auth/v1/logout",
-    "POST /auth/v1/providers/connect",
+    "POST /auth/v1/invitations/lookup",
     "POST /auth/v1/blog/unsubscribe/email",
     "POST /auth/v1/blog/broadcast",
     "POST /platform/auth/v1/token",
     "POST /platform/auth/v1/refresh",
+    "POST /platform/clientauth/v1/token",
   ])("does not attach Authorization to %s", async (spec) => {
     const [method, path] = spec.split(" ");
     const request = await runRequestInterceptors(method, `https://api.example.com${path}`);
@@ -75,17 +92,15 @@ describe("SDK client request interceptor", () => {
     expect(mockGetToken).not.toHaveBeenCalled();
   });
 
-  it.each([
-    "POST /auth/v1/invitations/abc-123",
-    "GET /media/v1/videos/video-1",
-    "GET /media/v1/images/image-1",
-    "GET /posts/v1/feeds/home",
-  ])("does not attach Authorization to public prefix %s", async (spec) => {
-    const [method, path] = spec.split(" ");
-    const request = await runRequestInterceptors(method, `https://api.example.com${path}`);
+  it.each(["GET /media/v1/videos/video-1", "GET /media/v1/images/image-1", "GET /posts/v1/feeds/home"])(
+    "does not attach Authorization to public prefix %s",
+    async (spec) => {
+      const [method, path] = spec.split(" ");
+      const request = await runRequestInterceptors(method, `https://api.example.com${path}`);
 
-    expect(request.headers.has("Authorization")).toBe(false);
-  });
+      expect(request.headers.has("Authorization")).toBe(false);
+    }
+  );
 
   it.each(["POST /auth/v1/login", "POST /auth/v1/register"])(
     "does not attach Authorization even with a stale token present on %s",
@@ -96,6 +111,22 @@ describe("SDK client request interceptor", () => {
       expect(request.headers.has("Authorization")).toBe(false);
     }
   );
+
+  it.each(["POST /auth/v1/invitations/abc-123/accept", "POST /auth/v1/invitations/abc-123/decline"])(
+    "attaches Authorization to %s, which the gateway no longer serves anonymously",
+    async (spec) => {
+      const [method, path] = spec.split(" ");
+      const request = await runRequestInterceptors(method!, `https://api.example.com${path}`);
+
+      expect(request.headers.get("Authorization")).toBe("Bearer valid-token");
+    }
+  );
+
+  it("attaches Authorization to provider linking, which the gateway protects", async () => {
+    const request = await runRequestInterceptors("POST", "https://api.example.com/auth/v1/providers/connect");
+
+    expect(request.headers.get("Authorization")).toBe("Bearer valid-token");
+  });
 
   it("attaches Authorization to protected routes", async () => {
     const request = await runRequestInterceptors("GET", "https://api.example.com/users/me");

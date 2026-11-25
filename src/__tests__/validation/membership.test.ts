@@ -1,25 +1,8 @@
 import {describe, it, expect} from "vite-plus/test";
 import {validateInput} from "../../auth/validation/base";
-import {
-  AcceptDeclineMembershipSchema,
-  PublicInviteResponseSchema,
-  InviteMemberSchema,
-  UpdateMemberRoleSchema,
-  ResendInviteSchema,
-} from "../../auth/validation/membership";
+import {PublicInviteResponseSchema, InviteMemberSchema, UpdateMemberRoleSchema, ResendInviteSchema} from "../../auth/validation/membership";
 
 describe("Membership Validation Schemas", () => {
-  describe("AcceptDeclineMembershipSchema", () => {
-    it("should accept 'accepted' state", () => {
-      const result = validateInput(AcceptDeclineMembershipSchema, {state: "accepted"});
-      expect(result).toEqual({state: "accepted"});
-    });
-
-    it("should reject invalid states", () => {
-      expect(() => validateInput(AcceptDeclineMembershipSchema, {state: "active"})).toThrow();
-    });
-  });
-
   describe("PublicInviteResponseSchema", () => {
     it("should accept 'accept' state", () => {
       const result = validateInput(PublicInviteResponseSchema, {state: "accept"});

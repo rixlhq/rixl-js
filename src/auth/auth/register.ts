@@ -1,6 +1,6 @@
 import {authV1EmailServiceRegister, authV1EmailServiceResendVerification} from "../../generated/sdk.gen";
 import {validateInput} from "../validation/base";
-import {RegisterRequestSchema, ResendEmailRequestSchema} from "../validation/auth";
+import {RegisterRequestSchema, ResendVerificationRequestSchema} from "../validation/auth";
 import {apiCall} from "../api/utils";
 import {HTTP_STATUS} from "../constants";
 import type {RegistrationResponse, VerificationSentResponse} from "./types";
@@ -30,7 +30,6 @@ export const registerWithEmail = async (
           message: data.message || "Registration successful",
           verification_id: data.verification_id,
           email_verification_sent: data.email_verification_sent,
-          user_id: data.user_id,
         };
       }
     },
@@ -40,10 +39,10 @@ export const registerWithEmail = async (
   );
 };
 
-export const resendEmailVerificationCode = async (email: string): Promise<void | VerificationSentResponse> => {
+export const resendEmailVerificationCode = async (email: string, verificationId: string): Promise<void | VerificationSentResponse> => {
   return apiCall(
     async () => {
-      const validatedInput = validateInput(ResendEmailRequestSchema, {email});
+      const validatedInput = validateInput(ResendVerificationRequestSchema, {email, verification_id: verificationId});
       const {data} = await authV1EmailServiceResendVerification({
         body: validatedInput,
         throwOnError: true,
