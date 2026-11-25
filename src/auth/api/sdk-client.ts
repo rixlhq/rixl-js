@@ -1,15 +1,11 @@
 import {apiURL} from "../api-url";
 import {getToken} from "../authStore";
 import {HTTP_STATUS} from "../constants";
-import {ApiError} from "./types";
+import {toTabOrgRefusal} from "../request-refusal";
+import {ApiError, type WireErrorBody} from "./types";
+import {isAccountScopedRoute} from "./account-scoped-routes";
 import {addClientInitializer, configureAllClients} from "../../client-registry";
 import {shared} from "../../shared-runtime";
-
-interface WireErrorBody {
-  error?: string;
-  details?: string;
-  code?: number;
-}
 
 function isWireErrorBody(error: unknown): error is WireErrorBody {
   return typeof error === "object" && error !== null;
@@ -23,14 +19,16 @@ function errorMessage(error: unknown, body?: WireErrorBody): string {
 // which defeats every instanceof-based status mapping downstream. Wrap it into
 // an ApiError carrying the HTTP status so apiCall error maps and consumers can
 // handle errors by code.
-function toApiError(error: unknown, response?: Response, request?: Request): Error {
+function toApiError(error: unknown, response?: Response, request?: Request): unknown {
   if (error instanceof Error) {
     return error;
   }
   const body = isWireErrorBody(error) ? error : undefined;
   const status = response?.status ?? body?.code ?? 0;
   const endpoint = request ? new URL(request.url).pathname : "";
-  return new ApiError(errorMessage(error, body), status, endpoint, error);
+  const apiError = new ApiError(errorMessage(error, body), status, endpoint, error);
+  if (request && isAccountScopedRoute(request.method, routePath(endpoint))) return apiError;
+  return toTabOrgRefusal(apiError, request);
 }
 
 type TokenResolver = () => Promise<string | undefined>;
@@ -56,8 +54,9 @@ export function setTokenResolver(resolver: TokenResolver): void {
  * attempt to validate a stale/absent token and reject the request with 401.
  * Mirrors `publicRoutes` in backend/gateway/internal/routes/routes.go.
  */
-const publicRoutes: ReadonlyArray<{method: string; path: string; prefix?: boolean}> = [
+export const publicRoutes: ReadonlyArray<{method: string; path: string; prefix?: boolean}> = [
   {method: "POST", path: "/auth/v1/token"},
+  {method: "POST", path: "/auth/v1/service-token"},
   {method: "POST", path: "/auth/v1/register"},
   {method: "POST", path: "/auth/v1/login"},
   {method: "POST", path: "/auth/v1/email/verify"},
@@ -66,21 +65,24 @@ const publicRoutes: ReadonlyArray<{method: string; path: string; prefix?: boolea
   {method: "POST", path: "/auth/v1/password/reset/confirm"},
   {method: "POST", path: "/auth/v1/verify-totp"},
   {method: "POST", path: "/auth/v1/verify-passkey"},
-  {method: "POST", path: "/auth/v1/invitations/", prefix: true},
+  {method: "POST", path: "/auth/v1/invitations/lookup"},
   {method: "POST", path: "/auth/v1/passkey/login/begin"},
   {method: "POST", path: "/auth/v1/passkey/login/finish"},
   {method: "POST", path: "/auth/v1/logout"},
-  {method: "POST", path: "/auth/v1/providers/connect"},
   {method: "POST", path: "/auth/v1/blog/unsubscribe/email"},
   {method: "POST", path: "/auth/v1/blog/broadcast"},
   {method: "GET", path: "/media/v1/videos/", prefix: true},
+  {method: "GET", path: "/media/v1/stream/", prefix: true},
   {method: "GET", path: "/media/v1/images/", prefix: true},
   {method: "GET", path: "/media/v1/languages"},
   {method: "GET", path: "/posts/v1/feeds/", prefix: true},
   {method: "POST", path: "/billing/webhooks/stripe"},
+  {method: "POST", path: "/billing/webhooks/stripe/sandbox"},
+  {method: "POST", path: "/support/webhooks/clickup"},
   {method: "POST", path: "/webhooks/storage"},
   {method: "POST", path: "/platform/auth/v1/token"},
   {method: "POST", path: "/platform/auth/v1/refresh"},
+  {method: "POST", path: "/platform/clientauth/v1/token"},
 ];
 
 /**

@@ -1,7 +1,9 @@
 import {describe, it, expect, beforeEach, vi} from "vite-plus/test";
 import {listSocials, connectSocialInternal, disconnectSocial, connectSocial, type ConnectedProvider} from "@/social/socialConnections.ts";
+import {createMockJWT} from "../utils/test-helpers";
 import * as initialization from "../../auth/initialization";
 
+const bearer = createMockJWT();
 const mockGetAuthV1Providers = vi.fn();
 const mockPostAuthV1ProvidersConnect = vi.fn();
 const mockDeleteAuthV1ProvidersByProvider = vi.fn();
@@ -13,9 +15,14 @@ vi.mock("../../generated/sdk.gen", () => ({
 }));
 
 vi.mock("../../auth/authStore", () => ({
-  getToken: vi.fn().mockResolvedValue("mock-token"),
+  getToken: vi.fn().mockImplementation(async () => bearer),
   login: vi.fn(),
   setTokens: vi.fn(),
+}));
+
+vi.mock("../../auth/sign-in-cookies", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("../../auth/sign-in-cookies")>()),
+  isCurrentSignIn: () => true,
 }));
 
 vi.mock("../../auth/social/socialState", () => ({
@@ -166,7 +173,7 @@ describe("Social Connections Module", () => {
     });
 
     const request = mockPostAuthV1ProvidersConnect.mock.calls[0][0];
-    expect(request.headers).toEqual({Authorization: "Bearer mock-token"});
+    expect(request.headers).toEqual({Authorization: `Bearer ${bearer}`});
     expect(request.body).toMatchObject({
       provider: "EXTERNAL_ACCOUNT_PROVIDER_GITHUB",
       token: "one-use-code",
@@ -183,7 +190,7 @@ describe("Social Connections Module", () => {
 
       expect(mockPostAuthV1ProvidersConnect).toHaveBeenCalledWith({
         body: {provider: "EXTERNAL_ACCOUNT_PROVIDER_GOOGLE", token: "google-oauth-token", origin: window.location.origin},
-        headers: {Authorization: "Bearer mock-token"},
+        headers: {Authorization: `Bearer ${bearer}`},
         throwOnError: true,
       });
     });
@@ -195,7 +202,7 @@ describe("Social Connections Module", () => {
 
       expect(mockPostAuthV1ProvidersConnect).toHaveBeenCalledWith({
         body: {provider: "EXTERNAL_ACCOUNT_PROVIDER_APPLE", token: "apple-id-token", origin: window.location.origin},
-        headers: {Authorization: "Bearer mock-token"},
+        headers: {Authorization: `Bearer ${bearer}`},
         throwOnError: true,
       });
     });
@@ -207,7 +214,7 @@ describe("Social Connections Module", () => {
 
       expect(mockPostAuthV1ProvidersConnect).toHaveBeenCalledWith({
         body: {provider: "EXTERNAL_ACCOUNT_PROVIDER_TELEGRAM", token: "init-data", origin: window.location.origin},
-        headers: {Authorization: "Bearer mock-token"},
+        headers: {Authorization: `Bearer ${bearer}`},
         throwOnError: true,
       });
     });
@@ -227,7 +234,7 @@ describe("Social Connections Module", () => {
           code_verifier: "verifier",
           redirect_uri: "https://app.example.com/login",
         },
-        headers: {Authorization: "Bearer mock-token"},
+        headers: {Authorization: `Bearer ${bearer}`},
         throwOnError: true,
       });
     });
@@ -253,7 +260,7 @@ describe("Social Connections Module", () => {
           provider: "EXTERNAL_ACCOUNT_PROVIDER_MICROSOFT",
           token: "ms-token-123",
         }),
-        headers: {Authorization: "Bearer mock-token"},
+        headers: {Authorization: `Bearer ${bearer}`},
         throwOnError: true,
       });
     });

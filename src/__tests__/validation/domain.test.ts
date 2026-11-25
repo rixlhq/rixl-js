@@ -1,6 +1,6 @@
 import {describe, it, expect} from "vite-plus/test";
 import {validateInput} from "../../auth/validation/base";
-import {AddDomainSchema, UpdateAutoJoinSchema} from "../../auth/validation/domain";
+import {AddDomainSchema, UpdateSuggestJoinSchema} from "../../auth/validation/domain";
 
 describe("Domain Validation Schemas", () => {
   describe("AddDomainSchema", () => {
@@ -15,14 +15,14 @@ describe("Domain Validation Schemas", () => {
     });
   });
 
-  describe("UpdateAutoJoinSchema", () => {
-    it("should validate boolean auto-join setting", () => {
-      expect(validateInput(UpdateAutoJoinSchema, {enabled: true})).toEqual({enabled: true});
-      expect(validateInput(UpdateAutoJoinSchema, {enabled: false})).toEqual({enabled: false});
+  describe("UpdateSuggestJoinSchema", () => {
+    it("should validate boolean join suggestion setting", () => {
+      expect(validateInput(UpdateSuggestJoinSchema, {enabled: true})).toEqual({enabled: true});
+      expect(validateInput(UpdateSuggestJoinSchema, {enabled: false})).toEqual({enabled: false});
     });
 
     it("should reject non-boolean values", () => {
-      expect(() => validateInput(UpdateAutoJoinSchema, {enabled: "true"} as any)).toThrow();
+      expect(() => validateInput(UpdateSuggestJoinSchema, {enabled: "true"} as any)).toThrow();
     });
   });
 });

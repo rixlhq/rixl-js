@@ -9,6 +9,8 @@ import {
   deleteUserOTP,
   regenerateBackupCodes,
 } from "../auth/user";
+import * as signInCookies from "../auth/sign-in-cookies";
+import {createMockJWT} from "./utils/test-helpers";
 import {setupAuthTest, cleanupAuthMocks} from "./utils/auth-test-helpers";
 
 const mockPatchAuthV1UsersCurrentName = vi.fn();
@@ -139,7 +141,7 @@ describe("User Management", () => {
           image_url: "https://example.com/jane.jpg",
           language_code: "en",
           country_code: "NG",
-          active_org_id: "org-789",
+          last_active_org_id: "org-789",
         },
       });
 
@@ -159,7 +161,7 @@ describe("User Management", () => {
         image_url: "https://example.com/jane.jpg",
         language_code: "en",
         country_code: "NG",
-        active_org_id: "org-789",
+        last_active_org_id: "org-789",
         policies: [],
         permissions: [],
       });
@@ -192,7 +194,7 @@ describe("User Management", () => {
         image_url: "",
         language_code: "",
         country_code: "",
-        active_org_id: "",
+        last_active_org_id: "",
         policies: [],
         permissions: [],
       });
@@ -297,7 +299,10 @@ describe("User Management", () => {
   });
 
   describe("verifyUserOTP", () => {
-    it("should verify OTP and set tokens", async () => {
+    it("sends the OTP verification with the current bearer", async () => {
+      const bearer = createMockJWT();
+      mocks.getTokenSpy.mockResolvedValueOnce(bearer);
+      const current = vi.spyOn(signInCookies, "isCurrentSignIn").mockReturnValueOnce(true);
       mockPostAuthV1UsersCurrentTotpVerify.mockResolvedValue({
         data: {
           access_token: "new-token",
@@ -310,9 +315,10 @@ describe("User Management", () => {
 
       expect(mockPostAuthV1UsersCurrentTotpVerify).toHaveBeenCalledWith({
         body: {code: "123456"},
+        headers: {Authorization: `Bearer ${bearer}`},
         throwOnError: true,
       });
-      expect(mocks.setTokensSpy).toHaveBeenCalledWith("new-token", "new-refresh", 3600);
+      current.mockRestore();
     });
 
     it("should validate OTP code format", async () => {

@@ -5,6 +5,8 @@ import type {TokenResponse, LimitedScopeTokenResponse} from "../types";
 export type {TokenResponse, LimitedScopeTokenResponse};
 
 export interface RefreshTokenOptions {
+  /** The org the new access token is for. Required with a Bearer refresh token; a provider sign-in gets the personal org. */
+  orgId?: string;
   countryCode?: string;
   origin?: string;
 }
@@ -29,6 +31,7 @@ export const refreshTokens = async (
     refresh_token: token,
     country_code: options?.countryCode,
     origin: options?.origin,
+    org_id: options?.orgId,
     ...codeExchange,
   };
   const {data} = await authV1TokenServiceRefreshToken({body, throwOnError: true});

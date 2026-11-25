@@ -5,7 +5,6 @@
 /**
  * Email verification types
  */
-export type EmailVerificationType = "verification" | "email_change";
 
 /**
  * Cookie SameSite attribute values
@@ -23,7 +22,6 @@ export interface User {
   username: string;
   image_url: string;
   language_code: string;
-  org_id: string;
 }
 
 export interface TokenResponse {

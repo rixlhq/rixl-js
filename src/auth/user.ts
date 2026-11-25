@@ -13,7 +13,7 @@ import {validateInput} from "./validation/base";
 import {UpdateNameSchema, UpdateUsernameSchema} from "./validation/user";
 import {VerifyOTPCodeSchema} from "./validation/auth";
 import {apiCall} from "./api/utils";
-import {persistTokens} from "./api/tokens";
+import {reissueTokens} from "./api/tokens";
 import {HTTP_STATUS} from "./constants";
 
 export interface OTPSetup {
@@ -49,8 +49,9 @@ export interface UserInfo {
   image_url: string;
   language_code: string;
   country_code: string;
-  active_org_id: string;
-  /** Policies attached to this user in the active organization. */
+  /** The org the user last refreshed into. A hint only: it is not the org of this tab's token. */
+  last_active_org_id: string;
+  /** Policies attached to this user in the org of the access token. */
   policies: AuthV1Policy[];
   /** Effective permissions granted by those policies. */
   permissions: string[];
@@ -70,7 +71,7 @@ function toUserInfo(data: AuthV1UserInfo): UserInfo {
     image_url: text(data.image_url),
     language_code: text(data.language_code),
     country_code: text(data.country_code),
-    active_org_id: text(data.active_org_id),
+    last_active_org_id: text(data.last_active_org_id),
     policies: data.policies ?? [],
     permissions: data.permissions ?? [],
   };
@@ -169,12 +170,10 @@ export const verifyUserOTP = async (code: string): Promise<void> => {
   return apiCall(
     async () => {
       const validatedBody = validateInput(VerifyOTPCodeSchema, {code});
-      const {data} = await authV1OtpServiceVerifyOtp({
-        body: validatedBody,
-        throwOnError: true,
-      });
-
-      persistTokens(data);
+      await reissueTokens(
+        (headers) => authV1OtpServiceVerifyOtp({body: validatedBody, headers, throwOnError: true}),
+        ({data}) => data
+      );
     },
     {
       [HTTP_STATUS.BAD_REQUEST]: () => new Error("Invalid request format"),

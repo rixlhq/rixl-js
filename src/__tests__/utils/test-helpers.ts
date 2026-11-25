@@ -17,6 +17,7 @@ export const createMockJWT = (payload: Record<string, any> = {}): string => {
       image_url: "https://example.com/image.jpg",
       language_code: "en",
       org_id: "org123",
+      sign_in_id: "sign-in-test",
       exp: Math.floor(Date.now() / 1000) + 3600,
       ...payload,
     })
@@ -35,7 +36,6 @@ export const createMockUser = (overrides = {}) => ({
   username: "testuser",
   image_url: "https://example.com/image.jpg",
   language_code: "en",
-  org_id: "org123",
   email: "olalekan.akande@rixl.com",
   ...overrides,
 });

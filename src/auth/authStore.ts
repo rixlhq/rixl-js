@@ -1,58 +1,50 @@
 import {atom, type WritableAtom} from "nanostores";
-import {refreshTokens} from "./api/refresh-tokens";
-import {appleAuthUrl, AuthProvider, googleAuthUrl, telegramAuthUrl, microsoftAuthUrl, githubAuthUrl} from "./providers";
+import {accessToken, expireAt, isLogged, refreshToken} from "./token-atoms";
+import {adoptStoredRefreshToken, forgetSignIn, storeRefreshToken} from "./stored-sign-in";
+import {rotateRefreshToken} from "./refresh-rotation";
+import {appleAuthUrl, googleAuthUrl, telegramAuthUrl, microsoftAuthUrl, githubAuthUrl} from "./providers";
 import {initDeferred} from "./initialization";
-import {initVals, readStoreCookies, setStoreCookie} from "./cookie";
+import {initVals, setStoreCookie} from "./cookie";
 import {user} from "./userStore";
 import {clearPermissions} from "./permissionStore";
 import type {ProviderType} from "./social/socialConnections";
-import {decodeAndSetUser, decodeToken, isTokenExpired} from "./utils/jwt";
-import {isLimitedScopeTokenResponse} from "./utils/requires-action";
+import {decodeAndSetUser, isTokenExpired} from "./utils/jwt";
 import type {LoginErrorResponse} from "./auth/types";
 import type {RequiresAction} from "./types";
 import {shared} from "../shared-runtime";
 import {ApiError} from "./api/types";
-import {GLOBAL_PREFIX, HTTP_STATUS} from "./constants";
+import {HTTP_STATUS} from "./constants";
 import {onLogoutElsewhere} from "./logout-channel";
+import {
+  adoptTokenOrg,
+  dropRefusedOrg,
+  forgetTabOrg,
+  lastActiveOrgId,
+  getLeftOrg,
+  getLostOrg,
+  orgContext,
+  tabOrgId,
+  tabSignIn,
+} from "./tab-org";
+import {browserSignIn, currentSignIn, isCurrentSignIn, personalOrgId, renewSignInCookies, signInMarker} from "./sign-in-cookies";
+import {OrgAccessError} from "./api/org-access-error";
+import {serializeRefresh} from "./refresh-lock";
+import {logout} from "./auth/logout";
+import {invalidateSignInContext} from "./sign-in-context";
+import {commit} from "./store-commit";
+
+export {isLogged, accessToken, refreshToken, expireAt};
 
 // Helper to ensure multi-tab sign-out synchronization is attached once per realm
 const ensureLogoutSync = (): void => {
   shared("logoutSyncInitialized", () => {
-    onLogoutElsewhere(() => removeTokens());
+    onLogoutElsewhere((signIn) => {
+      if ((signInMarker.get() ?? tabSignIn.get()) === signIn) clearLocalSignIn();
+    });
     return true;
   });
 };
-
-// Store for authentication state. Shared across copies of this package: a
-// duplicate copy would otherwise hydrate its own tokens from the cookie and
-// then silently diverge on the first refresh or logout.
-//
-// Seeded from the cookie only. An OAuth callback in the URL is not evidence of a
-// sign-in — the exchange can still fail — so consumers must await initClient()
-// before reading this on a callback load rather than trusting an optimistic true.
-export const isLogged: WritableAtom<boolean> = shared("isLogged", () => {
-  ensureLogoutSync();
-  const store = atom(initVals["isLogged"] === "true");
-  store.subscribe((value) => setStoreCookie("isLogged", value));
-  return store;
-});
-export const accessToken: WritableAtom<string | undefined> = shared("accessToken", () => {
-  ensureLogoutSync();
-  const store = atom(initVals["accessToken"]);
-  store.subscribe((value) => setStoreCookie("accessToken", value));
-  return store;
-});
-export const refreshToken: WritableAtom<string | undefined> = shared("refreshToken", () => {
-  ensureLogoutSync();
-  const store = atom(initVals["refreshToken"]);
-  store.subscribe((value) => setStoreCookie("refreshToken", value));
-  return store;
-});
-export const expireAt: WritableAtom<number> = shared("expireAt", () => {
-  const store = atom(Number(initVals["expireAt"]));
-  store.subscribe((value) => setStoreCookie("expireAt", value));
-  return store;
-});
+ensureLogoutSync();
 
 // Store for OAuth/Telegram login errors (403, 409)
 export const authError: WritableAtom<LoginErrorResponse | null> = shared("authError", () => atom<LoginErrorResponse | null>(null));
@@ -73,14 +65,13 @@ export const limitedAccessToken: WritableAtom<string | null> = shared("limitedAc
 // Shared across copies of this package: refresh tokens rotate, so two copies
 // refreshing at once would have the slower one present a token the gateway has
 // already retired, failing a refresh that should have succeeded.
-const inFlight = shared("getTokenPromise", () => ({promise: null as Promise<string | undefined> | null}));
+const inFlight = shared("signInTokenRequest", () => ({
+  current: undefined as {signIn: string | undefined; promise: Promise<string | undefined>} | undefined,
+}));
 
-/**
- * Reset the current token promise (for testing purposes)
- * @internal
- */
+/** @internal */
 export const resetTokenPromise = (): void => {
-  inFlight.promise = null;
+  inFlight.current = undefined;
 };
 
 const getProviderUrlAtom = (provider: ProviderType): WritableAtom<string | null> | undefined => {
@@ -116,170 +107,164 @@ export const login = async (provider: ProviderType): Promise<void> => {
   }
 };
 
-const refreshAccessToken = async (refresh: string): Promise<void> => {
-  const result = await refreshTokens(AuthProvider.BEARER, {token: refresh});
-  if (!isLimitedScopeTokenResponse(result)) {
-    setTokens(result.access_token, result.refresh_token, result.expires_in);
-  }
-};
+const TOKEN_PATH = "/auth/v1/token";
 
 const hasValidAccessToken = (): boolean => !!accessToken.get() && !isTokenExpired(expireAt.get());
 
+const refreshOrSignOut = (orgId: string, explicitSelection = false): Promise<boolean> =>
+  rotateRefreshToken(
+    {
+      orgId,
+      signIn: signInMarker.get(),
+      tabOrg: tabOrgId.get(),
+      explicitSelection,
+    },
+    dropTokens
+  );
+
 /**
- * Takes up the tokens another tab stored after rotating the refresh token.
- * Each tab holds the tokens it read at load, and the gateway accepts a refresh
- * token only once, so presenting the stale copy would be rejected and the
- * resulting logout would clear the cookies every tab shares.
- * @returns Whether a newer set of tokens was adopted
+ * Takes up the stored sign-in and says whether this tab can use it. A refresh
+ * names an org, so a refresh token with no org to name can never be used: it
+ * predates the org split, or the cookies it came with are gone. Such a sign-in
+ * is ended, since nothing else would ever report it dead.
  */
-const adoptStoredTokens = (): boolean => {
-  const stored = readStoreCookies();
-  const storedRefresh = stored["refreshToken"];
-  if (!storedRefresh || storedRefresh === refreshToken.get()) return false;
+const hasUsableSignIn = (): boolean => {
+  adoptStoredRefreshToken();
+  if (!refreshToken.get()) return false;
+  if (tabOrgId.get() || personalOrgId.get() || getLostOrg() || getLeftOrg()) return true;
 
-  // Permissions are resolved per user and organization, and the other tab may
-  // have signed in as someone else or switched organization.
-  const storedAccess = stored["accessToken"] ?? "";
-  if (scopeOf(storedAccess) !== scopeOf(accessToken.get())) clearPermissions();
-
-  accessToken.set(storedAccess);
-  refreshToken.set(storedRefresh);
-  expireAt.set(Number(stored["expireAt"]));
-  isLogged.set(true);
-  return true;
+  removeTokens();
+  return false;
 };
 
-/** The user and organization a token's permissions apply to. */
-const scopeOf = (token: string | undefined): string => {
-  const claims = token ? decodeToken(token) : undefined;
-  return claims ? `${claims.id}:${claims.org_id}` : "";
+/**
+ * The org a getToken() refresh names: the tab's own, or the sign-in's for a tab
+ * that never had one. A tab that lost its org has neither until the caller
+ * selects one.
+ */
+const orgToRefresh = (): string => {
+  const lost = getLostOrg();
+  if (lost) throw new OrgAccessError(lost, {status: HTTP_STATUS.FORBIDDEN, endpoint: TOKEN_PATH, data: {reason: lost.reason}});
+
+  // hasUsableSignIn() ran first, so a tab that lost no org has one of the two.
+  return (tabOrgId.get() ?? personalOrgId.get())!;
 };
 
-const REFRESH_LOCK = `${GLOBAL_PREFIX}_refresh`;
-// Requests have no timeout, so a tab whose refresh hangs would hold the lock and
-// stall every other tab behind it.
-const REFRESH_LOCK_WAIT_MS = 10_000;
-
-/** Runs the refresh under a lock held across tabs, where the browser has one. */
-const acrossTabs = async (task: () => Promise<void>): Promise<void> => {
-  if (typeof navigator === "undefined" || !navigator.locks) return task();
-
-  let granted = false;
+// Only getToken() drops a refused org: a refused selectOrganization() leaves the tab as it was.
+const refreshTabOrg = async (): Promise<void> => {
+  const orgId = orgToRefresh();
+  const signIn = signInMarker.get();
   try {
-    await navigator.locks.request(REFRESH_LOCK, {signal: AbortSignal.timeout(REFRESH_LOCK_WAIT_MS)}, () => {
-      granted = true;
-      return task();
-    });
+    await refreshOrSignOut(orgId);
   } catch (error) {
-    // Waited too long for the lock: refresh without it, as browsers without locks do.
-    if (!granted && error instanceof DOMException && error.name === "TimeoutError") return task();
+    if (error instanceof OrgAccessError && isCurrentSignIn(signIn) && getLeftOrg() !== orgId) dropRefusedOrg(error);
     throw error;
   }
 };
 
-const ensureValidAccessToken = async (): Promise<void> => {
+const ensureValidAccessToken = async (signIn: string | undefined): Promise<void> => {
   if (hasValidAccessToken()) return;
 
-  await acrossTabs(async () => {
-    // The tab that held the lock before this one may have just refreshed.
-    adoptStoredTokens();
-    if (hasValidAccessToken()) return;
-
-    const refresh = refreshToken.get();
-    if (!refresh) return;
+  await serializeRefresh(signIn, async () => {
+    // The refresh that ran before this one may have just issued a token.
+    if (!hasUsableSignIn() || signInMarker.get() !== signIn || getLeftOrg() || hasValidAccessToken()) return;
 
     try {
-      await refreshAccessToken(refresh);
+      await refreshTabOrg();
     } catch (refreshError) {
       console.error("Token refresh failed in getToken:", refreshError);
-      // Without a lock, another tab can rotate the token while this request is in flight.
-      if (adoptStoredTokens()) return;
-      if (isRejectedRefresh(refreshError)) removeTokens();
       throw refreshError;
     }
   });
 };
 
-/**
- * Whether the gateway refused the refresh token itself, which ends the sign-in.
- * It answers 400 for an expired, invalid or already-used token and 401 for an
- * inactive account. A network failure, 429 or 5xx means the token could not be
- * checked, so the sign-in is kept for the next getToken() to retry.
- */
-const isRejectedRefresh = (error: unknown): boolean =>
-  error instanceof ApiError &&
-  (error.status === HTTP_STATUS.BAD_REQUEST || error.status === HTTP_STATUS.UNAUTHORIZED || error.status === HTTP_STATUS.FORBIDDEN);
-
 export const getToken = async (): Promise<string | undefined> => {
-  // If there's already a getToken operation in progress, return that promise
-  if (inFlight.promise) {
-    return inFlight.promise;
+  await initDeferred.promise;
+  if (requiresAction.get() || !hasUsableSignIn() || getLeftOrg()) return undefined;
+
+  const signIn = signInMarker.get();
+  const pending = inFlight.current;
+  if (pending && pending.signIn === signIn) return pending.promise;
+
+  const promise = ensureValidAccessToken(signIn).then(() => {
+    if (signInMarker.get() !== signIn) return undefined;
+    const token = accessToken.get();
+    if (token) decodeAndSetUser(token);
+    return token;
+  });
+  inFlight.current = {signIn, promise};
+
+  try {
+    return await promise;
+  } finally {
+    if (inFlight.current?.promise === promise) inFlight.current = undefined;
   }
-
-  // Create a new promise for the getToken operation
-  inFlight.promise = (async () => {
-    try {
-      // Wait for the library to be initialized
-      await initDeferred.promise;
-
-      // Users in limited-access flows should not receive full-scope tokens for protected calls
-      if (requiresAction.get()) return undefined;
-
-      adoptStoredTokens();
-      if (!refreshToken.get()) return undefined;
-
-      await ensureValidAccessToken();
-
-      const token = accessToken.get();
-      if (token) {
-        decodeAndSetUser(token);
-      }
-
-      return token;
-    } catch (error) {
-      console.warn("Failed to getToken(). Error: ", error);
-      throw error;
-    } finally {
-      // Clear the promise reference when done
-      inFlight.promise = null;
-    }
-  })();
-
-  return inFlight.promise;
 };
+
+/**
+ * Moves this tab to `orgId` by refreshing into it. Other tabs keep their orgs.
+ * An org refusal of the requested org leaves the current selection alone.
+ * A final refresh 401 ends the sign-in. A concurrent sign-in or org change can reject with ApiError.
+ */
+export const selectOrganization = async (orgId: string): Promise<void> => {
+  await initDeferred.promise;
+  if (!orgId) throw new Error("selectOrganization() needs an organization ID");
+
+  adoptStoredRefreshToken();
+  const signIn = signInMarker.get();
+  await serializeRefresh(signIn, async () => {
+    if (!hasUsableSignIn()) {
+      throw new ApiError("Sign in before selecting an organization", HTTP_STATUS.UNAUTHORIZED, TOKEN_PATH);
+    }
+    if (signInMarker.get() !== signIn) {
+      throw new ApiError("The sign-in changed before selecting the organization", HTTP_STATUS.CONFLICT, TOKEN_PATH);
+    }
+    if (!(await refreshOrSignOut(orgId, true))) {
+      throw new ApiError("The organization was not selected: the account needs another action first", HTTP_STATUS.CONFLICT, TOKEN_PATH);
+    }
+  });
+};
+
 /**
  * Sets authentication tokens in the store
  * @param access The access token
  * @param refresh The refresh token
  * @param expiresIn The token expiration time in seconds
  */
-export const setTokens = (access: string, refresh: string, expiresIn: number): void => {
-  accessToken.set(access);
-  refreshToken.set(refresh);
-  expireAt.set(Date.now() + expiresIn * 1000);
-  isLogged.set(true);
+export const setTokens = (access: string, refresh: string, expiresIn: number): void =>
+  commit(() => {
+    adoptTokenOrg(access);
+    accessToken.set(access);
+    expireAt.set(Date.now() + expiresIn * 1000);
+    storeRefreshToken(refresh);
+    isLogged.set(true);
 
-  // Clear limited access state when full tokens are set
-  limitedAccessToken.set(null);
-  requiresAction.set(null);
+    // Clear limited access state when full tokens are set
+    limitedAccessToken.set(null);
+    requiresAction.set(null);
 
-  // Clear any previous authentication errors after successful token set
-  authError.set(null);
+    // Clear any previous authentication errors after successful token set
+    authError.set(null);
 
-  // Decode and set user information
-  decodeAndSetUser(access);
-};
+    // Decode and set user information
+    decodeAndSetUser(access);
+  });
 
 /**
- * Removes authentication tokens from the store
+ * Drops the tokens, and keeps which sign-in they were and the org the tab was
+ * on. A rotation that turns out to have kept that sign-in alive finds the tab
+ * where it was.
  */
-export const removeTokens = (): void => {
+const dropTokens = (): void => {
+  invalidateSignInContext();
+  resetTokenPromise();
   accessToken.set("");
   refreshToken.set("");
   expireAt.set(0);
   isLogged.set(false);
   user.set(undefined);
   clearPermissions();
+  orgContext.set(undefined);
 
   // Clear limited access state on logout
   limitedAccessToken.set(null);
@@ -287,6 +272,39 @@ export const removeTokens = (): void => {
 
   // Clear any existing auth errors to ensure a clean logout state
   authError.set(null);
+};
+
+const clearLocalSignIn = (): void =>
+  commit(() => {
+    dropTokens();
+    forgetTabOrg();
+    forgetSignIn();
+    tabSignIn.set(undefined);
+    lastActiveOrgId.set(undefined);
+  });
+
+/** Ends the browser's sign-in. Callers may announce explicit logout to other tabs. */
+export const removeTokens = (): void =>
+  commit(() => {
+    clearLocalSignIn();
+    setStoreCookie("refreshToken", "");
+    renewSignInCookies(false);
+    // Written by releases before the access token became tab-local. Signed out, no access token may stay in the browser.
+    setStoreCookie("accessToken", "");
+    setStoreCookie("expireAt", "");
+  });
+
+/** Ends only the sign-in that this logout started with. */
+export const endSignIn = (signIn: string | undefined): boolean => {
+  if (browserSignIn() === signIn) {
+    removeTokens();
+    return true;
+  }
+  if (signInMarker.get() === signIn || (signIn && tabSignIn.get() === signIn)) {
+    clearLocalSignIn();
+    return true;
+  }
+  return false;
 };
 
 /**
@@ -301,12 +319,15 @@ export const clearAuthError = (): void => {
  * @param token The limited scope access token
  * @param action The required action (e.g., "add_email")
  */
-export const setLimitedAccessState = (token: string, action: RequiresAction): void => {
-  limitedAccessToken.set(token);
-  requiresAction.set(action);
-  authError.set(null); // Clear any previous auth errors
-  isLogged.set(true); // User is logged in but with limited scope
-};
+export const setLimitedAccessState = (token: string, action: RequiresAction): void =>
+  commit(() => {
+    if (currentSignIn()) void logout();
+    else removeTokens();
+    limitedAccessToken.set(token);
+    requiresAction.set(action);
+    isLogged.set(true);
+    setStoreCookie("isLogged", true);
+  });
 
 /**
  * Clears the limited access state (after email verification completes or user logs out)
@@ -316,8 +337,8 @@ export const clearLimitedAccessState = (): void => {
   requiresAction.set(null);
 
   // If there are no full tokens, user should no longer be considered logged in
-  const hasFullTokens = !!accessToken.get() && !!refreshToken.get();
-  if (!hasFullTokens) {
+  if (!refreshToken.get()) {
     isLogged.set(false);
+    setStoreCookie("isLogged", false);
   }
 };

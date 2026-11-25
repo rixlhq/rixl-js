@@ -12,14 +12,15 @@ const channel = shared("logoutChannel", () =>
 );
 
 /** Tells the other tabs on this origin that the user logged out. */
-export const announceLogout = (): void => channel?.postMessage(LOGOUT);
+export const announceLogout = (signIn: string | undefined): void => channel?.postMessage({type: LOGOUT, signIn});
 
 /**
  * Runs `handler` when another tab logs out. The cookie alone cannot say so:
  * a missing cookie also means the browser blocked it, as in a third-party iframe.
  */
-export const onLogoutElsewhere = (handler: () => void): void => {
+export const onLogoutElsewhere = (handler: (signIn: string | undefined) => void): void => {
   channel?.addEventListener("message", (event: MessageEvent) => {
-    if (event.data === LOGOUT) handler();
+    const message = event.data;
+    if (message?.type === LOGOUT && (typeof message.signIn === "string" || message.signIn === undefined)) handler(message.signIn);
   });
 };

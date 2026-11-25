@@ -15,12 +15,14 @@ The SDK today refreshes without an org (`src/auth/api/refresh-tokens.ts`), keeps
 
 ## What Changes
 
-- **Tab-local org context.** Each tab holds its own org and its own access token for it. The refresh token stays shared across tabs, and rotation stays serialized across them.
+- **Tab-local org context.** Each tab holds its own org and its own access token for it. The refresh token stays shared across tabs, and refresh and reissue share the rotation lock.
 - **Refresh names the org.** `getToken()` refreshes into the tab's org. `selectOrganization(orgId)` replaces `updateActiveMembership(orgId)`: it refreshes into `orgId` and resolves with the tab on that org.
-- **Typed org errors.** A refresh into an unavailable org rejects with `OrgAccessError` carrying the reason and org ID. It never signs the user out, never changes the tab's org, and never picks another org.
+- **Typed org errors.** A refresh into an unavailable org rejects with `OrgAccessError` carrying the reason and org ID. A refused switch keeps the previous org. A refusal of the current org clears it on removal or deletion. Suspension keeps the org and clears permissions. All three reasons keep the user signed in.
 - **Sign-in hint.** The sign-in response's `last_active_org_id` is exposed as a hint. The SDK doesn't act on it.
 - **Claims.** `User` loses `org_id`. A per-tab `orgContext` holds `orgId` and `role` (display only). No `pms` handling.
-- **Regenerated client.** Org resources, membership routes under `/auth/v1/organizations/{org_id}`, invitations, lifecycle and sign-in routes. Wrappers for `updateOrgName` and `updateOrgUsername` are removed in favour of `updateOrganization` with a field mask.
+- **Regenerated client.** Org resources, membership routes under `/auth/v1/organizations/{org_id}` and sign-in routes. The new email invitation and org lifecycle operations are pending (task 2.8). Wrappers for `updateOrgName` and `updateOrgUsername` are removed in favour of `updateOrganization` with a field mask.
+- **Contract follow-through.** Domain auto-join becomes a join suggestion (`updateSuggestJoin`, `suggest_join`), memberships carry an `organization` summary, `updateMemberRole` uses `UpdateMember`, suspended memberships are reported as suspended, and `UserInfo.active_org_id` becomes `last_active_org_id`.
+- **Invitation links need a sign-in.** The gateway's anonymous allowlist lists `/auth/v1/invitations/lookup`; the route itself lands with `rixlhq/auth-api#252`. The two existing token-based invitation actions send an access token. The cross-org `respondToInvitation(orgId)` wrapper is removed.
 - **No "session" names.** `challenge_id` replaces `session_id` in the passkey and TOTP login functions and types. The SDK's other "session" names are renamed on their own branch, `feat/rename-session-names` (change `remove-session-names`).
 - **No legacy handling.** There is no fallback org and no support for the removed switch.
 
@@ -44,7 +46,7 @@ None (rixl-js has no archived specs yet).
 
 ## Impact
 
-- **Breaking** (`feat(auth)!`). It removes `updateActiveMembership`, `updateOrgName`, `updateOrgUsername` and `User.org_id`, and renames the `session_id` parameters and fields to `challenge_id`.
-- Changes `src/auth/authStore.ts`, `src/auth/api/refresh-tokens.ts`, `src/auth/membership/manage.ts`, `src/auth/organization.ts`, `src/auth/utils/jwt.ts`, `src/auth/types.ts`, `src/auth/passkey.ts`, `src/auth/auth/login.ts`, `src/auth/auth/types.ts`, `src/auth/validation/auth.ts`, `src/auth/session-channel.ts` (renamed), `src/auth/permissionStore.ts`, `src/index.ts`, `src/auth/index.ts` and `src/generated/*` (regenerated).
-- Depends on the auth-api changes `separate-organizations-from-users`, `organization-invitations`, `organization-lifecycle` and `rename-sessions-to-sign-ins` being published in `rixlhq/openapi`. Also depends on the gateway passing the `ErrorInfo` reason through in its error body (design.md, "Reasons reach the SDK through the gateway error body").
+- **Breaking** (`feat(auth)!`). It removes `updateActiveMembership`, `updateOrgName`, `updateOrgUsername`, `respondToInvitation` and `User.org_id`, makes `publicRespondToInvitation` need a signed-in user, renames the `session_id` parameters and fields to `challenge_id`, renames the domain auto-join API to the join suggestion API, replaces the `organization_*` membership fields with `organization`, renames `UserInfo.active_org_id` to `last_active_org_id`, makes `logout()` return a revocation result,, separates signup and email-change verification, requires a verification ID to resend signup verification, removes `RegisterResponse.user_id` from the wrapper, and removes `show_deleted` from the organization list wrapper until lifecycle support lands.
+- Changes `src/auth/authStore.ts`, `src/auth/api/refresh-tokens.ts`, `src/auth/membership/manage.ts`, `src/auth/organization.ts`, `src/auth/utils/jwt.ts`, `src/auth/types.ts`, `src/auth/passkey.ts`, `src/auth/auth/login.ts`, `src/auth/auth/types.ts`, `src/auth/validation/auth.ts`, `src/auth/logout-channel.ts`, `src/auth/permissionStore.ts`, `src/index.ts`, `src/auth/index.ts` and `src/generated/*` (regenerated).
+- Depends on the auth-api changes `separate-organizations-from-users` and `rename-sessions-to-sign-ins` being published in `rixlhq/openapi`. Task 2.8 depends on publication of `organization-invitations` and `organization-lifecycle`. Also depends on the gateway passing the `ErrorInfo` reason through in its error body (design.md, "Reasons reach the SDK through the gateway error body").
 - Consumers: dashboard `adopt-organization-context` and `add-signed-in-devices`, internal-dashboard, blog-posts.

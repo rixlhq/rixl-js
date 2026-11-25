@@ -19,9 +19,7 @@ const wireMembership = (overrides: Record<string, unknown> = {}) => ({
   org_id: "org123",
   role: "MEMBERSHIP_ROLE_ADMIN",
   state: "MEMBERSHIP_STATE_ACTIVE",
-  organization_username: "testorg",
-  organization_first_name: "Test",
-  organization_last_name: "Org",
+  organization: {id: "org123", name: "Test Org", slug: "testorg", image_id: "img1", personal: false, internal: false},
   joined_at: "2024-01-01T00:00:00Z",
   ...overrides,
 });
@@ -71,9 +69,15 @@ describe("Membership List Module", () => {
           role: MembershipRole.ADMIN,
           state: MembershipState.ACCEPTED,
           joined_at: "2024-01-01T00:00:00Z",
-          organization_username: "testorg",
-          organization_first_name: "Test",
-          organization_last_name: "Org",
+          organization: {
+            id: "org123",
+            name: "Test Org",
+            slug: "testorg",
+            image_id: "img1",
+            personal: false,
+            internal: false,
+            created_at: undefined,
+          },
         },
       ]);
     });
@@ -122,6 +126,20 @@ describe("Membership List Module", () => {
       expect(result[0].state).toBe(MembershipState.PENDING);
     });
 
+    it("maps null embedded messages and timestamps to the public defaults", async () => {
+      mockListMembershipApplications.mockResolvedValue({
+        data: {applications: [wireMembership({organization: null, created_at: null, decided_at: null, invitation_expires_at: null})]},
+      });
+
+      const [application] = await listPendingMemberships();
+      expect(application).toMatchObject({
+        organization: {id: "", name: "", created_at: undefined},
+        created_at: undefined,
+        decided_at: undefined,
+        invitation_expires_at: undefined,
+      });
+    });
+
     it("returns empty array when no pending memberships", async () => {
       mockListMembershipApplications.mockResolvedValue({data: {applications: []}});
 
@@ -130,6 +148,14 @@ describe("Membership List Module", () => {
   });
 
   describe("listOrganizationMembers", () => {
+    it("maps a suspended membership as suspended", async () => {
+      mockListOrganizationMembers.mockResolvedValue({data: {members: [wireMember({state: "MEMBERSHIP_STATE_SUSPENDED"})]}});
+
+      const result = await listOrganizationMembers("org123");
+
+      expect(result[0].state).toBe(MembershipState.SUSPENDED);
+    });
+
     it("maps wire members to the snake_case public shape", async () => {
       mockListOrganizationMembers.mockResolvedValue({data: {members: [wireMember()]}});
 

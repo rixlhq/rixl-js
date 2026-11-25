@@ -6,18 +6,18 @@ import {ApiError} from "../../auth/api/types";
 const mockAuthV1DomainServiceGetDomainStatus = vi.fn();
 const mockAuthV1DomainServiceCreateDomainVerification = vi.fn();
 const mockAuthV1DomainServiceCheckDomainVerification = vi.fn();
-const mockAuthV1DomainServiceSetDomainAutoJoin = vi.fn();
+const mockAuthV1DomainServiceSetDomainSuggestJoin = vi.fn();
 const mockAuthV1DomainServiceRemoveDomain = vi.fn();
 
 vi.mock("../../generated/sdk.gen", () => ({
   authV1DomainServiceGetDomainStatus: (...args: unknown[]) => mockAuthV1DomainServiceGetDomainStatus(...args),
   authV1DomainServiceCreateDomainVerification: (...args: unknown[]) => mockAuthV1DomainServiceCreateDomainVerification(...args),
   authV1DomainServiceCheckDomainVerification: (...args: unknown[]) => mockAuthV1DomainServiceCheckDomainVerification(...args),
-  authV1DomainServiceSetDomainAutoJoin: (...args: unknown[]) => mockAuthV1DomainServiceSetDomainAutoJoin(...args),
+  authV1DomainServiceSetDomainSuggestJoin: (...args: unknown[]) => mockAuthV1DomainServiceSetDomainSuggestJoin(...args),
   authV1DomainServiceRemoveDomain: (...args: unknown[]) => mockAuthV1DomainServiceRemoveDomain(...args),
 }));
 
-import {getDomainStatus, initiateDomainVerification, checkDomainVerification, updateAutoJoin, removeDomain} from "@/domain";
+import {getDomainStatus, initiateDomainVerification, checkDomainVerification, updateSuggestJoin, removeDomain} from "@/domain";
 
 describe("Domain Management Module", () => {
   beforeEach(() => {
@@ -26,19 +26,19 @@ describe("Domain Management Module", () => {
     mockAuthV1DomainServiceGetDomainStatus.mockReset();
     mockAuthV1DomainServiceCreateDomainVerification.mockReset();
     mockAuthV1DomainServiceCheckDomainVerification.mockReset();
-    mockAuthV1DomainServiceSetDomainAutoJoin.mockReset();
+    mockAuthV1DomainServiceSetDomainSuggestJoin.mockReset();
     mockAuthV1DomainServiceRemoveDomain.mockReset();
   });
 
   describe("getDomainStatus", () => {
     it("should get domain status successfully", async () => {
-      // The gateway nests pending/verified under status with a shared auto_join flag
+      // The gateway nests pending/verified under status with a shared suggest_join flag
       const wireResponse = {
         present: true,
         id: "domain123",
         domain: "company.com",
         status: {
-          auto_join: true,
+          suggest_join: true,
           verified: {verified_at: "2026-01-20T00:00:00Z"},
         },
       };
@@ -56,7 +56,7 @@ describe("Domain Management Module", () => {
         domain: "company.com",
         status: DomainStatus.VERIFIED,
         verified_at: "2026-01-20T00:00:00Z",
-        auto_join: true,
+        suggest_join: true,
       });
     });
 
@@ -75,7 +75,7 @@ describe("Domain Management Module", () => {
         id: "domain123",
         domain: "company.com",
         status: {
-          auto_join: false,
+          suggest_join: false,
           pending: {
             verification_token: "rixl-domain-verification=abc123",
             expires_at: "2026-01-30T00:00:00Z",
@@ -93,7 +93,7 @@ describe("Domain Management Module", () => {
         status: DomainStatus.PENDING,
         verification_token: "rixl-domain-verification=abc123",
         expires_at: "2026-01-30T00:00:00Z",
-        auto_join: false,
+        suggest_join: false,
       });
       expect(result?.verification_token).toBe("rixl-domain-verification=abc123");
     });
@@ -112,7 +112,7 @@ describe("Domain Management Module", () => {
         id: "domain123",
         domain: "company.com",
         status: {
-          auto_join: false,
+          suggest_join: false,
           pending: {
             verification_token: "rixl-domain-verification=abc123",
             expires_at: "2026-01-30T00:00:00Z",
@@ -135,7 +135,7 @@ describe("Domain Management Module", () => {
         status: DomainStatus.PENDING,
         verification_token: "rixl-domain-verification=abc123",
         expires_at: "2026-01-30T00:00:00Z",
-        auto_join: false,
+        suggest_join: false,
       });
     });
 
@@ -187,7 +187,7 @@ describe("Domain Management Module", () => {
         id: "domain123",
         domain: "company.com",
         status: {
-          auto_join: false,
+          suggest_join: false,
           verified: {verified_at: "2026-01-20T00:00:00Z"},
         },
       };
@@ -207,7 +207,7 @@ describe("Domain Management Module", () => {
         domain: "company.com",
         status: DomainStatus.VERIFIED,
         verified_at: "2026-01-20T00:00:00Z",
-        auto_join: false,
+        suggest_join: false,
       });
       expect(result.status).toBe(DomainStatus.VERIFIED);
     });
@@ -270,14 +270,14 @@ describe("Domain Management Module", () => {
     });
   });
 
-  describe("updateAutoJoin", () => {
-    it("should enable auto-join successfully", async () => {
+  describe("updateSuggestJoin", () => {
+    it("should enable join suggestions successfully", async () => {
       const mockResponse = {enabled: true};
-      mockAuthV1DomainServiceSetDomainAutoJoin.mockResolvedValue({data: mockResponse});
+      mockAuthV1DomainServiceSetDomainSuggestJoin.mockResolvedValue({data: mockResponse});
 
-      const result = await updateAutoJoin("org123", true);
+      const result = await updateSuggestJoin("org123", true);
 
-      expect(mockAuthV1DomainServiceSetDomainAutoJoin).toHaveBeenCalledWith({
+      expect(mockAuthV1DomainServiceSetDomainSuggestJoin).toHaveBeenCalledWith({
         path: {"user.org_id": "org123"},
         body: {enabled: true},
         throwOnError: true,
@@ -285,13 +285,13 @@ describe("Domain Management Module", () => {
       expect(result).toEqual(mockResponse);
     });
 
-    it("should disable auto-join successfully", async () => {
+    it("should disable join suggestions successfully", async () => {
       const mockResponse = {enabled: false};
-      mockAuthV1DomainServiceSetDomainAutoJoin.mockResolvedValue({data: mockResponse});
+      mockAuthV1DomainServiceSetDomainSuggestJoin.mockResolvedValue({data: mockResponse});
 
-      const result = await updateAutoJoin("org123", false);
+      const result = await updateSuggestJoin("org123", false);
 
-      expect(mockAuthV1DomainServiceSetDomainAutoJoin).toHaveBeenCalledWith({
+      expect(mockAuthV1DomainServiceSetDomainSuggestJoin).toHaveBeenCalledWith({
         path: {"user.org_id": "org123"},
         body: {enabled: false},
         throwOnError: true,
@@ -300,30 +300,30 @@ describe("Domain Management Module", () => {
     });
 
     it("should handle forbidden error for non-enterprise plan", async () => {
-      mockAuthV1DomainServiceSetDomainAutoJoin.mockRejectedValue({
+      mockAuthV1DomainServiceSetDomainSuggestJoin.mockRejectedValue({
         error: "forbidden",
         code: 403,
       });
 
-      await expect(updateAutoJoin("org123", true)).rejects.toThrow();
+      await expect(updateSuggestJoin("org123", true)).rejects.toThrow();
     });
 
     it("should handle not found error when no verified domain exists", async () => {
-      mockAuthV1DomainServiceSetDomainAutoJoin.mockRejectedValue({
+      mockAuthV1DomainServiceSetDomainSuggestJoin.mockRejectedValue({
         error: "not_found",
         code: 404,
       });
 
-      await expect(updateAutoJoin("org123", true)).rejects.toThrow();
+      await expect(updateSuggestJoin("org123", true)).rejects.toThrow();
     });
 
     it("should handle unauthorized error", async () => {
-      mockAuthV1DomainServiceSetDomainAutoJoin.mockRejectedValue({
+      mockAuthV1DomainServiceSetDomainSuggestJoin.mockRejectedValue({
         error: "unauthorized",
         code: 401,
       });
 
-      await expect(updateAutoJoin("org123", true)).rejects.toThrow();
+      await expect(updateSuggestJoin("org123", true)).rejects.toThrow();
     });
   });
 

@@ -5,7 +5,9 @@
 
 import {describe, it, expect, beforeEach, vi} from "vite-plus/test";
 import {resetSharedRuntime} from "../setup/shared-runtime-reset";
+import {createMockJWT} from "../utils/test-helpers";
 
+const freshAccess = createMockJWT({jti: "fresh"});
 const refreshTokens = vi.hoisted(() => vi.fn());
 
 vi.mock("../../auth/api/refresh-tokens", () => ({refreshTokens}));
@@ -22,13 +24,14 @@ describe("getToken across copies of the package", () => {
     vi.resetModules();
     resetSharedRuntime();
     refreshTokens.mockReset();
-    refreshTokens.mockResolvedValue({access_token: "fresh-access", refresh_token: "rotated-refresh", expires_in: 3600});
+    refreshTokens.mockResolvedValue({access_token: freshAccess, refresh_token: "rotated-refresh", expires_in: 3600});
   });
 
   it("runs one refresh when two copies ask for a token at once", async () => {
     const first = await import("../../auth/authStore");
     // expires_in of 0 leaves the access token already stale, forcing a refresh.
-    first.setTokens("stale-access", "refresh-token", 0);
+    (await import("../../auth/stored-sign-in")).beginSignIn(createMockJWT());
+    first.setTokens(createMockJWT(), "refresh-token", 0);
     (await import("../../auth/initialization")).initDeferred.resolve();
 
     const second = await loadSecondCopy();
@@ -37,7 +40,7 @@ describe("getToken across copies of the package", () => {
     // Two refreshes would mean the second presented a refresh token the gateway
     // had already rotated away, failing a call that should have succeeded.
     expect(refreshTokens).toHaveBeenCalledTimes(1);
-    expect(a).toBe("fresh-access");
-    expect(b).toBe("fresh-access");
+    expect(a).toBe(freshAccess);
+    expect(b).toBe(freshAccess);
   });
 });

@@ -65,6 +65,7 @@ bun examples/10-pagination.ts
 - `08-audio-tracks.ts` requires `RIXL_API_KEY`, `RIXL_PROJECT_ID`, `RIXL_VIDEO_ID`, `RIXL_AUDIO_FILE`, and `RIXL_AUDIO_LANGUAGE_CODE`.
 - `09-subtitles.ts` requires `RIXL_API_KEY`, `RIXL_PROJECT_ID`, `RIXL_VIDEO_ID`, `RIXL_SUBTITLE_FILE`, and `RIXL_SUBTITLE_LANGUAGE_CODE`.
 - `10-pagination.ts` requires `RIXL_API_KEY` and `RIXL_PROJECT_ID`.
+- `11-organizations.ts` is browser code for a signed-in user: choosing a tab's organization and handling `OrgAccessError`. It is only type-checked.
 
 ## Typecheck
 

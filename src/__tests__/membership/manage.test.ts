@@ -2,27 +2,24 @@ import {describe, it, expect, beforeEach, afterEach, vi} from "vite-plus/test";
 import {MembershipRole} from "@/membership";
 import {setupAuthTest, cleanupAuthMocks} from "../utils/auth-test-helpers";
 
-const mockAuthV1MembershipServiceUpdateActiveMembership = vi.fn();
-const mockAuthV1MembershipServiceUpdateMemberRole = vi.fn();
+const mockAuthV1MembershipServiceUpdateMember = vi.fn();
 const mockAuthV1MembershipServiceRemoveMember = vi.fn();
 const mockAuthV1MembershipServiceLeaveOrganization = vi.fn();
 
 vi.mock("../../generated/sdk.gen", () => ({
-  authV1MembershipServiceUpdateActiveMembership: (...args: unknown[]) => mockAuthV1MembershipServiceUpdateActiveMembership(...args),
-  authV1MembershipServiceUpdateMemberRole: (...args: unknown[]) => mockAuthV1MembershipServiceUpdateMemberRole(...args),
+  authV1MembershipServiceUpdateMember: (...args: unknown[]) => mockAuthV1MembershipServiceUpdateMember(...args),
   authV1MembershipServiceRemoveMember: (...args: unknown[]) => mockAuthV1MembershipServiceRemoveMember(...args),
   authV1MembershipServiceLeaveOrganization: (...args: unknown[]) => mockAuthV1MembershipServiceLeaveOrganization(...args),
 }));
 
-import {updateActiveMembership, updateMemberRole, deleteMember, leaveOrganization} from "@/membership";
+import {updateMemberRole, deleteMember, leaveOrganization} from "@/membership";
 
 describe("Membership Manage Module", () => {
   let mocks: ReturnType<typeof setupAuthTest>;
 
   beforeEach(() => {
     mocks = setupAuthTest();
-    mockAuthV1MembershipServiceUpdateActiveMembership.mockReset();
-    mockAuthV1MembershipServiceUpdateMemberRole.mockReset();
+    mockAuthV1MembershipServiceUpdateMember.mockReset();
     mockAuthV1MembershipServiceRemoveMember.mockReset();
     mockAuthV1MembershipServiceLeaveOrganization.mockReset();
   });
@@ -31,80 +28,33 @@ describe("Membership Manage Module", () => {
     cleanupAuthMocks(mocks);
   });
 
-  describe("updateActiveMembership", () => {
-    // The backend reads the target org from the top-level `org_id` and treats
-    // `user.org_id` as the caller's current org, so a target sent there fails
-    // with "org_id is required". user_id is filled from the JWT.
-    it("should send the target org as the top-level org_id", async () => {
-      mockAuthV1MembershipServiceUpdateActiveMembership.mockResolvedValue({data: {}});
-
-      await updateActiveMembership("org123");
-
-      expect(mockAuthV1MembershipServiceUpdateActiveMembership).toHaveBeenCalledWith({
-        body: {org_id: "org123"},
-        throwOnError: true,
-      });
-    });
-
-    it("should not send the target in user.org_id or membership_id", async () => {
-      mockAuthV1MembershipServiceUpdateActiveMembership.mockResolvedValue({data: {}});
-
-      await updateActiveMembership("PZ76MMvRmS");
-
-      const body = mockAuthV1MembershipServiceUpdateActiveMembership.mock.calls[0][0].body;
-      expect(body.user).toBeUndefined();
-      expect(body.membership_id).toBeUndefined();
-      expect(body.org_id).toBe("PZ76MMvRmS");
-    });
-
-    it("should invalidate token after update", async () => {
-      mockAuthV1MembershipServiceUpdateActiveMembership.mockResolvedValue({data: {}});
-
-      await updateActiveMembership("org456");
-
-      expect(mockAuthV1MembershipServiceUpdateActiveMembership).toHaveBeenCalledWith({
-        body: {org_id: "org456"},
-        throwOnError: true,
-      });
-    });
-
-    it("should handle unauthorized error", async () => {
-      mockAuthV1MembershipServiceUpdateActiveMembership.mockRejectedValue({
-        error: "unauthorized",
-        code: 401,
-      });
-
-      await expect(updateActiveMembership("membership123")).rejects.toThrow();
-    });
-  });
-
   describe("updateMemberRole", () => {
     it("should update member role successfully", async () => {
-      mockAuthV1MembershipServiceUpdateMemberRole.mockResolvedValue({data: {}});
+      mockAuthV1MembershipServiceUpdateMember.mockResolvedValue({data: {}});
 
       await updateMemberRole("org123", "user456", MembershipRole.ADMIN);
 
-      expect(mockAuthV1MembershipServiceUpdateMemberRole).toHaveBeenCalledWith({
-        path: {"user.org_id": "org123", user_id: "user456"},
-        body: {role: "MEMBERSHIP_ROLE_ADMIN"},
+      expect(mockAuthV1MembershipServiceUpdateMember).toHaveBeenCalledWith({
+        path: {org_id: "org123", user_id: "user456"},
+        body: {role: "MEMBERSHIP_ROLE_ADMIN", update_mask: "role"},
         throwOnError: true,
       });
     });
 
     it("should update to different roles", async () => {
-      mockAuthV1MembershipServiceUpdateMemberRole.mockResolvedValue({data: {}});
+      mockAuthV1MembershipServiceUpdateMember.mockResolvedValue({data: {}});
 
       await updateMemberRole("org123", "user789", MembershipRole.MEMBER);
 
-      expect(mockAuthV1MembershipServiceUpdateMemberRole).toHaveBeenCalledWith({
-        path: {"user.org_id": "org123", user_id: "user789"},
-        body: {role: "MEMBERSHIP_ROLE_MEMBER"},
+      expect(mockAuthV1MembershipServiceUpdateMember).toHaveBeenCalledWith({
+        path: {org_id: "org123", user_id: "user789"},
+        body: {role: "MEMBERSHIP_ROLE_MEMBER", update_mask: "role"},
         throwOnError: true,
       });
     });
 
     it("should handle unauthorized error", async () => {
-      mockAuthV1MembershipServiceUpdateMemberRole.mockRejectedValue({
+      mockAuthV1MembershipServiceUpdateMember.mockRejectedValue({
         error: "unauthorized",
         code: 401,
       });
@@ -113,7 +63,7 @@ describe("Membership Manage Module", () => {
     });
 
     it("should handle member not found error", async () => {
-      mockAuthV1MembershipServiceUpdateMemberRole.mockRejectedValue({
+      mockAuthV1MembershipServiceUpdateMember.mockRejectedValue({
         error: "not_found",
         code: 404,
       });
@@ -122,7 +72,7 @@ describe("Membership Manage Module", () => {
     });
 
     it("should handle forbidden error for owner", async () => {
-      mockAuthV1MembershipServiceUpdateMemberRole.mockRejectedValue({
+      mockAuthV1MembershipServiceUpdateMember.mockRejectedValue({
         error: "forbidden",
         code: 403,
       });
@@ -138,7 +88,7 @@ describe("Membership Manage Module", () => {
       await deleteMember("org123", "user456");
 
       expect(mockAuthV1MembershipServiceRemoveMember).toHaveBeenCalledWith({
-        path: {"user.org_id": "org123", user_id: "user456"},
+        path: {org_id: "org123", user_id: "user456"},
         throwOnError: true,
       });
     });
@@ -179,6 +129,7 @@ describe("Membership Manage Module", () => {
 
       expect(mockAuthV1MembershipServiceLeaveOrganization).toHaveBeenCalledWith({
         path: {org_id: "org123"},
+        responseStyle: "fields",
         throwOnError: true,
       });
     });

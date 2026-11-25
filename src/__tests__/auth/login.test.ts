@@ -50,7 +50,7 @@ describe("Login Functions", () => {
       mockPostAuthV1Login.mockResolvedValue({
         data: {
           status: "2fa_required",
-          session_id: "challenge-123",
+          challenge_id: "challenge-123",
           authentication: ["totp"],
         },
       });
@@ -58,7 +58,7 @@ describe("Login Functions", () => {
       const result = await loginWithEmail("test@example.com", "Password123");
 
       expect(result).toEqual({
-        session_id: "challenge-123",
+        challenge_id: "challenge-123",
         email: "test@example.com",
         authentication: ["totp"],
         passkey_options: undefined,
@@ -70,7 +70,7 @@ describe("Login Functions", () => {
       mockPostAuthV1Login.mockResolvedValue({
         data: {
           status: "2fa_required",
-          session_id: "challenge-456",
+          challenge_id: "challenge-456",
           authentication: ["passkey"],
           passkey_options: "eyJwdWJsaWNLZXkiOnt9fQ==",
         },
@@ -79,7 +79,7 @@ describe("Login Functions", () => {
       const result = await loginWithEmail("test@example.com", "Password123");
 
       expect(result).toEqual({
-        session_id: "challenge-456",
+        challenge_id: "challenge-456",
         email: "test@example.com",
         authentication: ["passkey"],
         passkey_options: "eyJwdWJsaWNLZXkiOnt9fQ==",
@@ -142,20 +142,13 @@ describe("Login Functions", () => {
       });
     });
 
-    it("should return LoginErrorResponse for email not verified", async () => {
-      mockPostAuthV1Login.mockResolvedValue({
-        data: {
-          status: "email_not_verified",
-          email: "test@example.com",
-        },
-      });
+    it("reports invalid credentials when signup verification is pending", async () => {
+      mockPostAuthV1Login.mockRejectedValue(new ApiError("invalid credentials", 401, "/auth/v1/login", {error: "invalid credentials"}));
 
-      const result = await loginWithEmail("test@example.com", "Password123");
-
-      expect(result).toEqual({
-        error_code: "email_not_verified",
-        message: "Email not verified",
-        email: "test@example.com",
+      await expect(loginWithEmail("test@example.com", "Password123")).rejects.toMatchObject({
+        name: "ApiError",
+        status: 401,
+        message: "Incorrect email or password",
       });
       expect(mocks.setTokensSpy).not.toHaveBeenCalled();
     });
@@ -200,7 +193,7 @@ describe("Login Functions", () => {
       await verifyTOTPForLogin("123456", "challenge-123");
 
       expect(mockPostAuthV1VerifyTotp).toHaveBeenCalledWith({
-        body: {code: "123456", session_id: "challenge-123"},
+        body: {code: "123456", challenge_id: "challenge-123"},
         throwOnError: true,
       });
       expect(mocks.setTokensSpy).toHaveBeenCalledWith(mockToken, "refresh-123", 3600);
@@ -219,7 +212,7 @@ describe("Login Functions", () => {
       await verifyTOTPForLogin("BACKUP-CODE-ABC", "challenge-123");
 
       expect(mockPostAuthV1VerifyTotp).toHaveBeenCalledWith({
-        body: {code: "BACKUP-CODE-ABC", session_id: "challenge-123"},
+        body: {code: "BACKUP-CODE-ABC", challenge_id: "challenge-123"},
         throwOnError: true,
       });
       expect(mocks.setTokensSpy).toHaveBeenCalledWith(mockToken, "refresh-123", 3600);
@@ -229,7 +222,7 @@ describe("Login Functions", () => {
       await expect(verifyTOTPForLogin("", "challenge-123")).rejects.toThrow();
     });
 
-    it("should throw error for login challenge not found", async () => {
+    it("should throw error for an unknown login challenge", async () => {
       mockPostAuthV1VerifyTotp.mockRejectedValue({
         error: "not_found",
         code: 404,

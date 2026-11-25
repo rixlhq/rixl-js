@@ -124,7 +124,7 @@ describe("initClient - OAuth Callback Handling", () => {
 
     await initClient({apiUrl: "https://api.example.com"});
 
-    expect(authStore.setTokens).toHaveBeenCalledWith("access", "refresh", "900");
+    expect(authStore.setTokens).toHaveBeenCalledWith("access", "refresh", 900);
     expect(authStore.setLimitedAccessState).not.toHaveBeenCalled();
   });
 
@@ -154,7 +154,7 @@ describe("initClient - OAuth Callback Handling", () => {
     await initClient(config);
 
     expect(mockRefreshTokens).toHaveBeenCalledWith("google", {token: "oauth-token"}, {origin: window.location.origin});
-    expect(mockAuthError.set).toHaveBeenCalledWith(expect.objectContaining({error_code: "email_not_verified"}));
+    expect(mockAuthError.set).toHaveBeenCalledWith(expect.objectContaining({error_code: "provider_exchange_failed"}));
   });
 
   it("should record a gateway rejection as an auth error the login page can show", async () => {

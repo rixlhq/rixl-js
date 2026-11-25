@@ -1,3 +1,12 @@
+/** The gateway's JSON error body. */
+export interface WireErrorBody {
+  error?: string;
+  details?: string;
+  code?: number;
+  /** The ErrorInfo reason of a client error, such as `NOT_A_MEMBER`. */
+  reason?: string;
+}
+
 export interface ApiErrorContext {
   status: number;
   endpoint: string;
