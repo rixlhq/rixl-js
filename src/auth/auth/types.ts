@@ -32,8 +32,8 @@ export interface VerifyEmailResponse {
 
 export interface VerifyStatusResponse {
   email: string;
+  /** auth-api stores an account's email only once it is verified. */
   has_email: boolean;
-  verified: boolean;
 }
 
 /**

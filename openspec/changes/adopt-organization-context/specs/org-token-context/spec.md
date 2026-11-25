@@ -138,6 +138,25 @@ Public signup verification SHALL commit a new sign-in only while its initiating 
 - **WHEN** the SDK enters limited access while a full sign-in is active
 - **THEN** the full sign-in is cleared, its tabs are notified, and revocation is attempted before the limited flow continues
 
+### Requirement: Invitations use auth-api's invitation routes
+
+The SDK SHALL create, list, resend and revoke an org's invitations under that org, and SHALL list, accept and decline the signed-in user's invitations on the account routes, naming the invitation by emailed token or by ID in the request body. Looking up a token SHALL need no sign-in. A refusal SHALL reach the caller as an `ApiError` that keeps the gateway's `reason`.
+
+#### Scenario: Accepting from an email link
+
+- **WHEN** a signed-in user calls `publicRespondToInvitation(token, "accept")`
+- **THEN** the SDK posts the token to `/auth/v1/invitations/accept`, resolves with the membership and leaves the tab on its org
+
+#### Scenario: Opening a link while signed out
+
+- **WHEN** `lookupInvitation(token)` runs without a sign-in
+- **THEN** the request carries no access token and changes nothing
+
+#### Scenario: A second invitation to the same address
+
+- **WHEN** `inviteMember` is answered 409 with reason `INVITATION_PENDING`
+- **THEN** it rejects with that `ApiError`, reason included
+
 ### Requirement: Voluntary leave clears the tab's selected org
 
 A successful leave of the tab's selected org in the current sign-in SHALL clear the selected org, access token and permissions. The tab SHALL stay signed in and wait for an explicit org selection across reloads. `orgSelectionRequired` SHALL be true, and `getToken()` SHALL resolve undefined until selection. A refusal of the same departed org that arrives before leave completes SHALL be cleared.

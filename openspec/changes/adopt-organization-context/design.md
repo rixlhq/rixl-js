@@ -132,6 +132,13 @@
 - **Dropped:** None.
 - **Evidence:** auth-api `proto/auth/v1/domains.proto`, `memberships.proto` and `common.proto` on `rixl/remove-legacy`.
 
+### Invitations are addressed to an email
+
+- **Chosen:** The wrappers follow auth-api's `InvitationService`. Where the new contract allows, a function the dashboard calls keeps its name and arguments: `inviteMember(orgId, email, role)` now takes an email, `resendMemberInvite(orgId, invitationId)` an invitation ID, `publicRespondToInvitation(token, state)` sends the token in the body, and `listPendingMemberships()` shapes a page of the user's invitations as pending memberships. `listMyInvitations`, `listOrganizationInvitations`, `lookupInvitation`, `revokeInvitation` and `respondToMyInvitation` are new. Accepting returns the membership and doesn't switch the tab's org.
+- **Alternatives considered:** Renaming the four functions lost because the dashboard calls them and their intent is unchanged. Reusing the name `respondToInvitation` for answering by ID lost: it used to take an org ID, and both are strings.
+- **Dropped:** `MembershipApplication.user_id` and `decided_at`, `Member.invitation_expires_at`, `ResendInviteMemberRequest` and `VerifyStatusResponse.verified`: the contract no longer carries them. No `request_id` option on `inviteMember`, which would be a fourth parameter with no caller.
+- **Evidence:** auth-api `proto/auth/v1/invitations.proto` and `internal/invitations` at `92d208bd`; gateway `internal/routes/account_scoped.go` and `errors.go` at `c0a8891`.
+
 ### No legacy path
 
 - **Chosen:** No fallback org, no `org_fallback_reason`, no support for refresh without an org or for the removed switch.

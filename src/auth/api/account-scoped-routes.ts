@@ -11,8 +11,8 @@ const accountScopedRoutes: ReadonlyArray<{method?: string; path: RegExp}> = [
   {method: "POST", path: /^\/auth\/v1\/sign-ins\/revoke-others$/},
   {path: /^\/auth\/v1\/users\/current(\/|$)/},
   {method: "GET", path: /^\/auth\/v1\/organizations$/},
-  {method: "POST", path: /^\/auth\/v1\/invitations\/[^/]+\/(accept|decline)$/},
-  {method: "POST", path: /^\/auth\/v1\/invitations\/lookup$/},
+  {method: "POST", path: /^\/auth\/v1\/organizations$/},
+  {method: "POST", path: /^\/auth\/v1\/invitations\/(accept|decline)$/},
 ];
 
 export const isAccountScopedRoute = (method: string, path: string): boolean =>

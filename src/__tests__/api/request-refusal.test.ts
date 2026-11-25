@@ -383,7 +383,7 @@ describe("An org reason from an account-scoped route", () => {
   it.each(["ACCEPT", "DECLINE"] as const)("about the invited org leaves the tab on its own: %s", async (state) => {
     const sdk = await onOrgB();
     const token = await sdk.getToken();
-    refusedPaths.set(`/auth/v1/invitations/invite-token/${state.toLowerCase()}`, "ORG_DELETED");
+    refusedPaths.set(`/auth/v1/invitations/${state.toLowerCase()}`, "ORG_DELETED");
 
     const error = await thrownBy(sdk.publicRespondToInvitation("invite-token", sdk.MembershipState[state]));
 
@@ -393,6 +393,7 @@ describe("An org reason from an account-scoped route", () => {
 
   it.each([
     "GET /auth/v1/organizations",
+    "POST /auth/v1/organizations",
     "GET /auth/v1/sign-ins",
     "DELETE /auth/v1/sign-ins/sign-in-9",
     "POST /auth/v1/sign-ins/revoke-others",
@@ -411,7 +412,7 @@ describe("An org reason from an account-scoped route", () => {
     await expectTabUnchanged(sdk, token);
   });
 
-  it.each(["POST /auth/v1/organizations", "GET /auth/v1/organizations/org-b/members", "GET /auth/v1/sign-ins/sign-in-9"])(
+  it.each(["GET /auth/v1/organizations/org-b/members", "GET /auth/v1/sign-ins/sign-in-9"])(
     "doesn't cover %s, which needs the token's org",
     async (route) => {
       const sdk = await onOrgB();

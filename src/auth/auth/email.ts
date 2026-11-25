@@ -2,12 +2,12 @@ import {
   authV1EmailServiceInitiateEmailChange,
   authV1EmailServiceAddEmail,
   authV1EmailServiceVerifyEmail,
+  authV1EmailServiceVerifyEmailChange,
   authV1EmailServiceGetUserEmailStatus,
 } from "../../generated/sdk.gen";
 import {ChangeEmailRequestSchema, ResendEmailRequestSchema, VerifyEmailCodeSchema} from "../validation/auth";
 import {validateInput} from "../validation/base";
 import {apiCall} from "../api/utils";
-import {client} from "../../generated/client.gen";
 import type {AuthV1VerifyEmailResponse} from "../../generated/types.gen";
 import {captureSignInContext, isSignInContextCurrent} from "../sign-in-context";
 import {ApiError} from "../api/types";
@@ -79,7 +79,6 @@ export interface VerifyEmailWithCodeParams {
 }
 
 const signupVerificationPath = "/auth/v1/email/verify";
-const emailChangeVerificationPath = "/auth/v1/users/current/emails/verify";
 
 const verifiedResponse = (data: AuthV1VerifyEmailResponse, applied: boolean): VerifyEmailResponse => {
   const tokens = applied ? data.tokens : undefined;
@@ -115,15 +114,7 @@ export const verifyEmailChange = (verificationId: string, code: string): Promise
   apiCall(async () => {
     const body = validateInput(VerifyEmailCodeSchema, {verification_id: verificationId, code});
     const {response, applied} = await reissueTokens(
-      // Replace with the generated operation once the gateway publishes the #253 route.
-      (headers) =>
-        client.post<{200: AuthV1VerifyEmailResponse}, unknown, true>({
-          url: emailChangeVerificationPath,
-          body,
-          headers: {...headers, "Content-Type": "application/json"},
-          responseStyle: "fields",
-          throwOnError: true,
-        }),
+      (headers) => authV1EmailServiceVerifyEmailChange({body, headers, responseStyle: "fields", throwOnError: true}),
       ({data}) => data.tokens,
       {allowLimited: true}
     );
@@ -140,7 +131,6 @@ export const getEmailVerificationStatus = async (): Promise<void | VerifyStatusR
       return {
         email: data.email || "",
         has_email: data.has_email ?? false,
-        verified: data.verified || false,
       };
     },
     {

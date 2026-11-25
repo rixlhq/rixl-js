@@ -6,7 +6,9 @@
   - Source: `rixlhq/gateway` `origin/rixl/remove-legacy` at `345c52452b5bc07e374147790f2cd5ea876806e5`, `docs/swagger.yaml`. `vp run generate` with the generator `input` in `vite.config.ts` pointed at a local copy for that run only, then `vp check --fix`. The committed generator source is unchanged. The `generate` script exits non-zero at its packing step while the hand-written code still names removed operations; the client is written before that step.
   - Measured: the five `authV1OrganizationService*` operations, `authV1MembershipServiceUpdateMember` on `/auth/v1/organizations/{org_id}/members/{user_id}`, `authV1TokenServiceListSignIns`, `RevokeSignIn`, `RevokeOtherSignIns`, `LogoutAll` and `challenge_id` are present; `grep -cE 'UpdateActiveMembership|UpdateOrgName|UpdateOrgUsername' src/generated/*.ts` is 0. The remaining `session_id` fields are analytics events and Stripe Checkout, not auth.
   - The document has no email-invitation (`InvitationService`) or organization lifecycle operations: auth-api `rixl/remove-legacy` has neither proto yet (task 2.8).
-- [ ] 1.2 After the gateway change merges and `rixlhq/openapi` has copied it, run `vp run generate` against the committed generator source and record the openapi commit here. Include auth-api #249 and #253 wire changes once the gateway publishes them and replace the direct email-change call with the generated operation.
+- [x] 1.2 After the gateway change merges and `rixlhq/openapi` has copied it, run `vp run generate` against the committed generator source and record the openapi commit here. Include auth-api #249 and #253 wire changes once the gateway publishes them and replace the direct email-change call with the generated operation.
+  - Measured on 2026-11-25 against `rixlhq/openapi` `d62ac55b901ed19900179ab9a3f259d465e6e390` (gateway `c0a8891`, auth-api `92d208bd`). `verifyEmailChange` calls `authV1EmailServiceVerifyEmailChange`. The document drops `EmailStatusResponse.verified` (auth-api stores an email only once verified) and `OrgMember.invitation_expires_at`, so the wrappers drop them too.
+  - The member list and domain routes still name their org `user.org_id`. `rixlhq/auth-api#258` (open) renames the parameter to `org_id` without changing the URLs. Once it is published, the drift check fails until those wrappers are regenerated and renamed.
 
 ## 2. Org token context
 
@@ -19,12 +21,14 @@
 - [x] 2.6 Remove `User.org_id`, add `orgContext {orgId, role}`, and scope permissions to the tab's org. Test: "Another tab changes org".
 - [x] 2.7 Replace `updateOrgName` and `updateOrgUsername` with `getOrganization`, `listOrganizations` and `updateOrganization` (field mask over name, slug, image). Test each wrapper's request shape and error mapping in `src/__tests__/organization/*.test.ts`.
   - Measured with the gateway's own mux (`routes.NewServeMux`, `rixl/remove-legacy` at `345c524`) in front of a stub gRPC service: `update_mask: "image_id"` is refused with 400 (`google.protobuf.FieldMask.paths contains invalid path: "image_id"`), and `"name,imageId"` reaches the service as `["name", "image_id"]`. The wrapper sends `imageId`.
-- [ ] 2.8 Add wrappers for the invitation and lifecycle operations the dashboard change uses, with the same tests. Blocked on the gateway mounting the new account-scoped `/auth/v1/invitations/accept` and `/auth/v1/invitations/decline` routes and publishing organization lifecycle operations (create, convert, transfer, delete, restore) in OpenAPI. Round 2 removes the cross-org response wrapper. The generated client follows the gateway document.
-  - `rixlhq/auth-api#252` also removes `GET /auth/v1/membership-applications`, which `listPendingMemberships` calls. Once the client is regenerated without it, this task replaces that wrapper with the invitations the user can answer.
-  - Auth-api #253 adds `POST /auth/v1/users/current/emails/verify`. The SDK uses the shared client directly until the gateway mounts it and task 1.2 regenerates the operation.
-  - Expose `show_deleted` in the organization list wrapper only after the API returns a deletion marker for each row.
+- [x] 2.8 Add wrappers for the invitation operations the dashboard change uses, with their tests (design.md, "Invitations are addressed to an email"). Tests: `src/__tests__/membership/invite.test.ts` and `list.test.ts`.
+  - `listPendingMemberships` reads `GET /auth/v1/users/current/invitations`; auth-api removed `GET /auth/v1/membership-applications`. The account-scoped route list follows gateway `c0a8891`: `invitations/accept`, `invitations/decline` and `POST organizations`. Tests in `api/request-refusal.test.ts`.
+  - The gateway forwards an `ErrorInfo` reason but not its metadata, so a 409 `INVITATION_PENDING` doesn't name the pending invitation and a 429 limit carries no `retry_after` in the body (read from gateway `internal/routes/errors.go`; not run against a gateway).
+  - Not run against a deployed environment: the tests use mocked generated calls and mocked HTTP responses.
 - [x] 2.9 Mirror the gateway's public routes: `rixlhq/gateway` `e7dd721` narrows the anonymous prefix `/auth/v1/invitations/` to `/auth/v1/invitations/lookup`, so accepting and declining by token need an access token. `publicRespondToInvitation` sent none and would get 401. Test: `src/__tests__/api/sdk-client-public-routes.test.ts`.
   - `/auth/v1/invitations/lookup` is only an allowlist entry so far: the generated client has no such operation. The route lands with `rixlhq/auth-api#252`.
+
+- [ ] 2.10 Add wrappers for the org lifecycle operations (create, convert to team, transfer ownership). The published document has them since `d62ac55`; the generated functions are exported. It publishes no delete or restore operation. Expose `show_deleted` in the list wrapper together with the deletion marker (`Organization.state`, `delete_time`).
 
 ## 3. Errors from the gateway
 
@@ -41,10 +45,12 @@
 
 ## 5. Integration
 
-- [ ] 5.1 Update the README and examples for `selectOrganization`, `OrgAccessError` and `orgContext`. Run `vp check`, `vp test --run`, `vp pack`, `vp run budget` and `vp run examples:check`, and record the results here.
+- [x] 5.1 Update the README and examples for `selectOrganization`, `OrgAccessError` and `orgContext`. Run `vp check`, `vp test --run`, `vp pack`, `vp run budget` and `vp run examples:check`, and record the results here.
   - README section "Organizations" and `examples/11-organizations.ts` are written. Open because the size budget fails, so `vp run ci` fails.
   - Measured after section 11: `vp check`, `openspec validate adopt-organization-context --strict`, `vp pack`, `vp run examples:check`, `vp run lint:suppressions`, `vp run knip` and `vp run publint` passed. Three full runs of `vp test --run` each exited 0 with 1,023 tests in 86 files. `vp test --coverage --run` passed with 90.37 / 80.76 / 83.26 / 90.13 (statements / branches / functions / lines).
   - `vp run budget` exited 1 at 37.71 kB Brotli against the 32.9 kB limit. The reviewed baseline `b9d7943` was 37.11 kB.
+  - Measured on 2026-11-25 after rebasing onto `main` with rixl-js#168 and adding task 2.8: `vp run ci` exits 0 with 1,083 tests in 87 files, coverage 91.18 / 82.11 / 85.34 / 90.98 (statements / branches / functions / lines) and 38.75 kB Brotli. The limit in `.size-limit.json` is raised from 32.9 kB to 39.5 kB: the org token context and the regenerated client account for the growth. The SDK exports every generated operation, so the bundle grows with the published document.
+  - The round 6 fixes (section 11) and task 2.8 have had no independent review.
 
 ## 6. Level 3 review, round 1
 
@@ -100,6 +106,7 @@ Open objections, checked and left to their owners:
 
 - [x] 10.1 (R1–R4, S3–S4) Snapshot credentials and sign out synchronously before one bounded revocation. Scoped logout messages also support markerless flows. Tests in `auth/logout.test.ts` and `auth/shared-sign-in.test.ts` cover a stalled revocation, hung refreshes, late replies, and markerless logout. Supersedes task 9.4's queue-based logout.
 - [ ] 10.2 Publish the auth-api Logout contract that revokes the whole sign-in using the access token's `sign_in_id`. The SDK relies on it to revoke a sign-in even when its refresh token rotates during logout.
+  - Read on 2026-11-25 at auth-api `92d208bd`: not shipped. `Logout` blacklists the access token and calls `RevokeByRefreshToken`, which leaves the sign-in active when the refresh token has already rotated (`internal/signins/sign_ins.go`, `TestRevokeByRefreshToken`).
 - [x] 10.3 (S2, j2) Clear the previous refusal when limited access begins. Capture `lastActiveOrgId` before reload. Example 11 returns `signed-out` on a 401.
 - [x] 10.4 (j2) Preserve membership management 403 messages and clear the tab's selection without a refusal after voluntary leave. Tests in `api/request-refusal.test.ts`.
 - [x] 10.5 (M9) Compare the SDK's public route inventory with the gateway's `publicRoutes` declaration from `345c524`. Test in `api/sdk-client-public-routes.test.ts`.

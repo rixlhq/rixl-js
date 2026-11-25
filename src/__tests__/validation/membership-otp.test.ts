@@ -11,16 +11,16 @@ import {testValidInputs, testInvalidInputs} from "../utils/validation-test-helpe
 describe("InviteMemberSchema", () => {
   it("should accept valid invite configurations", () => {
     testValidInputs(InviteMemberSchema, [
-      {username: "newmember", role: "member"},
-      {username: "adminuser", role: "admin"},
+      {email: "new@example.com", role: "member"},
+      {email: "admin@example.com", role: "admin"},
     ]);
   });
 
   it("should reject invalid inputs", () => {
     testInvalidInputs(InviteMemberSchema, [
-      {username: "testuser", role: "invalid"}, // invalid role
-      {username: "testuser", role: "owner"}, // owner not assignable
-      {username: "ab", role: "member"}, // username too short
+      {email: "new@example.com", role: "invalid"}, // invalid role
+      {email: "new@example.com", role: "owner"}, // owner not assignable
+      {email: "newmember", role: "member"}, // a username isn't an email
     ]);
   });
 });
