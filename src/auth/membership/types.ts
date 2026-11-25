@@ -37,18 +37,6 @@ export interface Member extends Common {
   last_name: string;
 }
 
-/** A pending invitation to the signed-in user, in the shape of a pending membership. */
-export interface MembershipApplication {
-  /** The invitation ID, which respondToMyInvitation() takes. */
-  id: string;
-  org_id: string;
-  role: MembershipRole;
-  state: MembershipState;
-  organization: Organization;
-  created_at?: string;
-  invitation_expires_at?: string;
-}
-
 export type InvitationState = "pending" | "accepted" | "declined" | "revoked" | "expired";
 
 export interface Invitation {
