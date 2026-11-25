@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.46.0](https://github.com/rixlhq/rixl-js/compare/v0.45.1...v0.46.0) (2026-11-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* **membership:** inviteMember takes an email instead of a username, and resendMemberInvite an invitation ID instead of a user ID. publicRespondToInvitation resolves with the membership when accepting. listPendingMemberships returns the user's pending invitations, takes page_size and page_token, and its items drop user_id and decided_at. Member.invitation_expires_at, ResendInviteMemberRequest and VerifyStatusResponse.verified are removed. InviteMemberRequest has email in place of username.
+* **auth:** updateActiveMembership (use selectOrganization), updateOrgName and updateOrgUsername (use updateOrganization), respondToInvitation and User.org_id (use orgContext) are removed. session_id is now challenge_id in the passkey and TOTP login. The domain auto-join API is now the join-suggestion API (updateSuggestJoin). Membership organization_* fields are replaced by organization, and UserInfo.active_org_id by last_active_org_id. logout() returns a LogoutResult. Signup and email-change verification are separate (verifyEmailWithCode takes {verification_id, code}; verifyEmailChange is new). Tokens issued before the auth cutover are not supported.
+* **auth:** verifyEmailWithCode no longer accepts positional arguments; pass { code, type, verification_id, new_email }.
+
+### Features
+
+* **auth:** add the user-agent parser for signed-in devices ([0efd070](https://github.com/rixlhq/rixl-js/commit/0efd0701fc6233607d0df36876bb85306997b176))
+* **auth:** keep one organization and access token per tab ([ec4b009](https://github.com/rixlhq/rixl-js/commit/ec4b009d0834d8b731eac927fd6f58535dd8693f))
+* **auth:** take only the params object in verifyEmailWithCode ([fef7e34](https://github.com/rixlhq/rixl-js/commit/fef7e340e5c0698eb6f5e52f416655a935375153))
+* **membership:** move invitations to auth-api's InvitationService ([31fd5e8](https://github.com/rixlhq/rixl-js/commit/31fd5e863521f38f977a68091caa4b0f515f1e64))
+* **sdk:** regenerate based on latest OpenAPI spec ([#166](https://github.com/rixlhq/rixl-js/issues/166)) ([24d8c3c](https://github.com/rixlhq/rixl-js/commit/24d8c3cca768c42163bc58814ef8b53bc6dc9829))
+
+
+### Bug Fixes
+
+* **auth:** say sign-in and login challenge in error messages ([d4c898f](https://github.com/rixlhq/rixl-js/commit/d4c898f0cb161f25e364895eb1d61e0c809d0d3e))
+* **branding:** use canonical company name Rixl Inc., rixl.com and Wilmington DE address ([#169](https://github.com/rixlhq/rixl-js/issues/169)) ([d3ae710](https://github.com/rixlhq/rixl-js/commit/d3ae710a7838ea9f8d085987547166459e546b56))
+* **deps:** align the Vite+ toolchain set and stop dependabot splitting it ([3cf69ec](https://github.com/rixlhq/rixl-js/commit/3cf69ec1d5010b44ba5c5dd0c8bbbb6c8fcd72aa))
+
 ## [0.45.1](https://github.com/rixlhq/rixl-js/compare/v0.45.0...v0.45.1) (2026-11-23)
 
 
