@@ -7,7 +7,7 @@
 
 * **membership:** inviteMember takes an email instead of a username, and resendMemberInvite an invitation ID instead of a user ID. publicRespondToInvitation resolves with the membership when accepting. listPendingMemberships returns the user's pending invitations, takes page_size and page_token, and its items drop user_id and decided_at. Member.invitation_expires_at, ResendInviteMemberRequest and VerifyStatusResponse.verified are removed. InviteMemberRequest has email in place of username.
 * **auth:** updateActiveMembership (use selectOrganization), updateOrgName and updateOrgUsername (use updateOrganization), respondToInvitation and User.org_id (use orgContext) are removed. session_id is now challenge_id in the passkey and TOTP login. The domain auto-join API is now the join-suggestion API (updateSuggestJoin). Membership organization_* fields are replaced by organization, and UserInfo.active_org_id by last_active_org_id. logout() returns a LogoutResult. Signup and email-change verification are separate (verifyEmailWithCode takes {verification_id, code}; verifyEmailChange is new). Tokens issued before the auth cutover are not supported.
-* **auth:** verifyEmailWithCode no longer accepts positional arguments; pass { code, type, verification_id, new_email }.
+* **auth:** verifyEmailWithCode no longer accepts positional arguments; pass { verification_id, code }. For an email change, call verifyEmailChange(verificationId, code).
 
 ### Features
 
