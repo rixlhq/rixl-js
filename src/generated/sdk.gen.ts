@@ -472,6 +472,19 @@ export const authV1DomainServiceGetDomainStatus = <ThrowOnError extends boolean 
 });
 
 /**
+ * CreateDomainVerification
+ */
+export const authV1DomainServiceCreateDomainVerification = <ThrowOnError extends boolean = false>(options: Options<AuthV1DomainServiceCreateDomainVerificationData, ThrowOnError>) => (options.client ?? client).post<AuthV1DomainServiceCreateDomainVerificationResponses, AuthV1DomainServiceCreateDomainVerificationErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/organizations/{org_id}/domain',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
  * GetDomainSuggestJoin
  */
 export const authV1DomainServiceGetDomainSuggestJoin = <ThrowOnError extends boolean = false>(options: Options<AuthV1DomainServiceGetDomainSuggestJoinData, ThrowOnError>) => (options.client ?? client).get<AuthV1DomainServiceGetDomainSuggestJoinResponses, AuthV1DomainServiceGetDomainSuggestJoinErrors, ThrowOnError>({
@@ -481,38 +494,25 @@ export const authV1DomainServiceGetDomainSuggestJoin = <ThrowOnError extends boo
 });
 
 /**
+ * SetDomainSuggestJoin
+ */
+export const authV1DomainServiceSetDomainSuggestJoin = <ThrowOnError extends boolean = false>(options: Options<AuthV1DomainServiceSetDomainSuggestJoinData, ThrowOnError>) => (options.client ?? client).put<AuthV1DomainServiceSetDomainSuggestJoinResponses, AuthV1DomainServiceSetDomainSuggestJoinErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/organizations/{org_id}/domain/suggest-join',
+    ...options,
+    headers: {
+        'Content-Type': 'application/json',
+        ...options.headers
+    }
+});
+
+/**
  * CheckDomainVerification
  */
 export const authV1DomainServiceCheckDomainVerification = <ThrowOnError extends boolean = false>(options: Options<AuthV1DomainServiceCheckDomainVerificationData, ThrowOnError>) => (options.client ?? client).post<AuthV1DomainServiceCheckDomainVerificationResponses, AuthV1DomainServiceCheckDomainVerificationErrors, ThrowOnError>({
     security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
     url: '/auth/v1/organizations/{org_id}/domain/verify',
     ...options
-});
-
-/**
- * CreateDomainVerification
- */
-export const authV1DomainServiceCreateDomainVerification = <ThrowOnError extends boolean = false>(options: Options<AuthV1DomainServiceCreateDomainVerificationData, ThrowOnError>) => (options.client ?? client).post<AuthV1DomainServiceCreateDomainVerificationResponses, AuthV1DomainServiceCreateDomainVerificationErrors, ThrowOnError>({
-    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
-    url: '/auth/v1/organizations/{user.org_id}/domain',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
-});
-
-/**
- * SetDomainSuggestJoin
- */
-export const authV1DomainServiceSetDomainSuggestJoin = <ThrowOnError extends boolean = false>(options: Options<AuthV1DomainServiceSetDomainSuggestJoinData, ThrowOnError>) => (options.client ?? client).put<AuthV1DomainServiceSetDomainSuggestJoinResponses, AuthV1DomainServiceSetDomainSuggestJoinErrors, ThrowOnError>({
-    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
-    url: '/auth/v1/organizations/{user.org_id}/domain/suggest-join',
-    ...options,
-    headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
-    }
 });
 
 /**
@@ -625,6 +625,15 @@ export const authV1InvitationServiceListMyInvitations = <ThrowOnError extends bo
 });
 
 /**
+ * ListOrganizationMembers
+ */
+export const authV1MembershipServiceListOrganizationMembers = <ThrowOnError extends boolean = false>(options: Options<AuthV1MembershipServiceListOrganizationMembersData, ThrowOnError>) => (options.client ?? client).get<AuthV1MembershipServiceListOrganizationMembersResponses, AuthV1MembershipServiceListOrganizationMembersErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/organizations/{org_id}/members',
+    ...options
+});
+
+/**
  * LeaveOrganization
  */
 export const authV1MembershipServiceLeaveOrganization = <ThrowOnError extends boolean = false>(options: Options<AuthV1MembershipServiceLeaveOrganizationData, ThrowOnError>) => (options.client ?? client).delete<AuthV1MembershipServiceLeaveOrganizationResponses, AuthV1MembershipServiceLeaveOrganizationErrors, ThrowOnError>({
@@ -665,15 +674,6 @@ export const authV1MembershipServiceUpdateMember = <ThrowOnError extends boolean
 });
 
 /**
- * ListOrganizationMembers
- */
-export const authV1MembershipServiceListOrganizationMembers = <ThrowOnError extends boolean = false>(options: Options<AuthV1MembershipServiceListOrganizationMembersData, ThrowOnError>) => (options.client ?? client).get<AuthV1MembershipServiceListOrganizationMembersResponses, AuthV1MembershipServiceListOrganizationMembersErrors, ThrowOnError>({
-    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
-    url: '/auth/v1/organizations/{user.org_id}/members',
-    ...options
-});
-
-/**
  * ListMemberships
  */
 export const authV1MembershipServiceListMemberships = <ThrowOnError extends boolean = false>(options?: Options<AuthV1MembershipServiceListMembershipsData, ThrowOnError>) => (options?.client ?? client).get<AuthV1MembershipServiceListMembershipsResponses, AuthV1MembershipServiceListMembershipsErrors, ThrowOnError>({
@@ -696,7 +696,7 @@ export const authV1NotificationPreferenceServiceGetNotificationPreferences = <Th
  */
 export const authV1NotificationPreferenceServiceUpdateNotificationPreference = <ThrowOnError extends boolean = false>(options: Options<AuthV1NotificationPreferenceServiceUpdateNotificationPreferenceData, ThrowOnError>) => (options.client ?? client).patch<AuthV1NotificationPreferenceServiceUpdateNotificationPreferenceResponses, AuthV1NotificationPreferenceServiceUpdateNotificationPreferenceErrors, ThrowOnError>({
     security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
-    url: '/auth/v1/notifications/{user.org_id}/preferences',
+    url: '/auth/v1/notifications/{org_id}/preferences',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -943,6 +943,15 @@ export const authV1PasskeyServiceVerifyPasskeyForLogin = <ThrowOnError extends b
 });
 
 /**
+ * ListUserPolicies
+ */
+export const authV1PolicyServiceListUserPolicies = <ThrowOnError extends boolean = false>(options: Options<AuthV1PolicyServiceListUserPoliciesData, ThrowOnError>) => (options.client ?? client).get<AuthV1PolicyServiceListUserPoliciesResponses, AuthV1PolicyServiceListUserPoliciesErrors, ThrowOnError>({
+    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
+    url: '/auth/v1/organizations/{org_id}/members/{member_id}/policies',
+    ...options
+});
+
+/**
  * ListPolicies
  */
 export const authV1PolicyServiceListPolicies = <ThrowOnError extends boolean = false>(options: Options<AuthV1PolicyServiceListPoliciesData, ThrowOnError>) => (options.client ?? client).get<AuthV1PolicyServiceListPoliciesResponses, AuthV1PolicyServiceListPoliciesErrors, ThrowOnError>({
@@ -952,20 +961,11 @@ export const authV1PolicyServiceListPolicies = <ThrowOnError extends boolean = f
 });
 
 /**
- * ListUserPolicies
- */
-export const authV1PolicyServiceListUserPolicies = <ThrowOnError extends boolean = false>(options: Options<AuthV1PolicyServiceListUserPoliciesData, ThrowOnError>) => (options.client ?? client).get<AuthV1PolicyServiceListUserPoliciesResponses, AuthV1PolicyServiceListUserPoliciesErrors, ThrowOnError>({
-    security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
-    url: '/auth/v1/organizations/{user.org_id}/members/{member_id}/policies',
-    ...options
-});
-
-/**
  * CreatePolicy
  */
 export const authV1PolicyServiceCreatePolicy = <ThrowOnError extends boolean = false>(options: Options<AuthV1PolicyServiceCreatePolicyData, ThrowOnError>) => (options.client ?? client).post<AuthV1PolicyServiceCreatePolicyResponses, AuthV1PolicyServiceCreatePolicyErrors, ThrowOnError>({
     security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
-    url: '/auth/v1/organizations/{user.org_id}/policies',
+    url: '/auth/v1/organizations/{org_id}/policies',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -978,7 +978,7 @@ export const authV1PolicyServiceCreatePolicy = <ThrowOnError extends boolean = f
  */
 export const authV1PolicyServiceDetachPolicy = <ThrowOnError extends boolean = false>(options: Options<AuthV1PolicyServiceDetachPolicyData, ThrowOnError>) => (options.client ?? client).delete<AuthV1PolicyServiceDetachPolicyResponses, AuthV1PolicyServiceDetachPolicyErrors, ThrowOnError>({
     security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
-    url: '/auth/v1/organizations/{user.org_id}/policies/attachments/{attachment_id}',
+    url: '/auth/v1/organizations/{org_id}/policies/attachments/{attachment_id}',
     ...options
 });
 
@@ -987,7 +987,7 @@ export const authV1PolicyServiceDetachPolicy = <ThrowOnError extends boolean = f
  */
 export const authV1PolicyServiceListPermissionRegistry = <ThrowOnError extends boolean = false>(options: Options<AuthV1PolicyServiceListPermissionRegistryData, ThrowOnError>) => (options.client ?? client).get<AuthV1PolicyServiceListPermissionRegistryResponses, AuthV1PolicyServiceListPermissionRegistryErrors, ThrowOnError>({
     security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
-    url: '/auth/v1/organizations/{user.org_id}/policies/permissions',
+    url: '/auth/v1/organizations/{org_id}/policies/permissions',
     ...options
 });
 
@@ -996,7 +996,7 @@ export const authV1PolicyServiceListPermissionRegistry = <ThrowOnError extends b
  */
 export const authV1PolicyServiceDeletePolicy = <ThrowOnError extends boolean = false>(options: Options<AuthV1PolicyServiceDeletePolicyData, ThrowOnError>) => (options.client ?? client).delete<AuthV1PolicyServiceDeletePolicyResponses, AuthV1PolicyServiceDeletePolicyErrors, ThrowOnError>({
     security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
-    url: '/auth/v1/organizations/{user.org_id}/policies/{policy_id}',
+    url: '/auth/v1/organizations/{org_id}/policies/{policy_id}',
     ...options
 });
 
@@ -1005,7 +1005,7 @@ export const authV1PolicyServiceDeletePolicy = <ThrowOnError extends boolean = f
  */
 export const authV1PolicyServiceGetPolicy = <ThrowOnError extends boolean = false>(options: Options<AuthV1PolicyServiceGetPolicyData, ThrowOnError>) => (options.client ?? client).get<AuthV1PolicyServiceGetPolicyResponses, AuthV1PolicyServiceGetPolicyErrors, ThrowOnError>({
     security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
-    url: '/auth/v1/organizations/{user.org_id}/policies/{policy_id}',
+    url: '/auth/v1/organizations/{org_id}/policies/{policy_id}',
     ...options
 });
 
@@ -1014,7 +1014,7 @@ export const authV1PolicyServiceGetPolicy = <ThrowOnError extends boolean = fals
  */
 export const authV1PolicyServiceUpdatePolicy = <ThrowOnError extends boolean = false>(options: Options<AuthV1PolicyServiceUpdatePolicyData, ThrowOnError>) => (options.client ?? client).put<AuthV1PolicyServiceUpdatePolicyResponses, AuthV1PolicyServiceUpdatePolicyErrors, ThrowOnError>({
     security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
-    url: '/auth/v1/organizations/{user.org_id}/policies/{policy_id}',
+    url: '/auth/v1/organizations/{org_id}/policies/{policy_id}',
     ...options,
     headers: {
         'Content-Type': 'application/json',
@@ -1027,7 +1027,7 @@ export const authV1PolicyServiceUpdatePolicy = <ThrowOnError extends boolean = f
  */
 export const authV1PolicyServiceListPolicyAttachments = <ThrowOnError extends boolean = false>(options: Options<AuthV1PolicyServiceListPolicyAttachmentsData, ThrowOnError>) => (options.client ?? client).get<AuthV1PolicyServiceListPolicyAttachmentsResponses, AuthV1PolicyServiceListPolicyAttachmentsErrors, ThrowOnError>({
     security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
-    url: '/auth/v1/organizations/{user.org_id}/policies/{policy_id}/attachments',
+    url: '/auth/v1/organizations/{org_id}/policies/{policy_id}/attachments',
     ...options
 });
 
@@ -1036,7 +1036,7 @@ export const authV1PolicyServiceListPolicyAttachments = <ThrowOnError extends bo
  */
 export const authV1PolicyServiceAttachPolicy = <ThrowOnError extends boolean = false>(options: Options<AuthV1PolicyServiceAttachPolicyData, ThrowOnError>) => (options.client ?? client).post<AuthV1PolicyServiceAttachPolicyResponses, AuthV1PolicyServiceAttachPolicyErrors, ThrowOnError>({
     security: [{ name: 'X-API-Key', type: 'apiKey' }, { scheme: 'bearer', type: 'http' }],
-    url: '/auth/v1/organizations/{user.org_id}/policies/{policy_id}/attachments',
+    url: '/auth/v1/organizations/{org_id}/policies/{policy_id}/attachments',
     ...options,
     headers: {
         'Content-Type': 'application/json',

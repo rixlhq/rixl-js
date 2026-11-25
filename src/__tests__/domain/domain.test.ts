@@ -124,7 +124,7 @@ describe("Domain Management Module", () => {
       const result = await initiateDomainVerification("org123", "company.com");
 
       expect(mockAuthV1DomainServiceCreateDomainVerification).toHaveBeenCalledWith({
-        path: {"user.org_id": "org123"},
+        path: {org_id: "org123"},
         body: {domain: "company.com"},
         throwOnError: true,
       });
@@ -278,7 +278,7 @@ describe("Domain Management Module", () => {
       const result = await updateSuggestJoin("org123", true);
 
       expect(mockAuthV1DomainServiceSetDomainSuggestJoin).toHaveBeenCalledWith({
-        path: {"user.org_id": "org123"},
+        path: {org_id: "org123"},
         body: {enabled: true},
         throwOnError: true,
       });
@@ -292,7 +292,7 @@ describe("Domain Management Module", () => {
       const result = await updateSuggestJoin("org123", false);
 
       expect(mockAuthV1DomainServiceSetDomainSuggestJoin).toHaveBeenCalledWith({
-        path: {"user.org_id": "org123"},
+        path: {org_id: "org123"},
         body: {enabled: false},
         throwOnError: true,
       });

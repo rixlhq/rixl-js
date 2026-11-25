@@ -43,7 +43,7 @@ export const initiateDomainVerification = async (orgId: string, domain: string):
     async () => {
       const requestBody = validateInput(AddDomainSchema, {domain});
       const {data} = await authV1DomainServiceCreateDomainVerification({
-        path: {"user.org_id": orgId},
+        path: {org_id: orgId},
         body: requestBody,
         throwOnError: true,
       });
@@ -77,7 +77,7 @@ export const updateSuggestJoin = async (orgId: string, enabled: boolean): Promis
     async () => {
       const requestBody = validateInput(UpdateSuggestJoinSchema, {enabled});
       const {data} = await authV1DomainServiceSetDomainSuggestJoin({
-        path: {"user.org_id": orgId},
+        path: {org_id: orgId},
         body: requestBody,
         throwOnError: true,
       });
