@@ -3,12 +3,10 @@ import {listActiveMemberships, listOrganizationMembers, MembershipRole, Membersh
 import {setupAuthTest, cleanupAuthMocks} from "../utils/auth-test-helpers";
 
 const mockListMemberships = vi.fn();
-const mockListMyInvitations = vi.fn();
 const mockListOrganizationMembers = vi.fn();
 
 vi.mock("../../generated/sdk.gen", () => ({
   authV1MembershipServiceListMemberships: (...args: unknown[]) => mockListMemberships(...args),
-  authV1InvitationServiceListMyInvitations: (...args: unknown[]) => mockListMyInvitations(...args),
   authV1MembershipServiceListOrganizationMembers: (...args: unknown[]) => mockListOrganizationMembers(...args),
 }));
 
@@ -43,7 +41,6 @@ describe("Membership List Module", () => {
   beforeEach(() => {
     mocks = setupAuthTest();
     mockListMemberships.mockReset();
-    mockListMyInvitations.mockReset();
     mockListOrganizationMembers.mockReset();
   });
 
@@ -67,7 +64,7 @@ describe("Membership List Module", () => {
           user_id: "user123",
           org_id: "org123",
           role: MembershipRole.ADMIN,
-          state: MembershipState.ACCEPTED,
+          state: MembershipState.ACTIVE,
           joined_at: "2024-01-01T00:00:00Z",
           organization: {
             id: "org123",
@@ -112,6 +109,14 @@ describe("Membership List Module", () => {
   });
 
   describe("listOrganizationMembers", () => {
+    it("grants nothing to a membership whose state the response doesn't name", async () => {
+      mockListOrganizationMembers.mockResolvedValue({data: {members: [wireMember({state: "MEMBERSHIP_STATE_UNSPECIFIED"})]}});
+
+      const [member] = await listOrganizationMembers("org123");
+
+      expect(member.state).toBe(MembershipState.SUSPENDED);
+    });
+
     it("maps a suspended membership as suspended", async () => {
       mockListOrganizationMembers.mockResolvedValue({data: {members: [wireMember({state: "MEMBERSHIP_STATE_SUSPENDED"})]}});
 
@@ -136,7 +141,7 @@ describe("Membership List Module", () => {
           user_id: "user456",
           org_id: "org123",
           role: MembershipRole.ADMIN,
-          state: MembershipState.ACCEPTED,
+          state: MembershipState.ACTIVE,
           joined_at: "2024-01-01T00:00:00Z",
           username: "john_doe",
           first_name: "John",

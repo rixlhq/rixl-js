@@ -124,9 +124,9 @@ const refreshOrSignOut = (orgId: string, explicitSelection = false): Promise<boo
 
 /**
  * Takes up the stored sign-in and says whether this tab can use it. A refresh
- * names an org, so a refresh token with no org to name can never be used: it
- * predates the org split, or the cookies it came with are gone. Such a sign-in
- * is ended, since nothing else would ever report it dead.
+ * names an org, so a refresh token with no org to name, because the cookies it
+ * came with are gone, can never be used. Such a sign-in is ended, since nothing
+ * else would ever report it dead.
  */
 const hasUsableSignIn = (): boolean => {
   adoptStoredRefreshToken();

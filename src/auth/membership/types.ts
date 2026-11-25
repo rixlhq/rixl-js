@@ -10,12 +10,8 @@ export enum MembershipRole {
 export type AssignableRole = MembershipRole.ADMIN | MembershipRole.MEMBER;
 
 export enum MembershipState {
-  ACCEPTED = "accepted",
-  PENDING = "pending",
+  ACTIVE = "active",
   SUSPENDED = "suspended",
-  DECLINED = "declined",
-  ACCEPT = "accept",
-  DECLINE = "decline",
 }
 
 interface Common {
@@ -79,15 +75,4 @@ export interface InvitationPageParams {
 
 export interface ListInvitationsParams extends InvitationPageParams {
   state?: InvitationState;
-}
-
-// Invite member request
-export interface InviteMemberRequest {
-  email: string;
-  role: AssignableRole;
-}
-
-// Update member role request
-export interface UpdateMemberRoleRequest {
-  role: AssignableRole;
 }

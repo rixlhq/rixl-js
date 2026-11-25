@@ -2,14 +2,12 @@ import {describe, it, expect, beforeEach, vi} from "vite-plus/test";
 import {
   MembershipRole,
   MembershipState,
-  inviteMember,
+  acceptInvitation,
+  createInvitation,
   listMyInvitations,
   listOrganizationInvitations,
   lookupInvitation,
-  publicRespondToInvitation,
-  resendMemberInvite,
-  respondToMyInvitation,
-  revokeInvitation,
+  resendInvitation,
 } from "@/membership";
 import * as initialization from "../../auth/initialization";
 import {ApiError} from "../../auth/api/types";
@@ -18,22 +16,18 @@ const mocks = vi.hoisted(() => ({
   create: vi.fn(),
   listForOrg: vi.fn(),
   resend: vi.fn(),
-  revoke: vi.fn(),
   lookup: vi.fn(),
   listMine: vi.fn(),
   accept: vi.fn(),
-  decline: vi.fn(),
 }));
 
 vi.mock("../../generated/sdk.gen", () => ({
   authV1InvitationServiceCreateInvitation: mocks.create,
   authV1InvitationServiceListOrganizationInvitations: mocks.listForOrg,
   authV1InvitationServiceResendInvitation: mocks.resend,
-  authV1InvitationServiceRevokeInvitation: mocks.revoke,
   authV1InvitationServiceLookupInvitation: mocks.lookup,
   authV1InvitationServiceListMyInvitations: mocks.listMine,
   authV1InvitationServiceAcceptInvitation: mocks.accept,
-  authV1InvitationServiceDeclineInvitation: mocks.decline,
 }));
 
 vi.mock("../../auth/authStore", () => ({
@@ -84,23 +78,20 @@ describe("Membership Invite Module", () => {
     for (const mock of Object.values(mocks)) mock.mockReset().mockResolvedValue({data: {}});
   });
 
-  describe("inviteMember", () => {
+  describe("createInvitation", () => {
     it.each([
       [MembershipRole.MEMBER, "MEMBERSHIP_ROLE_MEMBER"],
       [MembershipRole.ADMIN, "MEMBERSHIP_ROLE_ADMIN"],
-    ] as const)("creates a %s invitation for the email", async (role, wireRole) => {
-      await expect(inviteMember("org123", " new@example.com ", role)).resolves.toBeUndefined();
+    ] as const)("creates a %s invitation and resolves with it", async (role, wireRole) => {
+      mocks.create.mockResolvedValue({data: wireInvitation});
+
+      await expect(createInvitation("org123", "new@example.com", role)).resolves.toEqual(invitation);
 
       expect(mocks.create).toHaveBeenCalledWith({
         path: {org_id: "org123"},
         body: {email: "new@example.com", role: wireRole},
         throwOnError: true,
       });
-    });
-
-    it("rejects a username before sending anything", async () => {
-      await expect(inviteMember("org123", "newuser", MembershipRole.MEMBER)).rejects.toThrow("Please enter a valid email address");
-      expect(mocks.create).not.toHaveBeenCalled();
     });
   });
 
@@ -124,19 +115,13 @@ describe("Membership Invite Module", () => {
     });
   });
 
-  describe("resendMemberInvite", () => {
-    it("resends by invitation ID", async () => {
-      await expect(resendMemberInvite("org123", "inv1")).resolves.toBeUndefined();
+  describe("resendInvitation", () => {
+    it("resends by invitation ID and resolves with the invitation", async () => {
+      mocks.resend.mockResolvedValue({data: wireInvitation});
+
+      await expect(resendInvitation("org123", "inv1")).resolves.toEqual(invitation);
 
       expect(mocks.resend).toHaveBeenCalledWith({path: {org_id: "org123", invitation_id: "inv1"}, throwOnError: true});
-    });
-  });
-
-  describe("revokeInvitation", () => {
-    it("revokes by invitation ID", async () => {
-      await expect(revokeInvitation("org123", "inv1")).resolves.toBeUndefined();
-
-      expect(mocks.revoke).toHaveBeenCalledWith({path: {org_id: "org123", invitation_id: "inv1"}, throwOnError: true});
     });
   });
 
@@ -197,84 +182,38 @@ describe("Membership Invite Module", () => {
     });
   });
 
-  describe.each([
-    ["publicRespondToInvitation", publicRespondToInvitation, {token: "secret"}, "secret"],
-    ["respondToMyInvitation", respondToMyInvitation, {invitation_id: "inv1"}, "inv1"],
-  ] as const)("%s", (_name, respond, body, target) => {
-    it("accepts and resolves with the membership", async () => {
+  describe("acceptInvitation", () => {
+    it.each([{token: "secret"}, {invitation_id: "inv1"}])("accepts %o and resolves with the membership", async (target) => {
       mocks.accept.mockResolvedValue({data: wireMembership});
 
-      await expect(respond(target, MembershipState.ACCEPT)).resolves.toMatchObject({
+      await expect(acceptInvitation(target)).resolves.toMatchObject({
         org_id: "org123",
         role: MembershipRole.MEMBER,
-        state: MembershipState.ACCEPTED,
+        state: MembershipState.ACTIVE,
       });
 
-      expect(mocks.accept).toHaveBeenCalledWith({body, throwOnError: true});
-      expect(mocks.decline).not.toHaveBeenCalled();
-    });
-
-    it("declines and resolves with nothing", async () => {
-      await expect(respond(target, MembershipState.DECLINE)).resolves.toBeUndefined();
-
-      expect(mocks.decline).toHaveBeenCalledWith({body, throwOnError: true});
-      expect(mocks.accept).not.toHaveBeenCalled();
-    });
-
-    it("rejects an empty target before sending anything", async () => {
-      await expect(respond("", MembershipState.ACCEPT)).rejects.toThrow("is required");
-      expect(mocks.accept).not.toHaveBeenCalled();
-    });
-
-    it.each([
-      [400, "invitation has expired", "INVITATION_EXPIRED"],
-      [403, "forbidden", "INVITATION_EMAIL_MISMATCH"],
-    ])("passes a %i refusal through with its reason", async (status, message, reason) => {
-      const refusal = new ApiError(message, status, "/auth/v1/invitations/accept", {error: message, reason});
-      mocks.accept.mockRejectedValue(refusal);
-
-      await expect(respond(target, MembershipState.ACCEPT)).rejects.toBe(refusal);
+      expect(mocks.accept).toHaveBeenCalledWith({body: target, throwOnError: true});
     });
   });
 
-  const wrappers = [
-    ["inviteMember", mocks.create, () => inviteMember("org123", "new@example.com", MembershipRole.MEMBER)],
-    ["listOrganizationInvitations", mocks.listForOrg, () => listOrganizationInvitations("org123")],
-    ["resendMemberInvite", mocks.resend, () => resendMemberInvite("org123", "inv1")],
-    ["revokeInvitation", mocks.revoke, () => revokeInvitation("org123", "inv1")],
-    ["listMyInvitations", mocks.listMine, () => listMyInvitations()],
-    ["publicRespondToInvitation", mocks.accept, () => publicRespondToInvitation("tok", MembershipState.ACCEPT)],
-  ] as const;
-
-  it.each(wrappers)("%s explains a 401 and keeps the body", async (_name, request, call) => {
-    request.mockRejectedValue(new ApiError("unauthorized", 401, "/auth/v1", {error: "unauthorized"}));
-
-    await expect(call()).rejects.toMatchObject({
-      status: 401,
-      data: {error: "unauthorized"},
-      message: expect.stringContaining("!"),
-    });
-  });
-
+  // The gateway's status, message and reason are the caller's to act on.
   it.each([
-    ["resendMemberInvite", mocks.resend, () => resendMemberInvite("org123", "inv1")],
-    ["revokeInvitation", mocks.revoke, () => revokeInvitation("org123", "inv1")],
-    ["lookupInvitation", mocks.lookup, () => lookupInvitation("tok")],
-    ["publicRespondToInvitation", mocks.decline, () => publicRespondToInvitation("tok", MembershipState.DECLINE)],
-  ] as const)("%s reports a missing invitation", async (_name, request, call) => {
-    request.mockRejectedValue(new ApiError("not found", 404, "/auth/v1"));
+    [
+      "createInvitation",
+      mocks.create,
+      409,
+      "INVITATION_PENDING",
+      () => createInvitation("org123", "new@example.com", MembershipRole.MEMBER),
+    ],
+    ["listOrganizationInvitations", mocks.listForOrg, 401, undefined, () => listOrganizationInvitations("org123")],
+    ["resendInvitation", mocks.resend, 429, "INVITATION_ORG_DAILY_LIMIT", () => resendInvitation("org123", "inv1")],
+    ["lookupInvitation", mocks.lookup, 404, undefined, () => lookupInvitation("tok")],
+    ["listMyInvitations", mocks.listMine, 401, undefined, () => listMyInvitations()],
+    ["acceptInvitation", mocks.accept, 403, "INVITATION_EMAIL_MISMATCH", () => acceptInvitation({token: "tok"})],
+  ] as const)("%s rejects with the refusal as it came", async (_name, request, status, reason, call) => {
+    const refusal = new ApiError("refused", status, "/auth/v1", {error: "refused", reason});
+    request.mockRejectedValue(refusal);
 
-    await expect(call()).rejects.toThrow("Invitation not found!");
-  });
-
-  // A conflict or a send limit has several causes, and only the reason says which.
-  it.each([
-    [409, "conflict", "INVITATION_PENDING"],
-    [429, "too many requests", "INVITATION_ORG_DAILY_LIMIT"],
-  ])("inviteMember passes a %i through with its reason", async (status, message, reason) => {
-    const refusal = new ApiError(message, status, "/auth/v1/organizations/org123/invitations", {error: message, reason});
-    mocks.create.mockRejectedValue(refusal);
-
-    await expect(inviteMember("org123", "new@example.com", MembershipRole.MEMBER)).rejects.toBe(refusal);
+    await expect(call()).rejects.toBe(refusal);
   });
 });

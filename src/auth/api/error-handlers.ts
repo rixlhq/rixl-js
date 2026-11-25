@@ -1,6 +1,5 @@
 import {ApiError} from "./types";
 import {OrgAccessError} from "./org-access-error";
-export {ApiError};
 
 /**
  * Standard error handler for API errors with custom status code handling

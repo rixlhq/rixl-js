@@ -172,7 +172,6 @@ describe("initClient - OAuth Callback Handling", () => {
     expect(mockAuthError.set).toHaveBeenCalledWith({
       error_code: "provider_exchange_failed",
       message: "unauthorized",
-      email: "",
     });
   });
 

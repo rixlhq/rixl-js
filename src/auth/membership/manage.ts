@@ -1,8 +1,4 @@
-import {
-  authV1MembershipServiceUpdateMember,
-  authV1MembershipServiceRemoveMember,
-  authV1MembershipServiceLeaveOrganization,
-} from "../../generated/sdk.gen";
+import {authV1MembershipServiceUpdateMember, authV1MembershipServiceLeaveOrganization} from "../../generated/sdk.gen";
 import {apiCall} from "../api/utils";
 import {signInMarkerOf} from "../sign-in-cookies";
 import {decodeOrgClaims} from "../utils/jwt";
@@ -25,21 +21,6 @@ export const updateMemberRole = async (orgId: string, userId: string, role: Assi
     },
     {
       [HTTP_STATUS.UNAUTHORIZED]: () => new Error("User is not authorized to update member roles!"),
-      [HTTP_STATUS.NOT_FOUND]: () => new Error("Member not found!"),
-    }
-  );
-};
-
-export const deleteMember = async (orgId: string, userId: string): Promise<void> => {
-  return apiCall(
-    async () => {
-      await authV1MembershipServiceRemoveMember({
-        path: {org_id: orgId, user_id: userId},
-        throwOnError: true,
-      });
-    },
-    {
-      [HTTP_STATUS.UNAUTHORIZED]: () => new Error("User is not authorized to delete members!"),
       [HTTP_STATUS.NOT_FOUND]: () => new Error("Member not found!"),
     }
   );

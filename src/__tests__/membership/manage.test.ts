@@ -12,7 +12,7 @@ vi.mock("../../generated/sdk.gen", () => ({
   authV1MembershipServiceLeaveOrganization: (...args: unknown[]) => mockAuthV1MembershipServiceLeaveOrganization(...args),
 }));
 
-import {updateMemberRole, deleteMember, leaveOrganization} from "@/membership";
+import {updateMemberRole, leaveOrganization} from "@/membership";
 
 describe("Membership Manage Module", () => {
   let mocks: ReturnType<typeof setupAuthTest>;
@@ -78,46 +78,6 @@ describe("Membership Manage Module", () => {
       });
 
       await expect(updateMemberRole("org123", "owner123", MembershipRole.MEMBER)).rejects.toThrow();
-    });
-  });
-
-  describe("deleteMember", () => {
-    it("should delete member successfully", async () => {
-      mockAuthV1MembershipServiceRemoveMember.mockResolvedValue({data: {}});
-
-      await deleteMember("org123", "user456");
-
-      expect(mockAuthV1MembershipServiceRemoveMember).toHaveBeenCalledWith({
-        path: {org_id: "org123", user_id: "user456"},
-        throwOnError: true,
-      });
-    });
-
-    it("should handle unauthorized error", async () => {
-      mockAuthV1MembershipServiceRemoveMember.mockRejectedValue({
-        error: "unauthorized",
-        code: 401,
-      });
-
-      await expect(deleteMember("org123", "user456")).rejects.toThrow();
-    });
-
-    it("should handle member not found error", async () => {
-      mockAuthV1MembershipServiceRemoveMember.mockRejectedValue({
-        error: "not_found",
-        code: 404,
-      });
-
-      await expect(deleteMember("org123", "user999")).rejects.toThrow();
-    });
-
-    it("should handle forbidden error for owner", async () => {
-      mockAuthV1MembershipServiceRemoveMember.mockRejectedValue({
-        error: "forbidden",
-        code: 403,
-      });
-
-      await expect(deleteMember("org123", "owner123")).rejects.toThrow();
     });
   });
 

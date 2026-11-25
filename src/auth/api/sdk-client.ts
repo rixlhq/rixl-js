@@ -12,7 +12,7 @@ function isWireErrorBody(error: unknown): error is WireErrorBody {
 }
 
 function errorMessage(error: unknown, body?: WireErrorBody): string {
-  return body?.error || body?.details || (typeof error === "string" ? error : "Request failed");
+  return body?.error || (typeof error === "string" ? error : "Request failed");
 }
 
 // The generated client throws the parsed error body (a plain object or string),
@@ -24,7 +24,7 @@ function toApiError(error: unknown, response?: Response, request?: Request): unk
     return error;
   }
   const body = isWireErrorBody(error) ? error : undefined;
-  const status = response?.status ?? body?.code ?? 0;
+  const status = response?.status ?? 0;
   const endpoint = request ? new URL(request.url).pathname : "";
   const apiError = new ApiError(errorMessage(error, body), status, endpoint, error);
   if (request && isAccountScopedRoute(request.method, routePath(endpoint))) return apiError;

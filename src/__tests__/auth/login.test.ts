@@ -153,21 +153,11 @@ describe("Login Functions", () => {
       expect(mocks.setTokensSpy).not.toHaveBeenCalled();
     });
 
-    it("should return LoginErrorResponse for provider conflict", async () => {
-      mockPostAuthV1Login.mockRejectedValue(
-        new ApiError("Conflict", 409, "/auth/v1/login", {
-          error: "provider_conflict",
-          details: "This email is already registered with Google",
-        })
-      );
+    it("rejects a conflict with the gateway's body", async () => {
+      const conflict = new ApiError("conflict", 409, "/auth/v1/login", {error: "conflict"});
+      mockPostAuthV1Login.mockRejectedValue(conflict);
 
-      const result = await loginWithEmail("test@example.com", "Password123");
-
-      expect(result).toEqual({
-        error_code: "provider_conflict",
-        message: "This email is already registered with Google",
-        email: "test@example.com",
-      });
+      await expect(loginWithEmail("test@example.com", "Password123")).rejects.toBe(conflict);
       expect(mocks.setTokensSpy).not.toHaveBeenCalled();
     });
 

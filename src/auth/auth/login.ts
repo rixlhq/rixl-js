@@ -1,11 +1,10 @@
 import {authV1EmailServiceLogin, authV1OtpServiceVerifyTotpForLogin} from "../../generated/sdk.gen";
 import {EmailAuthRequestSchema, LoginOTPVerifyRequestSchema} from "../validation/auth";
 import {validateInput} from "../validation/base";
-import {ApiError} from "../api/error-handlers";
 import {apiCall} from "../api/utils";
 import {persistSignInTokens} from "../api/tokens";
 import {HTTP_STATUS} from "../constants";
-import type {LoginErrorResponse, TwoFactorAuthMethod, TwoFactorResponse} from "./types";
+import type {TwoFactorAuthMethod, TwoFactorResponse} from "./types";
 import type {AuthV1LoginResponse} from "../../generated/types.gen";
 
 /**
@@ -29,20 +28,16 @@ function toTwoFactorAuthMethods(methods: AuthV1LoginResponse["authentication"]):
   return mapped;
 }
 
-export const loginWithEmail = async (email: string, password: string): Promise<void | TwoFactorResponse | LoginErrorResponse> => {
+export const loginWithEmail = async (email: string, password: string): Promise<void | TwoFactorResponse> => {
   return apiCall(
     async () => {
       const validatedInput = validateInput(EmailAuthRequestSchema, {email, password});
-      try {
-        const {data} = await authV1EmailServiceLogin({
-          body: validatedInput,
-          throwOnError: true,
-        });
+      const {data} = await authV1EmailServiceLogin({
+        body: validatedInput,
+        throwOnError: true,
+      });
 
-        return handleLoginResponse(data, email);
-      } catch (error) {
-        return handleLoginError(error, email);
-      }
+      return handleLoginResponse(data, email);
     },
     {
       [HTTP_STATUS.UNAUTHORIZED]: () => new Error("Incorrect email or password"),
@@ -68,7 +63,7 @@ export const verifyTOTPForLogin = async (code: string, challengeId: string): Pro
   );
 };
 
-function handleLoginResponse(data: AuthV1LoginResponse, email: string): void | TwoFactorResponse | LoginErrorResponse {
+function handleLoginResponse(data: AuthV1LoginResponse, email: string): void | TwoFactorResponse {
   switch (data.status) {
     case "ok":
       persistSignInTokens(data);
@@ -83,28 +78,4 @@ function handleLoginResponse(data: AuthV1LoginResponse, email: string): void | T
     default:
       return;
   }
-}
-
-interface ApiErrorBody {
-  error?: string;
-  details?: string;
-}
-
-function handleLoginError(error: unknown, email: string): TwoFactorResponse | LoginErrorResponse | never {
-  // The client error interceptor wraps every thrown body into an ApiError.
-  if (error instanceof ApiError && isApiErrorBody(error.data)) {
-    const body = error.data;
-    if (body.error === "provider_conflict") {
-      return {
-        error_code: "provider_conflict",
-        message: body.details || "Email registered with different provider",
-        email,
-      };
-    }
-  }
-  throw error;
-}
-
-function isApiErrorBody(error: unknown): error is ApiErrorBody {
-  return typeof error === "object" && error !== null && "error" in error;
 }

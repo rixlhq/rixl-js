@@ -1,9 +1,3 @@
-/** Interface for login verify OTP*/
-export interface LoginOTPVerifyRequest {
-  code: string;
-  challenge_id: string;
-}
-
 export interface RegistrationResponse {
   message: string;
   verification_id: string;
@@ -46,16 +40,6 @@ export type LoginErrorCode = "provider_conflict" | "provider_exchange_failed";
 export interface LoginErrorResponse {
   error_code: LoginErrorCode;
   message: string;
-  email: string;
-}
-
-/**
- * OAuth 2.0 error response from token endpoint
- */
-export interface OAuth2ErrorResponse {
-  // `string & {}` keeps "invalid_grant" in editor suggestions; a bare `| string` absorbs it.
-  error: "invalid_grant" | (string & {});
-  error_description: string;
 }
 
 export type TwoFactorAuthMethod = "passkey" | "totp";

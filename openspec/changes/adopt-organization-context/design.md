@@ -124,7 +124,7 @@
 
 - **Chosen:** Where the regenerated client changes a shape the SDK wraps, the SDK takes the new shape under the new name, with no alias:
   - Domain auto-join is now a join suggestion: `updateSuggestJoin`, `SuggestJoinSetting`, `UpdateSuggestJoinRequest` and `DomainResponse.suggest_join`.
-  - `Membership` and `MembershipApplication` carry an `organization` summary (`Organization`) in place of the three `organization_*` name fields.
+  - `Membership` carries an `organization` summary (`Organization`) in place of the three `organization_*` name fields.
   - `updateMemberRole` calls `UpdateMember` with `update_mask: "role"`.
   - A suspended membership maps to `MembershipState.SUSPENDED`; it was reported as pending. The `LEFT` and `REMOVED` wire states no longer exist.
   - `UserInfo.active_org_id` is `last_active_org_id`, which is a hint and not the org of the tab's token.
@@ -134,10 +134,17 @@
 
 ### Invitations are addressed to an email
 
-- **Chosen:** The wrappers follow auth-api's `InvitationService`. Where the new contract allows, a function the dashboard calls keeps its name and arguments: `inviteMember(orgId, email, role)` now takes an email, `resendMemberInvite(orgId, invitationId)` an invitation ID, `publicRespondToInvitation(token, state)` sends the token in the body, and `listPendingMemberships()` shapes a page of the user's invitations as pending memberships. `listMyInvitations`, `listOrganizationInvitations`, `lookupInvitation`, `revokeInvitation` and `respondToMyInvitation` are new. Accepting returns the membership and doesn't switch the tab's org.
-- **Alternatives considered:** Renaming the four functions lost because the dashboard calls them and their intent is unchanged. Reusing the name `respondToInvitation` for answering by ID lost: it used to take an org ID, and both are strings.
-- **Dropped:** `MembershipApplication.user_id` and `decided_at`, `Member.invitation_expires_at`, `ResendInviteMemberRequest` and `VerifyStatusResponse.verified`: the contract no longer carries them. No `request_id` option on `inviteMember`, which would be a fourth parameter with no caller.
-- **Evidence:** auth-api `proto/auth/v1/invitations.proto` and `internal/invitations` at `92d208bd`; gateway `internal/routes/account_scoped.go` and `errors.go` at `c0a8891`.
+- **Chosen:** The functions follow auth-api's `InvitationService`: `createInvitation`, `listOrganizationInvitations` and `resendInvitation` for the org, `lookupInvitation`, `listMyInvitations` and `acceptInvitation` for the recipient. `acceptInvitation` takes `{token}` or `{invitation_id}`, as the RPC does, and resolves with the membership without switching the tab's org. Revoking and declining use the generated operations.
+- **Alternatives considered:** Keeping the username-era names and `void` results so the dashboard needn't change lost: the dashboard is rebuilt on the new library. One function taking "accept" or "decline" lost: a mistyped value would pick one of the two unless the SDK checked it.
+- **Dropped:** `inviteMember`, `resendMemberInvite`, `publicRespondToInvitation`, `respondToMyInvitation`, `revokeInvitation`, `listPendingMemberships`, `MembershipApplication`, and the `MembershipState` values for pending, declined, accept and decline.
+- **Evidence:** auth-api `proto/auth/v1/invitations.proto`; gateway `internal/routes/account_scoped.go` and `errors.go` at `c0a8891`.
+
+### A function of the SDK's own keeps state or reshapes a result
+
+- **Chosen:** The SDK exports every generated operation, and writes its own function only where it keeps sign-in state or reshapes a result. Functions that only forwarded to a generated one are removed. Invitation functions add no input checks or error messages: auth-api checks the input, and the caller acts on the status and `reason`.
+- **Alternatives considered:** Keeping forwarding functions for their English messages lost: they are a second name for each operation, and apps translate by status and reason.
+- **Open:** Other older functions still check input and replace error messages. Removing those waits for the published document to carry the input rules and the error reasons (task 12.4).
+- **Evidence:** the published error schema says the message isn't stable and to branch on the HTTP status.
 
 ### No legacy path
 

@@ -1,8 +1,6 @@
 /** The gateway's JSON error body. */
 export interface WireErrorBody {
   error?: string;
-  details?: string;
-  code?: number;
   /** The ErrorInfo reason of a client error, such as `NOT_A_MEMBER`. */
   reason?: string;
 }
@@ -13,9 +11,7 @@ export interface ApiErrorContext {
   data?: unknown;
 }
 
-/**
- * Generic API error class - wraps ky's HTTPError for consistency
- */
+/** A failed API call, with the response body in `data`. */
 export class ApiError extends Error {
   public status: number;
   public endpoint: string;

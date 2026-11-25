@@ -3,7 +3,6 @@ import {
   authV1DomainServiceCreateDomainVerification,
   authV1DomainServiceCheckDomainVerification,
   authV1DomainServiceSetDomainSuggestJoin,
-  authV1DomainServiceRemoveDomain,
 } from "../../generated/sdk.gen";
 import {apiCall} from "../api/utils";
 import {ApiError} from "../api/types";
@@ -85,20 +84,6 @@ export const updateSuggestJoin = async (orgId: string, enabled: boolean): Promis
     },
     {
       [HTTP_STATUS.UNAUTHORIZED]: () => new Error("Not authorized to update join suggestion settings"),
-    }
-  );
-};
-
-export const removeDomain = async (orgId: string): Promise<void> => {
-  return apiCall(
-    async () => {
-      await authV1DomainServiceRemoveDomain({
-        path: {org_id: orgId},
-        throwOnError: true,
-      });
-    },
-    {
-      [HTTP_STATUS.UNAUTHORIZED]: () => new Error("Not authorized to remove domain"),
     }
   );
 };

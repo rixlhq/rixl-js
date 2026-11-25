@@ -17,7 +17,7 @@ vi.mock("../../generated/sdk.gen", () => ({
   authV1DomainServiceRemoveDomain: (...args: unknown[]) => mockAuthV1DomainServiceRemoveDomain(...args),
 }));
 
-import {getDomainStatus, initiateDomainVerification, checkDomainVerification, updateSuggestJoin, removeDomain} from "@/domain";
+import {getDomainStatus, initiateDomainVerification, checkDomainVerification, updateSuggestJoin} from "@/domain";
 
 describe("Domain Management Module", () => {
   beforeEach(() => {
@@ -324,48 +324,6 @@ describe("Domain Management Module", () => {
       });
 
       await expect(updateSuggestJoin("org123", true)).rejects.toThrow();
-    });
-  });
-
-  describe("removeDomain", () => {
-    it("should remove domain successfully", async () => {
-      mockAuthV1DomainServiceRemoveDomain.mockResolvedValue({data: {}});
-
-      await removeDomain("org123");
-
-      expect(mockAuthV1DomainServiceRemoveDomain).toHaveBeenCalledWith({
-        path: {org_id: "org123"},
-        throwOnError: true,
-      });
-    });
-
-    it("should handle not found error when no verified domain exists", async () => {
-      mockAuthV1DomainServiceRemoveDomain.mockRejectedValue({
-        error: "not_found",
-        code: 404,
-      });
-
-      await expect(removeDomain("org123")).rejects.toThrow();
-    });
-
-    it("should handle unauthorized error", async () => {
-      mockAuthV1DomainServiceRemoveDomain.mockRejectedValue({
-        error: "unauthorized",
-        code: 401,
-      });
-
-      await expect(removeDomain("org123")).rejects.toThrow();
-    });
-
-    it("should work with different organization IDs", async () => {
-      mockAuthV1DomainServiceRemoveDomain.mockResolvedValue({data: {}});
-
-      await removeDomain("org456");
-
-      expect(mockAuthV1DomainServiceRemoveDomain).toHaveBeenCalledWith({
-        path: {org_id: "org456"},
-        throwOnError: true,
-      });
     });
   });
 });
