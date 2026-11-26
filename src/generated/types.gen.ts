@@ -2797,6 +2797,23 @@ export type AuthV1InitiateEmailChangeRequest = {
 };
 
 /**
+ * InternalOrgIdsRequest
+ */
+export type AuthV1InternalOrgIdsRequest = {
+    [key: string]: never;
+};
+
+/**
+ * InternalOrgIdsResponse
+ */
+export type AuthV1InternalOrgIdsResponse = {
+    /**
+     * org_ids
+     */
+    org_ids?: Array<string>;
+};
+
+/**
  * Invitation
  */
 export type AuthV1Invitation = {
