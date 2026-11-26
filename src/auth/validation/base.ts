@@ -31,18 +31,6 @@ export const PasswordSchema = v.pipe(
 );
 
 /**
- * Username validation schema
- * - Must be 4-24 characters
- * - Only letters, numbers, underscores, and periods
- */
-export const UsernameSchema = v.pipe(
-  v.string("Username must be text"),
-  v.minLength(4, "Username must be 4-24 characters long"),
-  v.maxLength(24, "Username must be 4-24 characters long"),
-  v.regex(/^[a-z0-9_.]+$/, "Username can only contain lowercase letters, numbers, dots and underscores")
-);
-
-/**
  * Name validation schema
  * - Must be 1-30 characters
  */

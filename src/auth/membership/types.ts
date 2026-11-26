@@ -28,7 +28,7 @@ export interface Membership extends Common {
 }
 
 export interface Member extends Common {
-  username: string;
+  email: string;
   first_name: string;
   last_name: string;
 }

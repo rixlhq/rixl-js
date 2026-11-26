@@ -6,7 +6,6 @@ import type {UserInfo} from "../../auth/user";
 
 const userInfo = (overrides: Partial<UserInfo> = {}): UserInfo => ({
   id: "user-1",
-  username: "tester",
   email: "tester@example.com",
   email_verified: true,
   first_name: "Test",

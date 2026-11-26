@@ -1,6 +1,5 @@
 import {
   authV1UserServiceUpdateName,
-  authV1UserServiceUpdateUsername,
   authV1UserServiceGetUserInfo,
   authV1OtpServiceGetOtpStatus,
   authV1OtpServiceSetupOtp,
@@ -9,7 +8,7 @@ import {
 } from "../generated/sdk.gen";
 import type {AuthV1Policy, AuthV1UserInfo} from "../generated/types.gen";
 import {validateInput} from "./validation/base";
-import {UpdateNameSchema, UpdateUsernameSchema} from "./validation/user";
+import {UpdateNameSchema} from "./validation/user";
 import {VerifyOTPCodeSchema} from "./validation/auth";
 import {apiCall} from "./api/utils";
 import {reissueTokens} from "./api/tokens";
@@ -40,7 +39,6 @@ export interface OTPVerification {
 
 export interface UserInfo {
   id: string;
-  username: string;
   email: string;
   email_verified: boolean;
   first_name: string;
@@ -62,7 +60,6 @@ const text = (value?: string | null): string => value ?? "";
 function toUserInfo(data: AuthV1UserInfo): UserInfo {
   return {
     id: text(data.id),
-    username: text(data.username),
     email: text(data.email),
     email_verified: data.email_verified ?? false,
     first_name: text(data.first_name),
@@ -105,24 +102,6 @@ export const updateFullName = async (fullName: string): Promise<void> => {
       [HTTP_STATUS.BAD_REQUEST]: () => new Error("Invalid name format"),
       [HTTP_STATUS.UNAUTHORIZED]: () => new Error("User is not authorized to update name"),
       [HTTP_STATUS.TOO_MANY_REQUESTS]: () => new Error("Name can only be changed once every 7 days."),
-    }
-  );
-};
-
-export const updateUsername = async (username: string): Promise<void> => {
-  return apiCall(
-    async () => {
-      const validatedInput = validateInput(UpdateUsernameSchema, {username});
-      await authV1UserServiceUpdateUsername({
-        body: validatedInput,
-        throwOnError: true,
-      });
-    },
-    {
-      [HTTP_STATUS.BAD_REQUEST]: () => new Error("Invalid username format"),
-      [HTTP_STATUS.UNAUTHORIZED]: () => new Error("User is not authorized to update username"),
-      [HTTP_STATUS.CONFLICT]: () => new Error("Username is not unique. Choose another one!"),
-      [HTTP_STATUS.TOO_MANY_REQUESTS]: () => new Error("Username can only be changed once every 30 days."),
     }
   );
 };

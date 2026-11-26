@@ -125,7 +125,7 @@ export function toMember(m: AuthV1OrgMember): Member {
     role: toRole(m.role),
     state: toState(m.state),
     joined_at: m.joined_at ?? undefined,
-    username: m.username ?? "",
+    email: m.email ?? "",
     first_name: m.first_name ?? "",
     last_name: m.last_name ?? "",
   };

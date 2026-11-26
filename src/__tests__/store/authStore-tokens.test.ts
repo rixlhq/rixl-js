@@ -56,11 +56,11 @@ describe("AuthStore - Token Management", () => {
     });
 
     it("should decode and set user from access token", () => {
-      const mockToken = createMockJWT({username: "tokenuser", id: "token123"});
+      const mockToken = createMockJWT({first_name: "Token", id: "token123"});
       setTokens(mockToken, "refresh", 3600);
 
       const userData = user.get();
-      expect(userData?.username).toBe("tokenuser");
+      expect(userData?.first_name).toBe("Token");
       expect(userData?.id).toBe("token123");
     });
 
@@ -123,8 +123,8 @@ describe("AuthStore - Token Management", () => {
     });
 
     it("should clear user data", () => {
-      setTokens(createMockJWT({username: "testuser"}), "refresh", 3600);
-      expect(user.get()?.username).toBe("testuser");
+      setTokens(createMockJWT({first_name: "Test"}), "refresh", 3600);
+      expect(user.get()?.first_name).toBe("Test");
 
       removeTokens();
       expect(user.get()).toBeUndefined();

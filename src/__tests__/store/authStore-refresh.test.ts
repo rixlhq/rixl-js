@@ -163,11 +163,11 @@ describe("AuthStore - Token Refresh", () => {
     });
 
     it("should decode and set user when returning token", async () => {
-      const mockToken = createMockJWT({username: "decoded-user"});
+      const mockToken = createMockJWT({first_name: "Decoded"});
       setTokens(mockToken, "refresh", 3600);
 
       await getToken();
-      expect(user.get()?.username).toBe("decoded-user");
+      expect(user.get()?.first_name).toBe("Decoded");
     });
 
     it("should prevent concurrent token refresh calls", async () => {
@@ -257,7 +257,7 @@ describe("AuthStore - Token Refresh", () => {
       expireAt.set(Date.now() - 1000);
     };
     const otherTabTokens = () => ({refreshToken: "rotated-refresh", personalOrgId: "org123", signIn: "user123:sign-in-test"});
-    const freshResponse = () => ({access_token: createMockJWT({username: "this-tab"}), refresh_token: "new-refresh", expires_in: 3600});
+    const freshResponse = () => ({access_token: createMockJWT({first_name: "This Tab"}), refresh_token: "new-refresh", expires_in: 3600});
 
     afterEach(() => {
       vi.unstubAllGlobals();

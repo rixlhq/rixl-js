@@ -57,7 +57,6 @@ export {
 
 export {
   updateFullName,
-  updateUsername,
   getUserInfo,
   verifyUserOTP,
   setupUserOTP,

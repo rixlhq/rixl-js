@@ -1,11 +1,10 @@
 import {describe, it, expect, beforeEach, afterEach, vi} from "vite-plus/test";
-import {updateFullName, updateUsername, getUserInfo, getOTPStatus, setupUserOTP, verifyUserOTP, regenerateBackupCodes} from "../auth/user";
+import {updateFullName, getUserInfo, getOTPStatus, setupUserOTP, verifyUserOTP, regenerateBackupCodes} from "../auth/user";
 import * as signInCookies from "../auth/sign-in-cookies";
 import {createMockJWT} from "./utils/test-helpers";
 import {setupAuthTest, cleanupAuthMocks} from "./utils/auth-test-helpers";
 
 const mockPatchAuthV1UsersCurrentName = vi.fn();
-const mockPatchAuthV1UsersCurrentUsername = vi.fn();
 const mockGetAuthV1Userinfo = vi.fn();
 const mockGetAuthV1UsersCurrentTotpStatus = vi.fn();
 const mockPostAuthV1UsersCurrentTotpSetup = vi.fn();
@@ -15,7 +14,6 @@ const mockPostAuthV1UsersCurrentTotpBackupCodesRegenerate = vi.fn();
 
 vi.mock("../generated/sdk.gen", () => ({
   authV1UserServiceUpdateName: (...args: unknown[]) => mockPatchAuthV1UsersCurrentName(...args),
-  authV1UserServiceUpdateUsername: (...args: unknown[]) => mockPatchAuthV1UsersCurrentUsername(...args),
   authV1UserServiceGetUserInfo: (...args: unknown[]) => mockGetAuthV1Userinfo(...args),
   authV1OtpServiceGetOtpStatus: (...args: unknown[]) => mockGetAuthV1UsersCurrentTotpStatus(...args),
   authV1OtpServiceSetupOtp: (...args: unknown[]) => mockPostAuthV1UsersCurrentTotpSetup(...args),
@@ -30,7 +28,6 @@ describe("User Management", () => {
   beforeEach(() => {
     mocks = setupAuthTest();
     mockPatchAuthV1UsersCurrentName.mockReset();
-    mockPatchAuthV1UsersCurrentUsername.mockReset();
     mockGetAuthV1Userinfo.mockReset();
     mockGetAuthV1UsersCurrentTotpStatus.mockReset();
     mockPostAuthV1UsersCurrentTotpSetup.mockReset();
@@ -81,50 +78,11 @@ describe("User Management", () => {
     });
   });
 
-  describe("updateUsername", () => {
-    it("should update username successfully", async () => {
-      mockPatchAuthV1UsersCurrentUsername.mockResolvedValue({
-        data: {username: "newusername"},
-      });
-
-      await updateUsername("newusername");
-
-      expect(mockPatchAuthV1UsersCurrentUsername).toHaveBeenCalledWith({
-        body: {username: "newusername"},
-        throwOnError: true,
-      });
-    });
-
-    it("should not attempt token refresh (response has no tokens)", async () => {
-      mockPatchAuthV1UsersCurrentUsername.mockResolvedValue({
-        data: {username: "another_user"},
-      });
-
-      await updateUsername("another_user");
-
-      expect(mocks.setTokensSpy).not.toHaveBeenCalled();
-    });
-
-    it("should validate username format", async () => {
-      await expect(updateUsername("ab")).rejects.toThrow();
-    });
-
-    it("should throw error for conflict", async () => {
-      mockPatchAuthV1UsersCurrentUsername.mockRejectedValue({
-        error: "conflict",
-        code: 409,
-      });
-
-      await expect(updateUsername("taken_user")).rejects.toThrow();
-    });
-  });
-
   describe("getUserInfo", () => {
     it("should map the snake_case wire response to UserInfo", async () => {
       mockGetAuthV1Userinfo.mockResolvedValue({
         data: {
           id: "user-123",
-          username: "janedoe",
           email: "jane@example.com",
           email_verified: true,
           first_name: "Jane",
@@ -144,7 +102,6 @@ describe("User Management", () => {
       });
       expect(result).toEqual({
         id: "user-123",
-        username: "janedoe",
         email: "jane@example.com",
         email_verified: true,
         first_name: "Jane",
@@ -177,7 +134,6 @@ describe("User Management", () => {
 
       expect(result).toEqual({
         id: "user-789",
-        username: "",
         email: "",
         email_verified: false,
         first_name: "",

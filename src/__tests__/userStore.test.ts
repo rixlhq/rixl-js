@@ -39,7 +39,7 @@ describe("UserStore", () => {
     });
 
     it("should persist user to localStorage on set", async () => {
-      const mockUser = createMockUser({username: "testuser123"});
+      const mockUser = createMockUser({first_name: "Testuser"});
       user.set(mockUser);
 
       // Wait for subscription to trigger
@@ -111,7 +111,6 @@ describe("UserStore", () => {
         id: "id123",
         first_name: "John",
         last_name: "Doe",
-        username: "johndoe",
         image_url: "https://example.com/img.jpg",
         language_code: "fr",
         email: "olalekan.akande@rixl.com",
