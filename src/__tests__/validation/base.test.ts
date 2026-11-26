@@ -1,5 +1,5 @@
 import {describe, it, expect} from "vite-plus/test";
-import {validateInput, EmailSchema, PasswordSchema, UsernameSchema, NameSchema, DomainSchema} from "../../auth/validation/base";
+import {validateInput, EmailSchema, PasswordSchema, NameSchema, DomainSchema} from "../../auth/validation/base";
 
 describe("Base Validation Schemas", () => {
   describe("validateInput", () => {
@@ -46,27 +46,6 @@ describe("Base Validation Schemas", () => {
 
     it("should reject passwords without uppercase letter", () => {
       expect(() => validateInput(PasswordSchema, "password123")).toThrow("Password must contain at least one uppercase letter");
-    });
-  });
-
-  describe("UsernameSchema", () => {
-    it("should accept valid usernames", () => {
-      expect(validateInput(UsernameSchema, "user123")).toBe("user123");
-      expect(validateInput(UsernameSchema, "test_user")).toBe("test_user");
-    });
-
-    it("should reject usernames shorter than 4 characters", () => {
-      expect(() => validateInput(UsernameSchema, "usr")).toThrow("Username must be 4-24 characters long");
-    });
-
-    it("should reject usernames with invalid characters", () => {
-      expect(() => validateInput(UsernameSchema, "user@name")).toThrow();
-    });
-
-    it("should reject usernames with uppercase letters", () => {
-      expect(() => validateInput(UsernameSchema, "UserName")).toThrow(
-        "Username can only contain lowercase letters, numbers, dots and underscores"
-      );
     });
   });
 

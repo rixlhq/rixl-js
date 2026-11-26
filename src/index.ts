@@ -67,7 +67,6 @@ export {
   type InvitationState,
   type ListInvitationsParams,
   updateFullName,
-  updateUsername,
   getUserInfo,
   verifyUserOTP,
   setupUserOTP,

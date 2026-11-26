@@ -11,12 +11,12 @@ import {createMockJWT, createMockUser} from "./test-helpers";
 describe("JWT Utils", () => {
   describe("decodeToken", () => {
     it("should decode valid JWT token", () => {
-      const token = createMockJWT({id: "custom-id", username: "custom-user"});
+      const token = createMockJWT({id: "custom-id", first_name: "Custom"});
       const result = decodeToken(token);
 
       expect(result).toMatchObject({
         id: "custom-id",
-        username: "custom-user",
+        first_name: "Custom",
       });
     });
 
@@ -59,7 +59,7 @@ describe("JWT Utils", () => {
 
       expect(result).toBe(true);
       expect(user.get()).toBeDefined();
-      expect(user.get()?.username).toBe("testuser");
+      expect(user.get()?.first_name).toBe("Test");
     });
 
     it("should return false for invalid token", () => {
@@ -70,13 +70,13 @@ describe("JWT Utils", () => {
     });
 
     it("should update user store with correct data", () => {
-      const mockData = {username: "newuser", id: "new123"};
+      const mockData = {first_name: "New", id: "new123"};
       const token = createMockJWT(mockData);
 
       decodeAndSetUser(token);
 
       const storedUser = user.get();
-      expect(storedUser?.username).toBe("newuser");
+      expect(storedUser?.first_name).toBe("New");
       expect(storedUser?.id).toBe("new123");
     });
   });

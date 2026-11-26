@@ -1,12 +1,5 @@
 import * as v from "valibot";
-import {UsernameSchema, NameSchema} from "./base";
-
-/**
- * Update username request schema
- */
-export const UpdateUsernameSchema = v.object({
-  username: UsernameSchema,
-});
+import {NameSchema} from "./base";
 
 /**
  * Update name request schema

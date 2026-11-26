@@ -3599,10 +3599,6 @@ export type AuthV1OrgMember = {
      */
     state?: AuthV1MembershipState;
     /**
-     * username
-     */
-    username?: string;
-    /**
      * first_name
      */
     first_name?: string;
@@ -3610,6 +3606,10 @@ export type AuthV1OrgMember = {
      * last_name
      */
     last_name?: string;
+    /**
+     * email
+     */
+    email?: string;
     /**
      * joined_at
      */
@@ -3978,10 +3978,6 @@ export type AuthV1RecentUser = {
      * email
      */
     email?: string;
-    /**
-     * username
-     */
-    username?: string;
     /**
      * first_name
      */
@@ -4778,32 +4774,6 @@ export type AuthV1UpdateUserAvatarResponse = {
 };
 
 /**
- * UpdateUsernameRequest
- */
-export type AuthV1UpdateUsernameRequest = {
-    /**
-     * user_id
-     */
-    user_id?: string;
-    /**
-     * username
-     *
-     * Trimmed and lowercased before validation. The normalized value may contain at most 24 Unicode characters; an empty value is allowed.
-     */
-    username?: string;
-};
-
-/**
- * UpdateUsernameResponse
- */
-export type AuthV1UpdateUsernameResponse = {
-    /**
-     * username
-     */
-    username?: string;
-};
-
-/**
  * UserDeletionPlanEntry
  */
 export type AuthV1UserDeletionPlanEntry = {
@@ -4826,9 +4796,11 @@ export type AuthV1UserDeletionPlanEntry = {
      */
     affected_user_id?: string;
     /**
-     * affected_username
+     * affected_name
+     *
+     * The affected member's full name.
      */
-    affected_username?: string;
+    affected_name?: string;
 };
 
 /**
@@ -4844,10 +4816,6 @@ export type AuthV1UserInfo = {
      * id
      */
     id?: string;
-    /**
-     * username
-     */
-    username?: string;
     /**
      * email
      */
@@ -13827,31 +13795,6 @@ export type AuthV1UserServiceUpdateNameResponses = {
 };
 
 export type AuthV1UserServiceUpdateNameResponse = AuthV1UserServiceUpdateNameResponses[keyof AuthV1UserServiceUpdateNameResponses];
-
-export type AuthV1UserServiceUpdateUsernameData = {
-    body: AuthV1UpdateUsernameRequest;
-    path?: never;
-    query?: never;
-    url: '/auth/v1/users/current/username';
-};
-
-export type AuthV1UserServiceUpdateUsernameErrors = {
-    /**
-     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
-     */
-    default: Error;
-};
-
-export type AuthV1UserServiceUpdateUsernameError = AuthV1UserServiceUpdateUsernameErrors[keyof AuthV1UserServiceUpdateUsernameErrors];
-
-export type AuthV1UserServiceUpdateUsernameResponses = {
-    /**
-     * Success
-     */
-    200: AuthV1UpdateUsernameResponse;
-};
-
-export type AuthV1UserServiceUpdateUsernameResponse = AuthV1UserServiceUpdateUsernameResponses[keyof AuthV1UserServiceUpdateUsernameResponses];
 
 export type BillingV1InvoiceServiceListInvoicesData = {
     body?: never;

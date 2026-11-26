@@ -16,7 +16,6 @@ export const decodeToken = (token: string): User | undefined => {
       email: decodedUser.email as string,
       first_name: decodedUser.first_name as string,
       last_name: decodedUser.last_name as string,
-      username: decodedUser.username as string,
       image_url: decodedUser.image_url as string,
       language_code: decodedUser.language_code as string,
     };
