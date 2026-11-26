@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.50.0](https://github.com/rixlhq/rixl-js/compare/v0.49.0...v0.50.0) (2026-11-26)
+
+
+### ⚠ BREAKING CHANGES
+
+* **auth:** `updateUsername` and the generated update-username types are removed. `User`, `UserInfo`, and `RecentUser` no longer expose `username`; `Member.username` is replaced by `Member.email`; `UserDeletionPlanEntry.affected_username` is now `affected_name`. Use `first_name`/`last_name` or `email` for display, and `user_id`/`affected_user_id` as stable keys.
+
+### Features
+
+* **auth:** remove user username surface ([#182](https://github.com/rixlhq/rixl-js/issues/182)) ([f520f4b](https://github.com/rixlhq/rixl-js/commit/f520f4b0623088e5151f48bfef0337ac93d4e5b3))
+* **sdk:** regenerate based on latest OpenAPI spec ([#180](https://github.com/rixlhq/rixl-js/issues/180)) ([fedce32](https://github.com/rixlhq/rixl-js/commit/fedce32579e7ac85f17442feadb7003334bfef99))
+
 ## [0.49.0](https://github.com/rixlhq/rixl-js/compare/v0.48.0...v0.49.0) (2026-11-26)
 
 
