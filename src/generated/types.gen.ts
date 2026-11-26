@@ -2501,6 +2501,8 @@ export type AuthV1CreateInvitationRequest = {
     org_id?: string;
     /**
      * email
+     *
+     * Trimmed and lowercased before validation as a bare email address. The normalized address must be nonempty and at most 254 UTF-8 bytes, with a local part of at most 64 bytes and a domain containing a dot that is neither leading nor trailing.
      */
     email?: string;
     /**
@@ -3718,6 +3720,8 @@ export type AuthV1Passkey = {
     id?: string;
     /**
      * name
+     *
+     * At most 64 UTF-8 bytes.
      */
     name?: string;
     /**
@@ -3808,6 +3812,8 @@ export type AuthV1PasskeyRegisterFinishRequest = {
     challenge_id?: string;
     /**
      * name
+     *
+     * At most 64 UTF-8 bytes. When renaming, whitespace is trimmed before validation and the result must be nonempty.
      */
     name?: string;
     /**
@@ -3826,6 +3832,8 @@ export type AuthV1PasskeyRegisterFinishResponse = {
     passkey_id?: string;
     /**
      * name
+     *
+     * At most 64 UTF-8 bytes.
      */
     name?: string;
 };
@@ -4055,6 +4063,8 @@ export type AuthV1RegisterRequest = {
     email?: string;
     /**
      * password
+     *
+     * Must contain at least 8 UTF-8 bytes (not 8 characters).
      */
     password?: string;
     /**
@@ -4123,6 +4133,8 @@ export type AuthV1RenamePasskeyRequest = {
     id?: string;
     /**
      * name
+     *
+     * At most 64 UTF-8 bytes. When renaming, whitespace is trimmed before validation and the result must be nonempty.
      */
     name?: string;
 };
@@ -4222,6 +4234,8 @@ export type AuthV1ResetPasswordRequest = {
     token?: string;
     /**
      * new_password
+     *
+     * Must contain at least 8 UTF-8 bytes (not 8 characters).
      */
     new_password?: string;
 };
@@ -4730,6 +4744,8 @@ export type AuthV1UpdateUserAvatarRequest = {
     user_id?: string;
     /**
      * image_id
+     *
+     * Trimmed before validation. Empty clears the avatar; otherwise must be a valid base62 image ID.
      */
     image_id?: string;
 };
@@ -4754,6 +4770,8 @@ export type AuthV1UpdateUsernameRequest = {
     user_id?: string;
     /**
      * username
+     *
+     * Trimmed and lowercased before validation. The normalized value may contain at most 24 Unicode characters; an empty value is allowed.
      */
     username?: string;
 };
@@ -11595,6 +11613,8 @@ export type AuthV1InvitationServiceCreateInvitationData = {
     body: {
         /**
          * email
+         *
+         * Trimmed and lowercased before validation as a bare email address. The normalized address must be nonempty and at most 254 UTF-8 bytes, with a local part of at most 64 bytes and a domain containing a dot that is neither leading nor trailing.
          */
         email?: string;
         /**
@@ -12669,6 +12689,8 @@ export type AuthV1PasskeyServiceRenamePasskeyData = {
         user_id?: string;
         /**
          * name
+         *
+         * At most 64 UTF-8 bytes. When renaming, whitespace is trimmed before validation and the result must be nonempty.
          */
         name?: string;
     };
