@@ -6971,24 +6971,6 @@ export type GoogleProtobufValue = null | number | string | boolean | Array<unkno
 };
 
 /**
- * The Status type defines a logical error model suitable for gRPC and REST APIs.
- */
-export type GoogleRpcStatus = {
-    /**
-     * The status code, which should be an enum value of google.rpc.Code.
-     */
-    code?: number;
-    /**
-     * A developer-facing error message.
-     */
-    message?: string;
-    /**
-     * A list of messages that carry the error details.
-     */
-    details?: Array<GoogleProtobufAny>;
-};
-
-/**
  * CreateImageUploadRequest
  */
 export type ImagesV1CreateImageUploadRequest = {
@@ -9751,6 +9733,12 @@ export type Error = {
      * Machine-readable reason for some 4xx errors, such as `ORG_DELETED`, `MEMBERSHIP_SUSPENDED`, `NOT_A_MEMBER` or `STEP_UP_REQUIRED`. Absent when there is none, and always absent on 5xx.
      */
     reason?: string;
+    /**
+     * Reason-specific details, such as `invitation_id` on `INVITATION_PENDING` or `max_age_seconds` on `STEP_UP_REQUIRED`. Absent when there is none.
+     */
+    metadata?: {
+        [key: string]: string;
+    };
 };
 
 /**
@@ -9812,9 +9800,9 @@ export type AnalyticsV1DashboardServiceGetDashboardStatsData = {
 
 export type AnalyticsV1DashboardServiceGetDashboardStatsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AnalyticsV1DashboardServiceGetDashboardStatsError = AnalyticsV1DashboardServiceGetDashboardStatsErrors[keyof AnalyticsV1DashboardServiceGetDashboardStatsErrors];
@@ -9837,9 +9825,9 @@ export type AnalyticsV1DashboardServiceQueryChartData = {
 
 export type AnalyticsV1DashboardServiceQueryChartErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AnalyticsV1DashboardServiceQueryChartError = AnalyticsV1DashboardServiceQueryChartErrors[keyof AnalyticsV1DashboardServiceQueryChartErrors];
@@ -9862,9 +9850,9 @@ export type AnalyticsV1DashboardServiceBatchQueryChartData = {
 
 export type AnalyticsV1DashboardServiceBatchQueryChartErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AnalyticsV1DashboardServiceBatchQueryChartError = AnalyticsV1DashboardServiceBatchQueryChartErrors[keyof AnalyticsV1DashboardServiceBatchQueryChartErrors];
@@ -9887,9 +9875,9 @@ export type AnalyticsV1DashboardServiceListDatasetsData = {
 
 export type AnalyticsV1DashboardServiceListDatasetsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AnalyticsV1DashboardServiceListDatasetsError = AnalyticsV1DashboardServiceListDatasetsErrors[keyof AnalyticsV1DashboardServiceListDatasetsErrors];
@@ -9912,9 +9900,9 @@ export type AnalyticsV1DashboardServiceGetFilterOptionsData = {
 
 export type AnalyticsV1DashboardServiceGetFilterOptionsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AnalyticsV1DashboardServiceGetFilterOptionsError = AnalyticsV1DashboardServiceGetFilterOptionsErrors[keyof AnalyticsV1DashboardServiceGetFilterOptionsErrors];
@@ -9937,9 +9925,9 @@ export type AnalyticsV1DashboardServiceGetScopeTreeData = {
 
 export type AnalyticsV1DashboardServiceGetScopeTreeErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AnalyticsV1DashboardServiceGetScopeTreeError = AnalyticsV1DashboardServiceGetScopeTreeErrors[keyof AnalyticsV1DashboardServiceGetScopeTreeErrors];
@@ -9971,9 +9959,9 @@ export type AnalyticsV1DashboardServiceListDashboardsData = {
 
 export type AnalyticsV1DashboardServiceListDashboardsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AnalyticsV1DashboardServiceListDashboardsError = AnalyticsV1DashboardServiceListDashboardsErrors[keyof AnalyticsV1DashboardServiceListDashboardsErrors];
@@ -9996,9 +9984,9 @@ export type AnalyticsV1DashboardServiceCreateDashboardData = {
 
 export type AnalyticsV1DashboardServiceCreateDashboardErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AnalyticsV1DashboardServiceCreateDashboardError = AnalyticsV1DashboardServiceCreateDashboardErrors[keyof AnalyticsV1DashboardServiceCreateDashboardErrors];
@@ -10031,9 +10019,9 @@ export type AnalyticsV1DashboardServiceDeleteWidgetData = {
 
 export type AnalyticsV1DashboardServiceDeleteWidgetErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AnalyticsV1DashboardServiceDeleteWidgetError = AnalyticsV1DashboardServiceDeleteWidgetErrors[keyof AnalyticsV1DashboardServiceDeleteWidgetErrors];
@@ -10073,9 +10061,9 @@ export type AnalyticsV1DashboardServiceUpdateWidgetData = {
 
 export type AnalyticsV1DashboardServiceUpdateWidgetErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AnalyticsV1DashboardServiceUpdateWidgetError = AnalyticsV1DashboardServiceUpdateWidgetErrors[keyof AnalyticsV1DashboardServiceUpdateWidgetErrors];
@@ -10119,9 +10107,9 @@ export type AnalyticsV1DashboardServiceExportDashboardData = {
 
 export type AnalyticsV1DashboardServiceExportDashboardErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AnalyticsV1DashboardServiceExportDashboardError = AnalyticsV1DashboardServiceExportDashboardErrors[keyof AnalyticsV1DashboardServiceExportDashboardErrors];
@@ -10161,9 +10149,9 @@ export type AnalyticsV1DashboardServiceUpdateDashboardLayoutData = {
 
 export type AnalyticsV1DashboardServiceUpdateDashboardLayoutErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AnalyticsV1DashboardServiceUpdateDashboardLayoutError = AnalyticsV1DashboardServiceUpdateDashboardLayoutErrors[keyof AnalyticsV1DashboardServiceUpdateDashboardLayoutErrors];
@@ -10199,9 +10187,9 @@ export type AnalyticsV1DashboardServiceCreateWidgetData = {
 
 export type AnalyticsV1DashboardServiceCreateWidgetErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AnalyticsV1DashboardServiceCreateWidgetError = AnalyticsV1DashboardServiceCreateWidgetErrors[keyof AnalyticsV1DashboardServiceCreateWidgetErrors];
@@ -10234,9 +10222,9 @@ export type AnalyticsV1DashboardServiceDeleteDashboardData = {
 
 export type AnalyticsV1DashboardServiceDeleteDashboardErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AnalyticsV1DashboardServiceDeleteDashboardError = AnalyticsV1DashboardServiceDeleteDashboardErrors[keyof AnalyticsV1DashboardServiceDeleteDashboardErrors];
@@ -10264,9 +10252,9 @@ export type AnalyticsV1DashboardServiceGetDashboardData = {
 
 export type AnalyticsV1DashboardServiceGetDashboardErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AnalyticsV1DashboardServiceGetDashboardError = AnalyticsV1DashboardServiceGetDashboardErrors[keyof AnalyticsV1DashboardServiceGetDashboardErrors];
@@ -10310,9 +10298,9 @@ export type AnalyticsV1DashboardServiceUpdateDashboardData = {
 
 export type AnalyticsV1DashboardServiceUpdateDashboardErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AnalyticsV1DashboardServiceUpdateDashboardError = AnalyticsV1DashboardServiceUpdateDashboardErrors[keyof AnalyticsV1DashboardServiceUpdateDashboardErrors];
@@ -10340,9 +10328,9 @@ export type AnalyticsV1DashboardServiceSetDefaultDashboardData = {
 
 export type AnalyticsV1DashboardServiceSetDefaultDashboardErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AnalyticsV1DashboardServiceSetDefaultDashboardError = AnalyticsV1DashboardServiceSetDefaultDashboardErrors[keyof AnalyticsV1DashboardServiceSetDefaultDashboardErrors];
@@ -10365,9 +10353,9 @@ export type AnalyticsV1EventsServiceTrackEventsData = {
 
 export type AnalyticsV1EventsServiceTrackEventsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AnalyticsV1EventsServiceTrackEventsError = AnalyticsV1EventsServiceTrackEventsErrors[keyof AnalyticsV1EventsServiceTrackEventsErrors];
@@ -10404,9 +10392,9 @@ export type AnalyticsV1FeedsServiceGetFeedStatsData = {
 
 export type AnalyticsV1FeedsServiceGetFeedStatsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AnalyticsV1FeedsServiceGetFeedStatsError = AnalyticsV1FeedsServiceGetFeedStatsErrors[keyof AnalyticsV1FeedsServiceGetFeedStatsErrors];
@@ -10442,9 +10430,9 @@ export type AnalyticsV1FeedsServiceGetTopFeedsData = {
 
 export type AnalyticsV1FeedsServiceGetTopFeedsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AnalyticsV1FeedsServiceGetTopFeedsError = AnalyticsV1FeedsServiceGetTopFeedsErrors[keyof AnalyticsV1FeedsServiceGetTopFeedsErrors];
@@ -10467,9 +10455,9 @@ export type AnalyticsV1FunnelsServiceGetFunnelAnalyticsData = {
 
 export type AnalyticsV1FunnelsServiceGetFunnelAnalyticsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AnalyticsV1FunnelsServiceGetFunnelAnalyticsError = AnalyticsV1FunnelsServiceGetFunnelAnalyticsErrors[keyof AnalyticsV1FunnelsServiceGetFunnelAnalyticsErrors];
@@ -10492,9 +10480,9 @@ export type AnalyticsV1FunnelsServiceGetRetentionAnalyticsData = {
 
 export type AnalyticsV1FunnelsServiceGetRetentionAnalyticsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AnalyticsV1FunnelsServiceGetRetentionAnalyticsError = AnalyticsV1FunnelsServiceGetRetentionAnalyticsErrors[keyof AnalyticsV1FunnelsServiceGetRetentionAnalyticsErrors];
@@ -10535,9 +10523,9 @@ export type AnalyticsV1HeatmapServiceGetVideoHeatmapData = {
 
 export type AnalyticsV1HeatmapServiceGetVideoHeatmapErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AnalyticsV1HeatmapServiceGetVideoHeatmapError = AnalyticsV1HeatmapServiceGetVideoHeatmapErrors[keyof AnalyticsV1HeatmapServiceGetVideoHeatmapErrors];
@@ -10574,9 +10562,9 @@ export type AnalyticsV1HeatmapServiceGetHotSegmentsData = {
 
 export type AnalyticsV1HeatmapServiceGetHotSegmentsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AnalyticsV1HeatmapServiceGetHotSegmentsError = AnalyticsV1HeatmapServiceGetHotSegmentsErrors[keyof AnalyticsV1HeatmapServiceGetHotSegmentsErrors];
@@ -10613,9 +10601,9 @@ export type AnalyticsV1ImagesServiceGetImageStatsData = {
 
 export type AnalyticsV1ImagesServiceGetImageStatsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AnalyticsV1ImagesServiceGetImageStatsError = AnalyticsV1ImagesServiceGetImageStatsErrors[keyof AnalyticsV1ImagesServiceGetImageStatsErrors];
@@ -10651,9 +10639,9 @@ export type AnalyticsV1ImagesServiceGetTopImagesData = {
 
 export type AnalyticsV1ImagesServiceGetTopImagesErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AnalyticsV1ImagesServiceGetTopImagesError = AnalyticsV1ImagesServiceGetTopImagesErrors[keyof AnalyticsV1ImagesServiceGetTopImagesErrors];
@@ -10690,9 +10678,9 @@ export type AnalyticsV1PostsServiceGetPostStatsData = {
 
 export type AnalyticsV1PostsServiceGetPostStatsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AnalyticsV1PostsServiceGetPostStatsError = AnalyticsV1PostsServiceGetPostStatsErrors[keyof AnalyticsV1PostsServiceGetPostStatsErrors];
@@ -10732,9 +10720,9 @@ export type AnalyticsV1PostsServiceGetTopPostsData = {
 
 export type AnalyticsV1PostsServiceGetTopPostsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AnalyticsV1PostsServiceGetTopPostsError = AnalyticsV1PostsServiceGetTopPostsErrors[keyof AnalyticsV1PostsServiceGetTopPostsErrors];
@@ -10757,9 +10745,9 @@ export type AnalyticsV1RealtimeServiceGetRealtimeStatsData = {
 
 export type AnalyticsV1RealtimeServiceGetRealtimeStatsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AnalyticsV1RealtimeServiceGetRealtimeStatsError = AnalyticsV1RealtimeServiceGetRealtimeStatsErrors[keyof AnalyticsV1RealtimeServiceGetRealtimeStatsErrors];
@@ -10795,9 +10783,9 @@ export type AnalyticsV1VideosServiceGetTopVideosData = {
 
 export type AnalyticsV1VideosServiceGetTopVideosErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AnalyticsV1VideosServiceGetTopVideosError = AnalyticsV1VideosServiceGetTopVideosErrors[keyof AnalyticsV1VideosServiceGetTopVideosErrors];
@@ -10834,9 +10822,9 @@ export type AnalyticsV1VideosServiceGetVideoStatsData = {
 
 export type AnalyticsV1VideosServiceGetVideoStatsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AnalyticsV1VideosServiceGetVideoStatsError = AnalyticsV1VideosServiceGetVideoStatsErrors[keyof AnalyticsV1VideosServiceGetVideoStatsErrors];
@@ -10877,9 +10865,9 @@ export type ApikeysV1ApiKeyServiceListApiKeysData = {
 
 export type ApikeysV1ApiKeyServiceListApiKeysErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type ApikeysV1ApiKeyServiceListApiKeysError = ApikeysV1ApiKeyServiceListApiKeysErrors[keyof ApikeysV1ApiKeyServiceListApiKeysErrors];
@@ -10927,9 +10915,9 @@ export type ApikeysV1ApiKeyServiceCreateApiKeyData = {
 
 export type ApikeysV1ApiKeyServiceCreateApiKeyErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type ApikeysV1ApiKeyServiceCreateApiKeyError = ApikeysV1ApiKeyServiceCreateApiKeyErrors[keyof ApikeysV1ApiKeyServiceCreateApiKeyErrors];
@@ -10961,9 +10949,9 @@ export type ApikeysV1ApiKeyServiceDeleteApiKeyData = {
 
 export type ApikeysV1ApiKeyServiceDeleteApiKeyErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type ApikeysV1ApiKeyServiceDeleteApiKeyError = ApikeysV1ApiKeyServiceDeleteApiKeyErrors[keyof ApikeysV1ApiKeyServiceDeleteApiKeyErrors];
@@ -11015,9 +11003,9 @@ export type ApikeysV1ApiKeyServiceUpdateApiKeyData = {
 
 export type ApikeysV1ApiKeyServiceUpdateApiKeyErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type ApikeysV1ApiKeyServiceUpdateApiKeyError = ApikeysV1ApiKeyServiceUpdateApiKeyErrors[keyof ApikeysV1ApiKeyServiceUpdateApiKeyErrors];
@@ -11049,9 +11037,9 @@ export type ApikeysV1ApiKeyServiceRotateApiKeyData = {
 
 export type ApikeysV1ApiKeyServiceRotateApiKeyErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type ApikeysV1ApiKeyServiceRotateApiKeyError = ApikeysV1ApiKeyServiceRotateApiKeyErrors[keyof ApikeysV1ApiKeyServiceRotateApiKeyErrors];
@@ -11074,9 +11062,9 @@ export type AuthV1BlogServiceSendBlogBroadcastData = {
 
 export type AuthV1BlogServiceSendBlogBroadcastErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1BlogServiceSendBlogBroadcastError = AuthV1BlogServiceSendBlogBroadcastErrors[keyof AuthV1BlogServiceSendBlogBroadcastErrors];
@@ -11104,9 +11092,9 @@ export type AuthV1BlogServiceSubscribeBlogData = {
 
 export type AuthV1BlogServiceSubscribeBlogErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1BlogServiceSubscribeBlogError = AuthV1BlogServiceSubscribeBlogErrors[keyof AuthV1BlogServiceSubscribeBlogErrors];
@@ -11134,9 +11122,9 @@ export type AuthV1BlogServiceGetBlogSubscriptionData = {
 
 export type AuthV1BlogServiceGetBlogSubscriptionErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1BlogServiceGetBlogSubscriptionError = AuthV1BlogServiceGetBlogSubscriptionErrors[keyof AuthV1BlogServiceGetBlogSubscriptionErrors];
@@ -11164,9 +11152,9 @@ export type AuthV1BlogServiceUnsubscribeBlogData = {
 
 export type AuthV1BlogServiceUnsubscribeBlogErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1BlogServiceUnsubscribeBlogError = AuthV1BlogServiceUnsubscribeBlogErrors[keyof AuthV1BlogServiceUnsubscribeBlogErrors];
@@ -11189,9 +11177,9 @@ export type AuthV1BlogServiceUnsubscribeBlogByEmailData = {
 
 export type AuthV1BlogServiceUnsubscribeBlogByEmailErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1BlogServiceUnsubscribeBlogByEmailError = AuthV1BlogServiceUnsubscribeBlogByEmailErrors[keyof AuthV1BlogServiceUnsubscribeBlogByEmailErrors];
@@ -11224,9 +11212,9 @@ export type AuthV1DomainServiceRemoveDomainData = {
 
 export type AuthV1DomainServiceRemoveDomainErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1DomainServiceRemoveDomainError = AuthV1DomainServiceRemoveDomainErrors[keyof AuthV1DomainServiceRemoveDomainErrors];
@@ -11259,9 +11247,9 @@ export type AuthV1DomainServiceGetDomainStatusData = {
 
 export type AuthV1DomainServiceGetDomainStatusErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1DomainServiceGetDomainStatusError = AuthV1DomainServiceGetDomainStatusErrors[keyof AuthV1DomainServiceGetDomainStatusErrors];
@@ -11297,9 +11285,9 @@ export type AuthV1DomainServiceCreateDomainVerificationData = {
 
 export type AuthV1DomainServiceCreateDomainVerificationErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1DomainServiceCreateDomainVerificationError = AuthV1DomainServiceCreateDomainVerificationErrors[keyof AuthV1DomainServiceCreateDomainVerificationErrors];
@@ -11332,9 +11320,9 @@ export type AuthV1DomainServiceGetDomainSuggestJoinData = {
 
 export type AuthV1DomainServiceGetDomainSuggestJoinErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1DomainServiceGetDomainSuggestJoinError = AuthV1DomainServiceGetDomainSuggestJoinErrors[keyof AuthV1DomainServiceGetDomainSuggestJoinErrors];
@@ -11370,9 +11358,9 @@ export type AuthV1DomainServiceSetDomainSuggestJoinData = {
 
 export type AuthV1DomainServiceSetDomainSuggestJoinErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1DomainServiceSetDomainSuggestJoinError = AuthV1DomainServiceSetDomainSuggestJoinErrors[keyof AuthV1DomainServiceSetDomainSuggestJoinErrors];
@@ -11405,9 +11393,9 @@ export type AuthV1DomainServiceCheckDomainVerificationData = {
 
 export type AuthV1DomainServiceCheckDomainVerificationErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1DomainServiceCheckDomainVerificationError = AuthV1DomainServiceCheckDomainVerificationErrors[keyof AuthV1DomainServiceCheckDomainVerificationErrors];
@@ -11439,9 +11427,9 @@ export type AuthV1DomainServiceListDomainJoinSuggestionsData = {
 
 export type AuthV1DomainServiceListDomainJoinSuggestionsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1DomainServiceListDomainJoinSuggestionsError = AuthV1DomainServiceListDomainJoinSuggestionsErrors[keyof AuthV1DomainServiceListDomainJoinSuggestionsErrors];
@@ -11464,9 +11452,9 @@ export type AuthV1DomainServiceJoinSuggestedOrganizationData = {
 
 export type AuthV1DomainServiceJoinSuggestedOrganizationErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1DomainServiceJoinSuggestedOrganizationError = AuthV1DomainServiceJoinSuggestedOrganizationErrors[keyof AuthV1DomainServiceJoinSuggestedOrganizationErrors];
@@ -11489,9 +11477,9 @@ export type AuthV1InvitationServiceAcceptInvitationData = {
 
 export type AuthV1InvitationServiceAcceptInvitationErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1InvitationServiceAcceptInvitationError = AuthV1InvitationServiceAcceptInvitationErrors[keyof AuthV1InvitationServiceAcceptInvitationErrors];
@@ -11514,9 +11502,9 @@ export type AuthV1InvitationServiceDeclineInvitationData = {
 
 export type AuthV1InvitationServiceDeclineInvitationErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1InvitationServiceDeclineInvitationError = AuthV1InvitationServiceDeclineInvitationErrors[keyof AuthV1InvitationServiceDeclineInvitationErrors];
@@ -11539,9 +11527,9 @@ export type AuthV1InvitationServiceLookupInvitationData = {
 
 export type AuthV1InvitationServiceLookupInvitationErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1InvitationServiceLookupInvitationError = AuthV1InvitationServiceLookupInvitationErrors[keyof AuthV1InvitationServiceLookupInvitationErrors];
@@ -11584,9 +11572,9 @@ export type AuthV1InvitationServiceListOrganizationInvitationsData = {
 
 export type AuthV1InvitationServiceListOrganizationInvitationsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1InvitationServiceListOrganizationInvitationsError = AuthV1InvitationServiceListOrganizationInvitationsErrors[keyof AuthV1InvitationServiceListOrganizationInvitationsErrors];
@@ -11632,9 +11620,9 @@ export type AuthV1InvitationServiceCreateInvitationData = {
 
 export type AuthV1InvitationServiceCreateInvitationErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1InvitationServiceCreateInvitationError = AuthV1InvitationServiceCreateInvitationErrors[keyof AuthV1InvitationServiceCreateInvitationErrors];
@@ -11666,9 +11654,9 @@ export type AuthV1InvitationServiceRevokeInvitationData = {
 
 export type AuthV1InvitationServiceRevokeInvitationErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1InvitationServiceRevokeInvitationError = AuthV1InvitationServiceRevokeInvitationErrors[keyof AuthV1InvitationServiceRevokeInvitationErrors];
@@ -11700,9 +11688,9 @@ export type AuthV1InvitationServiceResendInvitationData = {
 
 export type AuthV1InvitationServiceResendInvitationErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1InvitationServiceResendInvitationError = AuthV1InvitationServiceResendInvitationErrors[keyof AuthV1InvitationServiceResendInvitationErrors];
@@ -11734,9 +11722,9 @@ export type AuthV1InvitationServiceListMyInvitationsData = {
 
 export type AuthV1InvitationServiceListMyInvitationsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1InvitationServiceListMyInvitationsError = AuthV1InvitationServiceListMyInvitationsErrors[keyof AuthV1InvitationServiceListMyInvitationsErrors];
@@ -11773,9 +11761,9 @@ export type AuthV1MembershipServiceListOrganizationMembersData = {
 
 export type AuthV1MembershipServiceListOrganizationMembersErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1MembershipServiceListOrganizationMembersError = AuthV1MembershipServiceListOrganizationMembersErrors[keyof AuthV1MembershipServiceListOrganizationMembersErrors];
@@ -11808,9 +11796,9 @@ export type AuthV1MembershipServiceLeaveOrganizationData = {
 
 export type AuthV1MembershipServiceLeaveOrganizationErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1MembershipServiceLeaveOrganizationError = AuthV1MembershipServiceLeaveOrganizationErrors[keyof AuthV1MembershipServiceLeaveOrganizationErrors];
@@ -11838,9 +11826,9 @@ export type AuthV1MembershipServiceCheckCurrentMembershipData = {
 
 export type AuthV1MembershipServiceCheckCurrentMembershipErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1MembershipServiceCheckCurrentMembershipError = AuthV1MembershipServiceCheckCurrentMembershipErrors[keyof AuthV1MembershipServiceCheckCurrentMembershipErrors];
@@ -11872,9 +11860,9 @@ export type AuthV1MembershipServiceRemoveMemberData = {
 
 export type AuthV1MembershipServiceRemoveMemberErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1MembershipServiceRemoveMemberError = AuthV1MembershipServiceRemoveMemberErrors[keyof AuthV1MembershipServiceRemoveMemberErrors];
@@ -11922,9 +11910,9 @@ export type AuthV1MembershipServiceUpdateMemberData = {
 
 export type AuthV1MembershipServiceUpdateMemberErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1MembershipServiceUpdateMemberError = AuthV1MembershipServiceUpdateMemberErrors[keyof AuthV1MembershipServiceUpdateMemberErrors];
@@ -11960,9 +11948,9 @@ export type AuthV1MembershipServiceListMembershipsData = {
 
 export type AuthV1MembershipServiceListMembershipsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1MembershipServiceListMembershipsError = AuthV1MembershipServiceListMembershipsErrors[keyof AuthV1MembershipServiceListMembershipsErrors];
@@ -11995,9 +11983,9 @@ export type AuthV1NotificationPreferenceServiceGetNotificationPreferencesData = 
 
 export type AuthV1NotificationPreferenceServiceGetNotificationPreferencesErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1NotificationPreferenceServiceGetNotificationPreferencesError = AuthV1NotificationPreferenceServiceGetNotificationPreferencesErrors[keyof AuthV1NotificationPreferenceServiceGetNotificationPreferencesErrors];
@@ -12037,9 +12025,9 @@ export type AuthV1NotificationPreferenceServiceUpdateNotificationPreferenceData 
 
 export type AuthV1NotificationPreferenceServiceUpdateNotificationPreferenceErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1NotificationPreferenceServiceUpdateNotificationPreferenceError = AuthV1NotificationPreferenceServiceUpdateNotificationPreferenceErrors[keyof AuthV1NotificationPreferenceServiceUpdateNotificationPreferenceErrors];
@@ -12077,9 +12065,9 @@ export type AuthV1OrganizationServiceListOrganizationsData = {
 
 export type AuthV1OrganizationServiceListOrganizationsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1OrganizationServiceListOrganizationsError = AuthV1OrganizationServiceListOrganizationsErrors[keyof AuthV1OrganizationServiceListOrganizationsErrors];
@@ -12102,9 +12090,9 @@ export type AuthV1OrganizationServiceCreateOrganizationData = {
 
 export type AuthV1OrganizationServiceCreateOrganizationErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1OrganizationServiceCreateOrganizationError = AuthV1OrganizationServiceCreateOrganizationErrors[keyof AuthV1OrganizationServiceCreateOrganizationErrors];
@@ -12132,9 +12120,9 @@ export type AuthV1OrganizationServiceGetOrganizationData = {
 
 export type AuthV1OrganizationServiceGetOrganizationErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1OrganizationServiceGetOrganizationError = AuthV1OrganizationServiceGetOrganizationErrors[keyof AuthV1OrganizationServiceGetOrganizationErrors];
@@ -12176,9 +12164,9 @@ export type AuthV1OrganizationServiceUpdateOrganizationData = {
 
 export type AuthV1OrganizationServiceUpdateOrganizationErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1OrganizationServiceUpdateOrganizationError = AuthV1OrganizationServiceUpdateOrganizationErrors[keyof AuthV1OrganizationServiceUpdateOrganizationErrors];
@@ -12215,9 +12203,9 @@ export type AuthV1OrganizationServiceListOrganizationAuditEventsData = {
 
 export type AuthV1OrganizationServiceListOrganizationAuditEventsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1OrganizationServiceListOrganizationAuditEventsError = AuthV1OrganizationServiceListOrganizationAuditEventsErrors[keyof AuthV1OrganizationServiceListOrganizationAuditEventsErrors];
@@ -12245,9 +12233,9 @@ export type AuthV1OrganizationServiceCreateOrganizationAvatarUploadData = {
 
 export type AuthV1OrganizationServiceCreateOrganizationAvatarUploadErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1OrganizationServiceCreateOrganizationAvatarUploadError = AuthV1OrganizationServiceCreateOrganizationAvatarUploadErrors[keyof AuthV1OrganizationServiceCreateOrganizationAvatarUploadErrors];
@@ -12275,9 +12263,9 @@ export type AuthV1OrganizationServiceConvertToTeamOrganizationData = {
 
 export type AuthV1OrganizationServiceConvertToTeamOrganizationErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1OrganizationServiceConvertToTeamOrganizationError = AuthV1OrganizationServiceConvertToTeamOrganizationErrors[keyof AuthV1OrganizationServiceConvertToTeamOrganizationErrors];
@@ -12319,9 +12307,9 @@ export type AuthV1OrganizationServiceTransferOwnershipData = {
 
 export type AuthV1OrganizationServiceTransferOwnershipErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1OrganizationServiceTransferOwnershipError = AuthV1OrganizationServiceTransferOwnershipErrors[keyof AuthV1OrganizationServiceTransferOwnershipErrors];
@@ -12349,9 +12337,9 @@ export type AuthV1OtpServiceRegenerateBackupCodesData = {
 
 export type AuthV1OtpServiceRegenerateBackupCodesErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1OtpServiceRegenerateBackupCodesError = AuthV1OtpServiceRegenerateBackupCodesErrors[keyof AuthV1OtpServiceRegenerateBackupCodesErrors];
@@ -12379,9 +12367,9 @@ export type AuthV1OtpServiceDeleteOtpData = {
 
 export type AuthV1OtpServiceDeleteOtpErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1OtpServiceDeleteOtpError = AuthV1OtpServiceDeleteOtpErrors[keyof AuthV1OtpServiceDeleteOtpErrors];
@@ -12409,9 +12397,9 @@ export type AuthV1OtpServiceSetupOtpData = {
 
 export type AuthV1OtpServiceSetupOtpErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1OtpServiceSetupOtpError = AuthV1OtpServiceSetupOtpErrors[keyof AuthV1OtpServiceSetupOtpErrors];
@@ -12439,9 +12427,9 @@ export type AuthV1OtpServiceGetOtpStatusData = {
 
 export type AuthV1OtpServiceGetOtpStatusErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1OtpServiceGetOtpStatusError = AuthV1OtpServiceGetOtpStatusErrors[keyof AuthV1OtpServiceGetOtpStatusErrors];
@@ -12464,9 +12452,9 @@ export type AuthV1OtpServiceVerifyOtpData = {
 
 export type AuthV1OtpServiceVerifyOtpErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1OtpServiceVerifyOtpError = AuthV1OtpServiceVerifyOtpErrors[keyof AuthV1OtpServiceVerifyOtpErrors];
@@ -12489,9 +12477,9 @@ export type AuthV1OtpServiceVerifyTotpForLoginData = {
 
 export type AuthV1OtpServiceVerifyTotpForLoginErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1OtpServiceVerifyTotpForLoginError = AuthV1OtpServiceVerifyTotpForLoginErrors[keyof AuthV1OtpServiceVerifyTotpForLoginErrors];
@@ -12514,9 +12502,9 @@ export type AuthV1PasskeyServicePasskeyLoginBeginData = {
 
 export type AuthV1PasskeyServicePasskeyLoginBeginErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1PasskeyServicePasskeyLoginBeginError = AuthV1PasskeyServicePasskeyLoginBeginErrors[keyof AuthV1PasskeyServicePasskeyLoginBeginErrors];
@@ -12539,9 +12527,9 @@ export type AuthV1PasskeyServicePasskeyLoginFinishData = {
 
 export type AuthV1PasskeyServicePasskeyLoginFinishErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1PasskeyServicePasskeyLoginFinishError = AuthV1PasskeyServicePasskeyLoginFinishErrors[keyof AuthV1PasskeyServicePasskeyLoginFinishErrors];
@@ -12569,9 +12557,9 @@ export type AuthV1PasskeyServiceListPasskeysData = {
 
 export type AuthV1PasskeyServiceListPasskeysErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1PasskeyServiceListPasskeysError = AuthV1PasskeyServiceListPasskeysErrors[keyof AuthV1PasskeyServiceListPasskeysErrors];
@@ -12594,9 +12582,9 @@ export type AuthV1PasskeyServicePasskeyRegisterBeginData = {
 
 export type AuthV1PasskeyServicePasskeyRegisterBeginErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1PasskeyServicePasskeyRegisterBeginError = AuthV1PasskeyServicePasskeyRegisterBeginErrors[keyof AuthV1PasskeyServicePasskeyRegisterBeginErrors];
@@ -12619,9 +12607,9 @@ export type AuthV1PasskeyServicePasskeyRegisterFinishData = {
 
 export type AuthV1PasskeyServicePasskeyRegisterFinishErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1PasskeyServicePasskeyRegisterFinishError = AuthV1PasskeyServicePasskeyRegisterFinishErrors[keyof AuthV1PasskeyServicePasskeyRegisterFinishErrors];
@@ -12654,9 +12642,9 @@ export type AuthV1PasskeyServiceDeletePasskeyData = {
 
 export type AuthV1PasskeyServiceDeletePasskeyErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1PasskeyServiceDeletePasskeyError = AuthV1PasskeyServiceDeletePasskeyErrors[keyof AuthV1PasskeyServiceDeletePasskeyErrors];
@@ -12696,9 +12684,9 @@ export type AuthV1PasskeyServiceRenamePasskeyData = {
 
 export type AuthV1PasskeyServiceRenamePasskeyErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1PasskeyServiceRenamePasskeyError = AuthV1PasskeyServiceRenamePasskeyErrors[keyof AuthV1PasskeyServiceRenamePasskeyErrors];
@@ -12721,9 +12709,9 @@ export type AuthV1PasskeyServiceVerifyPasskeyForLoginData = {
 
 export type AuthV1PasskeyServiceVerifyPasskeyForLoginErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1PasskeyServiceVerifyPasskeyForLoginError = AuthV1PasskeyServiceVerifyPasskeyForLoginErrors[keyof AuthV1PasskeyServiceVerifyPasskeyForLoginErrors];
@@ -12755,9 +12743,9 @@ export type AuthV1PolicyServiceListUserPoliciesData = {
 
 export type AuthV1PolicyServiceListUserPoliciesErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1PolicyServiceListUserPoliciesError = AuthV1PolicyServiceListUserPoliciesErrors[keyof AuthV1PolicyServiceListUserPoliciesErrors];
@@ -12790,9 +12778,9 @@ export type AuthV1PolicyServiceListPoliciesData = {
 
 export type AuthV1PolicyServiceListPoliciesErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1PolicyServiceListPoliciesError = AuthV1PolicyServiceListPoliciesErrors[keyof AuthV1PolicyServiceListPoliciesErrors];
@@ -12836,9 +12824,9 @@ export type AuthV1PolicyServiceCreatePolicyData = {
 
 export type AuthV1PolicyServiceCreatePolicyErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1PolicyServiceCreatePolicyError = AuthV1PolicyServiceCreatePolicyErrors[keyof AuthV1PolicyServiceCreatePolicyErrors];
@@ -12870,9 +12858,9 @@ export type AuthV1PolicyServiceDetachPolicyData = {
 
 export type AuthV1PolicyServiceDetachPolicyErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1PolicyServiceDetachPolicyError = AuthV1PolicyServiceDetachPolicyErrors[keyof AuthV1PolicyServiceDetachPolicyErrors];
@@ -12913,9 +12901,9 @@ export type AuthV1PolicyServiceListPermissionRegistryData = {
 
 export type AuthV1PolicyServiceListPermissionRegistryErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1PolicyServiceListPermissionRegistryError = AuthV1PolicyServiceListPermissionRegistryErrors[keyof AuthV1PolicyServiceListPermissionRegistryErrors];
@@ -12947,9 +12935,9 @@ export type AuthV1PolicyServiceDeletePolicyData = {
 
 export type AuthV1PolicyServiceDeletePolicyErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1PolicyServiceDeletePolicyError = AuthV1PolicyServiceDeletePolicyErrors[keyof AuthV1PolicyServiceDeletePolicyErrors];
@@ -12981,9 +12969,9 @@ export type AuthV1PolicyServiceGetPolicyData = {
 
 export type AuthV1PolicyServiceGetPolicyErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1PolicyServiceGetPolicyError = AuthV1PolicyServiceGetPolicyErrors[keyof AuthV1PolicyServiceGetPolicyErrors];
@@ -13031,9 +13019,9 @@ export type AuthV1PolicyServiceUpdatePolicyData = {
 
 export type AuthV1PolicyServiceUpdatePolicyErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1PolicyServiceUpdatePolicyError = AuthV1PolicyServiceUpdatePolicyErrors[keyof AuthV1PolicyServiceUpdatePolicyErrors];
@@ -13065,9 +13053,9 @@ export type AuthV1PolicyServiceListPolicyAttachmentsData = {
 
 export type AuthV1PolicyServiceListPolicyAttachmentsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1PolicyServiceListPolicyAttachmentsError = AuthV1PolicyServiceListPolicyAttachmentsErrors[keyof AuthV1PolicyServiceListPolicyAttachmentsErrors];
@@ -13111,9 +13099,9 @@ export type AuthV1PolicyServiceAttachPolicyData = {
 
 export type AuthV1PolicyServiceAttachPolicyErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1PolicyServiceAttachPolicyError = AuthV1PolicyServiceAttachPolicyErrors[keyof AuthV1PolicyServiceAttachPolicyErrors];
@@ -13141,9 +13129,9 @@ export type AuthV1ProvidersServiceListProvidersData = {
 
 export type AuthV1ProvidersServiceListProvidersErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1ProvidersServiceListProvidersError = AuthV1ProvidersServiceListProvidersErrors[keyof AuthV1ProvidersServiceListProvidersErrors];
@@ -13166,9 +13154,9 @@ export type AuthV1ProvidersServiceConnectProviderData = {
 
 export type AuthV1ProvidersServiceConnectProviderErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1ProvidersServiceConnectProviderError = AuthV1ProvidersServiceConnectProviderErrors[keyof AuthV1ProvidersServiceConnectProviderErrors];
@@ -13201,9 +13189,9 @@ export type AuthV1ProvidersServiceDisconnectProviderData = {
 
 export type AuthV1ProvidersServiceDisconnectProviderErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1ProvidersServiceDisconnectProviderError = AuthV1ProvidersServiceDisconnectProviderErrors[keyof AuthV1ProvidersServiceDisconnectProviderErrors];
@@ -13226,9 +13214,9 @@ export type AuthV1EmailServiceVerifyEmailData = {
 
 export type AuthV1EmailServiceVerifyEmailErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1EmailServiceVerifyEmailError = AuthV1EmailServiceVerifyEmailErrors[keyof AuthV1EmailServiceVerifyEmailErrors];
@@ -13251,9 +13239,9 @@ export type AuthV1EmailServiceResendVerificationData = {
 
 export type AuthV1EmailServiceResendVerificationErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1EmailServiceResendVerificationError = AuthV1EmailServiceResendVerificationErrors[keyof AuthV1EmailServiceResendVerificationErrors];
@@ -13276,9 +13264,9 @@ export type AuthV1EmailServiceLoginData = {
 
 export type AuthV1EmailServiceLoginErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1EmailServiceLoginError = AuthV1EmailServiceLoginErrors[keyof AuthV1EmailServiceLoginErrors];
@@ -13301,9 +13289,9 @@ export type AuthV1TokenServiceLogoutData = {
 
 export type AuthV1TokenServiceLogoutErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1TokenServiceLogoutError = AuthV1TokenServiceLogoutErrors[keyof AuthV1TokenServiceLogoutErrors];
@@ -13326,9 +13314,9 @@ export type AuthV1TokenServiceLogoutAllData = {
 
 export type AuthV1TokenServiceLogoutAllErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1TokenServiceLogoutAllError = AuthV1TokenServiceLogoutAllErrors[keyof AuthV1TokenServiceLogoutAllErrors];
@@ -13351,9 +13339,9 @@ export type AuthV1EmailServiceSendPasswordResetData = {
 
 export type AuthV1EmailServiceSendPasswordResetErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1EmailServiceSendPasswordResetError = AuthV1EmailServiceSendPasswordResetErrors[keyof AuthV1EmailServiceSendPasswordResetErrors];
@@ -13376,9 +13364,9 @@ export type AuthV1EmailServiceResetPasswordData = {
 
 export type AuthV1EmailServiceResetPasswordErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1EmailServiceResetPasswordError = AuthV1EmailServiceResetPasswordErrors[keyof AuthV1EmailServiceResetPasswordErrors];
@@ -13401,9 +13389,9 @@ export type AuthV1EmailServiceRegisterData = {
 
 export type AuthV1EmailServiceRegisterErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1EmailServiceRegisterError = AuthV1EmailServiceRegisterErrors[keyof AuthV1EmailServiceRegisterErrors];
@@ -13426,9 +13414,9 @@ export type AuthV1TokenServiceListSignInsData = {
 
 export type AuthV1TokenServiceListSignInsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1TokenServiceListSignInsError = AuthV1TokenServiceListSignInsErrors[keyof AuthV1TokenServiceListSignInsErrors];
@@ -13451,9 +13439,9 @@ export type AuthV1TokenServiceRevokeOtherSignInsData = {
 
 export type AuthV1TokenServiceRevokeOtherSignInsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1TokenServiceRevokeOtherSignInsError = AuthV1TokenServiceRevokeOtherSignInsErrors[keyof AuthV1TokenServiceRevokeOtherSignInsErrors];
@@ -13481,9 +13469,9 @@ export type AuthV1TokenServiceRevokeSignInData = {
 
 export type AuthV1TokenServiceRevokeSignInErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1TokenServiceRevokeSignInError = AuthV1TokenServiceRevokeSignInErrors[keyof AuthV1TokenServiceRevokeSignInErrors];
@@ -13506,9 +13494,9 @@ export type AuthV1TokenServiceRefreshTokenData = {
 
 export type AuthV1TokenServiceRefreshTokenErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1TokenServiceRefreshTokenError = AuthV1TokenServiceRefreshTokenErrors[keyof AuthV1TokenServiceRefreshTokenErrors];
@@ -13531,9 +13519,9 @@ export type AuthV1EmailServiceAddEmailData = {
 
 export type AuthV1EmailServiceAddEmailErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1EmailServiceAddEmailError = AuthV1EmailServiceAddEmailErrors[keyof AuthV1EmailServiceAddEmailErrors];
@@ -13556,9 +13544,9 @@ export type AuthV1EmailServiceInitiateEmailChangeData = {
 
 export type AuthV1EmailServiceInitiateEmailChangeErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1EmailServiceInitiateEmailChangeError = AuthV1EmailServiceInitiateEmailChangeErrors[keyof AuthV1EmailServiceInitiateEmailChangeErrors];
@@ -13586,9 +13574,9 @@ export type AuthV1EmailServiceGetUserEmailStatusData = {
 
 export type AuthV1EmailServiceGetUserEmailStatusErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1EmailServiceGetUserEmailStatusError = AuthV1EmailServiceGetUserEmailStatusErrors[keyof AuthV1EmailServiceGetUserEmailStatusErrors];
@@ -13611,9 +13599,9 @@ export type AuthV1EmailServiceVerifyEmailChangeData = {
 
 export type AuthV1EmailServiceVerifyEmailChangeErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1EmailServiceVerifyEmailChangeError = AuthV1EmailServiceVerifyEmailChangeErrors[keyof AuthV1EmailServiceVerifyEmailChangeErrors];
@@ -13641,9 +13629,9 @@ export type AuthV1UserServiceGetUserInfoData = {
 
 export type AuthV1UserServiceGetUserInfoErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1UserServiceGetUserInfoError = AuthV1UserServiceGetUserInfoErrors[keyof AuthV1UserServiceGetUserInfoErrors];
@@ -13671,9 +13659,9 @@ export type AuthV1UserServiceGetUserData = {
 
 export type AuthV1UserServiceGetUserErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1UserServiceGetUserError = AuthV1UserServiceGetUserErrors[keyof AuthV1UserServiceGetUserErrors];
@@ -13696,9 +13684,9 @@ export type AuthV1UserServiceUpdateUserAvatarData = {
 
 export type AuthV1UserServiceUpdateUserAvatarErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1UserServiceUpdateUserAvatarError = AuthV1UserServiceUpdateUserAvatarErrors[keyof AuthV1UserServiceUpdateUserAvatarErrors];
@@ -13726,9 +13714,9 @@ export type AuthV1UserServiceCreateAvatarUploadData = {
 
 export type AuthV1UserServiceCreateAvatarUploadErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1UserServiceCreateAvatarUploadError = AuthV1UserServiceCreateAvatarUploadErrors[keyof AuthV1UserServiceCreateAvatarUploadErrors];
@@ -13760,9 +13748,9 @@ export type AuthV1UserServiceGetUserDeletionPreviewData = {
 
 export type AuthV1UserServiceGetUserDeletionPreviewErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1UserServiceGetUserDeletionPreviewError = AuthV1UserServiceGetUserDeletionPreviewErrors[keyof AuthV1UserServiceGetUserDeletionPreviewErrors];
@@ -13785,9 +13773,9 @@ export type AuthV1UserServiceUpdateNameData = {
 
 export type AuthV1UserServiceUpdateNameErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1UserServiceUpdateNameError = AuthV1UserServiceUpdateNameErrors[keyof AuthV1UserServiceUpdateNameErrors];
@@ -13810,9 +13798,9 @@ export type AuthV1UserServiceUpdateUsernameData = {
 
 export type AuthV1UserServiceUpdateUsernameErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type AuthV1UserServiceUpdateUsernameError = AuthV1UserServiceUpdateUsernameErrors[keyof AuthV1UserServiceUpdateUsernameErrors];
@@ -13852,9 +13840,9 @@ export type BillingV1InvoiceServiceListInvoicesData = {
 
 export type BillingV1InvoiceServiceListInvoicesErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type BillingV1InvoiceServiceListInvoicesError = BillingV1InvoiceServiceListInvoicesErrors[keyof BillingV1InvoiceServiceListInvoicesErrors];
@@ -13890,9 +13878,9 @@ export type BillingV1InvoiceServiceUpdateInvoiceStatusData = {
 
 export type BillingV1InvoiceServiceUpdateInvoiceStatusErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type BillingV1InvoiceServiceUpdateInvoiceStatusError = BillingV1InvoiceServiceUpdateInvoiceStatusErrors[keyof BillingV1InvoiceServiceUpdateInvoiceStatusErrors];
@@ -13920,9 +13908,9 @@ export type BillingV1PaymentServiceGetBillingAddressData = {
 
 export type BillingV1PaymentServiceGetBillingAddressErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type BillingV1PaymentServiceGetBillingAddressError = BillingV1PaymentServiceGetBillingAddressErrors[keyof BillingV1PaymentServiceGetBillingAddressErrors];
@@ -13945,9 +13933,9 @@ export type BillingV1PaymentServiceUpsertBillingAddressData = {
 
 export type BillingV1PaymentServiceUpsertBillingAddressErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type BillingV1PaymentServiceUpsertBillingAddressError = BillingV1PaymentServiceUpsertBillingAddressErrors[keyof BillingV1PaymentServiceUpsertBillingAddressErrors];
@@ -13970,9 +13958,9 @@ export type BillingV1PaymentServiceCreateCheckoutSessionData = {
 
 export type BillingV1PaymentServiceCreateCheckoutSessionErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type BillingV1PaymentServiceCreateCheckoutSessionError = BillingV1PaymentServiceCreateCheckoutSessionErrors[keyof BillingV1PaymentServiceCreateCheckoutSessionErrors];
@@ -13995,9 +13983,9 @@ export type BillingV1PaymentServiceGetBillingConfigData = {
 
 export type BillingV1PaymentServiceGetBillingConfigErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type BillingV1PaymentServiceGetBillingConfigError = BillingV1PaymentServiceGetBillingConfigErrors[keyof BillingV1PaymentServiceGetBillingConfigErrors];
@@ -14029,9 +14017,9 @@ export type BillingV1PaymentServiceListPaymentMethodsData = {
 
 export type BillingV1PaymentServiceListPaymentMethodsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type BillingV1PaymentServiceListPaymentMethodsError = BillingV1PaymentServiceListPaymentMethodsErrors[keyof BillingV1PaymentServiceListPaymentMethodsErrors];
@@ -14054,9 +14042,9 @@ export type BillingV1PaymentServiceUpsertPaymentMethodData = {
 
 export type BillingV1PaymentServiceUpsertPaymentMethodErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type BillingV1PaymentServiceUpsertPaymentMethodError = BillingV1PaymentServiceUpsertPaymentMethodErrors[keyof BillingV1PaymentServiceUpsertPaymentMethodErrors];
@@ -14084,9 +14072,9 @@ export type BillingV1PaymentServiceGetPaymentMethodFromPaymentIntentData = {
 
 export type BillingV1PaymentServiceGetPaymentMethodFromPaymentIntentErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type BillingV1PaymentServiceGetPaymentMethodFromPaymentIntentError = BillingV1PaymentServiceGetPaymentMethodFromPaymentIntentErrors[keyof BillingV1PaymentServiceGetPaymentMethodFromPaymentIntentErrors];
@@ -14114,9 +14102,9 @@ export type BillingV1PaymentServiceGetPaymentMethodFromSetupIntentData = {
 
 export type BillingV1PaymentServiceGetPaymentMethodFromSetupIntentErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type BillingV1PaymentServiceGetPaymentMethodFromSetupIntentError = BillingV1PaymentServiceGetPaymentMethodFromSetupIntentErrors[keyof BillingV1PaymentServiceGetPaymentMethodFromSetupIntentErrors];
@@ -14149,9 +14137,9 @@ export type BillingV1PaymentServiceDeletePaymentMethodData = {
 
 export type BillingV1PaymentServiceDeletePaymentMethodErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type BillingV1PaymentServiceDeletePaymentMethodError = BillingV1PaymentServiceDeletePaymentMethodErrors[keyof BillingV1PaymentServiceDeletePaymentMethodErrors];
@@ -14174,9 +14162,9 @@ export type BillingV1PaymentServiceCreateSetupIntentData = {
 
 export type BillingV1PaymentServiceCreateSetupIntentErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type BillingV1PaymentServiceCreateSetupIntentError = BillingV1PaymentServiceCreateSetupIntentErrors[keyof BillingV1PaymentServiceCreateSetupIntentErrors];
@@ -14199,9 +14187,9 @@ export type BillingV1PaymentServiceUpgradeSubscriptionData = {
 
 export type BillingV1PaymentServiceUpgradeSubscriptionErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type BillingV1PaymentServiceUpgradeSubscriptionError = BillingV1PaymentServiceUpgradeSubscriptionErrors[keyof BillingV1PaymentServiceUpgradeSubscriptionErrors];
@@ -14224,9 +14212,9 @@ export type BillingV1PaymentServiceCalculateTaxData = {
 
 export type BillingV1PaymentServiceCalculateTaxErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type BillingV1PaymentServiceCalculateTaxError = BillingV1PaymentServiceCalculateTaxErrors[keyof BillingV1PaymentServiceCalculateTaxErrors];
@@ -14249,9 +14237,9 @@ export type BillingV1PaymentServiceCalculateGenericTaxData = {
 
 export type BillingV1PaymentServiceCalculateGenericTaxErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type BillingV1PaymentServiceCalculateGenericTaxError = BillingV1PaymentServiceCalculateGenericTaxErrors[keyof BillingV1PaymentServiceCalculateGenericTaxErrors];
@@ -14287,9 +14275,9 @@ export type BillingV1PlanServiceListPlansData = {
 
 export type BillingV1PlanServiceListPlansErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type BillingV1PlanServiceListPlansError = BillingV1PlanServiceListPlansErrors[keyof BillingV1PlanServiceListPlansErrors];
@@ -14320,9 +14308,9 @@ export type BillingV1PlanServiceGetPlanData = {
 
 export type BillingV1PlanServiceGetPlanErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type BillingV1PlanServiceGetPlanError = BillingV1PlanServiceGetPlanErrors[keyof BillingV1PlanServiceGetPlanErrors];
@@ -14345,9 +14333,9 @@ export type BillingV1SalesServiceContactSalesData = {
 
 export type BillingV1SalesServiceContactSalesErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type BillingV1SalesServiceContactSalesError = BillingV1SalesServiceContactSalesErrors[keyof BillingV1SalesServiceContactSalesErrors];
@@ -14375,9 +14363,9 @@ export type BillingV1SubscriptionServiceGetSubscriptionData = {
 
 export type BillingV1SubscriptionServiceGetSubscriptionErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type BillingV1SubscriptionServiceGetSubscriptionError = BillingV1SubscriptionServiceGetSubscriptionErrors[keyof BillingV1SubscriptionServiceGetSubscriptionErrors];
@@ -14400,9 +14388,9 @@ export type BillingV1SubscriptionServiceCreateSubscriptionData = {
 
 export type BillingV1SubscriptionServiceCreateSubscriptionErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type BillingV1SubscriptionServiceCreateSubscriptionError = BillingV1SubscriptionServiceCreateSubscriptionErrors[keyof BillingV1SubscriptionServiceCreateSubscriptionErrors];
@@ -14430,9 +14418,9 @@ export type BillingV1SubscriptionServiceCancelSubscriptionData = {
 
 export type BillingV1SubscriptionServiceCancelSubscriptionErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type BillingV1SubscriptionServiceCancelSubscriptionError = BillingV1SubscriptionServiceCancelSubscriptionErrors[keyof BillingV1SubscriptionServiceCancelSubscriptionErrors];
@@ -14472,9 +14460,9 @@ export type BillingV1SubscriptionServiceGetSubscriptionHistoryData = {
 
 export type BillingV1SubscriptionServiceGetSubscriptionHistoryErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type BillingV1SubscriptionServiceGetSubscriptionHistoryError = BillingV1SubscriptionServiceGetSubscriptionHistoryErrors[keyof BillingV1SubscriptionServiceGetSubscriptionHistoryErrors];
@@ -14502,9 +14490,9 @@ export type BillingV1SubscriptionServiceReactivateSubscriptionData = {
 
 export type BillingV1SubscriptionServiceReactivateSubscriptionErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type BillingV1SubscriptionServiceReactivateSubscriptionError = BillingV1SubscriptionServiceReactivateSubscriptionErrors[keyof BillingV1SubscriptionServiceReactivateSubscriptionErrors];
@@ -14532,9 +14520,9 @@ export type BillingV1UsageServiceGetBandwidthUsageData = {
 
 export type BillingV1UsageServiceGetBandwidthUsageErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type BillingV1UsageServiceGetBandwidthUsageError = BillingV1UsageServiceGetBandwidthUsageErrors[keyof BillingV1UsageServiceGetBandwidthUsageErrors];
@@ -14566,9 +14554,9 @@ export type BillingV1UsageServiceGetBandwidthUsageHistoryData = {
 
 export type BillingV1UsageServiceGetBandwidthUsageHistoryErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type BillingV1UsageServiceGetBandwidthUsageHistoryError = BillingV1UsageServiceGetBandwidthUsageHistoryErrors[keyof BillingV1UsageServiceGetBandwidthUsageHistoryErrors];
@@ -14596,9 +14584,9 @@ export type BillingV1UsageServiceRefreshBandwidthUsageData = {
 
 export type BillingV1UsageServiceRefreshBandwidthUsageErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type BillingV1UsageServiceRefreshBandwidthUsageError = BillingV1UsageServiceRefreshBandwidthUsageErrors[keyof BillingV1UsageServiceRefreshBandwidthUsageErrors];
@@ -14626,9 +14614,9 @@ export type BillingV1UsageServiceGetStorageUsageData = {
 
 export type BillingV1UsageServiceGetStorageUsageErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type BillingV1UsageServiceGetStorageUsageError = BillingV1UsageServiceGetStorageUsageErrors[keyof BillingV1UsageServiceGetStorageUsageErrors];
@@ -14660,9 +14648,9 @@ export type BillingV1UsageServiceGetStorageUsageHistoryData = {
 
 export type BillingV1UsageServiceGetStorageUsageHistoryErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type BillingV1UsageServiceGetStorageUsageHistoryError = BillingV1UsageServiceGetStorageUsageHistoryErrors[keyof BillingV1UsageServiceGetStorageUsageHistoryErrors];
@@ -14690,9 +14678,9 @@ export type BillingV1UsageServiceRefreshStorageUsageData = {
 
 export type BillingV1UsageServiceRefreshStorageUsageErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type BillingV1UsageServiceRefreshStorageUsageError = BillingV1UsageServiceRefreshStorageUsageErrors[keyof BillingV1UsageServiceRefreshStorageUsageErrors];
@@ -14732,9 +14720,9 @@ export type ClientauthV1ClientCredentialServiceListClientCredentialsData = {
 
 export type ClientauthV1ClientCredentialServiceListClientCredentialsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type ClientauthV1ClientCredentialServiceListClientCredentialsError = ClientauthV1ClientCredentialServiceListClientCredentialsErrors[keyof ClientauthV1ClientCredentialServiceListClientCredentialsErrors];
@@ -14757,9 +14745,9 @@ export type ClientauthV1ClientCredentialServiceCreateClientCredentialData = {
 
 export type ClientauthV1ClientCredentialServiceCreateClientCredentialErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type ClientauthV1ClientCredentialServiceCreateClientCredentialError = ClientauthV1ClientCredentialServiceCreateClientCredentialErrors[keyof ClientauthV1ClientCredentialServiceCreateClientCredentialErrors];
@@ -14792,9 +14780,9 @@ export type ClientauthV1ClientCredentialServiceRevokeClientCredentialData = {
 
 export type ClientauthV1ClientCredentialServiceRevokeClientCredentialErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type ClientauthV1ClientCredentialServiceRevokeClientCredentialError = ClientauthV1ClientCredentialServiceRevokeClientCredentialErrors[keyof ClientauthV1ClientCredentialServiceRevokeClientCredentialErrors];
@@ -14817,9 +14805,9 @@ export type ClientauthV1ClientCredentialServiceMintClientTokenData = {
 
 export type ClientauthV1ClientCredentialServiceMintClientTokenErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type ClientauthV1ClientCredentialServiceMintClientTokenError = ClientauthV1ClientCredentialServiceMintClientTokenErrors[keyof ClientauthV1ClientCredentialServiceMintClientTokenErrors];
@@ -14860,9 +14848,9 @@ export type FeedsV1FeedServiceListFeedsData = {
 
 export type FeedsV1FeedServiceListFeedsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type FeedsV1FeedServiceListFeedsError = FeedsV1FeedServiceListFeedsErrors[keyof FeedsV1FeedServiceListFeedsErrors];
@@ -14922,9 +14910,9 @@ export type FeedsV1FeedServiceCreateFeedData = {
 
 export type FeedsV1FeedServiceCreateFeedErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type FeedsV1FeedServiceCreateFeedError = FeedsV1FeedServiceCreateFeedErrors[keyof FeedsV1FeedServiceCreateFeedErrors];
@@ -14956,9 +14944,9 @@ export type FeedsV1FeedServiceDeleteFeedData = {
 
 export type FeedsV1FeedServiceDeleteFeedErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type FeedsV1FeedServiceDeleteFeedError = FeedsV1FeedServiceDeleteFeedErrors[keyof FeedsV1FeedServiceDeleteFeedErrors];
@@ -14990,9 +14978,9 @@ export type FeedsV1FeedServiceGetFeedData = {
 
 export type FeedsV1FeedServiceGetFeedErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type FeedsV1FeedServiceGetFeedError = FeedsV1FeedServiceGetFeedErrors[keyof FeedsV1FeedServiceGetFeedErrors];
@@ -15056,9 +15044,9 @@ export type FeedsV1FeedServiceUpdateFeedData = {
 
 export type FeedsV1FeedServiceUpdateFeedErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type FeedsV1FeedServiceUpdateFeedError = FeedsV1FeedServiceUpdateFeedErrors[keyof FeedsV1FeedServiceUpdateFeedErrors];
@@ -15086,9 +15074,9 @@ export type ImagesV1ImageServiceGetImageData = {
 
 export type ImagesV1ImageServiceGetImageErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type ImagesV1ImageServiceGetImageError = ImagesV1ImageServiceGetImageErrors[keyof ImagesV1ImageServiceGetImageErrors];
@@ -15137,9 +15125,9 @@ export type ImagesV1ImageServiceListImagesData = {
 
 export type ImagesV1ImageServiceListImagesErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type ImagesV1ImageServiceListImagesError = ImagesV1ImageServiceListImagesErrors[keyof ImagesV1ImageServiceListImagesErrors];
@@ -15179,9 +15167,9 @@ export type ImagesV1ImageServiceCreateImageUploadData = {
 
 export type ImagesV1ImageServiceCreateImageUploadErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type ImagesV1ImageServiceCreateImageUploadError = ImagesV1ImageServiceCreateImageUploadErrors[keyof ImagesV1ImageServiceCreateImageUploadErrors];
@@ -15213,9 +15201,9 @@ export type ImagesV1ImageServiceDeleteImageData = {
 
 export type ImagesV1ImageServiceDeleteImageErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type ImagesV1ImageServiceDeleteImageError = ImagesV1ImageServiceDeleteImageErrors[keyof ImagesV1ImageServiceDeleteImageErrors];
@@ -15255,9 +15243,9 @@ export type ImagesV1ImageServiceUpdateImageVisibilityData = {
 
 export type ImagesV1ImageServiceUpdateImageVisibilityErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type ImagesV1ImageServiceUpdateImageVisibilityError = ImagesV1ImageServiceUpdateImageVisibilityErrors[keyof ImagesV1ImageServiceUpdateImageVisibilityErrors];
@@ -15280,9 +15268,9 @@ export type PlatformauthV1PlatformAuthServiceRefreshPlatformTokenData = {
 
 export type PlatformauthV1PlatformAuthServiceRefreshPlatformTokenErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type PlatformauthV1PlatformAuthServiceRefreshPlatformTokenError = PlatformauthV1PlatformAuthServiceRefreshPlatformTokenErrors[keyof PlatformauthV1PlatformAuthServiceRefreshPlatformTokenErrors];
@@ -15305,9 +15293,9 @@ export type PlatformauthV1PlatformAuthServiceExchangeApiKeyData = {
 
 export type PlatformauthV1PlatformAuthServiceExchangeApiKeyErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type PlatformauthV1PlatformAuthServiceExchangeApiKeyError = PlatformauthV1PlatformAuthServiceExchangeApiKeyErrors[keyof PlatformauthV1PlatformAuthServiceExchangeApiKeyErrors];
@@ -15356,9 +15344,9 @@ export type PostsV1PostServiceListPosts3Data = {
 
 export type PostsV1PostServiceListPosts3Errors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type PostsV1PostServiceListPosts3Error = PostsV1PostServiceListPosts3Errors[keyof PostsV1PostServiceListPosts3Errors];
@@ -15407,9 +15395,9 @@ export type PostsV1PostServiceListPosts4Data = {
 
 export type PostsV1PostServiceListPosts4Errors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type PostsV1PostServiceListPosts4Error = PostsV1PostServiceListPosts4Errors[keyof PostsV1PostServiceListPosts4Errors];
@@ -15449,9 +15437,9 @@ export type PostsV1PostServiceGetPost3Data = {
 
 export type PostsV1PostServiceGetPost3Errors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type PostsV1PostServiceGetPost3Error = PostsV1PostServiceGetPost3Errors[keyof PostsV1PostServiceGetPost3Errors];
@@ -15500,9 +15488,9 @@ export type PostsV1PostServiceListPostsData = {
 
 export type PostsV1PostServiceListPostsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type PostsV1PostServiceListPostsError = PostsV1PostServiceListPostsErrors[keyof PostsV1PostServiceListPostsErrors];
@@ -15564,9 +15552,9 @@ export type PostsV1PostServiceCreatePostData = {
 
 export type PostsV1PostServiceCreatePostErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type PostsV1PostServiceCreatePostError = PostsV1PostServiceCreatePostErrors[keyof PostsV1PostServiceCreatePostErrors];
@@ -15615,9 +15603,9 @@ export type PostsV1PostServiceListPosts2Data = {
 
 export type PostsV1PostServiceListPosts2Errors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type PostsV1PostServiceListPosts2Error = PostsV1PostServiceListPosts2Errors[keyof PostsV1PostServiceListPosts2Errors];
@@ -15677,9 +15665,9 @@ export type PostsV1PostServiceCreatePostUploadData = {
 
 export type PostsV1PostServiceCreatePostUploadErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type PostsV1PostServiceCreatePostUploadError = PostsV1PostServiceCreatePostUploadErrors[keyof PostsV1PostServiceCreatePostUploadErrors];
@@ -15718,9 +15706,9 @@ export type PostsV1PostServiceDeletePost2Data = {
 
 export type PostsV1PostServiceDeletePost2Errors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type PostsV1PostServiceDeletePost2Error = PostsV1PostServiceDeletePost2Errors[keyof PostsV1PostServiceDeletePost2Errors];
@@ -15759,9 +15747,9 @@ export type PostsV1PostServiceGetPost2Data = {
 
 export type PostsV1PostServiceGetPost2Errors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type PostsV1PostServiceGetPost2Error = PostsV1PostServiceGetPost2Errors[keyof PostsV1PostServiceGetPost2Errors];
@@ -15801,9 +15789,9 @@ export type PostsV1PostServiceDeletePostData = {
 
 export type PostsV1PostServiceDeletePostErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type PostsV1PostServiceDeletePostError = PostsV1PostServiceDeletePostErrors[keyof PostsV1PostServiceDeletePostErrors];
@@ -15843,9 +15831,9 @@ export type PostsV1PostServiceGetPostData = {
 
 export type PostsV1PostServiceGetPostErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type PostsV1PostServiceGetPostError = PostsV1PostServiceGetPostErrors[keyof PostsV1PostServiceGetPostErrors];
@@ -15873,9 +15861,9 @@ export type ProjectV1ProjectServiceListProjectsData = {
 
 export type ProjectV1ProjectServiceListProjectsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type ProjectV1ProjectServiceListProjectsError = ProjectV1ProjectServiceListProjectsErrors[keyof ProjectV1ProjectServiceListProjectsErrors];
@@ -15919,9 +15907,9 @@ export type ProjectV1ProjectServiceCreateProjectData = {
 
 export type ProjectV1ProjectServiceCreateProjectErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type ProjectV1ProjectServiceCreateProjectError = ProjectV1ProjectServiceCreateProjectErrors[keyof ProjectV1ProjectServiceCreateProjectErrors];
@@ -15953,9 +15941,9 @@ export type ProjectV1ProjectServiceDeleteProjectData = {
 
 export type ProjectV1ProjectServiceDeleteProjectErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type ProjectV1ProjectServiceDeleteProjectError = ProjectV1ProjectServiceDeleteProjectErrors[keyof ProjectV1ProjectServiceDeleteProjectErrors];
@@ -15987,9 +15975,9 @@ export type ProjectV1ProjectServiceGetProjectData = {
 
 export type ProjectV1ProjectServiceGetProjectErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type ProjectV1ProjectServiceGetProjectError = ProjectV1ProjectServiceGetProjectErrors[keyof ProjectV1ProjectServiceGetProjectErrors];
@@ -16021,9 +16009,9 @@ export type ProjectV1ProjectServiceRemoveCustomDomainData = {
 
 export type ProjectV1ProjectServiceRemoveCustomDomainErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type ProjectV1ProjectServiceRemoveCustomDomainError = ProjectV1ProjectServiceRemoveCustomDomainErrors[keyof ProjectV1ProjectServiceRemoveCustomDomainErrors];
@@ -16063,9 +16051,9 @@ export type ProjectV1ProjectServiceSetCustomDomainData = {
 
 export type ProjectV1ProjectServiceSetCustomDomainErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type ProjectV1ProjectServiceSetCustomDomainError = ProjectV1ProjectServiceSetCustomDomainErrors[keyof ProjectV1ProjectServiceSetCustomDomainErrors];
@@ -16105,9 +16093,9 @@ export type ProjectV1ProjectServiceMoveProjectData = {
 
 export type ProjectV1ProjectServiceMoveProjectErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type ProjectV1ProjectServiceMoveProjectError = ProjectV1ProjectServiceMoveProjectErrors[keyof ProjectV1ProjectServiceMoveProjectErrors];
@@ -16147,9 +16135,9 @@ export type ProjectV1ProjectServiceUpdateProjectNameData = {
 
 export type ProjectV1ProjectServiceUpdateProjectNameErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type ProjectV1ProjectServiceUpdateProjectNameError = ProjectV1ProjectServiceUpdateProjectNameErrors[keyof ProjectV1ProjectServiceUpdateProjectNameErrors];
@@ -16189,9 +16177,9 @@ export type ProjectV1ProjectServiceUpdateVideoQualityData = {
 
 export type ProjectV1ProjectServiceUpdateVideoQualityErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type ProjectV1ProjectServiceUpdateVideoQualityError = ProjectV1ProjectServiceUpdateVideoQualityErrors[keyof ProjectV1ProjectServiceUpdateVideoQualityErrors];
@@ -16223,9 +16211,9 @@ export type SupportV1SupportChatServiceListChatMessagesData = {
 
 export type SupportV1SupportChatServiceListChatMessagesErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type SupportV1SupportChatServiceListChatMessagesError = SupportV1SupportChatServiceListChatMessagesErrors[keyof SupportV1SupportChatServiceListChatMessagesErrors];
@@ -16248,9 +16236,9 @@ export type SupportV1SupportChatServiceSendChatMessageData = {
 
 export type SupportV1SupportChatServiceSendChatMessageErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type SupportV1SupportChatServiceSendChatMessageError = SupportV1SupportChatServiceSendChatMessageErrors[keyof SupportV1SupportChatServiceSendChatMessageErrors];
@@ -16273,9 +16261,9 @@ export type SupportV1SupportTicketServiceListCategoriesData = {
 
 export type SupportV1SupportTicketServiceListCategoriesErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type SupportV1SupportTicketServiceListCategoriesError = SupportV1SupportTicketServiceListCategoriesErrors[keyof SupportV1SupportTicketServiceListCategoriesErrors];
@@ -16308,9 +16296,9 @@ export type SupportV1SupportTicketServiceListTopics2Data = {
 
 export type SupportV1SupportTicketServiceListTopics2Errors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type SupportV1SupportTicketServiceListTopics2Error = SupportV1SupportTicketServiceListTopics2Errors[keyof SupportV1SupportTicketServiceListTopics2Errors];
@@ -16350,9 +16338,9 @@ export type SupportV1SupportTicketServiceListTicketsData = {
 
 export type SupportV1SupportTicketServiceListTicketsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type SupportV1SupportTicketServiceListTicketsError = SupportV1SupportTicketServiceListTicketsErrors[keyof SupportV1SupportTicketServiceListTicketsErrors];
@@ -16375,9 +16363,9 @@ export type SupportV1SupportTicketServiceCreateTicketData = {
 
 export type SupportV1SupportTicketServiceCreateTicketErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type SupportV1SupportTicketServiceCreateTicketError = SupportV1SupportTicketServiceCreateTicketErrors[keyof SupportV1SupportTicketServiceCreateTicketErrors];
@@ -16405,9 +16393,9 @@ export type SupportV1SupportTicketServiceGetTicketData = {
 
 export type SupportV1SupportTicketServiceGetTicketErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type SupportV1SupportTicketServiceGetTicketError = SupportV1SupportTicketServiceGetTicketErrors[keyof SupportV1SupportTicketServiceGetTicketErrors];
@@ -16435,9 +16423,9 @@ export type SupportV1SupportTicketServiceCloseTicketData = {
 
 export type SupportV1SupportTicketServiceCloseTicketErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type SupportV1SupportTicketServiceCloseTicketError = SupportV1SupportTicketServiceCloseTicketErrors[keyof SupportV1SupportTicketServiceCloseTicketErrors];
@@ -16473,9 +16461,9 @@ export type SupportV1SupportTicketServiceAddTicketMessageData = {
 
 export type SupportV1SupportTicketServiceAddTicketMessageErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type SupportV1SupportTicketServiceAddTicketMessageError = SupportV1SupportTicketServiceAddTicketMessageErrors[keyof SupportV1SupportTicketServiceAddTicketMessageErrors];
@@ -16507,9 +16495,9 @@ export type SupportV1SupportTicketServiceListTopicsData = {
 
 export type SupportV1SupportTicketServiceListTopicsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type SupportV1SupportTicketServiceListTopicsError = SupportV1SupportTicketServiceListTopicsErrors[keyof SupportV1SupportTicketServiceListTopicsErrors];
@@ -16541,9 +16529,9 @@ export type VideosV1AudioTrackServiceDeleteAllAudioTracksData = {
 
 export type VideosV1AudioTrackServiceDeleteAllAudioTracksErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type VideosV1AudioTrackServiceDeleteAllAudioTracksError = VideosV1AudioTrackServiceDeleteAllAudioTracksErrors[keyof VideosV1AudioTrackServiceDeleteAllAudioTracksErrors];
@@ -16579,9 +16567,9 @@ export type VideosV1AudioTrackServiceDeleteAudioTracksByLanguageData = {
 
 export type VideosV1AudioTrackServiceDeleteAudioTracksByLanguageErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type VideosV1AudioTrackServiceDeleteAudioTracksByLanguageError = VideosV1AudioTrackServiceDeleteAudioTracksByLanguageErrors[keyof VideosV1AudioTrackServiceDeleteAudioTracksByLanguageErrors];
@@ -16625,9 +16613,9 @@ export type VideosV1AudioTrackServiceCreateAudioTrackUploadData = {
 
 export type VideosV1AudioTrackServiceCreateAudioTrackUploadErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type VideosV1AudioTrackServiceCreateAudioTrackUploadError = VideosV1AudioTrackServiceCreateAudioTrackUploadErrors[keyof VideosV1AudioTrackServiceCreateAudioTrackUploadErrors];
@@ -16663,9 +16651,9 @@ export type VideosV1AudioTrackServiceDeleteAudioTrackData = {
 
 export type VideosV1AudioTrackServiceDeleteAudioTrackErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type VideosV1AudioTrackServiceDeleteAudioTrackError = VideosV1AudioTrackServiceDeleteAudioTrackErrors[keyof VideosV1AudioTrackServiceDeleteAudioTrackErrors];
@@ -16693,9 +16681,9 @@ export type VideosV1AudioTrackServiceListAudioTracksData = {
 
 export type VideosV1AudioTrackServiceListAudioTracksErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type VideosV1AudioTrackServiceListAudioTracksError = VideosV1AudioTrackServiceListAudioTracksErrors[keyof VideosV1AudioTrackServiceListAudioTracksErrors];
@@ -16736,9 +16724,9 @@ export type VideosV1ChapterServiceUpdateVideoChapters2Data = {
 
 export type VideosV1ChapterServiceUpdateVideoChapters2Errors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type VideosV1ChapterServiceUpdateVideoChapters2Error = VideosV1ChapterServiceUpdateVideoChapters2Errors[keyof VideosV1ChapterServiceUpdateVideoChapters2Errors];
@@ -16770,9 +16758,9 @@ export type VideosV1ChapterServiceGetVideoChaptersData = {
 
 export type VideosV1ChapterServiceGetVideoChaptersErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type VideosV1ChapterServiceGetVideoChaptersError = VideosV1ChapterServiceGetVideoChaptersErrors[keyof VideosV1ChapterServiceGetVideoChaptersErrors];
@@ -16812,9 +16800,9 @@ export type VideosV1ChapterServiceUpdateVideoChaptersData = {
 
 export type VideosV1ChapterServiceUpdateVideoChaptersErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type VideosV1ChapterServiceUpdateVideoChaptersError = VideosV1ChapterServiceUpdateVideoChaptersErrors[keyof VideosV1ChapterServiceUpdateVideoChaptersErrors];
@@ -16850,9 +16838,9 @@ export type VideosV1ChapterServiceDeleteVideoChapterData = {
 
 export type VideosV1ChapterServiceDeleteVideoChapterErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type VideosV1ChapterServiceDeleteVideoChapterError = VideosV1ChapterServiceDeleteVideoChapterErrors[keyof VideosV1ChapterServiceDeleteVideoChapterErrors];
@@ -16875,9 +16863,9 @@ export type VideosV1LanguageServiceListLanguagesData = {
 
 export type VideosV1LanguageServiceListLanguagesErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type VideosV1LanguageServiceListLanguagesError = VideosV1LanguageServiceListLanguagesErrors[keyof VideosV1LanguageServiceListLanguagesErrors];
@@ -16909,9 +16897,9 @@ export type VideosV1SubtitleServiceDeleteAllSubtitlesData = {
 
 export type VideosV1SubtitleServiceDeleteAllSubtitlesErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type VideosV1SubtitleServiceDeleteAllSubtitlesError = VideosV1SubtitleServiceDeleteAllSubtitlesErrors[keyof VideosV1SubtitleServiceDeleteAllSubtitlesErrors];
@@ -16947,9 +16935,9 @@ export type VideosV1SubtitleServiceDeleteSubtitlesByLanguageData = {
 
 export type VideosV1SubtitleServiceDeleteSubtitlesByLanguageErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type VideosV1SubtitleServiceDeleteSubtitlesByLanguageError = VideosV1SubtitleServiceDeleteSubtitlesByLanguageErrors[keyof VideosV1SubtitleServiceDeleteSubtitlesByLanguageErrors];
@@ -16993,9 +16981,9 @@ export type VideosV1SubtitleServiceCreateSubtitleUploadData = {
 
 export type VideosV1SubtitleServiceCreateSubtitleUploadErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type VideosV1SubtitleServiceCreateSubtitleUploadError = VideosV1SubtitleServiceCreateSubtitleUploadErrors[keyof VideosV1SubtitleServiceCreateSubtitleUploadErrors];
@@ -17031,9 +17019,9 @@ export type VideosV1SubtitleServiceDeleteSubtitleData = {
 
 export type VideosV1SubtitleServiceDeleteSubtitleErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type VideosV1SubtitleServiceDeleteSubtitleError = VideosV1SubtitleServiceDeleteSubtitleErrors[keyof VideosV1SubtitleServiceDeleteSubtitleErrors];
@@ -17061,9 +17049,9 @@ export type VideosV1SubtitleServiceListSubtitlesData = {
 
 export type VideosV1SubtitleServiceListSubtitlesErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type VideosV1SubtitleServiceListSubtitlesError = VideosV1SubtitleServiceListSubtitlesErrors[keyof VideosV1SubtitleServiceListSubtitlesErrors];
@@ -17112,9 +17100,9 @@ export type VideosV1VideoServiceListVideosData = {
 
 export type VideosV1VideoServiceListVideosErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type VideosV1VideoServiceListVideosError = VideosV1VideoServiceListVideosErrors[keyof VideosV1VideoServiceListVideosErrors];
@@ -17164,9 +17152,9 @@ export type VideosV1VideoServiceCreateVideoUploadData = {
 
 export type VideosV1VideoServiceCreateVideoUploadErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type VideosV1VideoServiceCreateVideoUploadError = VideosV1VideoServiceCreateVideoUploadErrors[keyof VideosV1VideoServiceCreateVideoUploadErrors];
@@ -17198,9 +17186,9 @@ export type VideosV1VideoServiceDeleteVideoData = {
 
 export type VideosV1VideoServiceDeleteVideoErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type VideosV1VideoServiceDeleteVideoError = VideosV1VideoServiceDeleteVideoErrors[keyof VideosV1VideoServiceDeleteVideoErrors];
@@ -17240,9 +17228,9 @@ export type VideosV1VideoServiceUpdateVideoVisibilityData = {
 
 export type VideosV1VideoServiceUpdateVideoVisibilityErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type VideosV1VideoServiceUpdateVideoVisibilityError = VideosV1VideoServiceUpdateVideoVisibilityErrors[keyof VideosV1VideoServiceUpdateVideoVisibilityErrors];
@@ -17270,9 +17258,9 @@ export type VideosV1VideoServiceGetVideoData = {
 
 export type VideosV1VideoServiceGetVideoErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type VideosV1VideoServiceGetVideoError = VideosV1VideoServiceGetVideoErrors[keyof VideosV1VideoServiceGetVideoErrors];
@@ -17313,9 +17301,9 @@ export type WebhooksV1WebhookServiceListEndpointsData = {
 
 export type WebhooksV1WebhookServiceListEndpointsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type WebhooksV1WebhookServiceListEndpointsError = WebhooksV1WebhookServiceListEndpointsErrors[keyof WebhooksV1WebhookServiceListEndpointsErrors];
@@ -17355,9 +17343,9 @@ export type WebhooksV1WebhookServiceCreateEndpointData = {
 
 export type WebhooksV1WebhookServiceCreateEndpointErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type WebhooksV1WebhookServiceCreateEndpointError = WebhooksV1WebhookServiceCreateEndpointErrors[keyof WebhooksV1WebhookServiceCreateEndpointErrors];
@@ -17389,9 +17377,9 @@ export type WebhooksV1WebhookServiceDeleteEndpointData = {
 
 export type WebhooksV1WebhookServiceDeleteEndpointErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type WebhooksV1WebhookServiceDeleteEndpointError = WebhooksV1WebhookServiceDeleteEndpointErrors[keyof WebhooksV1WebhookServiceDeleteEndpointErrors];
@@ -17423,9 +17411,9 @@ export type WebhooksV1WebhookServiceGetEndpointData = {
 
 export type WebhooksV1WebhookServiceGetEndpointErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type WebhooksV1WebhookServiceGetEndpointError = WebhooksV1WebhookServiceGetEndpointErrors[keyof WebhooksV1WebhookServiceGetEndpointErrors];
@@ -17473,9 +17461,9 @@ export type WebhooksV1WebhookServiceUpdateEndpointData = {
 
 export type WebhooksV1WebhookServiceUpdateEndpointErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type WebhooksV1WebhookServiceUpdateEndpointError = WebhooksV1WebhookServiceUpdateEndpointErrors[keyof WebhooksV1WebhookServiceUpdateEndpointErrors];
@@ -17520,9 +17508,9 @@ export type WebhooksV1WebhookServiceListEndpointAttemptsData = {
 
 export type WebhooksV1WebhookServiceListEndpointAttemptsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type WebhooksV1WebhookServiceListEndpointAttemptsError = WebhooksV1WebhookServiceListEndpointAttemptsErrors[keyof WebhooksV1WebhookServiceListEndpointAttemptsErrors];
@@ -17558,9 +17546,9 @@ export type WebhooksV1WebhookServiceReplayEventData = {
 
 export type WebhooksV1WebhookServiceReplayEventErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type WebhooksV1WebhookServiceReplayEventError = WebhooksV1WebhookServiceReplayEventErrors[keyof WebhooksV1WebhookServiceReplayEventErrors];
@@ -17592,9 +17580,9 @@ export type WebhooksV1WebhookServiceRotateEndpointSecretData = {
 
 export type WebhooksV1WebhookServiceRotateEndpointSecretErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type WebhooksV1WebhookServiceRotateEndpointSecretError = WebhooksV1WebhookServiceRotateEndpointSecretErrors[keyof WebhooksV1WebhookServiceRotateEndpointSecretErrors];
@@ -17626,9 +17614,9 @@ export type WebhooksV1WebhookServiceSendTestEventData = {
 
 export type WebhooksV1WebhookServiceSendTestEventErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type WebhooksV1WebhookServiceSendTestEventError = WebhooksV1WebhookServiceSendTestEventErrors[keyof WebhooksV1WebhookServiceSendTestEventErrors];
@@ -17669,9 +17657,9 @@ export type WebhooksV1WebhookServiceListEventsData = {
 
 export type WebhooksV1WebhookServiceListEventsErrors = {
     /**
-     * An unexpected error response.
+     * Error. The body is `{"error": "<message>"}`, with `reason` on some 4xx errors. The HTTP status and `reason` carry the meaning.
      */
-    default: GoogleRpcStatus;
+    default: Error;
 };
 
 export type WebhooksV1WebhookServiceListEventsError = WebhooksV1WebhookServiceListEventsErrors[keyof WebhooksV1WebhookServiceListEventsErrors];
